@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260719m">
+  <link rel="stylesheet" href="style.css?v=20260719p">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -67,7 +67,8 @@
   </script>
   <style>
     .manual-masthead {
-      padding: 96px 0 24px;
+      padding-top: 96px;
+      padding-bottom: 24px;
       border-bottom: 1px solid var(--rule-soft);
     }
 
@@ -179,7 +180,8 @@
 
 
     .preface {
-      padding: 48px 0 32px;
+      padding-top: 48px;
+      padding-bottom: 32px;
       border-bottom: 1px solid var(--rule-soft);
     }
 
@@ -315,7 +317,8 @@
     }
 
     .stat-block {
-      padding: 32px 0 40px;
+      padding-top: 32px;
+      padding-bottom: 40px;
       border-bottom: 1px solid var(--rule-soft);
     }
 
@@ -379,7 +382,8 @@
     }
 
     .toc {
-      padding: 56px 0 80px;
+      padding-top: 56px;
+      padding-bottom: 80px;
       border-bottom: 1px solid var(--rule-soft);
     }
 
@@ -500,7 +504,8 @@
     }
 
     .colophon {
-      padding: 48px 0;
+      padding-top: 48px;
+      padding-bottom: 48px;
       border-top: 1px solid var(--rule-soft);
     }
 
@@ -554,11 +559,11 @@
     }
 
     @media (max-width: 900px) {
-      .manual-masthead { padding: 80px 0 16px; }
-      .preface { padding: 32px 0; }
-      .stat-block { padding: 32px 0; }
-      .toc { padding: 32px 0 40px; }
-      .colophon { padding: 32px 0; }
+      .manual-masthead { padding-top: 80px; padding-bottom: 16px; }
+      .preface { padding-top: 32px; padding-bottom: 32px; }
+      .stat-block { padding-top: 32px; padding-bottom: 32px; }
+      .toc { padding-top: 32px; padding-bottom: 40px; }
+      .colophon { padding-top: 32px; padding-bottom: 32px; }
 
       .manual-meta-row { margin-bottom: 20px; }
       .manual-tagline { margin: 20px 0 6px; font-size: 1rem; }
@@ -620,14 +625,17 @@
     }
 
     @media (max-width: 480px) {
-      .manual-masthead { padding: 72px 0 12px; }
-      .preface { padding: 24px 0; }
-      .stat-block { padding: 24px 0; }
-      .toc { padding: 24px 0 32px; }
-      .colophon { padding: 24px 0; }
+      .manual-masthead { padding-top: 72px; padding-bottom: 12px; }
+      .preface { padding-top: 24px; padding-bottom: 24px; }
+      .stat-block { padding-top: 24px; padding-bottom: 24px; }
+      .toc { padding-top: 24px; padding-bottom: 32px; }
+      .colophon { padding-top: 24px; padding-bottom: 24px; }
 
       .manual-title {
-        font-size: clamp(2.4rem, 14vw, 3.6rem);
+        /* "BUILDING BACKEND" is one line, ~6.7x the font size wide. A clamp()
+           floor would force it past the viewport on small phones, so scale
+           purely with vw and only cap the top end. */
+        font-size: min(11.5vw, 3.6rem);
         line-height: 0.92;
       }
 
@@ -765,7 +773,7 @@
         <span>FIG_000 &middot; curriculum v1.0 · 2026</span>
         <span class="right">open source · MIT</span>
       </div>
-      <h1 class="manual-title">Building<br>Backend</h1>
+      <h1 class="manual-title">Building Backend</h1>
       <p class="manual-tagline reveal">164 lessons across 13 phases. Every backend primitive built by hand: socket, HTTP server, B-tree, queue, cache, container. All before a single framework gets imported.</p>
       <p class="manual-attribution reveal" style="--stagger-delay: 80ms;">Maintained by @ritikshub. Free forever.<br><span class="manual-creed">Free education for all. Long live the revolution.</span></p>
       <div class="masthead-cta reveal" style="--stagger-delay: 140ms;">
@@ -971,11 +979,11 @@
     </div>
   </footer>
 
-  <script src="data.js?v=20260719m"></script>
-  <script src="progress.js?v=20260719m"></script>
-  <script src="header.js?v=20260719m" defer></script>
-  <script src="cmdpalette.js?v=20260719m" defer></script>
-  <script src="app.js?v=20260719m"></script>
+  <script src="data.js?v=20260719p"></script>
+  <script src="progress.js?v=20260719p"></script>
+  <script src="header.js?v=20260719p" defer></script>
+  <script src="cmdpalette.js?v=20260719p" defer></script>
+  <script src="app.js?v=20260719p"></script>
   <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 </body>
 </html>
