@@ -524,13 +524,7 @@
       10: [7],
       11: [10],
       12: [4, 6, 11],
-      13: [11],
-      14: [11, 13],
-      15: [14],
-      16: [15],
-      17: [11],
-      18: [10],
-      19: [14, 15, 16, 17]
+      13: [11]
     };
 
     /*
@@ -547,11 +541,8 @@
       [3],
       [9, 5, 7, 4, 6],
       [8, 10],
-      [18, 11],
-      [17, 13, 12],
-      [14],
-      [15, 16],
-      [19]
+      [11],
+      [13, 12]
     ];
 
     /* ===================================================
@@ -573,6 +564,19 @@
       PHASE_MAP[PHASES[i].id] = PHASES[i];
       allPhaseIds[PHASES[i].id] = true;
     }
+
+    /* Drop references to phases that no longer exist in PHASES. A stale id
+       still claims a tier slot and still gets POSITIONS, so its edges render
+       as arrows into empty canvas — the node itself is skipped, but nothing
+       was skipping the edge. */
+    for (var pid in PREREQS) {
+      if (!allPhaseIds[pid]) { delete PREREQS[pid]; continue; }
+      PREREQS[pid] = PREREQS[pid].filter(function (fid) { return allPhaseIds[fid]; });
+    }
+    for (var t = 0; t < TIER_ORDER.length; t++) {
+      TIER_ORDER[t] = TIER_ORDER[t].filter(function (id) { return allPhaseIds[id]; });
+    }
+    TIER_ORDER = TIER_ORDER.filter(function (tier) { return tier.length > 0; });
 
     /* Ensure every phase in PHASES has a PREREQS entry */
     for (var pid in allPhaseIds) {
