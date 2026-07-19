@@ -1,0 +1,99 @@
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 6 280 192" width="560" height="384" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="A fisherman sitting cross-legged in the shade beside a beached boat, hunched over a net, mending a hole in it.">
+  <style>
+    .note-fig-ink        { stroke: #e8e6dc; }
+    .note-fig-net        { stroke: #6b8eff; }
+    .note-fig-mesh-line  { stroke: #6b8eff; opacity: 0.5; }
+    .note-fig-hole       { stroke: #6b8eff; fill: #0a0d1a; }
+    .note-fig-hull       { fill: #0a0d1a; }
+    .note-fig-sand       { stroke: #7a7878; }
+    .note-fig-motion     { stroke: #6b8eff; opacity: 0.38; }
+    .note-fig-shade-line { stroke: #7a7878; opacity: 0.28; }
+  </style>
+            <defs>
+              <!-- Diamond lattice: the thing that actually reads as netting. -->
+              <pattern id="netMesh" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <path class="note-fig-mesh-line" d="M0,0 V7 M0,0 H7" stroke-width="0.55"/>
+              </pattern>
+              <!-- Diagonal hatch: the shade, which is the whole point of the picture. -->
+              <pattern id="shadeHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <path class="note-fig-shade-line" d="M0,0 V6" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+
+            <!-- boat, hauled up the beach and filled so it hides what sits behind the rim -->
+            <g class="note-fig-ink" stroke-width="1.5">
+              <path class="note-fig-hull" d="M264,140 H208 L214,150 Q236,152.5 256,150 Z"/>
+              <path d="M268,140 H204"/>
+            </g>
+
+            <!-- the sand, and the pool of shade the crown throws across it -->
+            <path class="note-fig-sand" d="M14,178 H268" stroke-width="1.2" opacity="0.75"/>
+            <ellipse cx="132" cy="181" rx="88" ry="11.5" fill="url(#shadeHatch)" stroke="none"/>
+            <path class="note-fig-sand" d="M208,155 H260" stroke-width="1.1" stroke-dasharray="3 7" opacity="0.55"/>
+            <path class="note-fig-sand" d="M32,189 H86 M120,191 H172 M206,187 H252"
+                  stroke-width="1.1" stroke-dasharray="3 9" opacity="0.45"/>
+
+            <!-- the coconut palm: trunk leaning out over the work -->
+            <g class="note-fig-ink" stroke-width="1.6">
+              <path d="M52,178 C58,142 80,98 120,64"/>
+              <path d="M42,178 C47,143 69,99 110,62"/>
+              <!-- growth rings, bowed so the trunk reads as a cylinder -->
+              <path d="M55.5,162.5 Q49.5,165.5 45.1,162.8" stroke-width="1"/>
+              <path d="M64.8,136.8 Q58.2,139.9 54.1,137.4" stroke-width="1"/>
+              <path d="M79,110.8 Q72,113.5 68.2,111.1" stroke-width="1"/>
+              <path d="M97.2,86.6 Q89.9,88.6 86.7,86.1" stroke-width="1"/>
+            </g>
+
+            <!-- the crown: each frond is a spine with leaflets combed off it -->
+            <g class="note-fig-ink" stroke-width="1.2">
+              <path d="M115,60 C148,52 178,58 198,84"/>
+              <path d="M129.6,57.4 L127.3,63 M129.6,57.4 L126.1,52.4 M141.9,56.7 L139.1,61.7 M141.9,56.7 L139.2,51.7 M153.6,57.6 L150.4,61.8 M153.6,57.6 L151.8,52.7 M164.7,60.2 L161.2,63.5 M164.7,60.2 L163.8,55.5 M175.2,64.6 L171.5,67 M175.2,64.6 L175.1,60.2 M184.9,70.8 L181.2,72.3 M184.9,70.8 L185.5,66.8 M192.4,77.5 L188.9,78.4 M192.4,77.5 L193.4,74" stroke-width="0.8"/>
+              <path d="M115,60 C150,38 182,36 206,50"/>
+              <path d="M130.5,51.4 L130.2,57.5 M130.5,51.4 L125.6,47.9 M143.6,46.1 L142.6,51.7 M143.6,46.1 L139.4,42.3 M156.2,42.8 L154.6,47.8 M156.2,42.8 L152.8,38.7 M168.3,41.2 L166.2,45.6 M168.3,41.2 L165.8,37.1 M179.8,41.5 L177.3,45.1 M179.8,41.5 L178.1,37.5 M190.7,43.6 L187.9,46.4 M190.7,43.6 L189.8,39.7 M199.3,46.6 L196.5,48.8 M199.3,46.6 L199,43" stroke-width="0.8"/>
+              <path d="M115,60 C140,32 166,22 190,24"/>
+              <path d="M126.3,48.6 L127.6,54.2 M126.3,48.6 L120.9,46.7 M136.2,40.6 L136.8,45.9 M136.2,40.6 L131.3,38.3 M146,34.2 L146.1,39.2 M146,34.2 L141.9,31.6 M155.9,29.4 L155.4,33.9 M155.9,29.4 L152.4,26.6 M165.7,26.2 L164.7,30.2 M165.7,26.2 L162.9,23.2 M175.4,24.3 L174,27.7 M175.4,24.3 L173.2,21.3 M183.5,23.8 L181.9,26.7 M183.5,23.8 L181.8,20.8" stroke-width="0.8"/>
+              <path d="M115,60 C116,38 114,26 108,17"/>
+              <path d="M115.2,50.8 L119.6,53.2 M115.2,50.8 L110.9,53.1 M115.1,43.7 L119.3,45.8 M115.1,43.7 L111.1,46.1 M114.6,37.5 L118.6,39.2 M114.6,37.5 L111.1,40 M113.8,32 L117.6,33.2 M113.8,32 L110.8,34.5 M112.7,27.1 L116.2,27.9 M112.7,27.1 L110.1,29.7 M111.1,22.8 L114.4,23.1 M111.1,22.8 L109.1,25.4 M109.5,19.5 L112.5,19.5 M109.5,19.5 L107.9,22" stroke-width="0.8"/>
+              <path d="M115,60 C96,34 76,28 56,32"/>
+              <path d="M106.4,49.6 L111.6,48.2 M106.4,49.6 L104.8,54.7 M98.8,42.6 L103.4,40.7 M98.8,42.6 L98,47.6 M91.2,37.4 L95.1,35 M91.2,37.4 L91.1,42 M83.5,33.8 L86.7,31 M83.5,33.8 L84.1,38 M75.8,31.7 L78.2,28.7 M75.8,31.7 L77,35.3 M68,30.9 L69.7,27.9 M68,30.9 L69.6,34 M61.4,31.2 L62.6,28.3 M61.4,31.2 L63.2,33.8" stroke-width="0.8"/>
+              <path d="M115,60 C92,42 68,46 48,60"/>
+              <path d="M104.6,53.3 L109,50.3 M104.6,53.3 L104.8,58.7 M95.6,49.8 L99.1,46.2 M95.6,49.8 L96.7,54.7 M86.6,48.1 L89.1,44.3 M86.6,48.1 L88.4,52.3 M77.7,48.2 L79.3,44.3 M77.7,48.2 L80.1,51.7 M68.9,49.8 L69.8,46.1 M68.9,49.8 L71.6,52.6 M60.4,52.9 L60.7,49.4 M60.4,52.9 L63.2,55 M53.5,56.5 L53.4,53.3 M53.5,56.5 L56.2,58.1" stroke-width="0.8"/>
+              <path d="M115,60 C96,58 74,66 58,88"/>
+              <path d="M106.3,59.8 L108.5,55.1 M106.3,59.8 L109,64.2 M98.5,60.8 L100,56.2 M98.5,60.8 L101.6,64.5 M90.7,62.9 L91.5,58.5 M90.7,62.9 L94,65.8 M83,66.1 L83.1,62.1 M83,66.1 L86.4,68.4 M75.5,70.7 L75.1,66.9 M75.5,70.7 L78.8,72.3 M68.2,76.4 L67.4,73.2 M68.2,76.4 L71.4,77.5 M62.5,82.4 L61.4,79.5 M62.5,82.4 L65.4,83" stroke-width="0.8"/>
+              <path d="M115,60 C122,80 134,92 148,106"/>
+              <path d="M118.5,68.5 L113.5,68.2 M118.5,68.5 L121.4,64.4 M122,75.1 L117.3,75.3 M122,75.1 L124.4,71.1 M125.9,81.3 L121.7,81.7 M125.9,81.3 L127.8,77.4 M130.2,87 L126.4,87.7 M130.2,87 L131.7,83.3 M134.9,92.4 L131.4,93.2 M134.9,92.4 L136.1,89 M139.9,97.8 L136.7,98.6 M139.9,97.8 L140.8,94.7 M144.3,102.3 L141.4,103.1 M144.3,102.3 L145.1,99.4" stroke-width="0.8"/>
+              <path d="M115,60 C106,80 96,92 84,104"/>
+              <path d="M110.9,68.5 L108.2,64.5 M110.9,68.5 L115.7,68.4 M107.2,75.1 L104.9,71.2 M107.2,75.1 L111.7,75.3 M103.4,81.1 L101.5,77.4 M103.4,81.1 L107.5,81.5 M99.4,86.7 L97.8,83.2 M99.4,86.7 L103.1,87.2 M95.3,91.8 L94,88.6 M95.3,91.8 L98.7,92.5 M91,96.7 L90,93.8 M91,96.7 L94,97.5 M87.2,100.8 L86.4,98 M87.2,100.8 L89.9,101.5" stroke-width="0.8"/>
+            </g>
+
+            <!-- coconuts, bunched where the fronds leave the trunk -->
+            <g class="note-fig-ink" stroke-width="1.1">
+              <circle cx="109" cy="68" r="3"/>
+              <circle cx="117" cy="69.5" r="3"/>
+              <circle cx="113" cy="74.5" r="3"/>
+              <circle cx="123" cy="67" r="3"/>
+            </g>
+
+            <!-- the net: lashed to the trunk, falling slack to pool on the sand -->
+            <path class="note-fig-ink" d="M78,108 Q75,111 73,115" stroke-width="1.3"/>
+            <path class="note-fig-net" d="M74,112 Q108,128 144,144 L152,174 Q116,180 80,170 Z"
+                  stroke-width="1.4" fill="url(#netMesh)"/>
+
+            <!-- the tear, stitched part-way shut and still open at the far end -->
+            <path class="note-fig-hole" d="M146,158 Q138,150 130,155 Q138,165 146,158 Z" stroke-width="1.2"/>
+            <path class="note-fig-net" d="M144,155 V162.5 M139,152.5 V164" stroke-width="1.1"/>
+            <!-- the working thread, needle back to the tear -->
+            <path class="note-fig-motion" d="M150,161 Q148,160 146,158" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+            <!-- fisherman, sitting cross-legged in the shade and hunched over the mend -->
+            <g class="note-fig-ink" stroke-width="1.7">
+              <circle cx="182" cy="139" r="7.5"/>
+              <path d="M182,147 Q189,157 193,173"/>
+              <!-- legs stretched out along the sand, feet flexed up -->
+              <path d="M193,174 L164,179 L158,174"/>
+              <path d="M192,177 L168,183 L162,178"/>
+              <!-- one hand holds the net taut, the other drives the needle -->
+              <path d="M182,149 L168,155 L148,151"/>
+              <path d="M182,149 L176,163 L150,161"/>
+            </g>
+          </svg>

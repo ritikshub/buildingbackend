@@ -1,0 +1,31 @@
+<svg color="#e8e6dc" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" width="900" style="max-width:720px" role="img" aria-label="A B-tree with a root holding keys 30 and 60, three child nodes holding key ranges, and three leaves pointing at the heap rows in each range." font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
+  <defs><marker id="l09b-ah" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker></defs>
+  <text x="410.0" y="26" text-anchor="middle" font-size="14" font-weight="700">A B-tree — many keys per node, every leaf at the same depth</text>
+  <g fill="none">
+  <path d="M410.0 94 L 150.0 152" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l09b-ah)"/>
+  <path d="M410.0 94 L 410.0 152" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l09b-ah)"/>
+  <path d="M410.0 94 L 672.0 152" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l09b-ah)"/>
+  <path d="M150.0 202 L 150.0 272" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l09b-ah)"/>
+  <path d="M410.0 202 L 410.0 272" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l09b-ah)"/>
+  <path d="M672.0 202 L 672.0 272" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l09b-ah)"/>
+  </g>
+  <g>
+  <rect x="340.0" y="44" width="140" height="50" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="85.0" y="152" width="130" height="50" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="345.0" y="152" width="130" height="50" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="600.0" y="152" width="144" height="50" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="75.0" y="272" width="150" height="50" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="335.0" y="272" width="150" height="50" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="597.0" y="272" width="150" height="50" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+  <g>
+  <text x="410.0" y="72.9" font-size="11.5" text-anchor="middle" >[ 30 · 60 ]</text>
+  <text x="150.0" y="180.9" font-size="11.5" text-anchor="middle" >[ 10 · 20 ]</text>
+  <text x="410.0" y="180.9" font-size="11.5" text-anchor="middle" >[ 40 · 50 ]</text>
+  <text x="672.0" y="180.9" font-size="11.5" text-anchor="middle" >[ 70 · 80 · 90 ]</text>
+  <text x="150.0" y="300.9" font-size="11.5" text-anchor="middle" >heap rows &lt; 30</text>
+  <text x="410.0" y="300.9" font-size="11.5" text-anchor="middle" >heap rows 30–60</text>
+  <text x="672.0" y="300.9" font-size="11.5" text-anchor="middle" >heap rows &gt; 60</text>
+  </g>
+  <text x="410.0" y="368" text-anchor="middle" font-size="11" opacity="0.9">To find a key: start at the root and follow the child whose range contains it.</text>
+</svg>

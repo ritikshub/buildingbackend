@@ -1,0 +1,130 @@
+<svg color="#1a1a1a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 686" width="900" style="max-width:880px" role="img" aria-label="Two registers on one byte. First, a byte drawn as eight cells in a row. Above each cell is its place value, doubling from right to left: 1, 2, 4, 8, 16, 32, 64, 128, which are the powers of two from 2 to the 0 up to 2 to the 7. The cells hold the bit pattern 0, 0, 0, 0, 1, 0, 1, 1. Only the cells holding a 1 contribute, and each contributes its place value: 8, then 2, then 1. Adding those gives 8 plus 2 plus 1 equals 11, so binary 00001011 is the number 11. The four leading zeros add nothing, so it is the same number as the lesson's 1011, and Python prints bin of 11 as 0b1011. Split the byte in half and each half is one hex digit: 0000 is hex 0 and 1011 is hex B, so this byte is 0x0B, and two hex digits are always one byte. Turning every switch on gives 11111111, which is 128 plus 64 plus 32 plus 16 plus 8 plus 4 plus 2 plus 1 equals 255, written FF in hex, the largest value one byte holds. The number of patterns is 2 times 2 times 2 times 2 times 2 times 2 times 2 times 2, which is 256, because each extra switch doubles the count. One of those 256 patterns is zero, which is why a byte spans 0 to 255 rather than 1 to 256. Wider values simply use more bytes: 2 bytes reach 65,535, 4 bytes reach about 4.29 billion, and 8 bytes reach about 18 quintillion. Second, the familiar storage units, drawn as a staircase where every step to the right multiplies by 1000. One byte, about one character of text, becomes 1 kilobyte at roughly 1,000 bytes, about a page of plain text, then 1 megabyte at roughly 1,000 kilobytes or a million bytes, about a song, then 1 gigabyte at roughly 1,000 megabytes or a billion bytes, about a movie. Small print: computers sometimes count in 1024s rather than 1000s because 1024 is 2 to the 10, a round number in binary, but roughly a thousand is the right mental model for now.">
+  <defs>
+    <marker id="p0l01a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker>
+  </defs>
+  <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="700" fill="currentColor">Eight switches in a row: add up the columns holding a 1 and you have read the byte</text>
+  <g font-family="'JetBrains Mono', ui-monospace, monospace">
+
+    <rect x="16" y="38" width="868" height="222" rx="11" fill="#7f7f7f" fill-opacity="0.06" stroke="#7f7f7f" stroke-opacity="0.55" stroke-width="1.8"/>
+    <text x="34" y="60" font-size="11.5" font-weight="700" fill="#7f7f7f">1 · ONE BYTE, DRAWN OUT</text>
+    <text x="205" y="60" font-size="9" fill="currentColor" opacity="0.85">eight switches side by side — this one holds the lesson's own example, binary 1011</text>
+
+    <g text-anchor="middle" font-size="10" fill="#3553ff" opacity="0.75">
+      <text x="205" y="84">2<tspan font-size="7" dy="-3">7</tspan></text>
+      <text x="275" y="84">2<tspan font-size="7" dy="-3">6</tspan></text>
+      <text x="345" y="84">2<tspan font-size="7" dy="-3">5</tspan></text>
+      <text x="415" y="84">2<tspan font-size="7" dy="-3">4</tspan></text>
+      <text x="485" y="84">2<tspan font-size="7" dy="-3">3</tspan></text>
+      <text x="555" y="84">2<tspan font-size="7" dy="-3">2</tspan></text>
+      <text x="625" y="84">2<tspan font-size="7" dy="-3">1</tspan></text>
+      <text x="695" y="84">2<tspan font-size="7" dy="-3">0</tspan></text>
+    </g>
+    <g text-anchor="middle" font-size="13.5" font-weight="700" fill="#3553ff">
+      <text x="205" y="101">128</text><text x="275" y="101">64</text><text x="345" y="101">32</text><text x="415" y="101">16</text>
+      <text x="485" y="101">8</text><text x="555" y="101">4</text><text x="625" y="101">2</text><text x="695" y="101">1</text>
+    </g>
+
+    <g fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.3" stroke-width="1.5">
+      <rect x="175" y="110" width="60" height="44" rx="7"/>
+      <rect x="245" y="110" width="60" height="44" rx="7"/>
+      <rect x="315" y="110" width="60" height="44" rx="7"/>
+      <rect x="385" y="110" width="60" height="44" rx="7"/>
+      <rect x="525" y="110" width="60" height="44" rx="7"/>
+    </g>
+    <g fill="#7f7f7f" fill-opacity="0.24" stroke="#7f7f7f" stroke-width="2.2">
+      <rect x="455" y="110" width="60" height="44" rx="7"/>
+      <rect x="595" y="110" width="60" height="44" rx="7"/>
+      <rect x="665" y="110" width="60" height="44" rx="7"/>
+    </g>
+    <g text-anchor="middle" font-size="21" font-weight="700" fill="currentColor">
+      <text x="205" y="141" opacity="0.4">0</text><text x="275" y="141" opacity="0.4">0</text>
+      <text x="345" y="141" opacity="0.4">0</text><text x="415" y="141" opacity="0.4">0</text>
+      <text x="485" y="141">1</text>
+      <text x="555" y="141" opacity="0.4">0</text>
+      <text x="625" y="141">1</text><text x="695" y="141">1</text>
+    </g>
+
+    <g text-anchor="middle">
+      <text x="205" y="178" font-size="11" fill="currentColor" opacity="0.35">0</text>
+      <text x="275" y="178" font-size="11" fill="currentColor" opacity="0.35">0</text>
+      <text x="345" y="178" font-size="11" fill="currentColor" opacity="0.35">0</text>
+      <text x="415" y="178" font-size="11" fill="currentColor" opacity="0.35">0</text>
+      <text x="485" y="178" font-size="13.5" font-weight="700" fill="#0fa07f">8</text>
+      <text x="555" y="178" font-size="11" fill="currentColor" opacity="0.35">0</text>
+      <text x="625" y="178" font-size="13.5" font-weight="700" fill="#0fa07f">2</text>
+      <text x="695" y="178" font-size="13.5" font-weight="700" fill="#0fa07f">1</text>
+    </g>
+
+    <g text-anchor="end" font-size="9">
+      <text x="165" y="101" fill="#3553ff">place value →</text>
+      <text x="165" y="141" fill="currentColor" opacity="0.85">the 8 bits →</text>
+      <text x="165" y="178" fill="#0fa07f">each adds →</text>
+    </g>
+
+    <path d="M175 188 L725 188" fill="none" stroke="#0fa07f" stroke-width="1.6" stroke-opacity="0.8"/>
+    <text x="450" y="210" text-anchor="middle" font-size="15" font-weight="700"><tspan fill="#7f7f7f">00001011</tspan><tspan fill="currentColor" opacity="0.6">&#x2003;=&#x2003;</tspan><tspan fill="#0fa07f">8 + 2 + 1 = 11</tspan></text>
+    <text x="450" y="230" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">The four leading zeros add nothing: 00001011 is the same number as the lesson's 1011, and Python prints bin(11) as 0b1011.</text>
+    <text x="450" y="247" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">Split it in half and each half is one hex digit: 0000 is hex 0, 1011 is hex B, so this byte is 0x0B — two hex digits, one byte.</text>
+
+    <rect x="16" y="270" width="430" height="130" rx="11" fill="#7f7f7f" fill-opacity="0.06" stroke="#7f7f7f" stroke-opacity="0.55" stroke-width="1.8"/>
+    <g text-anchor="middle">
+      <text x="231" y="292" font-size="10.5" font-weight="700" fill="#7f7f7f">ALL EIGHT SWITCHES ON</text>
+      <text x="231" y="320" font-size="15" font-weight="700" fill="#7f7f7f">11111111</text>
+      <text x="231" y="344" font-size="10" fill="currentColor" opacity="0.9">= 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1</text>
+      <text x="231" y="368" font-size="13" font-weight="700"><tspan fill="#0fa07f">= 255</tspan><tspan fill="currentColor" opacity="0.6">&#x2003;·&#x2003;hex FF</tspan></text>
+      <text x="231" y="389" font-size="8.5" fill="currentColor" opacity="0.75">so one byte runs 0 (all off) to 255 (all on)</text>
+    </g>
+
+    <rect x="458" y="270" width="426" height="130" rx="11" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.55" stroke-width="1.8"/>
+    <g text-anchor="middle">
+      <text x="671" y="292" font-size="10.5" font-weight="700" fill="#3553ff">HOW MANY PATTERNS FIT IN 8 SWITCHES?</text>
+      <text x="671" y="320" font-size="11.5" fill="currentColor"><tspan>2 × 2 × 2 × 2 × 2 × 2 × 2 × 2 = </tspan><tspan font-weight="700" fill="#0fa07f">256</tspan></text>
+      <text x="671" y="344" font-size="9" fill="currentColor" opacity="0.85">each extra switch doubles the count — that is 2<tspan font-size="7" dy="-3">8</tspan></text>
+      <text x="671" y="368" font-size="9.5" fill="currentColor"><tspan>256 patterns, one of them zero → a byte holds </tspan><tspan font-weight="700" fill="#0fa07f">0 to 255</tspan></text>
+      <text x="671" y="389" font-size="8" fill="currentColor" opacity="0.75">more bytes = bigger range: 2 → 65,535 · 4 → ~4.29 billion · 8 → ~18 quintillion</text>
+    </g>
+
+    <rect x="16" y="410" width="868" height="200" rx="11" fill="#7f7f7f" fill-opacity="0.06" stroke="#7f7f7f" stroke-opacity="0.55" stroke-width="1.8"/>
+    <text x="34" y="433" font-size="11.5" font-weight="700" fill="#7f7f7f">2 · WHERE KB, MB AND GB COME FROM</text>
+    <text x="290" y="433" font-size="9" fill="currentColor" opacity="0.85">every step to the right is × 1000 — the same bytes, counted in bigger heaps</text>
+
+    <g fill="#7f7f7f" stroke="#7f7f7f" stroke-width="1.7">
+      <rect x="26"  y="496" width="176" height="64" rx="9" fill-opacity="0.06"/>
+      <rect x="250" y="480" width="176" height="64" rx="9" fill-opacity="0.10"/>
+      <rect x="474" y="464" width="176" height="64" rx="9" fill-opacity="0.14"/>
+      <rect x="698" y="448" width="176" height="64" rx="9" fill-opacity="0.18"/>
+    </g>
+    <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.7">
+      <path d="M204 528 L246 512" marker-end="url(#p0l01a-ar)"/>
+      <path d="M428 512 L470 496" marker-end="url(#p0l01a-ar)"/>
+      <path d="M652 496 L694 480" marker-end="url(#p0l01a-ar)"/>
+    </g>
+    <g text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" opacity="0.8">
+      <text x="225" y="502">× 1000</text>
+      <text x="449" y="486">× 1000</text>
+      <text x="673" y="470">× 1000</text>
+    </g>
+    <g text-anchor="middle">
+      <text x="114" y="517" font-size="12" font-weight="700" fill="#7f7f7f">1 byte</text>
+      <text x="114" y="535" font-size="8.5" fill="currentColor">8 bits · holds 0 to 255</text>
+      <text x="114" y="552" font-size="8" fill="currentColor" opacity="0.72">one character of text</text>
+
+      <text x="338" y="501" font-size="12" font-weight="700" fill="#7f7f7f">1 kilobyte (KB)</text>
+      <text x="338" y="519" font-size="8.5" fill="currentColor">≈ 1,000 bytes</text>
+      <text x="338" y="536" font-size="8" fill="currentColor" opacity="0.72">about a page of plain text</text>
+
+      <text x="562" y="485" font-size="12" font-weight="700" fill="#7f7f7f">1 megabyte (MB)</text>
+      <text x="562" y="503" font-size="8.5" fill="currentColor">≈ 1,000 KB = a million bytes</text>
+      <text x="562" y="520" font-size="8" fill="currentColor" opacity="0.72">about a song</text>
+
+      <text x="786" y="469" font-size="12" font-weight="700" fill="#7f7f7f">1 gigabyte (GB)</text>
+      <text x="786" y="487" font-size="8.5" fill="currentColor">≈ 1,000 MB = a billion bytes</text>
+      <text x="786" y="504" font-size="8" fill="currentColor" opacity="0.72">about a movie</text>
+    </g>
+    <text x="450" y="580" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">Small print: computers sometimes count in 1024s rather than 1000s, because 1024 = 2<tspan font-size="7" dy="-3">10</tspan><tspan dy="3"> is a round number in binary.</tspan></text>
+    <text x="450" y="596" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">Don't worry about that yet — "roughly a thousand" is the right mental model for now.</text>
+  </g>
+  <text x="450" y="636" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">A byte is not a number — it is eight switches. The number only exists because we agree what each column is worth.</text>
+  <text x="450" y="654" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Change the agreement and that same 00001011 becomes a letter, a shade of colour, or a slice of sound.</text>
+  <text x="450" y="672" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.72">Bigger numbers use more bytes; bigger files use more bytes still — KB, MB and GB are only ways of counting them.</text>
+</svg>

@@ -1,33 +1,52 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/fig-01-the-mend-dark.svg">
+  <img src="assets/fig-01-the-mend-light.svg" alt="A fisherman sitting in the shade beside a beached boat, mending a hole in his net." width="440">
+</picture>
+
 # Building Backend
 
-> Build every core backend primitive by hand — sockets, an HTTP server, a
-> B-tree, a message queue, a cache, a container, an orchestrator — then use the
-> production tool and understand exactly what it's doing under the hood.
+**_"When fishermen cannot go to sea, they repair nets."_**
 
-**164 lessons · 13 phases · Python.** Free, open source, MIT.
+Learn how backends actually work, starting from zero.<br>
+**164 lessons · 13 phases · Python, standard library only.**
 
-You don't just wire up a framework. You build the thing the framework hides, end
-to end, by hand — and only then reach for Postgres, Redis, Kafka, Kubernetes.
+Free. Open source. MIT. No paywall, no signup, no gated content.
+
+[**Read it →**](https://buildingbackend.vercel.app) &nbsp;·&nbsp; [Catalog](https://buildingbackend.vercel.app/catalog) &nbsp;·&nbsp; [Roadmap](https://buildingbackend.vercel.app/roadmap) &nbsp;·&nbsp; [Jargon](https://buildingbackend.vercel.app/jargon)
+
+</div>
 
 ---
 
-## How this works
+## Why this exists
 
-Most backend material teaches in scattered pieces. An ORM tutorial here, a Kafka
-demo there, a "system design interview" cheat sheet somewhere else. The pieces
-rarely line up. You ship an API but can't explain what happens between the socket
-`accept()` and your handler. You add Redis but can't say why the cache stampeded.
+Almost everyone starts with AI now. It is the first thing people reach for, and it is
+where most learning paths begin. I think that is backwards. AI sits on top of a very
+tall stack, and if you start at the top you never learn what is holding you up.
 
-This curriculum is the spine. 13 phases, 164 lessons, all written. Raw sockets at one
-end, a deployed and observable fleet at the other. Every primitive gets built from
-the bytes up first. TCP server. Router. B-tree. WAL. Queue. Cache. Tracer. Container.
-Orchestrator. By the time a framework or a managed service shows up, you already
-know what it's doing.
+You cannot skip the bottom rungs of a ladder and land on the top one. You go up a step
+at a time. That means starting at zero, with the things nobody shows you: what is
+actually happening behind the scenes, what the machine is really doing, what the
+infrastructure underneath is for.
 
-Each lesson runs the same loop: read the problem, understand the concept, build
-it from scratch, run it through the production tool, keep the artifact.
+Get through that and AI is a fine place to end up. By then you will know what it is
+standing on.
 
-## The shape of a lesson
+This is not a mastery program and it does not promise to make you an expert. If it
+leaves you more curious about how backends work than when you arrived, it did its job.
+
+## How a lesson works
+
+Every lesson runs the same loop. The **Build It / Use It** split is the spine: you
+implement the primitive from raw bytes first, then run the same thing through the
+production tool. You understand what the tool does because you wrote the smaller
+version yourself.
+
+```
+MOTTO → PROBLEM → CONCEPT → BUILD IT (from raw bytes) → USE IT (real tool) → SHIP IT (artifact)
+```
 
 Each lesson lives in its own folder, same structure across the whole curriculum:
 
@@ -35,51 +54,74 @@ Each lesson lives in its own folder, same structure across the whole curriculum:
 phases/<NN>-<phase-name>/<NN>-<lesson-name>/
 ├── code/      runnable implementations (Python, standard library only)
 ├── docs/
-│   └── en.md  lesson narrative
-└── outputs/   a prompt, checklist, or runbook this lesson produces
+│   └── en.md  the lesson itself
+└── outputs/   a checklist, runbook, or prompt you keep
 ```
 
-Every lesson follows the same beats. The **Build It / Use It** split is the
-spine — you implement the primitive from scratch first, then run the same thing
-through the production tool. You understand what the tool does because you wrote
-the smaller version yourself.
+That last folder matters. **134 artifacts** so far: 88 checklists, 31 runbooks,
+15 prompts. Things you can take to real work.
 
-```
-MOTTO → PROBLEM → CONCEPT → BUILD IT (from raw bytes) → USE IT (real tool) → SHIP IT (artifact)
-```
+## A glimpse
+
+Every diagram is hand-drawn SVG, built to show the thing rather than decorate the page.
+Three, from opposite ends of the curriculum.
+
+<br>
+
+**Phase 0 · Bits & Bytes** — the same byte, read two different ways.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/diagram-bits-and-bytes-dark.svg">
+  <img src="assets/diagram-bits-and-bytes-light.svg" alt="A byte drawn as eight cells with place values, read as both a number and a character." width="100%">
+</picture>
+
+<br>
+
+**Phase 1 · Transport Layer** — why a TCP connection costs a round trip before any data moves.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/diagram-tcp-handshake-dark.svg">
+  <img src="assets/diagram-tcp-handshake-light.svg" alt="The TCP three-way handshake: SYN, SYN-ACK, ACK, then an established connection." width="100%">
+</picture>
+
+<br>
+
+**Phase 3 · Indexes & the B-Tree** — the structure under every database index you have ever used.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/diagram-btree-dark.svg">
+  <img src="assets/diagram-btree-light.svg" alt="A B-tree with a root holding keys 30 and 60 and three child nodes, every leaf at the same depth." width="100%">
+</picture>
 
 ## Getting started
+
+Nothing to install. Every lesson is Python, standard library only.
 
 ```bash
 git clone https://github.com/ritikshub/buildingbackend.git
 cd buildingbackend
-python phases/01-networking-and-protocols/05-transport-layer-tcp-vs-udp/code/tcp_echo.py
-# it starts a TCP server, runs a client against it, prints the exchange, and exits
+python3 phases/01-networking-and-protocols/05-transport-layer-tcp-vs-udp/code/tcp_echo.py
+# starts a TCP server, runs a client against it, prints the exchange, and exits
 ```
 
-### Prerequisites
-
-- You can write code in at least one language.
-- You want to understand how backends **actually work**, not just call a framework.
+You need to be able to write code in at least one language, and to want to know how
+backends **actually work** rather than which framework method to call. That is all.
 
 ## Experiment sandbox (Docker)
 
-Run and experiment with the lesson code in a throwaway container — Python + all
-dependencies + Postgres + Redis — without installing anything on your machine:
+Some lessons are more fun with a real Postgres and Redis to point at. This gives you
+both in a throwaway container, with nothing installed on your machine:
 
 ```bash
-make up                 # build + start app, postgres, redis  (first run ~2 min)
-make shell              # open a shell inside the sandbox
-#   inside: python phases/00-foundations/01-bits-and-bytes/code/bits_and_bytes.py
-make down               # stop  (make clean also wipes the db volume)
+make up      # build + start app, postgres, redis  (first run ~2 min)
+make shell   # open a shell inside the sandbox
+make down    # stop  (make clean also wipes the db volume)
 ```
 
-The `app` container mounts the repo live at `/workspace` (edit on your host, run in
-the container) and reaches Postgres at `postgres:5432` and Redis at `redis:6379`.
-On your Mac they're published at `localhost:9999` (app), `localhost:55432` (Postgres),
-and `localhost:63790` (Redis) — non-standard ports so the sandbox never collides with
-anything you already run. Nothing is installed globally; `make clean` removes it all.
-Run `make help` for every command.
+The repo is mounted live at `/workspace`, so you edit on your machine and run in the
+container. Postgres and Redis are published on non-standard ports (`55432`, `63790`)
+so the sandbox never collides with anything you already run. `make help` lists the rest.
+
 
 ---
 
@@ -392,6 +434,39 @@ never as chapters of their own.
 
 ---
 
+## Where this came from
+
+This project began as a clone, and it would be strange not to say so.
+
+**[Making Software](https://www.makingsoftware.com/)** by Dan Hollick is a reference
+manual that explains how the software you use every day actually works. It does not
+teach you to build anything. It just makes you understand what is going on, and it
+assumes you are curious rather than technical.
+
+**[AI Engineering from Scratch](https://aiengineeringfromscratch.com/)**, maintained by
+Rohit Ghumare and contributors, followed that same spirit and pointed it at AI.
+
+This site is a fork of that one. The layout, the structure, and the shape of a lesson
+are all theirs, used under the MIT license and kept with thanks. What changed is the
+subject: backend engineering instead of AI. The lineage is theirs. The mistakes are mine.
+
+## Contributing
+
+Corrections are worth more than features. If a lesson states something wrong, or a
+diagram contradicts the prose next to it, [open an issue](https://github.com/ritikshub/buildingbackend/issues/new/choose).
+
+If you are adding or editing lessons, read [AGENTS.md](AGENTS.md) first. It documents
+the lesson structure, the diagram house style, and the one rule that matters most:
+never hand-edit the generated files (`site/data.js`, `sitemap.xml`, `llms.txt`), because
+`node site/build.js` rewrites them from the lesson folders on every deploy.
+
 ## License
 
-MIT. See [LICENSE](LICENSE). Learn it, fork it, teach it.
+MIT, for this work and the upstream project it forks. See [LICENSE](LICENSE).
+
+Learn it, fork it, teach it.
+
+<div align="center">
+<br>
+<sub><b>Free education for all. Long live the revolution.</b></sub>
+</div>
