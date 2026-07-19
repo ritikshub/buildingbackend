@@ -98,11 +98,10 @@
       margin-bottom: 16px;
     }
 
+    /* Matches the phase list on the homepage: no fill, hairline rules only. */
     .catalog-table-wrap {
       overflow-x: auto;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      background: var(--bg-surface);
+      border-top: 1px solid var(--rule-soft);
     }
 
     .catalog-table {
@@ -118,7 +117,7 @@
       font-size: 0.9rem;
       text-align: left;
       padding: 14px 16px;
-      border-bottom: 2px solid var(--border);
+      border-bottom: 1px solid var(--rule-soft);
       color: var(--text-muted);
       cursor: pointer;
       user-select: none;
@@ -136,17 +135,14 @@
     }
 
     .catalog-table td {
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--rule-soft);
       vertical-align: middle;
-    }
-
-    .catalog-table tr:last-child td {
-      border-bottom: none;
+      transition: background 0.15s;
     }
 
     .catalog-table tr:hover td {
-      background: var(--bg-surface-hover);
+      background: var(--blueprint-tint);
     }
 
     .catalog-table a {
@@ -340,6 +336,8 @@
             var l = p.lessons[j];
             allRows.push({
               phase: p.id,
+              /* Chapter number within the phase — 1-based, so phase 0 reads 0.1, 0.2, … */
+              chapter: j + 1,
               phaseName: p.name,
               name: l.name,
               type: l.type,
@@ -383,8 +381,9 @@
           rows.sort(function (a, b) {
             var va, vb;
             if (sortCol === 'phase') {
-              va = a.phase;
-              vb = b.phase;
+              /* Sort on phase then chapter, so reversing walks 13.14 → 13.13 → … */
+              va = a.phase * 1000 + a.chapter;
+              vb = b.phase * 1000 + b.chapter;
             } else if (sortCol === 'name') {
               va = a.name.toLowerCase();
               vb = b.name.toLowerCase();
@@ -414,7 +413,7 @@
           for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
             html += '<tr>';
-            html += '<td><span class="catalog-phase-label">' + String(r.phase).padStart(2, '0') + '</span></td>';
+            html += '<td><span class="catalog-phase-label">' + r.phase + '.' + r.chapter + '</span></td>';
             if (r.url) {
               html += '<td><a href="' + r.url + '" target="_blank" rel="noopener">' + escapeHtml(r.name) + '</a></td>';
             } else {
