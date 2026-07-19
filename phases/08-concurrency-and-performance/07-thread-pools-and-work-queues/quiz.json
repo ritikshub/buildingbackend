@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your handler does `threading.Thread(target=handle, args=(item,)).start()` for every arriving item. It passes every test. What is the failure mode in production?",
+    "options": [
+      "Threads are slower than processes in Python, so throughput will be roughly half of what you measured",
+      "The threads will leak memory because Python never garbage-collects finished Thread objects",
+      "It works fine as long as `handle` is thread-safe; the pattern itself is sound",
+      "Nothing in that line bounds the thread count, so the number of threads is set by your arrival rate rather than your capacity: a spike or a slow dependency produces thousands of threads, the kernel spends its time context-switching instead of working, and throughput FALLS exactly when it needed to rise. You also pay creation cost per item and have nowhere to put a return value or an exception"
+    ],
+    "correct": 3,
+    "explanation": "The critical word is 'unbounded'. A thread-per-item design lets the outside world choose your concurrency level, and the failure is non-linear: your capacity does not merely get exceeded by the load, it is destroyed by the load, because every context switch evicts cache the previous thread had warmed. The missing return value and the lost exception are the other two failures — `Thread(target=...)` returns None, and an exception in a thread is printed to stderr while the submitter carries on believing the work succeeded."
+  },
+  {
+    "stage": "check",
+    "question": "Two pools serve identical overload — 4 workers, 5 ms of work, offered at ~3000 items/s for one second. One has an unbounded queue, one is bounded at 64. Both served ~760 items/s. What actually differed?",
+    "options": [
+      "The bounded pool served more items, because a smaller queue means less locking overhead",
+      "Nothing meaningful; the bound only matters if you run out of memory",
+      "The unbounded pool's completed items climbed from a median of 37.9 ms to 656.5 ms within that single second and were still climbing, its queue reached 1712 items and 9.3 MiB (a 2 GiB container dies in ~4 min at that rate), and 1708 items were accepted and then never run. The bounded pool held latency flat at 38 to 90 ms and slowed its submitter from 2473/s to 828/s instead",
+      "The unbounded pool had higher throughput because it never made the submitter wait"
+    ],
+    "correct": 2,
+    "explanation": "The queue bound cannot change your service rate — the workers are the bottleneck in both runs, which is why both served ~760/s. What it changes is what happens to the excess. Unbounded, the excess becomes memory and unbounded queue time; bounded, it becomes immediate, visible backpressure on the submitter. Note the worst outcome in the table: 1708 items were accepted, which made a caller wait, and then dropped anyway."
+  },
+  {
+    "stage": "check",
+    "question": "Sweeping a pool from 1 to 64 workers against a dependency that serves 8 calls at a time gave 813 tasks/s at 8 workers and 396 tasks/s at 64. Why did throughput FALL rather than merely flatten?",
+    "options": [
+      "Because past the dependency's capacity the extra workers only queue AT THE DEPENDENCY (0.0 ms of queueing at 8 workers, 132.0 ms at 64) while contention and coherency costs — lock convoys, cache pressure, plan contention — grow with concurrency. That is the Universal Scalability Law's retrograde region: p99 went 10.3 to 166.6 ms, 16x worse, while throughput halved",
+      "Because thread creation cost grows quadratically with the number of threads",
+      "Because Python's GIL serialises I/O calls once more than 8 threads are running",
+      "Because the measurement was noisy; with enough repetitions the curve would be flat past the knee"
+    ],
+    "correct": 0,
+    "explanation": "Once the downstream resource is saturated, an extra worker cannot make it serve faster — it can only join the line. Throughput therefore stops rising, and then reverses as the coherency cost of coordinating more concurrent callers starts to eat into service time. The consequence for configuration is the important part: a pool size is a concurrency limit on whatever the pool calls, so `max_workers=64` here is worse than `max_workers=8` on throughput AND latency simultaneously."
+  },
+  {
+    "stage": "check",
+    "question": "Four workers, four tasks, each of which submits one item to the SAME pool and calls `.result()` on it. Measured outcome: 0 of 4 done after 0.9 s, `inner()` never started, queue depth stuck at 4. What is happening and what fixes it?",
+    "options": [
+      "The futures were garbage-collected before they resolved; hold a reference to each one",
+      "Every worker holds a thread and is waiting for a task that is queued BEHIND it, so no worker can ever free up to run one — a strict deadlock, with the pool's threads as the resource held-and-requested in a cycle. Bigger pools only raise the trigger threshold. Fix it structurally: separate pools per tier (measured 5.3 ms) or do not block at all (4.6 ms)",
+      "The pool is too small for the workload; raising max_workers to 16 resolves it",
+      "The tasks need timeouts; adding `result(timeout=5)` makes the workload complete"
+    ],
+    "correct": 1,
+    "explanation": "This is a deadlock in the textbook sense, not a capacity problem, which is why the two fixes complete the same nested workload in single-digit milliseconds. The dangerous property is that it has no symptoms: no exception, no error log, no CPU usage — just a service that stopped. Timeouts make it survivable but do not make the work complete. The same cycle appears when a pool task blocks on a lock held by a task still sitting in the queue."
+  },
+  {
+    "stage": "post",
+    "question": "You move CPU-bound work to a `ProcessPoolExecutor` and it gets 20x SLOWER — 0.3 ms of serial work becomes 6.6 ms. What happened, and what would you check before concluding processes are wrong here?",
+    "options": [
+      "Processes cannot use more than one core inside a container, so the pool never actually parallelised",
+      "The GIL is shared between processes, so they serialise exactly as threads do",
+      "ProcessPoolExecutor always adds a fixed 6 ms of startup that cannot be avoided",
+      "Every argument and return value is pickled and shipped through a pipe, and at 14 microseconds per task that postage dwarfs the work. Check the per-task duration: the crossover sits between roughly 0.2 ms and 1.5 ms of work, and `chunksize=10` cut this case from 6.6 ms to 1.4 ms by sending a tenth as many messages"
+    ],
+    "correct": 3,
+    "explanation": "Multiprocessing buys real parallelism (3.41x on 8 processes for the same work threads managed 0.95x on) and pays for it in serialisation. The decision is per-task granularity, not workload type. Note that chunksize is not a universal win: for a 1.5 ms task the same chunksize=10 made things worse — 20.1 ms against 12.7 ms — because coarse chunks destroy load balancing and one worker ends up holding the last chunk alone."
+  },
+  {
+    "stage": "post",
+    "question": "Your pool's queue-depth gauge has read a steady 950 out of 1000 all week, nothing has ever been rejected, and the p99 you record inside the task function is 4 ms. Users complain the feature is slow. What is wrong with your instrumentation?",
+    "options": [
+      "Nothing — 950 of 1000 is within bounds and 4 ms is healthy, so the complaints are about something else",
+      "The gauge should be sampled more often to catch spikes between scrapes",
+      "You are timing from 'worker picked it up', so the entire queue wait is invisible: at a depth of 950 an item waits 950 divided by your service rate before the timer even starts. Depth is a count with no meaning absent a service rate — export queue TIME (now minus submit time, as a histogram) and alert on that, plus a rejection counter, because it is directly comparable to your latency budget and it moves first",
+      "The p99 should be a p99.9 to catch the tail"
+    ],
+    "correct": 2,
+    "explanation": "This is the exact trap the unbounded-queue measurement demonstrates: the work itself took 5 ms in both runs while end-to-end latency measured from submit diverged from 89 ms to 354 ms. A timer inside the task function can never see queue time, so every dashboard stays green while users wait. Stamp each item at submit and record `now - submitted_at` when a worker dequeues it — one subtraction, and it is the leading indicator for everything else."
+  }
+]

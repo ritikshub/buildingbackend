@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your app tier runs in eu-west-1 and your database is still in us-east-1 (75 ms round trip). A request makes 6 sequential queries that each took 0.55 ms when everything was in one region. What happens to p50 latency?",
+    "options": [
+      "Roughly unchanged — the queries themselves are just as fast, and the network is only a few milliseconds",
+      "It roughly doubles, because the network adds about as much as the query work",
+      "It goes from about 9 ms to about 456 ms, because 6 sequential round trips is 450 ms of pure propagation",
+      "It gets worse only at p99; the median is protected because most requests hit the connection pool"
+    ],
+    "correct": 2,
+    "explanation": "Six sequential queries pay six round trips: 6 x 75 ms = 450 ms of propagation before any work happens. The measured run went from 9.3 ms to 456.2 ms p50 — 49.3x. The tempting wrong answers assume the network is a small additive term, but for sequential dependent calls it multiplies by the number of round trips. Note the giveaway in the real data: remote p50 (456.2 ms) and p99 (467.0 ms) are nearly identical, because a fixed propagation cost is not a tail phenomenon — no percentile escapes it."
+  },
+  {
+    "stage": "check",
+    "question": "You lower your DNS record's TTL to 60 seconds so failover will be quick. One hour after a health-check-driven failover, what fraction of clients is still resolving to the dead region?",
+    "options": [
+      "0% — the TTL expired 59 minutes ago",
+      "About 1%, entirely explained by clock skew between resolvers",
+      "About 5%, because resolver TTL floors, pooled HTTP clients, JVM caching and hard-coded addresses all ignore your TTL",
+      "About 50%, because DNS caches are refreshed only on process restart"
+    ],
+    "correct": 2,
+    "explanation": "The measured residual was 5.24% at one hour, and the curve never fell below 1% within 24 hours. RFC 2181 section 8 makes the TTL an upper bound on caching — nothing enforces a lower one. The modelled populations are 62% honouring the 60 s TTL, 22% behind a 300 s resolver floor, 10% pooled HTTP clients at 30 minutes, 5% JVMs with networkaddress.cache.ttl = -1 (forever), and 1% with the address in a config file. Answer A is the assumption the configuration invites you to make; it is wrong because the TTL binds your authoritative server, not other people's caches."
+  },
+  {
+    "stage": "check",
+    "question": "Two regions accept writes to the same entity during a partition, and the database resolves with last-write-wins on wall-clock timestamps. What is the most dangerous property of that scheme?",
+    "options": [
+      "It is slow, because comparing timestamps across regions requires a cross-region round trip",
+      "It discards acknowledged writes silently, and which write 'wins' depends on clock skew you cannot audit afterwards",
+      "It always keeps both versions, so the application must merge them",
+      "It rejects the second write, so clients see errors during every partition"
+    ],
+    "correct": 1,
+    "explanation": "LWW is not 'the last write wins' — it is 'the write carrying the largest number wins', and that number comes from a clock. The measured run discarded 694 acknowledged writes with zero errors returned to anyone. Vary only the clock and correctness moves: 0 inversions with perfect clocks, 1 (0.5%) at an ordinary 250 ms NTP offset, and 27 of 209 resolutions (12.9%) keeping the EARLIER write at 10 s of drift. Option C describes version vectors and option D describes home-region pinning — both are honest about what they do; LWW's problem is precisely that it is not."
+  },
+  {
+    "stage": "check",
+    "question": "You compare active-passive, active-active with one write region, regional data ownership, and full multi-master. Which statement matches the measured year-long simulation?",
+    "options": [
+      "Active-passive is the cheapest, because the standby can be smaller than the primary",
+      "All four cost the same 2.0x compute; what differs is latency, RTO, conflict exposure and whether the second region's capacity does anything",
+      "Multi-master is strictly best — it had the lowest write latency and the highest availability",
+      "Regional data ownership costs the most, because pinning requires extra replication"
+    ],
+    "correct": 1,
+    "explanation": "The cost column was flat at 2.0x for all four, because surviving the loss of 1 of 2 regions means each region must hold 100% of demand — that is arithmetic, not a topology choice. What differs: active-passive had the worst p99 read (93.6 ms), the worst RTO (34 min), and 50% of its spend idle; regional ownership reached 19.6 ms / 95.6 ms / 9 min / 99.993% with no conflict exposure. Option C is the trap: multi-master did win every latency column (28.7 ms p99 writes, 99.995%), and it is the only one of the four that produces write conflicts — a cost that appears in no latency table."
+  },
+  {
+    "stage": "post",
+    "question": "Two identical evacuations of a dead region: one survivor was running at 90% utilization, the other at 50%. Both saw the same 50.0% peak error rate. What did the headroom actually buy?",
+    "options": [
+      "A lower peak error rate, because the extra capacity absorbs the initial spike",
+      "Faster detection, because a less loaded region notices failures sooner",
+      "A shorter outage: full recovery in 55 s instead of 407 s, and 455,000 failed requests instead of 2,941,245",
+      "Nothing measurable — both runs recovered at the same time once autoscaling completed"
+    ],
+    "correct": 2,
+    "explanation": "The identical 50.0% peak is the 35-second detection window, and headroom does nothing about it — detection lag costs everyone equally. The difference appears after redirection completes: the provisioned survivor dropped to 0.0% errors and was fully recovered at 55 s, while the tight one sat at 44.4% errors for another six minutes waiting for autoscaling and did not recover until 407 s. That is 6.5x the failed requests. Headroom does not shorten detection; it shortens the outage — which is why the rule is to run at most (N-1)/N utilization, or 50% for two regions."
+  },
+  {
+    "stage": "post",
+    "question": "Your business says 'we can afford to lose no data at all — set RPO to zero.' What must you tell them?",
+    "options": [
+      "That RPO is a property of the topology, so switching from active-passive to active-active will fix it",
+      "That RPO zero requires a synchronous cross-region commit, adding roughly a full cross-region round trip (+75 ms) to the p50 of every write, forever",
+      "That RPO zero is free once replication is streaming rather than batched",
+      "That RPO zero is already achieved, because the measured p50 replication lag was only 84 ms"
+    ],
+    "correct": 1,
+    "explanation": "Measured: async writes had p50 17.6 ms; synchronous cross-region commit had p50 92.4 ms — exactly one cross-region round trip added to every write, including the 364 days a year when nothing fails. Option A is a common and expensive misconception: RPO was identical (7.30 s) across all four topologies, because RPO belongs to your replication mechanism, not your topology. Option D confuses the median with the tail — the p99 lag was 7.30 s and the max 9.10 s, and a region does not politely fail at the median, so you quote the tail."
+  }
+]

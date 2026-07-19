@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "A service makes ten independent API calls, each taking 100 ms. The code is `for url in urls: results.append(await fetch(url))`, and every function involved is `async def`. How long does it take, and why?",
+    "options": ["About 100 ms — marking the functions `async` is what makes them run concurrently, so the ten calls overlap automatically", "About 100 ms, because the event loop preempts each coroutine after a few microseconds and round-robins between all ten", "About 1,002.7 ms, because `await` on a bare coroutine delegates into it and runs it to completion before the loop moves on to the next iteration. The lesson measured exactly this: 1,002.7 ms sequentially versus 100.6 ms for the same ten coroutines through `asyncio.gather` — a 9.96x difference with no change inside the coroutine", "About 1,000 ms, because Python's Global Interpreter Lock serialises the ten calls and no async design can overlap them"],
+    "correct": 2,
+    "explanation": "`async` gives a function the ability to suspend; it does not schedule anything. Awaiting a coroutine directly is delegation — the awaiting frame does not continue until that one coroutine finishes — so a `for` loop with an `await` in its body is strictly sequential. Concurrency requires handing several coroutines to the loop before awaiting any of them, which is what `gather` and `create_task` do. The GIL is a red herring here: the ten calls are waiting on I/O, not executing bytecode."
+  },
+  {
+    "stage": "check",
+    "question": "You write `c = fetch(42)` where `fetch` is an `async def` that writes a row to the database. You never await `c`. What happens?",
+    "options": ["Nothing runs at all. Calling a coroutine function executes zero bytes of the body — it just builds a coroutine object, which is a frame that has not started. The row is never written, no exception is raised, and the only signal is a `RuntimeWarning: coroutine 'fetch' was never awaited` emitted on stderr when the object is garbage-collected", "The body runs immediately and synchronously, exactly like a normal function call, and only the `await` points would have been asynchronous", "The coroutine is automatically scheduled on the running event loop as a background Task and completes shortly afterwards", "Python raises `RuntimeError: coroutine was never awaited` at the point of the call, so the bug is caught immediately"],
+    "correct": 0,
+    "explanation": "A coroutine object is inert: it is a paused stack frame with a `.send()` method and nothing more. Three things can happen to it — you `await` it (sequential), you wrap it in a Task (concurrent), or you drop it (nothing). The dangerous part is the failure mode: no exception, no failed request, just work that silently did not occur, with a warning that only appears at garbage-collection time and only on stderr."
+  },
+  {
+    "stage": "check",
+    "question": "An async service has one endpoint that calls `bcrypt.hashpw()`, a synchronous CPU-bound function taking about 300 ms. Users complain that *other, unrelated* endpoints have become slow. What is happening?",
+    "options": ["The bcrypt call is holding a database connection, so the other endpoints are queueing on the connection pool", "The other endpoints are slow for an unrelated reason; a single coroutine cannot affect the latency of coroutines it never interacts with", "Python's Global Interpreter Lock is being held by bcrypt, and the fix is to move the whole service to multiple processes", "Coroutines are cooperative, not preemptive: control only transfers at an `await`, so a coroutine with no `await` in it holds the loop until it returns and nothing else can be resumed. The lesson measured eight coroutines that each needed only 50 ms of I/O landing at 301-351 ms (median 325.8) when one coroutine blocked for 300 ms, versus a flat 50.4 ms when it awaited instead — a 6.5x inflation on endpoints that called nothing slow"],
+    "correct": 3,
+    "explanation": "This is the single most common async production incident, and its signature is that the symptom appears on endpoints that are innocent. Note the shape of the measured latencies: coroutines already suspended on their own I/O came back at 301 ms — their I/O completed on time at 50 ms and then they sat in the ready queue — while ones that had not started yet came back at 351 ms. The fix is an async driver or `await asyncio.to_thread(fn, ...)`, which in the lesson restored a median of 51.5 ms."
+  },
+  {
+    "stage": "check",
+    "question": "You have four CPU-bound functions, each taking about 120 ms of pure-Python computation. You wrap each in `async def` and run them through `asyncio.gather`. What speedup should you expect on a 4-core machine?",
+    "options": ["About 4x, because `gather` runs the four coroutines in parallel across the available cores", "About 1.0x — none. The lesson measured 484.8 ms sequentially against 454.2 ms gathered, a 1.07x difference that is measurement noise. There is one thread and no `await` inside the CPU work, so each coroutine runs to completion before the next one starts, no matter how they are scheduled", "About 2x, because asyncio overlaps computation with the loop's own bookkeeping", "About 0.25x, because the overhead of creating four Tasks dominates the actual work"],
+    "correct": 1,
+    "explanation": "Concurrency means several things are in flight; parallelism means several things execute at the same instant. Coroutines give only the first, and only for work that waits. `gather` overlaps *waiting*, so when there is no waiting there is nothing to overlap — and with no `await` in the function body, a coroutine cannot yield the loop even if the scheduler wanted it to. Real parallelism for pure-Python CPU work needs separate processes, each with its own interpreter and its own GIL."
+  },
+  {
+    "stage": "post",
+    "question": "What does an `asyncio.Task` actually do to the coroutine it wraps?",
+    "options": ["It runs the coroutine on a dedicated worker thread taken from the default executor pool, which is why Tasks can run concurrently", "It rewrites the coroutine's body at import time into a chain of callbacks, which is how `await` avoids blocking", "It repeatedly calls `coro.send(value)` to resume the suspended frame, catches whatever the coroutine yields (a Future) and attaches a done-callback to it, and catches `StopIteration` to capture the coroutine's return value. The lesson does exactly this by hand in three `send()` calls and one `except StopIteration`", "It converts the coroutine into a generator so the event loop can iterate it with `next()`, discarding any value the coroutine wants sent back in"],
+    "correct": 2,
+    "explanation": "A Task is a Future that owns and drives a coroutine, and its driving loop is genuinely just send/catch-StopIteration. That is why the Build It can step a real `async def` by hand with no event loop present at all: the machinery is the two-way generator protocol from PEP 342 plus delegation from PEP 380. Nothing is rewritten and no thread is involved — the concurrency comes from the loop interleaving many such send() calls between many suspended frames."
+  },
+  {
+    "stage": "post",
+    "question": "You are adding an async endpoint to a service and need to call a legacy synchronous library that takes ~200 ms. Which approach is correct, and what rule generalises from it?",
+    "options": ["Wrap the call in `await asyncio.to_thread(legacy_call, args)`, which runs it on a worker thread and gives you an awaitable, keeping the loop free. The general rule is that `async` is viral — `asyncio.run()` belongs once at the process entry point and never nested, and you cross the sync/async boundary deliberately: `to_thread`/`run_in_executor` to call sync from async, and `run_coroutine_threadsafe` to call async from another thread", "Call it directly inside the coroutine — 200 ms is short enough that the event loop will absorb it without measurable impact on other requests", "Wrap it in a nested `asyncio.run(legacy_call_async())` so it gets its own event loop and cannot interfere with the outer one", "Mark the calling function `async def` and call the legacy function normally; the `async` keyword makes any call inside it non-blocking"],
+    "correct": 0,
+    "explanation": "A blocking call in a coroutine freezes every concurrent request on that loop regardless of how short it looks — 200 ms is an eternity when other requests need 50 ms. `asyncio.run()` cannot be nested (it raises RuntimeError from inside a running loop), and reaching for it mid-program almost always means you wanted `await` or `create_task`. The `async` keyword marks a function as *able* to suspend; it does nothing to the calls inside it."
+  }
+]

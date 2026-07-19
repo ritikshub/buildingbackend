@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "At its simplest, what is a network?",
+    "options": ["A single powerful computer", "Two or more computers connected so they can exchange data", "A type of file", "A program that runs alone"],
+    "correct": 1,
+    "explanation": "A network is just connected computers that can exchange bytes. The simplest one is two machines joined by a cable; the internet is an enormous version of the same idea."
+  },
+  {
+    "stage": "check",
+    "question": "What makes a computer a 'server'?",
+    "options": ["Special server-only hardware", "The role it plays: it waits for and answers requests", "It must live in a data center", "It has more RAM than a client"],
+    "correct": 1,
+    "explanation": "Client and server are roles, not hardware. The one that asks is the client; the one that answers is the server. A backend is simply a program playing the server role."
+  },
+  {
+    "stage": "check",
+    "question": "Why does 'inter-net' describe how the internet is built?",
+    "options": ["It is run by one central super-computer", "It is a network OF networks — many independent networks linked to pass each other's traffic", "It is a single very long cable", "It only connects two computers"],
+    "correct": 1,
+    "explanation": "The internet is a network of networks: countless independent networks that agree to forward each other's traffic. There is no central computer running it."
+  },
+  {
+    "stage": "check",
+    "question": "Why is data sent as many independent packets instead of one continuous stream?",
+    "options": ["To make it slower on purpose", "So many conversations can share the wires, and so a lost packet or failed path affects only that packet, not the whole message", "Because computers can't send large files", "To encrypt it"],
+    "correct": 1,
+    "explanation": "Packets let many conversations interleave over the same links (sharing) and let the network resend or reroute just the affected packet when something fails (resilience), rather than restarting the whole transfer."
+  },
+  {
+    "stage": "post",
+    "question": "What is the difference between a switch and a router?",
+    "options": ["They are the same device", "A switch connects devices within one local network; a router connects different networks and forwards packets between them", "A router is only used at home", "A switch connects to the internet directly"],
+    "correct": 1,
+    "explanation": "A switch moves packets among devices inside a single local network. A router connects separate networks and forwards packets hop by hop toward their destination — the internet is a huge chain of routers."
+  },
+  {
+    "stage": "post",
+    "question": "A connection can move plenty of data per second, but each round trip takes a long time. Which property is the problem?",
+    "options": ["Bandwidth", "Latency", "File size", "Encoding"],
+    "correct": 1,
+    "explanation": "Bandwidth is how much data per second (pipe width); latency is how long one trip takes (pipe length). Slow round trips despite plenty of throughput is a latency problem, not a bandwidth one."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You have measured, on your own service, that integration tests catch more bugs per test than unit tests do. A colleague at another company measured the opposite on theirs. Which of you is more likely to have made a measurement error?",
+    "options": [
+      "Neither necessarily — but one of you is describing your service's defect population, and the ranking is a fact about that population rather than about the test types",
+      "Neither necessarily, and more importantly neither ranking is portable even in principle: measured here, the SAME nine layers over the SAME 31 bugs give each layer a different marginal value depending only on build order — static analysis is worth 2 bugs built first and 0 built last, and the order-free Shapley ranking agrees with build order on 1 of 9 positions",
+      "Your colleague, almost certainly — the pyramid is a well-established result and a measurement that contradicts it usually means the unit tests were badly written or the sample was too small",
+      "You, almost certainly — integration tests are slower, so 'bugs per test' flatters them; the honest metric is bugs per CI second, and on that metric unit tests win essentially everywhere"
+    ],
+    "correct": 1,
+    "explanation": "Option 1 is nearly right and is the answer most experienced engineers give — it correctly locates the disagreement in the defect population rather than in the techniques. But it still assumes that for a FIXED population there is one true ranking, and there is not. Marginal value is a set function evaluated along a path: the first layer to reach a bug takes all the credit and every later layer that also reaches it gets zero. Measured here on one fixed population of 31 bugs, four build orders gave four different answers, with eight of the nine layers changing value — types 2 to 0, fakes 2 to 0, contract 3 to 5, fault 5 to 7, property 1 to 3 — while every ordering totalled the same 28. Options 3 and 4 both assume a portable ranking exists and merely disagree about which one it is."
+  },
+  {
+    "stage": "check",
+    "question": "The nine layers individually catch 2, 5, 2, 7, 6, 5, 5, 3 and 7 of the 31 bugs. What is the union, and what does the gap between the sum and the union tell you?",
+    "options": [
+      "42, because detection is additive over independent layers — the layers test different things by construction, which is the whole point of building them separately",
+      "Between 7 and 42 and you cannot say more without running them, because layer overlap depends on which specific bugs each one happens to reach",
+      "28 — the columns sum to 42, so the layers overlap 1.50x, which means adding up 'what each layer catches' double-counts more than a third of the suite and produces a ranking in which every layer looks worth having",
+      "28, and the 14-bug gap is mostly waste: any layer whose catches are entirely covered by another layer should be deleted, which here means dropping layers 1 and 3 and saving 10.31 CI seconds"
+    ],
+    "correct": 2,
+    "explanation": "Option 1 is the mistake the whole ablation exists to prevent — it treats detection as additive, which would make the suite look 42/31 effective. Option 2 is the right instinct (you must measure) but the question gives you the measurement. The union is 28 and the ratio 42/28 = 1.50x is the overlap. Option 4 draws the tempting wrong conclusion from the right number: layers 1 and 3 do have a drop-one value of 0 and the frontier really is flat over that last 10.31 seconds, but 'redundant with these particular neighbours today' is not 'useless'. At 8.75 and 1.56 seconds they are 5% of the runtime and they are the cheap copy of those bugs — which is exactly why the budget optimiser BUYS them at a 15-second budget and drops them at 90."
+  },
+  {
+    "stage": "check",
+    "question": "Three bugs survived all nine layers and all 52 checks. One of them computes tax on the gross subtotal instead of the discounted net. Sixteen checks put a non-zero discount through the pricing core. Why did none of them fail?",
+    "options": [
+      "Because the discounts in those sixteen checks were too small for the difference to exceed the assertion tolerance, so the wrong tax rounded to the same integer",
+      "Because a tax-base error is a business rule rather than a defect, and business rules are outside what any automated test can express — this is the class of problem code review exists for",
+      "Because only 4 of the 52 checks assert an exact value of tax_cents or total_cents, only 3 do both, and all 3 of those compare one output of the code against another — persisted vs computed, real vs fake, components vs total. A tautology cannot be false, so it cannot fail",
+      "Because the sixteen checks exercise the discount path but assert on discount_cents rather than on tax_cents, so the tax value is computed and then never read by any assertion in the suite"
+    ],
+    "correct": 2,
+    "explanation": "Option 4 is the answer most people give and it is close enough to feel right — but it is wrong on the measurement, because 3 of those sixteen do assert on tax or total. The real mechanism is subtler and much more useful: those three compare the implementation against itself. `persisted == computed`, `real_repo == fake_repo`, `subtotal - discount + tax == total` are all true under the bug, because the bug moved the tax base and every side of every comparison moved with it. The suite has no independent oracle. Option 1 is measurable and false — the error is 525 cents on a 20000-cent order. Option 2 is defeatist and is refuted in the same run: one 14-line check whose expected numbers came from the finance spec catches it, along with 6 other bugs."
+  },
+  {
+    "stage": "check",
+    "question": "Solved exhaustively over all 512 subsets, the optimal suite under a 15-second CI budget keeps layers 1 (types), 2 (unit), 3 (fakes) and 5 (determinism). Under a 90-second budget it keeps layers 2, 4, 5, 6 and 7 — dropping 1 and 3. What happened?",
+    "options": [
+      "Nothing changed about layers 1 and 3; layers 4 and 6 became affordable and cover the same four bugs, so the optimum is a function of the budget and is not monotone in it",
+      "The optimiser is trading breadth for depth: at a larger budget it prefers fewer, deeper layers, which is the standard result that the testing trophy describes",
+      "Layers 1 and 3 have poor bugs-per-second, so they lose their place as soon as the budget is large enough that the constraint stops binding and pure efficiency decides",
+      "At 90 seconds the suite catches 22 bugs rather than 12, so layers 1 and 3 have already had their bugs caught by earlier layers in the build order and their marginal value has fallen to zero"
+    ],
+    "correct": 0,
+    "explanation": "Option 3 is exactly backwards on the arithmetic: layers 1 and 3 have very GOOD bugs-per-second (8.75 s and 1.56 s for two bugs each), which is precisely why the 15-second optimum buys them. Option 4 confuses the budget search with the build-order ablation — the optimiser evaluates subsets, not paths, so there is no 'earlier layer'. Option 2 imports a shape argument the numbers do not support. The real mechanism is coverage substitution: everything layers 1 and 3 catch (a string where an int was declared, a TEXT column, a missing UNIQUE, a subtotal stored as a total) is also caught by layers 4 and 6, which cost 34.80 and 12.60 seconds and are unaffordable at 15 seconds. This is the same path-dependence result appearing as money rather than as credit."
+  },
+  {
+    "stage": "post",
+    "question": "Your suite catches 90.3% of a seeded bug population and is green 79.42% of the time on a clean tree, so a red build carries 1.908 bits of evidence. Two years of feature work multiply the check count by ten, with the same per-check flake rates and the same detection rate. What have you actually lost?",
+    "options": [
+      "Detection: with ten times the checks each having a flake rate, the probability that a genuine failure is masked by a concurrent flake rises sharply, so the effective catch rate falls well below 90.3%",
+      "Wall-clock feedback: ten times the checks is ten times the CI seconds, which pushes the suite past the ten-minute feedback threshold and changes developer behaviour long before the flake arithmetic matters",
+      "Nothing measurable yet — 9.99% green is uncomfortable but the suite still catches the same 90.3%, and the honest fix is a quarantine policy plus retries on the flakiest layer",
+      "The channel, not the signal: detection is still 90.3%, but P(real bug | red) falls from 18.77% to 5.02% against a 5% prior — 0.005 bits, and at 20x it goes negative. The suite still works and has stopped being able to tell you so"
+    ],
+    "correct": 3,
+    "explanation": "Option 1 is a real phenomenon but not this one — a flake turns green red, never red green, so it cannot mask a detection. Option 2 is true and is a genuine cost, but it is not what the numbers here measure. Option 3 is the answer most teams act on, and blanket retries are precisely the fix Lesson 09 measured hiding 2 of 6 genuine races. The right reading is that flakiness is a property of the delivery channel: the suite's detection is unchanged, but once a clean tree is red 90% of the time, red no longer distinguishes a clean tree from a broken one. At 20x it carries -0.126 bits, meaning a red build is weak evidence AGAINST a real bug. Layer 9 alone is red 78.1% of the time at 10x, so the fix is targeted at one layer rather than at the whole suite."
+  },
+  {
+    "stage": "post",
+    "question": "One 14-line check — assert the whole invoice of one discounted order against four numbers worked out by hand from the finance spec — catches 7 of the 31 bugs, including 2 of the 3 that nine layers and 52 checks missed. What is the correct conclusion?",
+    "options": [
+      "Golden-value assertions are underrated and should be a tenth layer: write one per endpoint, and the suite's detection rises without adding infrastructure",
+      "The nine layers were built badly — a suite that misses what a single hand-written assertion catches has the wrong assertions, and the fix is stronger assertions at every level rather than a new check",
+      "Its power is not the technique but the provenance of its four numbers: they came from the specification rather than from the implementation, making it the only assertion in the file that can disagree with the code about what the code is for",
+      "It shows end-to-end tests are undervalued relative to the pyramid, since this check exercises the handler, the core, the repository and the serializer in one call and that breadth is what caught seven bugs"
+    ],
+    "correct": 2,
+    "explanation": "Option 4 confuses breadth with the oracle. Breadth explains why it touches seven bugs' code paths, but the three checks that survived M01 also had breadth — they exercised the same paths and still could not fail, because their expected values were another call to the code. Option 1 is the right instinct and the wrong scaling: hand-computing 50 invoices means 50 chances to derive the expected value from the code instead of the spec, at which point they become tautologies too, and they rot on every legitimate pricing change. Option 2 misdiagnoses effort for kind. The distinguishing property is provenance. An oracle must come from outside the code — a specification, a person, or in the case of the third survivor, a production monitor comparing events received against events settled."
+  }
+]

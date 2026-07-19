@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service writes its logs to /var/log/app.log with rotation built into the application. Why is that considered an anti-pattern, even though rotation prevents the disk from filling?",
+    "options": ["Writing to a file is slower than writing to stdout, so it adds latency", "The application is the wrong component to own log storage: it doesn't know how much disk exists, what retention compliance requires, or where lines must be shipped — all platform decisions that must change without a redeploy. Worse, two processes end up owning the same file: the app rotates by renaming while the shipping agent still holds the old inode, and lines vanish", "Log files can't contain JSON, only plain text", "Rotation is only safe if the application is single-threaded"],
+    "correct": 1,
+    "explanation": "This is factor XI of the Twelve-Factor App methodology: treat logs as event streams and write to stdout. The container runtime's log driver (json-file, journald) captures the stream to a known path on the node, and enforces rotation there — one place, for every container, in every language. Retention, shipping and size limits then become configuration the platform team changes, not code you redeploy."
+  },
+  {
+    "stage": "check",
+    "question": "Your log backend slows to a crawl during an incident and the agent's buffer fills. Which handling strategy is disqualified outright, and why?",
+    "options": ["Dropping events, because losing telemetry during an incident defeats the purpose of having it", "Spilling to disk, because disk I/O on a busy node is too expensive", "Blocking the producer until the buffer drains. It loses no data, but it makes a slow log backend add latency to every request, saturating the thread pool or event loop until the healthy service goes down with it — your observability system becomes the outage", "Buffering in memory, because memory is more expensive than disk"],
+    "correct": 2,
+    "explanation": "A logging pipeline must be lossy under pressure; the only unacceptable option is one where telemetry failure becomes service failure. Memory buffering, disk spill and dropping are all legitimate — bounded memory absorbs spikes, disk spill rides out longer outages, and dropping is the eventual backstop. This is Phase 8 Lesson 6's load shedding applied to your own telemetry: shed rather than queue forever."
+  },
+  {
+    "stage": "check",
+    "question": "Grafana Loki indexes only a small label set and stores log bodies as compressed chunks; Elasticsearch builds an inverted index over every token of every field. What does that buy and cost each one?",
+    "options": ["Loki is simply cheaper and faster in every respect; Elasticsearch is legacy", "Loki's index is a rounding error and storage is cheap object storage, so ingest and retention cost far less — but a query without a good label selector must brute-force scan every selected stream. Elasticsearch pays CPU at ingest and an index that can exceed the data it points at, and in exchange any rare token anywhere is a lookup with no selector required", "Elasticsearch compresses better because it indexes more", "They are equivalent; the difference is only the query language"],
+    "correct": 1,
+    "explanation": "The measured run makes both sides concrete. Over the same 12,000 events, the inverted index was 4,005,153 bytes against compressed bodies of ~1 MB — an index four times larger than the data — while the label index was 2,140 bytes, and total footprint differed 6.6x. But on a rare-token query with no label selector, the index read 19 KB where the label store read the entire 7 MB corpus. Cheap storage is bought with expensive unfiltered search."
+  },
+  {
+    "stage": "check",
+    "question": "You sample logs at 5% for INFO and 100% for errors, recording the rate on each kept event. A dashboard needs the true number of successful /checkout requests. How do you compute it, and what does that not fix?",
+    "options": ["Multiply the kept count by 20, which is exact because sampling is uniform", "Count the kept rows directly; sampling doesn't change counts, only storage", "Sum the weight 1/sample_rate over the kept events rather than counting rows. That gives an unbiased estimate — but unbiased is not precise: at a 1% rate the measured run was off by 22%, because aggressive sampling buys you cheapness at the cost of wider error bars", "Query the raw unsampled data, which the backend retains separately"],
+    "correct": 2,
+    "explanation": "Recording sample_rate on every kept event is what makes a sampled dataset countable at all — summing 1/rate is Horvitz-Thompson estimation, and it is unbiased. The run showed errors (kept 100%) reconstructing exactly, INFO at 5% within 2.94%, and DEBUG at 1% off by 22.16%. So sample hard on things you only estimate, and never sample the signal you alert on."
+  },
+  {
+    "stage": "post",
+    "question": "A teammate proposes adding trace_id to the Loki label set so investigators can filter straight to one request. What actually happens?",
+    "options": ["Queries get faster because the index is more selective, at a small storage cost", "It works fine as long as trace IDs are short", "Every log line becomes its own stream. The measured run went from 24 streams to 12,000: the index grew 678x, and — the part people miss — the bodies grew 6.5x too, because a chunk holding one line has nothing to compress against. Total storage went from 11% of raw to 91%. Identifiers belong in the log body, where a line filter still finds them", "Nothing changes, because Loki ignores high-cardinality labels automatically"],
+    "correct": 2,
+    "explanation": "A label set is a stream identifier, so this is exactly the cardinality explosion from Phase 4 Lesson 5, where a user_id tag multiplies a time-series database's series count until it dies. The rule is the same in both worlds: labels are the small bounded set of dimensions you select by (service, level, namespace, env); every identifier — trace_id, user_id, order_id, full URLs — goes in the payload, still perfectly searchable with a line filter like |= \"4bf92f\"."
+  },
+  {
+    "stage": "post",
+    "question": "Your log bill is $20,000/year for one service and finance wants it halved. Which sequence of moves pays best, and what must survive untouched?",
+    "options": ["Negotiate a per-GB discount with the vendor first, then shorten retention from 30 days to 7 for everything including errors and audit logs", "Measure GB/day per service, fix the top-3 loudest log lines, turn DEBUG off in production, apply error-biased sampling with sample_rate recorded, move identifiers out of label sets, and tier the tail into object storage — while errors, slow requests and audit logs pass through every lever at 100%", "Switch storage engines from Elasticsearch to Loki and change nothing else", "Delete all logs older than 24 hours, since 99% of logs are never queried"],
+    "correct": 1,
+    "explanation": "Cut volume before you negotiate price: a 20% vendor discount is worth less than turning off one chatty DEBUG line in a hot loop. In the measured run, error-biased sampling alone cut the bill 77.3%, and retention tiering into object storage at ~$0.023/GB/month cut it further while tripling retention from 30 to 90 days. The constraint that makes it safe is that errors, slow requests, and audit logs are never sampled and never dropped — audit logs in particular need their own pipeline with longer, immutable retention."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A photo-printing app needs to read a user's Google Photos. Why is asking for the user's Google password the wrong design, and what does OAuth provide instead?",
+    "options": [
+      "Passwords are fine here as long as the app stores them hashed",
+      "Handing the app the Google password gives it full, permanent access to everything in the account, with no way to scope it to 'read photos only' and no way to revoke just this app. OAuth solves this with delegation: the user authenticates to Google (never to the app), consents to a specific scope, and Google issues the app a scoped, revocable access token — the password is never shared",
+      "The app should use the password but only over HTTPS",
+      "OAuth is irrelevant here; the app should just scrape the photos"
+    ],
+    "correct": 1,
+    "explanation": "Sharing a password is the anti-pattern OAuth exists to eliminate: it grants everything, forever, unrevocably, and indistinguishably from the user. Delegated authorization lets the user grant narrow, revocable permission through a trusted third party (the authorization server) without exposing the credential. The app receives a token limited to the consented scope, which the resource server enforces."
+  },
+  {
+    "stage": "check",
+    "question": "In the OAuth flow, who does the user actually authenticate to, and why does that matter?",
+    "options": [
+      "The client app, which then forwards the credentials to the authorization server",
+      "The authorization server (e.g. Google's login), never the client. That's the whole point: the client never sees the password, only a scoped token. The four roles — resource owner (user), client (app), authorization server (issues tokens after auth + consent), and resource server (the API) — keep the credential isolated to the one party that should have it",
+      "The resource server, which holds the data",
+      "Both the client and the authorization server, for redundancy"
+    ],
+    "correct": 1,
+    "explanation": "Isolating authentication to the authorization server is what makes delegation safe. The user proves identity and grants consent there; the client receives only a token limited by scope. If the client ever collected the password, you'd be back to the anti-pattern. This separation of roles is the structural core of OAuth."
+  },
+  {
+    "stage": "check",
+    "question": "What attack does PKCE prevent, and how?",
+    "options": [
+      "It encrypts the access token so it can't be read in transit",
+      "It stops a stolen authorization code from being redeemed. The authorization code comes back through the browser, where it can be intercepted (a malicious app on the same redirect URI, a leaked Referer). With PKCE the client first sends only the SHA-256 hash (code_challenge) of a secret it keeps (code_verifier); redeeming the code requires presenting the original verifier, which the server hashes and compares. A thief has the code but not the verifier, so the exchange fails",
+      "It prevents the user from consenting to the wrong scopes",
+      "It replaces the need for HTTPS on the redirect"
+    ],
+    "correct": 1,
+    "explanation": "PKCE binds the code to the specific client instance that started the flow. Because only the hash of the verifier is sent up front and the verifier itself never leaves the client, an intercepted code can't be exchanged — the attacker can't produce a verifier that hashes to the stored challenge. Originally for public clients (mobile/SPA), it's now recommended for all clients and is default in OAuth 2.1."
+  },
+  {
+    "stage": "check",
+    "question": "What does the `state` parameter do in the Authorization Code flow?",
+    "options": [
+      "It stores the user's session data on the authorization server",
+      "It's a random value the client generates, stashes in the session, sends in the authorization request, and verifies when the callback returns. If it doesn't match (or is missing), the callback is rejected — which prevents a CSRF-style attack where an attacker tricks the victim's browser into completing the attacker's authorization flow. It's a client responsibility because only the client knows what value it issued",
+      "It tells the authorization server which scopes to grant",
+      "It encrypts the authorization code"
+    ],
+    "correct": 1,
+    "explanation": "state ties the callback to the request the client actually initiated, defeating login-CSRF where a forged callback would otherwise connect the victim's session to the attacker's authorization. The client must generate and check it because the round-trip integrity is the client's to protect; the authorization server just echoes it back. OIDC adds nonce to bind the resulting ID token to the request as well."
+  },
+  {
+    "stage": "post",
+    "question": "A guide implements 'Login with Google' by taking the OAuth access token and using it to fetch the user's profile, then logging them in. Why is this dangerous?",
+    "options": [
+      "It's the correct and recommended approach",
+      "An access token proves permission, not identity — it's issued for the resource server, may not identify the user, and could be a token minted for a *different* app that leaked. Accepting 'a valid access token exists' as 'this is user Alice' is the confused-deputy / access-token-as-login vulnerability. For login you must use OIDC's ID token (a JWT you verify: signature via JWKS, plus iss, aud=your client_id, exp, nonce)",
+      "The only problem is that profile lookups are slow",
+      "It's fine as long as the access token is a JWT"
+    ],
+    "correct": 1,
+    "explanation": "The access token is an authorization artifact for the resource server, not an authentication statement to your client. A token obtained by (or leaked to) another application can be replayed to your naive login, logging the attacker in as its owner. Login requires an identity assertion bound to YOUR client — the OIDC ID token, with aud equal to your client_id and a verified signature — not the mere existence of an access token."
+  },
+  {
+    "stage": "post",
+    "question": "What exactly does OIDC add on top of OAuth 2.0, and what is the ID token?",
+    "options": [
+      "OIDC replaces OAuth with a completely different protocol",
+      "OIDC is a thin identity layer on the same Authorization Code + PKCE flow: add the `openid` scope and the authorization server also returns an ID token — a JWT with identity claims (sub, name, email, aud=your client_id, iss, exp, nonce) that YOUR app verifies to learn who logged in. It also standardizes a discovery document and a userinfo endpoint. OAuth gets you a token to call an API on the user's behalf; OIDC gets you a verified answer to 'who is this user'",
+      "OIDC only adds a bigger access token",
+      "OIDC removes the need for the authorization server"
+    ],
+    "correct": 1,
+    "explanation": "OIDC standardizes authentication over OAuth's authorization. The ID token is the login artifact: a signed JWT (Lesson 6) whose audience is your client, which you verify (signature via the issuer's JWKS, iss, aud, exp, nonce) to establish identity. The access token remains for calling APIs. 'Sign in with X' is OIDC; 'access my data at X' is OAuth — same flow, different purpose and different token consumed."
+  }
+]

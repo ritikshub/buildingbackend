@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A payment webhook is fired with `asyncio.create_task(send_webhook(order.id))` and the return value is discarded. In staging it works every time; in production it fires roughly 70% of the time, with no pattern anyone can find. What is happening?",
+    "options": [
+      "The event loop is overloaded and silently drops scheduled callbacks once its ready queue exceeds a fixed length, so roughly 30% of tasks never run",
+      "`create_task` returns before the coroutine has started, so a coroutine whose first statement raises is discarded without ever being scheduled",
+      "The event loop keeps only a WEAK reference to tasks, so a task nothing else references can be garbage-collected mid-execution. In the lesson's run, forcing `gc.collect()` at the right moment took 10 of 10 unreferenced tasks and left 10 of 10 referenced ones alive; in production the collector runs on its own schedule, which is exactly why the failures had no pattern",
+      "Webhook delivery is inherently at-most-once over HTTP, so a ~30% loss rate is the expected behaviour and the fix is a retry queue"
+    ],
+    "correct": 2,
+    "explanation": "The asyncio documentation says it outright: save a reference to the result of `create_task`, because the loop only keeps a weak reference. A strong reference exists only while the task is in the ready queue or is reachable through whatever it is suspended on — so a task awaiting something that only its own frame can reach forms a reference cycle with no external root, and the collector is entitled to take it. The 'no pattern' symptom is the tell: GC timing, not payload or merchant, decides who dies."
+  },
+  {
+    "stage": "check",
+    "question": "The same `asyncio.timeout(0.100)` was measured over three coroutines that differ only in how long they spin on the CPU between awaits. The results were 101.9 ms, 150.3 ms and 800.4 ms for chunk sizes of 1 ms, 30 ms and 400 ms. What does this prove?",
+    "options": [
+      "`cancel()` raises nothing by itself — it arms `CancelledError` to be raised at the coroutine's NEXT await point, so the gap between your awaits IS your cancellation latency. A coroutine that never awaits cannot be cancelled at all, and the 400 ms case overshot by two chunks because the due timer callback sat behind the task's own resumption in the loop's ready queue",
+      "Python's timer resolution degrades as the requested timeout gets smaller relative to the process's total CPU usage",
+      "`asyncio.timeout` measures wall-clock time while the event loop measures monotonic time, so the two drift apart under CPU load",
+      "The overshoot is garbage-collection pauses; running with `gc.disable()` would make all three land within a millisecond of 100 ms"
+    ],
+    "correct": 0,
+    "explanation": "Cancellation in asyncio is an exception delivered cooperatively, not a kill signal. The event loop is single-threaded, so while a coroutine is executing CPU work the loop cannot run the timer callback that would call `cancel()`, and even once it can, delivery happens at the next suspension point. That is why 'don't block the event loop' is a correctness rule about timeouts, not a style preference — and why CPU-bound work belongs in an executor."
+  },
+  {
+    "stage": "check",
+    "question": "A teammate writes `except asyncio.CancelledError: log.info('shutting down cleanly')` with no `raise` at the end. Under `asyncio.timeout(0.15)`, what does the measured behaviour become?",
+    "options": [
+      "Nothing changes: the timeout has already expired, so `TimeoutError` is raised regardless of what the coroutine does with the CancelledError",
+      "The task is immediately re-cancelled at its next await, so the only cost is one extra log line",
+      "`asyncio.timeout` detects the swallow and raises `RuntimeError: cancel scope corrupted`, which is loud but at least not silent",
+      "The coroutine returns normally, the scope concludes the body finished on its own, and no TimeoutError is raised. The same code measured `TimeoutError` at 150.6 ms when it re-raised and a cheerful 'completed' at 456.3 ms — 3.0x the contract, logged as a success — when it swallowed"
+    ],
+    "correct": 3,
+    "explanation": "A scope that requested cancellation is waiting to OBSERVE it; absorbing the exception tells the scope its body completed normally, so the timeout silently stops existing. This is also why `CancelledError` was moved to inherit from `BaseException` in Python 3.8 — a broad `except Exception:` must not eat it. Catch it only to clean up, and always re-raise; audit for `except BaseException` and bare `except:`, which still swallow it."
+  },
+  {
+    "stage": "check",
+    "question": "A three-hop chain (gateway → auth → profile) was run twice against a 500 ms client budget: once with a fresh 500 ms timeout at every hop, once with one absolute deadline propagated down. What did the numbers show?",
+    "options": [
+      "Both returned an error at ~500 ms; the propagated version was 3-8% slower because of the extra `deadline - now()` arithmetic on every hop",
+      "Fresh timeouts: the client returned 504 at 507.3 ms while the chain kept working until 748.2 ms — 240.9 ms of orphaned work that ended in `profile` returning a perfectly good response nobody would read. Propagated: budgets shrank 500 → 379 → 204 ms, every hop stopped at the same instant, `DeadlineExceeded` came at 505.8 ms and orphaned work was 0.0 ms",
+      "The propagated deadline made the chain fail more often, because 204 ms is not enough for `profile`; per-hop timeouts are the safer default when downstream latency is unpredictable",
+      "Fresh timeouts are equivalent as long as every hop uses the same value, since the innermost cancel propagates back up the call chain automatically"
+    ],
+    "correct": 1,
+    "explanation": "A timeout is a duration you restart; a deadline is an instant you pass down. Per-hop timers that each look reasonable nest into a worst case of 3 x 500 = 1500 ms behind a client that gave up at 500 ms, and across a real network the caller giving up never reaches the callee. Propagating the remaining budget makes every hop stop at one instant, so no hop can do work its caller will never read — and when the work does fit, the same chain still returned `ok` at 446.9 ms."
+  },
+  {
+    "stage": "post",
+    "question": "Inside `async with asyncio.TaskGroup() as tg:` you start three children and one raises `ValueError`. Your surrounding `except ValueError:` never fires. Why, and what else happened?",
+    "options": [
+      "TaskGroup swallows child exceptions by design and only records them on the task objects; you must call `task.exception()` on each child afterwards",
+      "The `ValueError` was converted to `CancelledError` when the sibling tasks were cancelled, so only `except asyncio.CancelledError` can catch it",
+      "TaskGroup always raises an `ExceptionGroup` (PEP 654), even for a single failure, so you need `except* ValueError:`. It also cancelled the remaining siblings at the first failure — measured, the block raised at 51.7 ms carrying two sibling failures while a third child that needed 500 ms never completed",
+      "`except ValueError:` does work, but only if the failing task was the first one passed to `create_task`; otherwise the exception is attached to the group's `__context__`"
+    ],
+    "correct": 2,
+    "explanation": "Structured concurrency makes multi-failure the normal case, which is why PEP 654 exists: `ExceptionGroup` wraps several exceptions and `except*` matches inside a group. Two further semantics matter — more than one `except*` clause can run for the same raised group (unlike ordinary `except`, where first match wins), and anything unmatched propagates onward still grouped. Sibling cancellation on first failure is the right default: there is no point finishing four calls for a response that can no longer be assembled."
+  },
+  {
+    "stage": "post",
+    "question": "Your service gets SIGTERM. One worker's `finally` block awaits a rollback against a database that is currently unreachable. What should the shutdown path do?",
+    "options": [
+      "Cancel the scope and await the children with a BOUNDED grace period, then force-cancel and abandon whatever is left. In the lesson's run, seven workers — one with a deliberately pathological 2000 ms cleanup — shut down in 357.3 ms with 6 of 7 cleanups completed, because the bound is a number you choose rather than one your slowest handler chooses",
+      "Await every child unconditionally, since a `finally` that has started must be allowed to finish or you risk data loss",
+      "Skip cancellation entirely and call `sys.exit(0)`, letting the OS reclaim the sockets — `finally` blocks cannot be trusted during shutdown anyway",
+      "Wrap every cleanup in `asyncio.shield` so no cleanup can be cancelled, which makes the grace period unnecessary"
+    ],
+    "correct": 0,
+    "explanation": "An unbounded `finally` does not protect your data — it burns the grace period and gets you SIGKILLed, which runs no cleanup at all. Bound the wait, and keep the bound comfortably under your orchestrator's kill timeout (Kubernetes `terminationGracePeriodSeconds`, default 30 s). `shield` is the right tool for letting a specific cleanup survive the wait being cancelled, but shielded work still needs its own timeout, or you have reinvented the unowned task with extra steps."
+  }
+]

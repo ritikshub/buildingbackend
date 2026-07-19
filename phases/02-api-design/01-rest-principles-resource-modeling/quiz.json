@@ -1,0 +1,30 @@
+[
+  {
+    "question": "Your API stores each user's draft order in server memory keyed by a session cookie. Which REST constraint does this violate?",
+    "options": ["Cacheability", "Statelessness", "Layered system", "Code-on-demand"],
+    "correct": 1,
+    "explanation": "Statelessness. Requests only work on the server holding the session, forcing sticky sessions and breaking horizontal scaling and failover. Fix: make the draft a resource (GET/PUT /users/{id}/draft-order) so any server can handle any request.",
+    "stage": "pre"
+  },
+  {
+    "question": "An API has URIs like /orders/7 but only accepts POST with {\"action\": \"delete\"} bodies. What Richardson maturity level is it?",
+    "options": ["Level 0", "Level 1", "Level 2", "Level 3"],
+    "correct": 1,
+    "explanation": "Level 1: it has resources (one URI per thing) but doesn't use HTTP verbs. Reaching level 2 means DELETE /orders/7 -> 204, GET /orders/7 -> 200/404, using methods and status codes properly.",
+    "stage": "pre"
+  },
+  {
+    "question": "Support staff need to query orders across all users. Which is the better canonical route?",
+    "options": ["GET /users/{id}/orders only", "GET /orders?user_id=42 (top-level with filter)", "POST /getOrders with a body", "GET /users/{id}/orders/{order_id} with redundant user_id"],
+    "correct": 1,
+    "explanation": "When an entity has its own identity and is queried across parents, promote it to a top-level resource with a filter. Deep or redundant nesting (carrying a user_id that order IDs already make unique) is decoration, not information.",
+    "stage": "post"
+  },
+  {
+    "question": "You need a 'cancel order' operation that isn't a clean field update. What's the preferred REST-friendly model?",
+    "options": ["A new HTTP method CANCEL", "GET /orders/7/cancel", "POST /orders/7/cancel as a controller sub-resource", "Delete the order row"],
+    "correct": 2,
+    "explanation": "Model imperative transitions as a controller sub-resource POST (POST /orders/7/cancel) with its own body, permissions, and audit trail — what Stripe and GitHub do. Never invent custom HTTP methods, and never use GET to mutate state.",
+    "stage": "post"
+  }
+]

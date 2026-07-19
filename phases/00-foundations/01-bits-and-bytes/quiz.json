@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "At the lowest level, what can a single switch inside a computer represent?",
+    "options": ["Any number from 0 to 9", "One of two states: on or off", "A single letter", "A colour"],
+    "correct": 1,
+    "explanation": "A computer is built from tiny switches that are each either on or off. That single on/off choice is one bit, written as 1 or 0."
+  },
+  {
+    "stage": "check",
+    "question": "What decimal number is the binary value 1011?",
+    "options": ["7", "11", "13", "1011"],
+    "correct": 1,
+    "explanation": "Read the column values where there is a 1: 8 + 0 + 2 + 1 = 11. In binary each column is worth double the one to its right (1, 2, 4, 8)."
+  },
+  {
+    "stage": "check",
+    "question": "How many bits are in a byte, and what range of values can one byte hold?",
+    "options": ["4 bits, 0 to 15", "8 bits, 0 to 255", "8 bits, 0 to 256", "16 bits, 0 to 65535"],
+    "correct": 1,
+    "explanation": "A byte is 8 bits. Eight on/off switches make 2^8 = 256 different patterns, so a byte holds any value from 0 to 255 (256 values counting zero)."
+  },
+  {
+    "stage": "check",
+    "question": "Why do programmers use hexadecimal as a shorthand for bytes?",
+    "options": ["It is faster for the computer", "Exactly 4 bits map to one hex digit, so 2 hex digits equal one byte", "Hex uses fewer than two symbols", "Computers store data in hex internally"],
+    "correct": 1,
+    "explanation": "Hex (base 16) has 16 symbols, and 4 bits also make 16 combinations, so 4 bits = 1 hex digit and 2 hex digits = 1 byte. It is a compact, human-readable stand-in for binary. Internally the computer still uses bits."
+  },
+  {
+    "stage": "post",
+    "question": "In the model from this lesson, what makes the same bytes mean 'the letter A' in one place and 'a shade of red' in another?",
+    "options": ["The bytes physically change", "An agreement about how to interpret the bytes", "The CPU rewrites them", "Nothing — bytes always mean numbers"],
+    "correct": 1,
+    "explanation": "The bytes never change; what changes is the agreed rule for reading them (a text encoding, a colour format, etc.). Much of backend engineering is those agreements layered on top of raw bytes."
+  },
+  {
+    "stage": "post",
+    "question": "Roughly how many bytes is one megabyte (MB)?",
+    "options": ["About a thousand", "About a million", "About a billion", "Exactly 256"],
+    "correct": 1,
+    "explanation": "A kilobyte is roughly a thousand bytes, a megabyte roughly a million, and a gigabyte roughly a billion. (Computers sometimes count in 1024s, but 'about a million' is the right mental model.)"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your payment integration has a large suite, all green, and line coverage in the nineties. Every one of those tests runs against a hand-written double of the provider's API. What does that green build tell you about whether the integration works?",
+    "options": [
+      "That it works for every case the tests cover. High coverage means the integration code has been exercised against the provider's documented behaviour, so only untested edge cases can be wrong",
+      "Almost nothing about the provider. Measured over 12 releases of a provider that changed four times, a frozen hand-written double reported 8/8 green on every single release — 3 genuinely green, then 9 green while broken. At the worst release 1,902 of 2,000 real orders (95.1%) got the wrong outcome",
+      "That the integration works today but may break later, which is why you should re-run the suite after every provider release",
+      "That the code matches the double. Whether the double matches the provider is unknowable, so the only real answer is to delete the double and test against the live provider on every build"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer treats coverage as evidence about behaviour. Coverage measures which of your lines ran; it says nothing about whether the values flowing through them are the values the provider actually sends. The double and the code were written by the same person from the same reading of the docs, so they are wrong in the same way, which is exactly why the test passes. Re-running the suite after a provider release (option 3) changes nothing — the suite never touches the provider, so its verdict is identical on every release by construction. And option 4 over-corrects: the fix measured in this lesson is not deleting the double but pointing a shared contract suite at both the double and the real provider, which took defect exposure from 22 release-months to 0."
+  },
+  {
+    "stage": "check",
+    "question": "Over twelve releases a provider shipped four changes: a status string renamed (R4), receipt_url becoming optional (R6), validation errors moving 400 → 422 (R9), and one key in four requiring a retry (R11). Run each change in isolation against the same eight-scenario suite. How do their costs compare?",
+    "options": [
+      "They are roughly comparable — each is a single documented change to one field or status code, so each breaks a similar slice of traffic",
+      "They scale with how many scenarios they break: the status rename broke 5 of 8 scenarios and the others broke 1 or 2, so the rename is about four times worse",
+      "They differ by more than 25×, and the scenario count does not predict it. The rename alone put 90.7% of a 2,000-order day on the wrong path while 400 → 422 cost 3.5%; and 429 broke only 1 of 8 scenarios but 25.5% of real orders because a quarter of live keys fall in the rate-limited bucket",
+      "The 400 → 422 change is worst because it is the only one that changes an HTTP status code, and status codes are what clients branch on"
+    ],
+    "correct": 2,
+    "explanation": "Two intuitions fail here and both are worth naming. The first is that changes described similarly in a changelog cost similarly — measured, one costs 26× the other. The second is subtler: a scenario count is a property of your fixtures, not of your traffic. The 429 change broke exactly one scenario because the scenario set happened to contain one order id in the rate-limited bucket, while a quarter of real orders are in it. A suite that 'mostly passes' against a new release is telling you about the examples you happened to write, which is why the traffic column and the scenario column in this lesson's output disagree so violently."
+  },
+  {
+    "stage": "check",
+    "question": "You adopt the fix: one contract suite of six clauses, run against both your in-memory fake and the provider's sandbox. Against the same four provider changes, what does it catch?",
+    "options": [
+      "All four, at the release each one lands. That is the point of running the same clauses against both implementations — any divergence between fake and provider shows up immediately",
+      "Two of four. The receipt clause charged 2500c while the provider only drops the receipt below 500c, and none of the six fixture keys landed in the rate-limited bucket, so those two changes stayed invisible. Adding one small-charge clause and one rate-limited key took it to 4 of 4 and exposure from 9 defect-releases to 0",
+      "None of them until you also run the contract against production traffic, because a sandbox does not reproduce the provider's real behaviour",
+      "Three of four. A contract can verify response shapes and status codes but cannot express a retry requirement, so the 429 change is out of scope for contract testing"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer is that the technique is self-executing once adopted, and it is not. A contract is a set of examples, and an example only detects a change on the path it walks. The two clauses v1 missed were missed for boringly specific reasons — an amount and a key — not because of anything conceptually hard. The practical rule: derive your fixtures from what your code actually relies on, so that a branch reading body['receipt_url'] forces a clause exercising the case where it might be absent. Note that a retry requirement is perfectly expressible as a clause (option 4): 'no response uses a status outside 200/400' is the one that caught it."
+  },
+  {
+    "stage": "check",
+    "question": "Seven common test mistakes — a renamed method, wrong arity, a keyword that does not exist, a missing attribute, a misspelled assertion, an assertion referenced without parentheses, and assigning a field the real object lacks — are run against four ways of building a double. What is the result?",
+    "options": [
+      "A bare Mock() caught 1 of 7, Mock(spec=…) caught 3, create_autospec() caught 5 and spec_set=True caught 6. The one nothing catches is `assert m.assert_called_once` without parentheses, because a bound method is truthy",
+      "A bare Mock() catches none of them, because a Mock has no knowledge of the real object at all; every catch requires a spec",
+      "All four configurations catch roughly the same set, because the mistakes are mostly typos and Python raises AttributeError on any typo regardless of how the mock was built",
+      "create_autospec() catches all seven, which is why it is the recommended default; spec_set adds nothing beyond stricter attribute assignment on objects that are already fully specced"
+    ],
+    "correct": 0,
+    "explanation": "The important gap is 1 versus 5 — a single keyword argument, autospec=True, quintuples what the double refuses to accept, because autospec reads the real signature with inspect and enforces arity and argument names at the call. Option 2 is nearly right and wrong in an instructive way: a bare Mock() is not completely blind, because Mock deliberately raises AttributeError for unknown attributes beginning with 'assert', a guard added precisely because that typo silently disabled so many real assertions. And no spec configuration catches the unparenthesised assertion, because nothing is wrong at the object level — reading a bound method is legal and the result is truthy. That one needs a linter rule, not a better double."
+  },
+  {
+    "stage": "post",
+    "question": "Three suites of four tests each cover the same service: one asserts on the calls with an autospec mock, one asserts on the resulting order with a stub, one asserts on the order plus the fake's state. You apply two behaviour-preserving refactors and then measure detection over 10 seeded bugs. What happens?",
+    "options": [
+      "The interaction suite raises more false alarms but catches more bugs — that is the trade-off: it is more tightly coupled to the implementation and therefore more sensitive to changes in it",
+      "All three behave about the same on bugs; the only difference is that the interaction suite is more brittle under refactoring",
+      "The interaction suite raised 3 false alarms to the outcome suites' 0, and killed 1 of 10 bugs where the fake-based outcome suite killed 7. It was both the most brittle and the least sensitive — and the stub-based suite killed only 2 because a stub has no state to interrogate",
+      "The stub and fake suites are equivalent, since both assert on the returned order; the fake only makes the tests slower without adding detection power"
+    ],
+    "correct": 2,
+    "explanation": "The expected trade-off — brittleness bought with sensitivity — does not appear. Over-specification loses on both axes outside its narrow legitimate use, and the one bug the interaction suite did catch was the one that changes an argument, which is exactly the class it is good at. The 2-versus-7 gap between the two outcome suites is the other half of the lesson: identical assertions, different detection, because state verification is only as strong as your double's state. Ask a stub 'was the right amount sent?' and there is no answer; ask a fake and you read provider.recorded(key)['amount_cents']. Mocks remain right for interactions that genuinely are the behaviour — 'not charged twice', 'logged before commit' — and then with autospec."
+  },
+  {
+    "stage": "post",
+    "question": "Your stack is CheckoutService → PaymentClient (builds requests, retries, parses responses) → the wire. You put the double at the port, replacing the whole gateway with a canned ChargeOutcome, and the suite reports 8/8 green. What have you actually verified?",
+    "options": [
+      "The service and the adapter, minus only the network. Replacing the gateway is the standard unit-testing seam, so everything above the network boundary still executes",
+      "Only the service: 28 of 46 reachable statements (61%) of your own code, and 0 of 6 seeded adapter bugs. Moving the double down to the transport gave 35 statements (76%) and 4 of 6 — and the skipped layer is where the wire format lives, which is where all four provider changes landed",
+      "Everything that matters, since the adapter is thin glue and any bug in it would also show up as a wrong ChargeOutcome in the service tests",
+      "Nothing useful — a port-level double makes the suite a tautology, so the correct move is always to test against the real provider"
+    ],
+    "correct": 1,
+    "explanation": "The trap is the phrase 'minus only the network'. A port-level double does not remove the network; it removes PaymentClient — the layer that builds the request, retries a 429, and parses the status string and the receipt field. That is precisely where sending amounts in dollars instead of cents, dropping an idempotency key, or swallowing a 400 live, and measured, a port-level double caught zero of those six. Note how little the coverage number moved by comparison — 61% to 76%, fifteen points — while detection went from nothing to most of them; coverage badly understates what the missing layer was worth. Option 3 has the causation backwards: a bug in the adapter cannot show up in the service tests when the adapter never runs. And option 4 over-corrects — the transport-level fake reached the same 7 of 10 bugs as the real provider, in process, with no network. The rule is to put the double as deep as you can stand."
+  }
+]

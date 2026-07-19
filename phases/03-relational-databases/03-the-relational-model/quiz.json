@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "In the relational model's formal vocabulary, what is a 'relation'?",
+    "options": ["A relationship between two tables", "A single table — a named set of rows over the same columns", "A foreign key", "A join operation"],
+    "correct": 1,
+    "explanation": "A relation is one table. The model is called 'relational' because it's built out of relations (tables), not because tables relate to each other."
+  },
+  {
+    "stage": "check",
+    "question": "A relation is defined as a SET of tuples. What two consequences follow directly from that?",
+    "options": ["Rows must be sorted alphabetically", "No duplicate rows and no inherent row order", "Every row must have a NULL", "Columns are identified by position"],
+    "correct": 1,
+    "explanation": "A set cannot contain the same element twice (no duplicates) and is unordered (no inherent order). So you identify a row by its values via a key, never by position — freeing the database to store rows however is fastest."
+  },
+  {
+    "stage": "check",
+    "question": "Why is 'every value must be atomic' (one value per cell) a rule in the relational model?",
+    "options": ["To save disk space", "So the data stays predictable and mechanically queryable — a list crammed in a cell breaks that; you use a second table and a key instead", "Because text can't be long", "To make rows sortable"],
+    "correct": 1,
+    "explanation": "Atomic values keep each cell one clean fact the query engine can reason about. Multi-valued cells are modeled with a related table and a key instead. This is the seed of first normal form."
+  },
+  {
+    "stage": "check",
+    "question": "Relational algebra is 'closed'. What does that mean and why does it matter?",
+    "options": ["Queries can't be changed once written", "Every operation takes relations and returns a relation, so you can chain operations to build any query", "The database is closed to new connections", "It only works on closed sets of numbers"],
+    "correct": 1,
+    "explanation": "Because select, project, join, etc. all return relations, the output of one operation feeds the next. Any query is an expression you chain — the reason SQL can describe a result and let the planner choose how to compute it."
+  },
+  {
+    "stage": "post",
+    "question": "What is 'data independence' and what does it enable?",
+    "options": ["Data can't depend on other data", "The logical view (tables you query) is separate from the physical storage (bytes, indexes on disk), so storage can change without breaking queries", "Each user gets their own copy of the data", "Data never changes"],
+    "correct": 1,
+    "explanation": "Codd separated the logical tables you query from how they're physically stored. You ask for 'UK authors' without saying how to find them, so the database can add indexes or change engines while your queries keep working."
+  },
+  {
+    "stage": "post",
+    "question": "In this phase, how much SQL do you need to master?",
+    "options": ["All of it — joins, subqueries, window functions", "Only the minimum to point at relational concepts; SQL is a declarative language (DDL defines shape, DML works with data) and gets its own dedicated phase", "None — SQL is unrelated to relational databases", "Just how to install a database"],
+    "correct": 1,
+    "explanation": "SQL here is just the voice the relational model speaks in — small snippets to make ideas concrete. Its declarative nature (what, not how) and the DDL/DML split are enough; deep SQL is a separate phase."
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is RAM's job in a running computer?",
+    "options": ["To store files permanently", "To hold the instructions and data of whatever program is currently running", "To connect to the network", "To cool the CPU"],
+    "correct": 1,
+    "explanation": "RAM is the working memory: it holds the running program's instructions and data. The CPU reads from RAM whenever the value it needs isn't already in a register."
+  },
+  {
+    "stage": "check",
+    "question": "Why does DRAM lose its contents when the power is turned off?",
+    "options": ["The files move to disk", "Each bit is stored as a charge in a capacitor, and the charge disappears without power", "The CPU deletes it on shutdown", "It doesn't — RAM is permanent"],
+    "correct": 1,
+    "explanation": "DRAM stores each bit as an electrical charge in a tiny capacitor. The charge leaks (so it must be refreshed) and vanishes entirely when power is cut — which is why RAM is volatile."
+  },
+  {
+    "stage": "check",
+    "question": "Why does RAM cost more per gigabyte than a hard disk?",
+    "options": ["RAM is made of gold", "RAM buys speed at the cost of capacity and persistence (constant power, refresh, fast circuitry); disks store bits densely and persistently but slowly", "Disks are actually faster", "There is no price difference"],
+    "correct": 1,
+    "explanation": "The hierarchy is a trade: RAM is fast but needs power, refreshing, and precise circuitry, so it's pricier per byte and smaller. Disks are cheaper and bigger per byte but much slower and persistent."
+  },
+  {
+    "stage": "check",
+    "question": "Order these from fastest to slowest: RAM, a CPU register, an SSD, a CPU cache.",
+    "options": ["RAM, register, cache, SSD", "register, cache, RAM, SSD", "SSD, RAM, cache, register", "cache, register, SSD, RAM"],
+    "correct": 1,
+    "explanation": "Top of the hierarchy (fastest) to bottom: CPU register (~1 ns), CPU cache (~1-10 ns), RAM (~100 ns), SSD (~100 microseconds). Each step down is much slower but larger and cheaper."
+  },
+  {
+    "stage": "post",
+    "question": "What property of programs makes caching effective?",
+    "options": ["Programs access data randomly", "Locality — programs tend to reuse recently-used data and data near it, so a small cache of hot data catches most reads", "Programs never repeat a read", "Caching works only for images"],
+    "correct": 1,
+    "explanation": "Temporal locality (reusing recent data) and spatial locality (using nearby data) mean a small fast cache of hot data satisfies most requests, so few reads pay the slow price. It's the basis of all caching."
+  },
+  {
+    "stage": "post",
+    "question": "Your API is slow because it reads the same few database rows on every request. Which idea fixes it?",
+    "options": ["Buy a faster disk", "Cache those hot rows in fast memory (e.g. RAM/Redis) so most requests skip the slow database read", "Add more CPU cores", "Delete the rows"],
+    "correct": 1,
+    "explanation": "Those hot rows have strong locality, so moving them up the hierarchy into a fast cache (in-memory or Redis) means most requests are served from fast memory and rarely touch the slow database — exactly the demo in this lesson."
+  }
+]

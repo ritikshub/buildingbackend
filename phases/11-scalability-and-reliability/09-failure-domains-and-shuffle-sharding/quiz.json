@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A service runs 8 identical workers behind a load balancer serving 800 customers. One customer sends a request that pins a worker at 100% CPU forever, and their client keeps sending more. Roughly what fraction of the 800 customers lose service?",
+    "options": [
+      "About 1/8 — only the worker that got the bad request is affected",
+      "About 1/800 — only the customer who sent the bad request is affected",
+      "Effectively all of them — the balancer will hand a poison request to every worker",
+      "None — the load balancer detects the slow worker and routes around it"
+    ],
+    "correct": 2,
+    "explanation": "Measured in this lesson: 799 of 799 other customers, a 100.00% blast radius. The tempting answer is 1/8, because 'we have 8 replicas' feels like it bounds the damage — but replicas only bound damage that arrives one machine at a time. A poison request is accepted by any worker, so a loop of them reaches all 8 within seconds. Routing around it is worse than useless here: least-connections actively prefers the workers that are still free, and the health checker eventually ejects every worker and feeds the poison to their replacements."
+  },
+  {
+    "stage": "check",
+    "question": "With 8 workers, each customer is assigned a random 2-worker subset instead of a fixed shard. What is the probability that another customer is assigned your exact subset, and how many distinct subsets exist?",
+    "options": [
+      "1/8, because there are 8 workers to choose from",
+      "1/28, because C(8,2) = (8x7)/(2x1) = 28 distinct pairs",
+      "1/16, because there are 8 workers and 2 slots, so 8 x 2 combinations",
+      "1/64, because each of the 2 slots can independently be any of the 8 workers"
+    ],
+    "correct": 1,
+    "explanation": "C(8,2) = 8!/(2! x 6!) = (8 x 7)/(2 x 1) = 28, so a full collision happens 1 time in 28 — and the lesson's run measured 21 of 799 customers (2.63%) against a theoretical 3.57%. The 1/64 answer is tempting because 8^2 = 64 is the count of ordered pairs *with* repetition; a subset is unordered and cannot repeat a worker, which is exactly why the count is a binomial coefficient. Getting this wrong by a factor of 2 matters much more at scale: C(100,5) is 75,287,520, not 100^5."
+  },
+  {
+    "stage": "check",
+    "question": "At 100 workers with subsets of 5, the lesson measures that 23.07% of customers share at least one worker with the poison customer. Why is that not the blast radius?",
+    "options": [
+      "Because the measurement is noisy — the true figure is far lower",
+      "Because sharing a worker only degrades a customer if the poison request happens to be running at that moment",
+      "Because a customer sharing 1 of its 5 workers still has 4 healthy ones, so it loses 20% of capacity and 0% of availability — provided its client retries a different member of its subset",
+      "Because the load balancer removes the poisoned workers from every customer's subset automatically"
+    ],
+    "correct": 2,
+    "explanation": "The number that matters is the probability of *full* overlap (1.33e-08 here), not any overlap. But the reason is mechanical, not statistical: partial overlap is survivable only because the client can fail over to another member of its own subset. The lesson measures what happens without that retry — a 5.0118% fleet-wide error rate, which is the *same* volume as a fixed shard's 5.0000% (both are k/N) spread over 4.6x more customers. Answer 3 is tempting and wrong for that reason: with no failover, shuffle sharding is a downgrade, not an improvement."
+  },
+  {
+    "stage": "check",
+    "question": "Two instances are each available 99.9% of the time. If 1% of an instance's downtime comes from a common cause that takes both at once (a config push, a control-plane outage), what does the pair actually deliver — and what does adding a third instance buy?",
+    "options": [
+      "99.9999% (6 nines); a third instance adds roughly 3 more nines",
+      "99.9989% (4.96 nines); a third instance buys about 0.04 nines and further copies buy nothing",
+      "99.9% (3 nines); redundancy provides no benefit at all once any correlation exists",
+      "99.99999% (7 nines); correlation between instances improves availability by smoothing failures"
+    ],
+    "correct": 1,
+    "explanation": "P(down) = c*p + (1 - c*p) * ((1-c)*p)^n. The first term has no exponent on it, which is the whole point: replication multiplies only the independent term. Measured here, a 1% common-cause fraction drops two instances from 6.00 nines to 4.96, and a third instance reaches just 5.00 — the ceiling is 1 - c*p, so a fourth or a hundredth copy changes nothing. Answer 1 is the calculation almost everyone does (0.001 x 0.001 = 1e-6) and it is only correct when failures are genuinely independent, which config pushes, deploys, schema migrations and shared databases guarantee they are not."
+  },
+  {
+    "stage": "post",
+    "question": "Your fleet is shuffle-sharded with k=5 out of 100 workers. Which of these failures does that placement actually contain?",
+    "options": [
+      "A new binary rolled out to every instance that crashes on a particular request shape",
+      "One tenant whose query pattern pins whichever workers it can reach",
+      "The shared primary database becoming unresponsive",
+      "A licence server that every worker calls, hitting its global connection limit"
+    ],
+    "correct": 1,
+    "explanation": "Shuffle sharding contains failures that are *caused by a customer's own traffic and follow that customer*, because confining the customer confines the failure. It does nothing about the other three: a bad deploy reaches every subset, a shared database is one failure domain wearing a costume, and a globally exhausted resource is exhausted for everyone. Answer 1 is the most common misconception — the reason it is wrong is that the poison arrives through the deploy pipeline, not through the request path, so the assignment function never sees it. Cells and waved rollouts contain deploys; shuffle sharding contains tenants. Use both."
+  },
+  {
+    "stage": "post",
+    "question": "Two fleets serve 100 units of constant demand across 3 availability zones. One is pre-provisioned at 150 units (50 per AZ); the other runs at 105 units and autoscales. One AZ is lost. What happens, and why?",
+    "options": [
+      "Both recover in roughly the same time, since modern autoscalers react within seconds",
+      "The pre-provisioned fleet serves 100% throughout; the elastic one drops to 70% for 450 seconds because metric aggregation, alarm evaluation and instance launch all have to complete first",
+      "The elastic fleet is strictly better — it recovers to full capacity and costs 43% less",
+      "The pre-provisioned fleet also degrades, because losing a third of its instances leaves it below demand"
+    ],
+    "correct": 1,
+    "explanation": "Static stability means the system needs to make no changes during a failure. Pre-provisioned at 50 units per AZ, losing one leaves exactly 100 — a flat line, no decisions, no API calls. The elastic fleet measured 60 s of metric aggregation + 60 s of alarm evaluation + 180 s of launch and registration before the first replacement served anything, then a throttled ramp: 450 seconds at 70% and 11,250 lost requests. Answer 3 is tempting because the elastic fleet genuinely is 43% cheaper in hardware and does eventually recover — the flaw is that the control plane you must call to scale is in the same outage you are scaling because of."
+  }
+]

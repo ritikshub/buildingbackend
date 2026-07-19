@@ -1,0 +1,30 @@
+[
+  {
+    "question": "Name the media type and the five standard members of an RFC 9457 Problem Details object.",
+    "options": ["application/json; error, message, code, trace, id", "application/problem+json; type, title, status, detail, instance", "text/plain; type, title, status, detail, instance", "application/problem+json; error, code, message, field, hint"],
+    "correct": 1,
+    "explanation": "RFC 9457 defines application/problem+json with type, title, status, detail, and instance. Domain-specific data (like code and errors[]) goes in arbitrary extension members.",
+    "stage": "pre"
+  },
+  {
+    "question": "Why should clients branch on a machine-readable 'code' rather than the 'detail' message?",
+    "options": ["Messages are longer", "Codes are frozen forever while human messages are free to change", "detail is not returned over HTTPS", "code is faster to parse"],
+    "correct": 1,
+    "explanation": "The English detail string is for humans and can be reworded at any time. The code is the frozen machine contract clients key their logic off, so it must stay stable even as messages evolve.",
+    "stage": "post"
+  },
+  {
+    "question": "A well-formed JSON request has a field that fails a business rule (quantity < 1). Which status code fits best?",
+    "options": ["400 Bad Request", "422 Unprocessable Content", "500 Internal Server Error", "409 Conflict"],
+    "correct": 1,
+    "explanation": "422 Unprocessable Content is for well-formed-but-semantically-invalid input, which is what FastAPI and GitHub use for validation failures. 400 is for malformed syntax/shape (unparseable JSON, wrong types).",
+    "stage": "post"
+  },
+  {
+    "question": "Why must an API return a request ID in error responses but keep stack traces server-side?",
+    "options": ["Stack traces are too large", "Leaking internals is a security risk; a request ID lets support correlate to server logs safely", "Request IDs are required by RFC 9457", "Browsers strip stack traces"],
+    "correct": 1,
+    "explanation": "Stack traces, SQL, and hostnames in error bodies leak attack surface. Returning a correlation ID (instance URI or X-Request-Id) lets support look up the full detail in server logs without exposing internals to the client.",
+    "stage": "post"
+  }
+]

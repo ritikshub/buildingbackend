@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "In one sentence, what is a cache?",
+    "options": ["A faster database", "A copy of an expensive-to-produce answer, kept close and fast, so the work isn't redone", "A backup of your data in case of a crash", "A queue that holds requests during a spike"],
+    "correct": 1,
+    "explanation": "A cache keeps a copy of an already-computed answer near whoever needs it, so the expensive work (a query, a computation, a network trip) happens once instead of on every request."
+  },
+  {
+    "stage": "check",
+    "question": "Why does caching keep working in production instead of just filling up with never-reused entries?",
+    "options": ["Because CPUs are fast", "Because real traffic has temporal/spatial locality and heavy skew — a small hot set absorbs most requests", "Because databases are slow", "Because memory is cheap"],
+    "correct": 1,
+    "explanation": "Access patterns follow a Zipf/Pareto curve: a tiny set of hot keys gets most of the traffic. Caching just that hot head deflects most load with very little memory."
+  },
+  {
+    "stage": "check",
+    "question": "A hit costs 1 ms and a miss costs 50 ms. Why is raising the hit ratio from 90% to 99% such a big deal?",
+    "options": ["It isn't — 9 points is marginal", "It nearly quarters average latency (5.9 ms → 1.5 ms) by eliminating the rare, ruinously expensive misses", "It doubles memory usage", "It only helps write performance"],
+    "correct": 1,
+    "explanation": "Average latency is hit_ratio×1 + (1−hit_ratio)×50. The misses dominate the average, so removing them has an outsized, non-linear effect — the last few percent are worth real effort."
+  },
+  {
+    "stage": "check",
+    "question": "Which is NOT one of the three costs you pay for a cache?",
+    "options": ["Extra memory for a second copy of the data", "Staleness risk — you may serve a possibly-wrong answer on purpose", "Complexity — a second source of truth is a second thing that can be wrong", "Guaranteed data loss on the source of truth"],
+    "correct": 3,
+    "explanation": "A cache never endangers the source of truth; it sits in front of it. The real costs are memory, staleness/consistency risk, and the added complexity of a second place that can be wrong."
+  },
+  {
+    "stage": "post",
+    "question": "What does 'cache as close to the consumer as you can afford' mean, and why?",
+    "options": ["Always cache in the database", "Prefer the layer nearest the reader (browser > CDN > proxy > in-process > distributed) because a closer copy skips more of the round trip", "Always use Redis", "Cache only on disk to save RAM"],
+    "correct": 1,
+    "explanation": "Each layer catches requests before they fall to the slower layer below. The closer the copy is to the consumer, the more network and compute you skip — and the cheaper the hit."
+  },
+  {
+    "stage": "post",
+    "question": "Your database is 20% of request latency; the rest is business logic and serialization. What's the most a perfect (100% hit) cache in front of the DB can do?",
+    "options": ["Make the request ~5× faster", "Make the request at most ~20% faster — a cache only speeds up the part it covers (Amdahl's law)", "Eliminate all latency", "Nothing at all"],
+    "correct": 1,
+    "explanation": "Amdahl's law: caching only accelerates the fraction it covers. If the DB is 20% of latency, a perfect cache caps the improvement at 20%. Measure where time actually goes before caching."
+  }
+]

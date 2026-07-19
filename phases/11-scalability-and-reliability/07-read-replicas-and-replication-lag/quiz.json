@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You add three read replicas to a database that is 90% reads. Your write volume is unchanged. What happens to the total amount of write work performed across the whole system?",
+    "options": [
+      "It stays the same — the writes still only happen once, on the primary",
+      "It roughly quadruples — the primary plus each of the three replicas applies 100% of the writes",
+      "It falls, because the primary is now less busy and can batch writes more efficiently",
+      "It splits three ways, since each replica takes a third of the write stream"
+    ],
+    "correct": 1,
+    "explanation": "A replica is not a machine that does a share of the work — it does ALL of the write work plus a share of the reads. Every replica replays 100% of the WAL, so four nodes means four times the write work. Option A is the intuition almost everyone starts with, and it is why 'just add a replica' feels free; it is exactly true of the reads and exactly false of the writes. Option D describes sharding, which is Lesson 8 and a genuinely different mechanism. Measured in this lesson: at a 30% write ratio you need 21 machines to serve 60,000 ops/s of demand, and the system performs 438,000 ops of actual work — a 7.3x amplification."
+  },
+  {
+    "stage": "check",
+    "question": "Your replicas sit 12-33 ms behind and are completely healthy. A user POSTs a profile update and your server replies with a 302 redirect; the browser follows it in 12 ms and the read goes to a random replica. Roughly what fraction of these read-after-write requests return the OLD value?",
+    "options": [
+      "About 0.5% — a rare race that only shows up under load",
+      "About 5% — noticeable but well inside normal error budgets",
+      "About 62% — the majority of them",
+      "0% — the write was committed before the redirect was even sent"
+    ],
+    "correct": 2,
+    "explanation": "Measured: 61.65%. The reasoning is simply that 12 ms is less than 12-33 ms, so the race is lost before it starts. The tempting answers are the small ones, because staleness is usually taught as a rare edge case and because the bug never reproduces — every user 'fixes' it by refreshing, so it arrives as a trickle of unreproducible tickets rather than a spike on a graph. Option D confuses committed-on-the-primary with visible-on-a-replica: the commit is durable, it just has not been replayed where the read landed."
+  },
+  {
+    "stage": "check",
+    "question": "A standby has a long-running analytics query that conflicts with WAL replay. During the twelve seconds this lasts, what do sent_lsn, flush_lsn and replay_lsn look like, and which metric catches it?",
+    "options": [
+      "All three fall behind together; any lag metric catches it immediately",
+      "sent and flush stay at 1-18 ms of lag while replay falls 788 KB (8.3 s) behind — only a replay-position metric catches it",
+      "sent falls behind while flush and replay stay current, because the network is the bottleneck",
+      "Nothing changes — Postgres cancels the conflicting query instantly to protect replay"
+    ],
+    "correct": 1,
+    "explanation": "This is the measured trace: every byte arrived on time and was made durable on time, and the replica simply did not apply them. That is the whole reason there are three lags and not one. Option A is the assumption baked into most dashboards, which show a single 'replication lag' number. Option D is wrong in an instructive way: Postgres would cancel the query, but only after max_standby_streaming_delay, which defaults to 30 seconds. A 12-second conflict never trips it, so nothing is logged and nothing alerts while real users are served 8-second-old rows."
+  },
+  {
+    "stage": "check",
+    "question": "You set synchronous_standby_names = 'FIRST 1 (r1, r2, r3)' with synchronous_commit = on. At 03:00, r1's disk starts responding in 4 seconds instead of 0.5 ms. It is not down and every health check passes. What happens?",
+    "options": [
+      "Nothing — Postgres notices r1 is slow and acknowledges via r2 instead",
+      "Writes slow down by about 4 seconds each, because FIRST always prefers r1 and every commit waits on it",
+      "Writes are unaffected; only reads routed to r1 get slower",
+      "The primary fails over to r2 automatically once r1 exceeds its timeout"
+    ],
+    "correct": 1,
+    "explanation": "This is the availability inversion, and it is the real cost of synchronous replication: your primary's uptime becomes the logical AND of itself and its synchronous standby. FIRST 1 always prefers the first listed standby, so a sick-but-not-dead r1 blocks every write on a completely healthy primary. Measured here: a 5-second stall blocked 5,000 commits at a p99 of 4,702 ms. Options A and D are what people assume happens because a hung replica feels like a failure the system should route around — but nothing marked r1 unhealthy, so nothing acted. The one-word fix is ANY 2 (r1, r2, r3), which turns the AND into an OR."
+  },
+  {
+    "stage": "post",
+    "question": "You need read-your-writes consistency across a fleet, including when a user writes on their phone and reads on their laptop. Which approach solves it, and what does it cost?",
+    "options": [
+      "Sticky-to-primary for 500 ms after any write — it removes essentially all stale reads at no cost",
+      "Add a 200 ms delay before the read so replicas have time to catch up",
+      "Return the commit's LSN to the client and have the read demand a replica that has reached it, waiting briefly then falling back to the primary — 0 stale reads, 1.32% of reads on the primary, +0.30 ms mean",
+      "Set synchronous_commit = remote_apply so every commit is visible on all replicas before it is acknowledged"
+    ],
+    "correct": 2,
+    "explanation": "LSN pinning wins on every axis simultaneously: zero stale reads, 14x less primary load than the sticky window (1.32% vs 18.52%), no per-user session state, and it works across devices because the token travels with the client rather than living in a session. Option A is the popular half-fix and it does remove 99.3% of stale reads — but the residue is precisely the cross-device case, which a session flag structurally cannot fix, and it pushes 18.52% of ALL reads back onto the primary. Option B is the fix that works in staging: the measured stale curve does not decay to zero, it decays to your worst replica, and was still 2.22% stale after five full seconds. Option D is genuinely correct but expensive in the wrong place — it makes every write pay for the freshness that only a few reads need, and any replay conflict then stalls the primary."
+  },
+  {
+    "stage": "post",
+    "question": "A network partition isolates your primary. It is not dead — app servers in its own zone still reach it — so it keeps accepting writes while an orchestrator promotes a replica. What does lease fencing actually buy you?",
+    "options": [
+      "It saves the writes the old primary accepted, replaying them onto the new timeline once the partition heals",
+      "It prevents the partition from being detected as a failure, so no promotion happens at all",
+      "It does not save any lost writes, but it drives divergent rows to zero — 1,080 rows with 5,489 contradictory writes became 0",
+      "It lets the old primary rejoin the cluster automatically once it can reach the orchestrator again"
+    ],
+    "correct": 2,
+    "explanation": "Fencing bounds the damage and changes its kind; it cannot recover data. Unfenced, 10,000 writes were accepted on a doomed timeline and 1,080 rows ended up with two committed values that both claim to be true, carrying 5,489 mutually unmergeable writes. With a 2-second lease and promotion held to 5 seconds, 800 writes are still lost — but zero rows diverge. That is the difference between 'we lost two seconds of orders', which you can explain and refund, and a conflict with no correct resolution. Option A is the comforting assumption; there is no mechanism for it, because the two timelines assign different contents to the same LSNs. Option D is the opposite of the truth: the old primary holds WAL the new timeline never saw and must be rewound with pg_rewind or rebuilt from a base backup."
+  }
+]

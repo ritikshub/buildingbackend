@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is a database index, fundamentally?",
+    "options": ["A faster copy of the whole table", "A separate, sorted structure mapping a key to a row's location, so lookups jump instead of scanning the heap", "A cache of query results", "A backup of the table"],
+    "correct": 1,
+    "explanation": "An index is a redundant side-structure that keeps a key in sorted order with a pointer to where the row lives. It exists purely to make lookups fast — every answer it gives could also be found by scanning the heap."
+  },
+  {
+    "stage": "check",
+    "question": "Why is a B-tree a better index structure than a sorted array or a plain binary search tree?",
+    "options": ["It uses less memory", "It's balanced and high-fanout: each node holds many keys (one page), full nodes split to keep every leaf at the same depth, so it never degenerates and inserts stay cheap", "It doesn't need to be sorted", "It only works in RAM"],
+    "correct": 1,
+    "explanation": "A sorted array is costly to insert into; a plain BST can degenerate to a linked list. A B-tree packs many keys per node and splits full nodes, staying balanced with all leaves at equal depth — so worst case equals average case."
+  },
+  {
+    "stage": "check",
+    "question": "With ~100 keys per node, how many levels does a B-tree need to index a million rows, and why does that matter?",
+    "options": ["About 1000 levels", "About 3 levels — so any row is ~3 page reads away, and the top levels are usually cached; height grows as log_fanout(n)", "About 20 levels", "It depends on the row size"],
+    "correct": 1,
+    "explanation": "High fanout makes the tree shallow: 100^3 ~ a million. Three page reads (often fewer, since upper levels sit in the buffer pool) reach any row. Height grows logarithmically, so it barely moves as the table explodes."
+  },
+  {
+    "stage": "check",
+    "question": "What's the difference between a secondary (non-clustered) index and a clustered index?",
+    "options": ["No difference", "A secondary index's leaves point back into the heap (you can have many); a clustered index stores the actual rows in key order (only one per table, since rows have one physical order)", "Clustered indexes are slower", "Secondary indexes can't be sorted"],
+    "correct": 1,
+    "explanation": "Postgres uses secondary indexes: separate B-trees whose leaves hold row ids into the heap, and you can have many. InnoDB clusters each table by its primary key — the rows live in the index leaves — so there's exactly one clustered index."
+  },
+  {
+    "stage": "post",
+    "question": "Why is indexing every column a mistake?",
+    "options": ["Indexes are illegal beyond three per table", "Every write must update every index (slower writes) and each index costs space; low-selectivity indexes may be ignored by the planner, so you pay the write cost for nothing", "Indexes make reads slower", "Columns can only have one index total"],
+    "correct": 1,
+    "explanation": "Indexes trade write speed and space for read speed. Ten indexes means each insert/update maintains eleven structures. Low-selectivity indexes (e.g. a mostly-true boolean) are often skipped by the planner, wasting the write cost entirely."
+  },
+  {
+    "stage": "post",
+    "question": "You have a composite index on (country, city). Which query does it NOT help, due to the leftmost-prefix rule?",
+    "options": ["WHERE country = 'DE'", "WHERE country = 'DE' AND city = 'Berlin'", "WHERE city = 'Berlin'", "It helps all three equally"],
+    "correct": 2,
+    "explanation": "A composite index is sorted by its columns left to right, so it helps queries that use a leftmost prefix: country alone, or country + city. A query on city alone can't use it, because the index isn't ordered by city first."
+  }
+]

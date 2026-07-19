@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Checkout latency has gone from 40 ms to over 2 seconds and 3% of requests are failing, but CPU sits at 41% and memory at 58% on every service. What is the most likely explanation?",
+    "options": [
+      "The metrics pipeline is broken — if the service were really slow, CPU would be high, so the latency numbers cannot be trusted.",
+      "A CPU-bound hot loop is being hidden by averaging across many replicas; drilling into per-replica CPU will reveal a pegged instance.",
+      "Requests are waiting on a resource the operating system does not report — a connection pool, thread pool, lock or semaphore. Waiting consumes no CPU, so saturation of an in-process resource is invisible in CPU and memory.",
+      "Memory at 58% indicates garbage-collection pressure, which is the usual cause of multi-second latency with normal CPU."
+    ],
+    "correct": 2,
+    "explanation": "Blocked requests burn wall-clock time, not cycles. A thread parked waiting for a pool connection shows up as latency and as queue depth, never as CPU. This is why the USE method asks for utilization AND saturation of every resource, including the ones only your process knows about, and why CPU-based alerting sleeps through the most common serious incidents."
+  },
+  {
+    "stage": "check",
+    "question": "Your availability SLO is 99.9% over 30 days. Over the last 5 minutes, 3.2% of requests returned 5xx. What is the error-budget burn rate, and what does it mean?",
+    "options": [
+      "32x — the budget allows a 0.1% error ratio, so 3.2% spends it 32 times faster than the even pace, exhausting a 30-day budget in roughly 22 hours.",
+      "3.2x — the burn rate is the error percentage divided by the number of nines in the SLO.",
+      "0.032x — 3.2% of a 30-day budget was consumed during those 5 minutes.",
+      "It cannot be computed from a 5-minute window; burn rate is only defined over the full 30-day SLO window."
+    ],
+    "correct": 0,
+    "explanation": "Burn rate is observed error ratio divided by the error budget: 0.032 / 0.001 = 32x. A 1x burn spends the budget exactly evenly over 30 days, so 32x exhausts it in 30/32 days ≈ 22 hours. The Google SRE Workbook's 14.4x threshold is chosen because it consumes 2% of a 30-day budget in one hour — fast enough to justify waking someone."
+  },
+  {
+    "stage": "check",
+    "question": "Your p99 latency panel shows a spike. Why can the histogram metric behind that panel not, by itself, tell you which request was slow — and what fixes that?",
+    "options": [
+      "It can, if you add a user_id label to the histogram so each user's latency becomes its own series.",
+      "It can, by querying the _sum and _count series and dividing to recover the individual observations.",
+      "It cannot, because histograms are lossy; the only fix is to log every request's duration and query the logs instead.",
+      "It cannot, because a metric aggregates observations the moment they are recorded — the individual is destroyed by construction. An exemplar fixes it: a trace_id stapled to a bucket sample, which turns a click on the spike into a specific trace."
+    ],
+    "correct": 3,
+    "explanation": "Aggregation is what makes metrics cheap, and it is irreversible — bucket counts cannot be un-summed into requests. Adding a high-cardinality label like user_id would create one series per user and destroy the metrics backend (Phase 4, Lesson 5). Exemplars, standardised in OpenMetrics, are the deliberate escape hatch: a tiny sample of trace IDs attached to buckets so an aggregate can point back at individuals."
+  },
+  {
+    "stage": "check",
+    "question": "Ten minutes into an incident you have confirmed the payments connection pool is saturated, and you know a deploy 15 minutes ago correlates with the onset. Rolling back and raising the pool size both restore the SLI in testing. What do you do first, and why?",
+    "options": [
+      "Raise the pool size, because it fixes the underlying resource limit rather than reverting a feature the business asked for.",
+      "Roll back, because it is one reversible command that needs no theory of the bug and cannot make things worse; raising the pool spends postgres connections other services need, so it requires a capacity review and is the fix for daylight, not the mitigation for now.",
+      "Neither — first write the postmortem timeline while the details are fresh, then mitigate, so no evidence is lost.",
+      "Neither — keep investigating until you can explain the bug line by line, so that the mitigation you choose is provably correct."
+    ],
+    "correct": 1,
+    "explanation": "Mitigation comes before understanding: restore the user, then diagnose. A rollback is fast, reversible, and requires no theory, which is exactly what you want under time pressure. Raising a pool consumes a globally shared budget (Postgres max_connections), so it can trade this incident for a worse one — that is a change to make deliberately, in daylight, alongside the real fix of moving the blocking call out of the connection-holding block."
+  },
+  {
+    "stage": "post",
+    "question": "During the incident, orders retried once on failure, sending 1.13 requests to payments for every checkout. Raising the retry budget to four attempts changed the error ratio from 3.26% to 3.01% but pushed p99 from 4.8 s to 9.6 s. What is the correct reading?",
+    "options": [
+      "Four attempts is strictly better: any reduction in error ratio is worth latency, because a slow success still earns revenue.",
+      "The result is noise; with a seeded simulation, error ratios that close are within run-to-run variance.",
+      "Retries buy almost nothing here because the bottleneck is a fixed-capacity resource, not bad luck — while adding 31% more load to that same bottleneck and doubling the wait for everyone. Retries need a budget and a circuit breaker, not a bigger max_attempts.",
+      "It shows the retries were misconfigured: with exponential backoff and jitter, four attempts would have reduced both the error ratio and p99."
+    ],
+    "correct": 2,
+    "explanation": "Retrying helps when failures are independent and transient. When the failure is saturation of a fixed-capacity resource, every retry is more load on the exact thing that is already overloaded — a positive feedback loop, the same shape as a cache stampede or thundering herd. Backoff and jitter spread the load out but do not reduce it; a retry budget capping retries at a few percent of traffic, plus a circuit breaker, is what actually bounds the damage."
+  },
+  {
+    "stage": "post",
+    "question": "The deploy shipped at 03:07 and nothing broke until 03:10:45, when traffic rose. What does this pattern imply for how you investigate and how you instrument?",
+    "options": [
+      "A change can arm a latent fault that only fires when an unrelated variable moves, so the triage question is 'what changed today?', not 'what changed one minute ago?' — and the instrumentation lesson is to measure the resource dimension the change actually moved (here, connection hold time), because nothing on the existing dashboards showed it.",
+      "It implies the deploy was not the cause; a change that takes four minutes to show symptoms is coincidental, and the traffic ramp alone explains the incident.",
+      "It implies deploy annotations are unreliable and should be replaced by correlating error rates with commit timestamps in version control.",
+      "It implies canary deploys are pointless, since a canary at low traffic would have looked healthy and been promoted anyway."
+    ],
+    "correct": 0,
+    "explanation": "Latent-fault-plus-load is the standard shape of a serious incident: the change consumed 3.4x more of the pool immediately, but with slack in the pool nobody noticed until traffic removed the slack. That is precisely why deploy annotations belong on every dashboard and why the question is 'what changed today?'. It is also why a canary can pass — which makes measuring the resource dimension the change moved (hold time, memory per request, queue depth) the durable defence."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A service runs 135 instances. The dashboard shows CPU peaking at 33% and averaging 12%. Finance asks why you cannot cut the fleet by half. What is the strongest engineering answer?",
+    "options": [
+      "The utilization target is set by the failure the fleet must survive: with a latency-safe utilization of 0.71 and three availability zones, the steady-state target is 0.71 x 2/3 = 47%, and deploy surge plus forecast error push it lower still. Looking half idle is the design, not the waste.",
+      "CPU is the wrong metric; the fleet is actually memory-bound, so the utilization graph is meaningless and the instance count cannot be reasoned about.",
+      "You cannot cut it because the autoscaler owns the instance count, so the number is not a decision anyone on the team is making.",
+      "33% is already close to the 40% industry-standard target for web services, so there is very little room to cut."
+    ],
+    "correct": 0,
+    "explanation": "The answer has to be arithmetic, not vibes. Two multiplicative facts set the target: you cannot run at 100% because latency explodes near saturation (the measured knee here is 0.71), and you cannot run each zone above (N-1)/N or losing one zone overloads the survivors (2/3 with three zones). Multiply them and you get 47%; add deploy surge and forecast headroom and the real fleet sits at 33%. Option B is a real concern but does not answer the question. Option C abdicates. Option D invents a standard - there is no universal target, only the one your knee and your failure domains produce."
+  },
+  {
+    "stage": "check",
+    "question": "A load test reports that one instance sustains 100 req/s before throughput stops increasing. Your objective is p99 <= 320 ms. What number belongs in the capacity model?",
+    "options": [
+      "100 req/s, since that is the measured maximum the instance is capable of.",
+      "The highest throughput at which p99 is still under 320 ms - measured here at 71 req/s. Planning on 100 over-states every machine by 1.41x.",
+      "50 req/s, because a safety factor of 2x on the measured maximum is standard practice.",
+      "100 req/s for the steady-state plan and 71 req/s only when calculating failover capacity."
+    ],
+    "correct": 1,
+    "explanation": "Saturation throughput and usable throughput are different numbers, and the gap is where fleets get under-sized. At 100 req/s the queue is at the edge of instability and p99 is far past the objective; the load test reports it because throughput did stop rising there, which is a true statement about the machine and a useless one for planning. Option C picks a safety factor out of the air instead of measuring - it might be too conservative or not conservative enough, and you would not know which. Option D is the specific error from the lesson's incident: headroom is not something you apply only to the failover case, because the failover case starts from wherever steady state left you."
+  },
+  {
+    "stage": "check",
+    "question": "You run across three availability zones and want to survive losing one. Your latency-safe utilization is 0.71. What steady-state utilization do you target, and what happens at that target when a zone fails?",
+    "options": [
+      "Target 0.71; when a zone fails the remaining two absorb it because the load balancer redistributes automatically.",
+      "Target 0.33, which is 0.71 divided by the three zones, leaving each zone able to carry the whole load alone.",
+      "Target 0.47 (0.71 x 2/3); when a zone fails the survivors carry 1.5x their previous load, landing at exactly 0.71 - the knee, with nothing to spare.",
+      "Target 0.24 (0.71 x 1/3), because you must assume two of the three zones can fail simultaneously."
+    ],
+    "correct": 2,
+    "explanation": "Losing 1 of N domains multiplies the survivors' load by N/(N-1) - 1.5x with three zones - so each may only run at (N-1)/N of its safe capacity. 0.71 x 2/3 = 47%, and at exactly that target an AZ loss puts you precisely on the knee. Option A is the lesson's incident: the load balancer does redistribute, which is the problem, because the survivors were already at the knee. Option B over-buys by 3x - that is the rule for surviving N-1 of N zones, not 1 of N. Option D over-buys further by planning for a correlated double failure that the (N+1) model does not cover; if you genuinely need it, that is N+2, and you should say so explicitly rather than smuggle it in."
+  },
+  {
+    "stage": "check",
+    "question": "A merged change adds 20 ms to p50 latency. The p99 SLO is 320 ms and is still met, error rate is zero, and every dashboard is green. What has actually happened to capacity?",
+    "options": [
+      "Nothing measurable - the SLO is met, so capacity is unaffected until the SLO is breached.",
+      "Capacity per instance fell, but only for the tail; the fleet can absorb it because p50 changes do not affect throughput.",
+      "By Little's Law, busy workers = lambda x S, so the required fleet grew about 51% (63 to 95 instances bare, 135 to 201 with headroom) - a cost regression of roughly $100,000 a year that no alert will fire on.",
+      "Throughput per instance is unchanged; only queueing time grew, which affects latency but not the number of machines."
+    ],
+    "correct": 2,
+    "explanation": "Service time sits in the numerator of Little's Law, so it converts directly into machines: 4,454 req/s x 0.060 s = 267 busy workers instead of 178. The trap in options A and D is treating latency and capacity as separate concerns - they are the same concern viewed from two ends, because a worker occupied for 60 ms instead of 40 ms is a worker doing 33% less work per second. Option B mistakes a p50 change for a tail change. This is exactly why cost per request belongs in CI next to latency: the SLO cannot catch a regression that stays inside it, but the invoice will, six weeks later, when nobody remembers the diff."
+  },
+  {
+    "stage": "post",
+    "question": "Your capacity forecast has a p50 (median) projection and a p90. New capacity takes six weeks to arrive. What should you provision to, and why?",
+    "options": [
+      "The p50, because it is the unbiased estimate and provisioning above it wastes money on capacity you probably will not need.",
+      "The p90, because forecast error is itself a headroom input - the p50 buy was measured short on 29% of days even when the trend held, and 52% when growth accelerated, while the p90 costs only 5.3% more capacity.",
+      "The p50, but re-forecast weekly so you can correct any shortfall before it matters.",
+      "The p99, because capacity shortfalls cause outages and the cost of over-provisioning is always lower than the cost of an outage."
+    ],
+    "correct": 1,
+    "explanation": "A median forecast is wrong half the time by definition, and the measured shortfall was worse than that once the fitted trend carried its own error (+1.51%/wk recovered against a true +1.20%). The p90 term was the cheapest line in the entire headroom stack at 5.3%. Option C is the seductive one and the six-week lead time is what kills it: re-forecasting weekly tells you sooner that you are short, but you still cannot buy six-week-lead capacity in week five. Option D is not wrong in spirit but stops being economic - each additional quantile costs real money for shrinking risk reduction, and at some point the honest answer is a documented degradation plan rather than more machines."
+  },
+  {
+    "stage": "post",
+    "question": "To cut cost you move 30% of the fleet to spot instances, spread evenly across all three availability zones. The fleet still survives losing any one zone. What have you actually changed about the fleet's failure model?",
+    "options": [
+      "Nothing structural - spot instances fail independently like any other instance, so the existing (N-1)/N headroom already covers them.",
+      "You improved resilience, because spot capacity comes from a separate pool and therefore adds a fourth independent failure domain.",
+      "You added a correlated failure domain that cuts across your zones: a reclamation removes all spot instances at once, and an AZ loss during a reclamation left 62 instances carrying 4,402 req/s against a 4,454 req/s peak - a -1.2% margin.",
+      "You made the fleet cheaper with no reliability change, provided the spot share stays below the (N-1)/N ratio of 33%."
+    ],
+    "correct": 2,
+    "explanation": "Spot instances in a pool share one price signal and leave together, inside the same two minutes - that is a correlated failure, and spreading them across zones does not decorrelate it, because the correlation runs along the pool axis rather than the zone axis. The lesson's arithmetic is the point: each failure alone is survivable and the combination is not, which is precisely the case single-failure analysis misses. Option A is the common and expensive assumption. Option B inverts the relationship - a shared pool is one domain, not an independent one. Option D's 33% threshold is numerology: the correct test is to simulate the combination, which is what produced the -1.2% number."
+  }
+]

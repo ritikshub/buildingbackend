@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your `users` table stored passwords as `sha256(password)` and it just leaked. The hashes aren't reversible, so are the passwords safe?",
+    "options": [
+      "Yes — SHA-256 is a strong, modern hash and cannot be reversed",
+      "No. SHA-256 is fast by design — a single GPU tries ~10 billion candidates per second — so the attacker simply brute-forces every password on a wordlist. And with no salt, identical passwords share a hash, so common ones crack in bulk and rainbow tables give instant lookups. 'Not reversible' is irrelevant when guessing is this cheap",
+      "Yes, as long as the passwords were at least 8 characters long",
+      "No, but only because SHA-256 is a broken algorithm; SHA-512 would have been safe"
+    ],
+    "correct": 1,
+    "explanation": "A password hash isn't attacked by inversion, it's attacked by guessing: hash a candidate, compare, repeat. SHA-256's speed — the property that makes it great for file fingerprints — makes each guess nearly free, so wordlists and brute force reverse most real passwords quickly. Unsalted means identical passwords collide (crack once, unlock many) and precomputed rainbow tables apply. The fix is a slow, salted, memory-hard hash, not a longer SHA variant."
+  },
+  {
+    "stage": "check",
+    "question": "You add a unique random salt per user. What does this fix, and what does it NOT fix?",
+    "options": [
+      "It fixes everything — salted hashes cannot be brute-forced",
+      "It makes the hashes reversible again, which is the point",
+      "It fixes precomputation and correlation: rainbow tables no longer apply (they'd need one per salt) and identical passwords no longer produce identical hashes, so they can't be cracked as a batch. It does NOT fix speed — the attacker still runs ~10^10 guesses/second against each salted hash, so weak passwords still fall. You also need a deliberately slow, memory-hard hash",
+      "It only helps if the salt is kept secret, like a password"
+    ],
+    "correct": 2,
+    "explanation": "Salt and slowness defend against different attacks. A unique salt kills precomputed tables and hides the fact that users share a password, but it does nothing to the attacker's per-guess throughput. Speed is attacked separately by a high work factor and memory-hardness. This is why the two are always used together — a salted SHA-256 is still badly broken."
+  },
+  {
+    "stage": "check",
+    "question": "Why does a slow, memory-hard hash (bcrypt, scrypt, Argon2) defeat a GPU that computes 10 billion SHA-256 hashes per second?",
+    "options": [
+      "Because these algorithms are secret and GPUs don't have the code",
+      "Because each hash is tuned to take ~100 ms of CPU AND tens of MB of RAM, so it's unnoticeable at one login but ruinous at scale — and the large memory requirement starves the thousands of tiny GPU/ASIC cores that made brute force cheap, since there isn't enough fast memory to run them all in parallel. Guess rates collapse from ~10^10 to ~10^3–10^4 per second",
+      "Because they output longer hashes that take longer to compare",
+      "Because they encrypt the hash so the GPU cannot read it"
+    ],
+    "correct": 1,
+    "explanation": "Two levers. The work factor makes each single hash deliberately expensive on CPU (fine once per login, catastrophic across a billion guesses). Memory-hardness adds a large RAM requirement per hash, which neutralizes the massive parallelism of GPUs and ASICs — their thousands of cores can't each get tens of MB of fast memory. Together they cut the attacker's throughput by five to seven orders of magnitude, which is the whole defense."
+  },
+  {
+    "stage": "check",
+    "question": "How does a pepper differ from a salt, and what does it buy you?",
+    "options": [
+      "A pepper is just a longer salt; there is no real difference",
+      "A salt is unique per user and stored in the database next to the hash (it needs to be unique, not secret). A pepper is a single secret value, the same for everyone, stored SEPARATELY from the database (in a secrets manager/HSM) and mixed in, e.g. as HMAC(pepper, password) before hashing. So an attacker who steals only the database is missing an input and cannot begin cracking at all",
+      "A pepper must be different for every user, while a salt is shared",
+      "A pepper replaces the need for a slow hash, since it is secret"
+    ],
+    "correct": 1,
+    "explanation": "Salt provides uniqueness (kills rainbow tables and correlation) and is stored openly. Pepper provides a secret that a database-only breach doesn't contain, so cracking can't even start without also compromising the separate secret store — pure defense in depth. It is not a substitute for salt or for a slow hash: if the attacker gets both the DB and the pepper, you're back to relying on the work factor."
+  },
+  {
+    "stage": "post",
+    "question": "A teammate suggests AES-encrypting passwords instead of hashing them, so the app can decrypt and compare, and so support can recover a user's password. Why is this wrong?",
+    "options": [
+      "It's fine, because AES is stronger than any password hash",
+      "Encryption requires a key, and that key lives near the data — in the app config, an env var, or the same backup — so it leaks in the same breach and instantly reverses every password at once. You never need to read a password back (you only check whether a login matches), so reversibility is pure liability. And being able to recover a user's plaintext password is itself a security failure, not a feature",
+      "It's wrong only because AES is slow; ChaCha20 would be acceptable",
+      "It's correct as long as you rotate the AES key every 90 days"
+    ],
+    "correct": 1,
+    "explanation": "Reversibility is exactly the property you don't want for passwords. The decryption key is part of your attack surface and usually breaches alongside the database, turning a hard cracking problem into an instant total compromise. A one-way hash needs no recoverable secret and only ever answers 'does this attempt match?' — which is all authentication requires. 'Support can recover the password' means you're storing recoverable credentials, which is a finding, not a capability."
+  },
+  {
+    "stage": "post",
+    "question": "You raise your hash's work factor for new signups. What's the right way to strengthen the millions of existing hashes without forcing password resets?",
+    "options": [
+      "Re-hash every stored hash again with the new cost — hash the existing hash a second time",
+      "Force every user to reset their password on next login",
+      "Because each stored value is a self-describing string containing its own parameters, you detect on each successful login that the user's hash used the old (weaker) parameters, and — having just verified the plaintext they submitted — transparently re-hash it with the new parameters and store the result. Over a login cycle the table strengthens, with no resets and no user-visible change",
+      "Nothing can be done; old hashes are stuck at their original strength forever"
+    ],
+    "correct": 2,
+    "explanation": "This is rehash-on-login, and it works precisely because the algorithm, parameters, and salt travel with each hash. On a successful login you momentarily hold the correct plaintext, so you can recompute a stronger hash and overwrite the old one — a check like `needs_rehash` gates it. Re-hashing the hash-of-a-hash doesn't work (you can't verify a plaintext against it), and forcing resets is user-hostile and unnecessary. Dormant accounts that never log in keep old hashes, which is an accepted, bounded risk."
+  }
+]

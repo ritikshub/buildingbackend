@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is a primary key?",
+    "options": ["The first column in a table", "One or more columns that uniquely identify each row — guaranteed unique and never NULL", "The fastest column to query", "A column that references another table"],
+    "correct": 1,
+    "explanation": "A primary key uniquely identifies each row. The database enforces that it's unique (no two rows share it) and not NULL (every row has one). A table has exactly one."
+  },
+  {
+    "stage": "check",
+    "question": "Why is a surrogate key (auto-increment integer or UUID) usually preferred over a natural key (like email) as the primary key?",
+    "options": ["Surrogate keys are faster to type", "Natural keys change (emails change, 'unique' IDs get reissued), and when a primary key changes every foreign key pointing at it must change too", "Natural keys can't be indexed", "Surrogate keys are more meaningful"],
+    "correct": 1,
+    "explanation": "A surrogate key is meaningless on purpose, so it never needs to change. Natural keys change over time, and a changing primary key forces a cascading migration across every referencing table. Enforce natural keys with UNIQUE instead."
+  },
+  {
+    "stage": "check",
+    "question": "What does a foreign key with referential integrity guarantee?",
+    "options": ["The referenced value is indexed", "Every foreign-key value points at a row that actually exists — no orphans; the invalid state can't be written", "The two tables are stored together", "The columns have the same name"],
+    "correct": 1,
+    "explanation": "A foreign key references another table's primary key, and the database rejects any write that would point at a non-existent row or delete a still-referenced parent. A book can never reference an author who doesn't exist."
+  },
+  {
+    "stage": "check",
+    "question": "How do you model a many-to-many relationship (students take many courses; courses have many students)?",
+    "options": ["Put a foreign key on the student table", "Put a foreign key on the course table", "Create a junction table whose rows are the pairings, with a foreign key to each side", "It's impossible in a relational database"],
+    "correct": 2,
+    "explanation": "A single column holds one value, so neither side's foreign key can express M:N. A junction (bridge) table stores the pairings with a foreign key to each entity — often a composite primary key — and can also hold facts about the pairing (like a grade)."
+  },
+  {
+    "stage": "post",
+    "question": "For a one-to-one relationship (a user has one profile), how does the foreign-key setup differ from one-to-many?",
+    "options": ["No difference", "Put the FK on the 'many' side and make it UNIQUE, so at most one child can reference each parent", "Use two foreign keys", "Store both in the same primary key"],
+    "correct": 1,
+    "explanation": "One-to-one is one-to-many with a UNIQUE constraint on the foreign key, which caps the 'many' side at one. Often 1:1 data is better folded into one table unless the extra columns are optional or separately accessed."
+  },
+  {
+    "stage": "post",
+    "question": "In an ER diagram, an ORDER_ITEM table has foreign keys to both ORDERS and PRODUCT and holds a `quantity`. What role is it playing?",
+    "options": ["A duplicate of the orders table", "A junction table resolving the many-to-many between orders and products, also storing a fact about the pairing (quantity)", "A backup table", "An index"],
+    "correct": 1,
+    "explanation": "One order has many products and one product appears in many orders — an M:N resolved by the ORDER_ITEM junction table. Because quantity belongs to neither order nor product alone but to their pairing, the junction table is its natural home."
+  }
+]

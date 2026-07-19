@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Two incidents hit the same consumer group, whose capacity is 1,000 msg/s. Incident A is a 10x burst: 8,000 msg/s for 30 seconds, then back to the normal 800 msg/s. Incident B is a sustained 1,200 msg/s -- only 20% over capacity -- with no end. Which one should worry you more, and why?",
+    "options": [
+      "A, because a 10x spike is ten times the load and peak backlog is what determines whether the broker's disk survives",
+      "B. A queue absorbs a burst but cannot absorb a sustained mismatch. A delivered 210,000 excess messages once and drained in a measured 1,045s; B delivers 200 excess messages every second forever, passes A's peak backlog after about 18 minutes, and grows without bound until retention starts deleting unread data",
+      "A, because bursts arrive faster than any autoscaler can react, whereas a 20% overload gives you hours of warning",
+      "They are equally dangerous, since both eventually exceed the same retention window and the only real difference is how quickly they get there"
+    ],
+    "correct": 1,
+    "explanation": "The size of an anomaly on the input graph is uncorrelated with its danger; only the sign of lambda - mu matters. A burst is bounded excess, and Little's Law prices its recovery exactly: excess / headroom = 210,000 / 200 = 1,050s predicted, 1,045s measured. A sustained mismatch has no bounded excess at all, so there is no recovery time to compute -- and it is nearly invisible on an arrival-rate chart, which is exactly why it runs for hours before anyone notices."
+  },
+  {
+    "stage": "check",
+    "question": "A consumer's lag graph rose steadily for two hours and has now been perfectly flat for twenty minutes. Your teammate says the incident is resolving. What are the two possible explanations, and which metric distinguishes them?",
+    "options": [
+      "Either consumers caught up or the producers stopped; check the producer error rate to tell them apart",
+      "Either the autoscaler stabilised or a rebalance is in progress; check group membership events",
+      "Either consumers reached exactly break-even with producers, or the broker is now deleting messages at the retention limit as fast as new ones arrive. Check TIME lag against the retention window, and check processed-messages-per-second: a flat lag graph with time lag pinned at the retention value means data loss is in progress, not recovery",
+      "Flat lag always means recovery -- lag cannot stop growing while consumers are behind, so no further check is needed"
+    ],
+    "correct": 2,
+    "explanation": "This is the shape that gets missed because it looks like good news. When time lag reaches the retention window, the broker deletes the head as fast as the tail arrives, so count lag stops growing while messages are being destroyed. In the measured run the un-shed arm sat flat at exactly 60.0s -- the retention value -- while retention silently deleted 33,680 payment confirmations, 17.5% of the high-value stream, with no error, log line or metric anywhere. Assume loss until you have proven otherwise."
+  },
+  {
+    "stage": "check",
+    "question": "In the measured prefetch sweep, prefetch 1,000 produced the HIGHEST per-consumer throughput on the table (998 msg/s versus 941 at prefetch 32) and yet the group took 2,004ms to drain the backlog, against 1,336ms at prefetch 32. What explains this?",
+    "options": [
+      "Larger prefetch increases per-message deserialization cost, so the group is slower even though each fetch is more efficient",
+      "Prefetch is a claim on work no other consumer may take, not a buffer. With a bounded backlog one consumer grabbed 2,000 of the 5,000 messages while three sat idle for 3,006ms combined -- so per-consumer efficiency went up while group parallelism collapsed",
+      "The broker throttles consumers that request large batches, so the effective delivery rate falls at high prefetch values",
+      "Garbage collection pauses from holding 62.5 MB of messages dominate, which is why memory-bound prefetch settings always reduce throughput"
+    ],
+    "correct": 1,
+    "explanation": "This is the failure mode behind the folk advice to set prefetch=1, and it is a fairness problem rather than a throughput problem. A large prefetch relative to the remaining backlog lets the first consumer to ask reserve work the others could have done. Note that prefetch=1 is also wrong -- it was 2.91x slower than optimal, with the consumer idle 67% of the time waiting on round trips. Little's Law sizes the middle: P = e/(1-e) x RTT/s, which puts 95% of peak at 38, and the measured plateau agrees."
+  },
+  {
+    "stage": "check",
+    "question": "Time lag on your payments consumer is 40 minutes and rising. Consumer CPU sits at 8%. The Postgres instance the handler writes to has gone from p99 = 40ms to p99 = 4s. Your lag-based autoscaler is about to take the group from 6 replicas to 24. What should you do?",
+    "options": [
+      "Let it scale -- more consumers is the correct response to rising lag, and the extra replicas will absorb the backlog once the database recovers",
+      "Switch the autoscaler to CPU-based scaling, since 8% CPU correctly indicates the consumers are over-provisioned already",
+      "Cap or freeze the autoscaler immediately. Lag here is a symptom of a downstream bottleneck, and 24 consumers will apply four times the load to the database that is already failing, converting a lag incident into a database outage. Fix the downstream; the long-term fix is batching the writes or removing the synchronous call, which raises mu permanently",
+      "Scale to 24 but simultaneously reduce prefetch to 1 so the extra consumers hold fewer unacked messages while the database recovers"
+    ],
+    "correct": 2,
+    "explanation": "Of the six causes that all look like 'lag is up', this is the one where the reflexive remedy actively makes things worse. The discriminating signals are both present: near-zero consumer CPU and elevated downstream latency. Note also why CPU-based autoscaling is the wrong instrument in the opposite direction -- a consumer blocked on a slow dependency has low CPU and enormous lag, so a CPU-driven scaler would scale it down. Scale on lag, but know when lag is a symptom rather than a cause."
+  },
+  {
+    "stage": "post",
+    "question": "While a 10x burst backlog drained, count lag peaked at 21,800 messages at t=63s and fell monotonically from there, but TIME lag kept climbing for another 22 seconds, peaking at 21.5s at t=85s when count lag was already down to 17,400. Why do the two lags diverge?",
+    "options": [
+      "A measurement artifact: count lag is sampled at the broker and time lag at the client, so they are offset by the polling interval",
+      "The oldest unprocessed message is still inside the region where arrivals were dense. Messages were deposited at 8,000/s and are being retired at 1,000/s, so the head's timestamp advances at one eighth of real time and the oldest message ages 0.875s per wall-clock second, even while the total count falls steadily",
+      "Time lag lags count lag by design because brokers compute it from a moving average over the last 30 seconds of committed offsets",
+      "Because retention began deleting messages at t=63, which reduced the count while leaving the oldest surviving message older"
+    ],
+    "correct": 1,
+    "explanation": "Count lag is the integral of the arrival rate over the lag window, so a densely packed region contributes many messages per second of age. Draining it reduces the count fast and the age slowly. The practical consequence is real: someone watching count lag declares recovery at t=63, while the customer waiting on a confirmation experiences the worst moment at t=85. It is also why time lag must be computed from message timestamps rather than derived by dividing count lag by the drain rate -- that estimate under-read by 17% here and over-read by 21% during sustained overload."
+  },
+  {
+    "stage": "post",
+    "question": "Two autoscalers were given the identical metric and workload -- input stepping from 800/s to 2,600/s against consumers worth 250/s each. The aggressive one (double when time lag > 10s, halve when < 1s) made 17 resizes and never converged; the damped one made 2 and settled. What is the mechanism?",
+    "options": [
+      "The aggressive scaler overshot to 32 consumers, and the excess consumers competed for the same partitions, reducing per-consumer throughput",
+      "The damped scaler happened to guess the right replica count sooner; with a different starting size the aggressive scaler would have converged just as fast",
+      "Every resize triggers a stop-the-world rebalance in which the group's drain rate is ZERO. The aggressive scaler spent 85 seconds -- 28% of the run -- inside rebalances, so the act of fixing the backlog kept creating backlog. The damped scaler's cooldown, deadband, asymmetric scale-down and step limit held it to 10 seconds, 3% of the run",
+      "The aggressive scaler was reacting to count lag while the damped one reacted to time lag, and count lag is a noisier signal"
+    ],
+    "correct": 2,
+    "explanation": "The hazard in lag-based autoscaling is the control loop, not the metric -- both scalers read the same time lag. A 5-second rebalance at 2,600 msg/s manufactures 13,000 messages of fresh backlog, so scaling too often is self-defeating. Note the honest trade-off in the measured numbers: the damped scaler's PEAK lag (17.0s) was only slightly better than the naive one's (19.5s), because reacting slowly does cost something on the way up. It wins on everything afterwards -- final-minute lag of 0.75s versus 19.00s. Cap either one at the partition count, or you will pay rebalances for consumers that are assigned no work at all."
+  }
+]

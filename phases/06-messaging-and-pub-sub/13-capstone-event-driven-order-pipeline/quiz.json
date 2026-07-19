@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Each of the twelve preceding lessons fixed one failure in isolation, with everything else healthy. What is the additional risk that only appears when all of those mechanisms run together in production?",
+    "options": [
+      "None that matters. Mechanisms that are individually correct compose safely, which is why they can be designed and reviewed one at a time.",
+      "Throughput falls, because each mechanism adds a processing step, so the assembled pipeline is measurably slower than the sum of its parts and the latency budget is exceeded.",
+      "The mechanisms interact, and the correct response to one failure can trigger another: scaling consumers to cut lag is itself a rebalance that replays work, and parking a poison message to keep a partition moving destroys the ordering that the partition key was chosen to provide.",
+      "Memory pressure rises, because every mechanism keeps its own state - dedup tables, retry buffers, aggregation windows - and a consumer holding all of them eventually exhausts its heap."
+    ],
+    "correct": 2,
+    "explanation": "Latency and memory are real costs, but they are additive and predictable. The dangerous property is that two correct mechanisms can be jointly harmful. In the measured run the autoscaler fired at t=41 because time lag hit 10.10 s, and the scaling event was itself a rebalance that rewound uncommitted offsets and replayed work into an already-degraded pipeline. That is why the capstone runs nine faults simultaneously rather than one at a time."
+  },
+  {
+    "stage": "check",
+    "question": "Payments falls behind because its card gateway slows down, so the lag-driven controller adds members. In the measured run, what did that scaling event itself do to the pipeline?",
+    "options": [
+      "It triggered a rebalance that rewound every partition to its last committed offset and replayed the uncommitted window, contributing to the 34 rewound records and 31 duplicate deliveries the dedup store had to absorb - so the mitigation for lag generated extra work during the worst possible window.",
+      "Nothing beyond adding capacity. Adding a consumer affects only records not yet delivered, so messages already in flight are unaffected.",
+      "It reduced the duplicate rate, because more members means each member owns fewer partitions and therefore holds a smaller uncommitted window at any instant.",
+      "It over-scaled past the partition count, leaving several members idle while lag continued to climb, which is why time lag still peaked at 13.70 s afterwards."
+    ],
+    "correct": 0,
+    "explanation": "A membership change is a rebalance, and an eager rebalance revokes every partition and resumes each from its last committed offset. Everything processed but not committed is processed again. The controller was capped at the partition count (2 -> 8, and 8 is the partition count), so nothing idled. The duplicates were harmless only because the dedup record and the charge share one commit - which is why idempotency has to ship before the autoscaler, not after it."
+  },
+  {
+    "stage": "check",
+    "question": "At 03:10 the lag on all three consumer groups - payments, email and analytics - begins rising within the same minute. Outbox lag is flat at its usual 0.25 s baseline and no dead-letter queue has grown. What does this pattern tell you?",
+    "options": [
+      "One consumer group is stuck on a poison message that is blocking a partition, and the other two are queued behind it on the shared broker. Check the dead-letter queues and the redelivery counters first.",
+      "The relay has died. Consumer lag is the leading indicator and outbox lag is the lagging one, so the outbox figure will start climbing within a few minutes and confirm it.",
+      "A coordinator restart has put every group into a simultaneous rebalance, which stops consumption group-wide until assignment completes and shows up as a lag rise on all three.",
+      "The cause is upstream of all three, because groups that share no code, no downstream and no offsets can only move together through their one common input - so this is a producer surge, and a flat outbox lag rules out the relay. Adding consumers to any single group treats a symptom none of them caused."
+    ],
+    "correct": 3,
+    "explanation": "Consumer groups over a log are independent: separate offsets, separate members, separate downstreams. Simultaneity across independent groups is therefore an upstream signature. The relay is ruled out by the flat outbox lag - when the relay died at t=50 in the measured run, consumer lag FELL because nothing new reached the log, while outbox lag climbed one second per second to 8.20 s. A rebalance storm would show as spikes in the rebalance counter, which is why that metric is exported separately."
+  },
+  {
+    "stage": "check",
+    "question": "The measured run delivered 0 duplicate emails, with a widest retry gap of 26.00 s against the provider's 30 s idempotency-key TTL. Your team proposes raising the maximum attempt count so fewer messages dead-letter. How should you read that proposal?",
+    "options": [
+      "Safe. More attempts only affects messages that were already failing, so the successful path and its zero duplicate count are unchanged.",
+      "The zero is a property of these particular numbers, not a guarantee. The actual guarantee is 'idempotent for redeliveries arriving within 30 s', and more attempts means longer realised backoff, so retries begin landing after the key expires and the provider sends a second email - invariant 2 breaks, at the one hop whose idempotency you do not own.",
+      "Safe, because the idempotency key is derived from the business event rather than the transmission attempt, and a business-derived key is stable forever by construction.",
+      "Unsafe, but the invariant at risk is 3 rather than 2: more attempts keeps the failing message circulating for longer, so its partition stays blocked and throughput on that partition collapses."
+    ],
+    "correct": 1,
+    "explanation": "This is the weakest-link audit applied to a concrete change. Every idempotency mechanism has a scope, and for an external effect the scope is the provider's TTL - which you do not control. A stable business-derived key is necessary but not sufficient: the provider still forgets it on schedule. Invariant 3 is not at risk because the email consumer parks failures in a retry lane rather than retrying in place, so its partition never blocks. The two real fixes are to cap backoff below the TTL, or to remove the dependence entirely by recording the send in a store you can transact with."
+  },
+  {
+    "stage": "post",
+    "question": "In the counterfactual run the partition key routed exactly as it did in the correct run, and yet 7 sequence inversions appeared across 5 customers. What is the mechanism, and what does it imply about idempotency?",
+    "options": [
+      "The partition count changed mid-run, so keys remapped and one customer briefly existed in two partitions. Ordering depends on a stable partition count far more than it depends on idempotency.",
+      "The email consumer's retry lane processed messages out of partition order, and those inversions were incorrectly attributed to the payments consumer by the verification code.",
+      "A consumer crash and a rebalance rewound committed offsets, so an older event was delivered a second time and applied after a newer event for the same customer had already landed. At-least-once delivery therefore guarantees only ordering-modulo-redelivery, which makes idempotency an ordering defence and not merely a duplicate defence.",
+      "Two members held the same partition simultaneously during the rebalance window, so two writers raced on the same customer and the slower one's write landed last."
+    ],
+    "correct": 2,
+    "explanation": "The partitioner is unchanged between the two runs; what changed is whether a redelivered older event is suppressed. Replaying a window that contains two events for one customer re-applies the earlier one after the later one has already been applied - the definition of an inversion. This is the interaction people miss: they treat the partition key as the ordering mechanism and idempotency as the duplicate mechanism, then discover that deleting the second breaks the first. Version-based rejection (Lesson 07) is the alternative defence, and unlike idempotency it also discards legitimate intermediate states."
+  },
+  {
+    "stage": "post",
+    "question": "You are reviewing a pipeline that has a transactional outbox, a partition key on the aggregate id, an idempotent payments consumer with a 15-minute dedup TTL, and a dead-letter queue that on-call engineers redrive the following morning. Which invariant is already void, and why?",
+    "options": [
+      "None. An outbox on the producing side plus an idempotent consumer on the receiving side gives exactly-once effect end to end, which is exactly what those two patterns exist to compose into.",
+      "Invariant 1, 'no order is lost'. A redrive performed the next morning may fall outside the log's retention window, so the original records are gone and the dead-lettered orders can never be reprocessed.",
+      "Invariant 3, 'no poison message halts the pipeline'. Draining the dead-letter queue only once a day means poison messages sit in their partitions overnight and block every key that hashes to them.",
+      "Invariant 2, 'no customer is charged twice'. The maximum realistic redelivery delay is a next-morning redrive - many hours - and the dedup window is 15 minutes, so a redriven message arrives outside the window and is charged again. The chain's guarantee is its weakest link, and here the weakest link is a duration rather than a missing mechanism."
+    ],
+    "correct": 3,
+    "explanation": "The invariant that fails is the one whose weakest hop is a duration. Lesson 08 measured this precisely: replaying the same 120 messages after 6.2 hours produced 0 double charges with a 24-hour dedup window and 35 double charges worth EUR 4,622.09 with a 1-hour one - same code, same button, one TTL. Invariant 3 is intact because dead-lettering is what un-blocks the partition; the DLQ holds copies, not the originals. The rule to write down: the dedup TTL must exceed the maximum time a message can sit in the dead-letter queue, and that number is set by your on-call rota, not by your broker."
+  }
+]

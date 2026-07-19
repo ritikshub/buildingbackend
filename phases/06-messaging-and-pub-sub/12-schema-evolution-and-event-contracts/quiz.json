@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why is a breaking schema change harder to manage for an event on a retained log than for a REST endpoint?",
+    "options": [
+      "It is not harder; both require every client to upgrade before the change is safe",
+      "Events use binary formats and REST uses JSON, so events are inherently more brittle",
+      "Because old events live forever in the log, so the schema is a contract with the PAST as well as the future. A REST breaking change stops hurting once every client upgrades, since old requests are not retained anywhere; but a log still holds records written under every schema you ever published, and you cannot rewrite them",
+      "Because message brokers do not support content negotiation the way HTTP does"
+    ],
+    "correct": 2,
+    "explanation": "Time heals a REST versioning problem: once the last client upgrades, the old shape is gone. Time does nothing for a log, because the bytes are still there. That is what makes replay across schema generations a first-class problem, and it is why the measured run has a consumer that understands only v4 processing 0 of 9,000 records until upcasters are added."
+  },
+  {
+    "stage": "check",
+    "question": "Your consumer team wants to deploy a new consumer BEFORE the producer ships the corresponding schema change, and they also want to be able to replay the topic from the beginning. Which compatibility guarantee do they need?",
+    "options": [
+      "FORWARD - old code must be able to read new data",
+      "BACKWARD_TRANSITIVE - new code must be able to read old data, and 'transitive' means it is checked against every registered version, not just the previous one. Consumer-first deploys and replay are the same requirement: in both cases the reader is new and the data is old",
+      "FULL, but non-transitive is sufficient because compatibility composes across versions",
+      "NONE - replay does not involve schema resolution because the bytes are read verbatim"
+    ],
+    "correct": 1,
+    "explanation": "The direction names the DATA, not the code: backward means new code reads old data. That is exactly the replay situation and exactly the consumer-first situation. Transitive matters because compatibility does NOT compose - v3 can be compatible with v2 and incompatible with v1. In the measured matrix, two changes (reusing retired tag 7, re-adding promo_code with a new type) are ACCEPTED by BACKWARD, FORWARD and FULL, and REJECTED by all three transitive modes."
+  },
+  {
+    "stage": "check",
+    "question": "A developer changes a field from integer cents to decimal euros, keeping the same field name, the same wire type and the same field number. What does a FULL_TRANSITIVE compatibility check say?",
+    "options": [
+      "It rejects the change because the value range has changed",
+      "It rejects the change under the transitive variants only, because older versions used a different range",
+      "It accepts, and so does every other mode, because nothing structural changed. No schema checker on earth can detect a units or semantics change - which makes this the single most dangerous change on the list, since every automated control you own stays green while every downstream number becomes wrong by a factor of 100",
+      "It accepts, but the registry emits a warning that CI can be configured to fail on"
+    ],
+    "correct": 2,
+    "explanation": "In the measured run this is row 8 and it is ACCEPT in all six modes. The program only prints anything at all because its schema model records a 'semantics' string, which no real wire format gives you. The control here cannot be a tool - it has to be a rule enforced in review: never redefine an existing field, add a new one. Add total_eur and leave total_cents alone forever."
+  },
+  {
+    "stage": "check",
+    "question": "A producer adds one new symbol to an enum, and 8% of subsequent messages carry it. A consumer written with an exhaustive match and no default arm is subscribed. What actually happens?",
+    "options": [
+      "The consumer silently maps the unknown symbol to the enum's first value and continues processing",
+      "The consumer routes that 8% of messages to the dead-letter queue and processes the other 92% normally",
+      "The consumer throws on the first message carrying the new symbol - measured at offset 3 of 4,000 - and because it crash-loops on the same offset, the partition stops advancing entirely: 3,997 events are stuck behind it, not just the 329 that carry the new symbol",
+      "Nothing, because adding an enum value is a fully compatible change under all six modes"
+    ],
+    "correct": 2,
+    "explanation": "Adding an enum value is BACKWARD compatible (a new reader knows all the old symbols) and FORWARD INCOMPATIBLE (an old reader does not know the new one). The damage is not proportional to the share of bad messages, because a consumer that cannot process an offset cannot commit past it - this is head-of-line blocking, not a poison-pill record. The tolerant consumer in the same run processes 4,000 of 4,000 and routes 329 unknown-status events to a review bucket. One extra else branch is the difference."
+  },
+  {
+    "stage": "post",
+    "question": "A team runs expand-contract to rename total_cents to total_amount on a topic with 90-day retention: add the new field, dual-write both, migrate every consumer, stop writing the old field, then remove it from the schema. What have they not finished?",
+    "options": [
+      "Nothing - once every consumer reads total_amount and the producer stops writing total_cents, the migration is complete",
+      "The contract step never completes for data already in the log. Every record written before the dual-write started still has only total_cents, so any replay still meets the old shape - which means the v3-to-v4 upcaster is permanent production code, not migration scaffolding to be deleted after the rollout",
+      "They have not updated the registry's compatibility mode, which must be lowered to NONE for the contract step",
+      "They should have used a new topic per major version instead; expand-contract does not apply to events at all"
+    ],
+    "correct": 1,
+    "explanation": "This is the difference between an event field and a database column. Contract a column and the old column is gone. Contract an event field and history is untouched, because you cannot rewrite a log. The measured replay makes it concrete: 2,400 of the 9,000 records were written under v1 and still are. Budget for the upcasters as production code, test them, and do not let a cleanup PR delete them in eighteen months."
+  },
+  {
+    "stage": "post",
+    "question": "A consumer team argues for strict validation - rejecting any message containing a field they do not recognise - on the grounds that it catches producer bugs early. What is the right response?",
+    "options": [
+      "They are correct; strict validation should be the default for all inbound events",
+      "They are wrong on all counts; validation of inbound events adds no value and should be removed",
+      "Their goal is legitimate but the scope is wrong. Rejecting unknown fields turns even the safest additive change into an outage - in the measured run it flipped 6 of 17 accepted BACKWARD/FORWARD verdicts to REJECT, including 'add an optional field with a default'. Be strict about the fields you actually consume (assert presence and type, dead-letter what fails) and tolerant about everything else",
+      "They should keep strict validation but set the registry to NONE so the producer is never blocked"
+    ],
+    "correct": 2,
+    "explanation": "additionalProperties: false is the single line that produced failure one in the lesson. But the counter-argument is real - blanket tolerance hides genuine integration bugs. The resolution is scope, not degree: assert on your slice so a missing total_amount halts loudly at record 1 rather than summing to EUR 0.00 across EUR 1,257,034.30 of real orders, and ignore fields you do not read so a producer can add one without a cross-team deploy."
+  }
+]

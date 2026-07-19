@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backend Jargon - Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>BE</text></svg>">
+  <meta name="description" content="Backend glossary and jargon decoder: what people say vs what things actually mean. Every term explained without hand-waving.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/jargon.html">
+  <meta property="og:title" content="Backend Jargon, Decoded · Building Backend">
+  <meta property="og:description" content="What people say vs what things actually mean. Every backend term, defined without hand-waving.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <meta property="og:url" content="https://buildingbackend.vercel.app/jargon.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Backend Jargon, Decoded · Building Backend">
+  <meta name="twitter:description" content="What people say vs what things actually mean.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260719l">
+  <style>
+    .glossary-page {
+      padding: 100px 0 80px;
+      min-height: 100vh;
+    }
+
+    .glossary-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .glossary-header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 8px;
+    }
+
+    .glossary-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .glossary-search-wrap {
+      max-width: 500px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+
+    .glossary-search {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 1.1rem;
+      padding: 14px 20px;
+      background: var(--bg-surface);
+      border: 2px solid var(--border);
+      border-radius: 0;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .glossary-search::placeholder {
+      color: var(--text-muted);
+    }
+
+    .glossary-search:focus {
+      border-color: var(--accent);
+    }
+
+    .glossary-search:focus-visible {
+      outline: 2px solid var(--blueprint);
+      outline-offset: 2px;
+    }
+
+    .glossary-count {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .glossary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .glossary-card {
+      background: var(--bg-surface);
+      border: 2px solid var(--border);
+      border-radius: 0;
+      padding: 24px;
+      box-shadow: var(--shadow-hard);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .glossary-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-hard-lg);
+    }
+
+    .glossary-term {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .glossary-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .glossary-col {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .glossary-col-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .glossary-col-says {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+
+    .glossary-col-means {
+      color: var(--text);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Inline Markdown rendered by mdInline(). See the script at the foot of this file. */
+    .glossary-col-says strong,
+    .glossary-col-means strong {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* The says column is already italic, so emphasis inside it reverts to roman. */
+    .glossary-col-says em { font-style: normal; }
+    .glossary-col-means em { font-style: italic; }
+
+    .glossary-col-says code,
+    .glossary-col-means code {
+      font-family: var(--font-mono);
+      font-size: 0.86em;
+      font-style: normal;
+      background: var(--bg-surface);
+      border: 1px solid var(--rule-soft);
+      padding: 0 4px;
+      white-space: nowrap;
+    }
+
+    .glossary-empty {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      .glossary-page {
+        padding: 80px 0 48px;
+      }
+
+      .glossary-row {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .glossary-card {
+        padding: 18px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> BUILDING BACKEND
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="catalog.html">Catalog</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="jargon.html" aria-current="page">Jargon</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="search-toggle" type="button" data-cmd-palette
+        aria-label="Search (⌘K)" title="Search (⌘K)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="glossary-page" id="main">
+    <div class="container">
+      <div class="glossary-header">
+        <h1>Backend Jargon, Decoded</h1>
+        <p>What people <em>say</em> vs what things actually <em>mean</em></p>
+      </div>
+      <div class="glossary-search-wrap">
+        <input type="text" class="glossary-search" id="glossarySearch" placeholder="Search terms...">
+      </div>
+      <div class="glossary-count" id="glossaryCount"></div>
+      <div class="glossary-list" id="glossaryList"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>Building Backend · open source · free forever.</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="catalog.html">Catalog</a>
+              <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report / Suggest</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js?v=20260719l"></script>
+  <script src="progress.js?v=20260719l"></script>
+  <script src="header.js?v=20260719l" defer></script>
+  <script src="cmdpalette.js?v=20260719l" defer></script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+
+      function updateIcon() {
+        var icon = document.getElementById('themeIcon');
+        if (!icon) return;
+        /* The sun/moon icons are swapped by CSS based on the data-theme attribute. */
+      }
+
+      updateIcon();
+
+      document.addEventListener('DOMContentLoaded', function () {
+        updateIcon();
+
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateIcon();
+          });
+        }
+
+        var searchInput = document.getElementById('glossarySearch');
+        var listEl = document.getElementById('glossaryList');
+        var countEl = document.getElementById('glossaryCount');
+
+        function escapeHtml(str) {
+          var div = document.createElement('div');
+          div.textContent = str;
+          return div.innerHTML;
+        }
+
+        /**
+         * Render the inline Markdown that terms.md uses: `code`, **bold**, *italic*.
+         * Code spans are lifted out to placeholders first, so that asterisks inside
+         * them stay literal AND emphasis that wraps a code span still matches
+         * (e.g. "**always wait in a `while` loop**"). Everything is HTML-escaped
+         * before a tag is inserted, so term text can never inject markup.
+         */
+        // U+0000 cannot occur in the source text, so a code-span placeholder can
+        // never collide with real content such as "in 5 minutes".
+        var SENT = '\u0000';
+        var SENT_RE = /\u0000(\d+)\u0000/g;
+
+        function mdInline(raw) {
+          var codes = [];
+          var text = ((raw == null) ? '' : String(raw)).replace(/`([^`]+)`/g, function (_, inner) {
+            codes.push(inner);
+            return SENT + (codes.length - 1) + SENT;
+          });
+          return escapeHtml(text)
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+            .replace(SENT_RE, function (_, i) {
+              return '<code>' + escapeHtml(codes[Number(i)]) + '</code>';
+            });
+        }
+
+        function renderGlossary(filter) {
+          var terms = GLOSSARY;
+          if (filter) {
+            var q = filter.toLowerCase();
+            terms = terms.filter(function (t) {
+              return t.term.toLowerCase().indexOf(q) !== -1 ||
+                t.says.toLowerCase().indexOf(q) !== -1 ||
+                t.means.toLowerCase().indexOf(q) !== -1;
+            });
+          }
+
+          countEl.textContent = terms.length + ' of ' + GLOSSARY.length + ' terms';
+
+          if (terms.length === 0) {
+            listEl.innerHTML = '<div class="glossary-empty">No terms match your search.</div>';
+            return;
+          }
+
+          var html = '';
+          for (var i = 0; i < terms.length; i++) {
+            var t = terms[i];
+            html += '<div class="glossary-card">';
+            html += '<div class="glossary-term">' + escapeHtml(t.term) + '</div>';
+            html += '<div class="glossary-row">';
+            html += '<div class="glossary-col">';
+            html += '<div class="glossary-col-label">What people say</div>';
+            html += '<div class="glossary-col-says">"' + mdInline(t.says) + '"</div>';
+            html += '</div>';
+            html += '<div class="glossary-col">';
+            html += '<div class="glossary-col-label">What it actually means</div>';
+            html += '<div class="glossary-col-means">' + mdInline(t.means) + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+          }
+          listEl.innerHTML = html;
+        }
+
+        // Support ?q= deep-links from the command palette and external sources.
+        // Pre-populate the search box and filter to the matching term so the
+        // user lands directly on the definition rather than the full list.
+        var urlQ = '';
+        try { urlQ = new URLSearchParams(window.location.search).get('q') || ''; } catch (_) {}
+        if (urlQ && searchInput) {
+          searchInput.value = urlQ;
+        }
+
+        renderGlossary(urlQ);
+
+        if (searchInput) {
+          searchInput.addEventListener('input', function () {
+            renderGlossary(searchInput.value.trim());
+          });
+        }
+      });
+    })();
+  </script>
+<script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>

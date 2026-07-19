@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "An HTTP server is fundamentally which combination of parts on top of a TCP socket?",
+    "options": [
+      "A database, a cache, and a load balancer",
+      "An accept loop, a request parser, and a response builder",
+      "A compiler, a linker, and a runtime",
+      "A DNS resolver and a TLS handshake"
+    ],
+    "correct": 1,
+    "explanation": "Strip away the framework and an HTTP server is exactly three things: an accept loop (socket/bind/listen/accept from Lesson 05), a parser that turns the request bytes into a method and path, and a builder that assembles a correct response string. Everything else is hardening around those three."
+  },
+  {
+    "stage": "pre",
+    "question": "In an HTTP/1.1 request, what marks the boundary between the headers and the body?",
+    "options": [
+      "A semicolon",
+      "A blank line — the CRLF sequence \\r\\n\\r\\n",
+      "The Content-Type header",
+      "A null byte (\\x00)"
+    ],
+    "correct": 1,
+    "explanation": "HTTP lines end in CRLF (\\r\\n). An empty line — \\r\\n\\r\\n — separates the header block from the body (RFC 9112 §2.1). A server reads from the socket until it sees that blank line to know it has the full set of headers."
+  },
+  {
+    "stage": "check",
+    "question": "Why does the server read from the socket in a loop until it sees \\r\\n\\r\\n, instead of trusting a single recv()?",
+    "options": [
+      "Because recv() is deprecated in HTTP servers",
+      "Because TCP is a byte stream with no message boundaries, so one recv() may return a partial request or several glued together",
+      "Because HTTP requires exactly 1024 bytes per read",
+      "Because the first recv() always returns only the request line"
+    ],
+    "correct": 1,
+    "explanation": "TCP delivers an ordered byte stream, not discrete messages (Lesson 05). A single recv() might hand back half a request or two requests concatenated. The server loops until the blank line \\r\\n\\r\\n appears, which is the reliable signal that the full header block has arrived."
+  },
+  {
+    "stage": "check",
+    "question": "A server sets Content-Length to a value LARGER than the actual body it sends. What does the client typically do?",
+    "options": [
+      "It rejects the response immediately with a parse error",
+      "It reads the body it received, then blocks waiting for the extra bytes that never arrive — the classic hang",
+      "It silently pads the body with zeros",
+      "It retries the request on a new connection"
+    ],
+    "correct": 1,
+    "explanation": "Content-Length promises exactly N body bytes. If the server actually sends fewer, the client keeps reading, waiting for the missing bytes that never come, and hangs. Too-small a Content-Length has the opposite failure: the client truncates the body and mis-reads whatever follows."
+  },
+  {
+    "stage": "check",
+    "question": "The server's '/' body is the text 'Welcome — this page came off a raw TCP socket, no framework.' plus a newline: 61 characters, but Content-Length is 63. Why?",
+    "options": [
+      "The server adds 2 bytes of padding for alignment",
+      "Content-Length counts bytes, not characters — the em-dash (—) is 3 bytes in UTF-8, adding 2 over its single character",
+      "Two trailing spaces were included by mistake",
+      "HTTP always adds 2 to the length for the CRLF"
+    ],
+    "correct": 1,
+    "explanation": "Content-Length is a byte count of the encoded body, not a character count. The em-dash '—' encodes to 3 bytes in UTF-8 while counting as one character, so 61 characters become 63 bytes. Always measure the encoded body (body.encode('utf-8')), never the string length."
+  },
+  {
+    "stage": "post",
+    "question": "A client sends 'POST /hello' to the server, which only implements GET. What is the correct response, and what header must it include?",
+    "options": [
+      "404 Not Found, with a Location header",
+      "405 Method Not Allowed, with an Allow header listing the supported methods (e.g. Allow: GET)",
+      "500 Internal Server Error, with a Retry-After header",
+      "200 OK, silently ignoring the method"
+    ],
+    "correct": 1,
+    "explanation": "The path exists but the method is not supported, so the status is 405 Method Not Allowed (not 404, which is for an unknown path). RFC 9110 §15.5.6 requires the 405 response to carry an Allow header naming the methods the resource does support, so the client knows what to try instead."
+  },
+  {
+    "stage": "post",
+    "question": "How does a framework like FastAPI or Flask relate to the raw-socket server you built?",
+    "options": [
+      "It replaces sockets with a proprietary protocol that is faster than TCP",
+      "It is the same accept-loop + parser + response-builder, hardened for concurrency and edge cases; a route decorator is sugar over the method+path lookup you wrote",
+      "It runs entirely in the browser, so no server socket is involved",
+      "It skips HTTP parsing by using a binary format only frameworks understand"
+    ],
+    "correct": 1,
+    "explanation": "A web framework is the exact three-part machine you built — accept loop, request parser, response builder — plus hardening: many connections at once, keep-alive, strict limits, and a real routing table. '@app.get(\"/hello\")' is sugar over the same match-on-(method, path) you wrote by hand. There is no additional magic underneath."
+  }
+]

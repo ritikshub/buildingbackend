@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What does \"NoSQL\" most accurately mean?",
+    "options": ["SQL is obsolete and should be replaced", "\"Not Only SQL\" — a family of stores that each relax a relational commitment to be better at one specific thing", "Databases that have no query language at all", "Any database that isn't Postgres or MySQL"],
+    "correct": 1,
+    "explanation": "The name started as a 2009 meetup hashtag and is misleading. The useful reading is \"Not Only SQL\": these stores relax one relational guarantee (fixed schema, joins, single primary, strong consistency) to win big on a specific axis. They complement relational databases rather than replace them."
+  },
+  {
+    "stage": "check",
+    "question": "A team says \"our app is slow, let's move to NoSQL.\" What's the senior first move?",
+    "options": ["Pick the most popular NoSQL database and migrate", "Identify which specific pressure (schema, joins, write throughput, scale-out, consistency) is actually acting — and check whether a relational feature or a missing index already fixes it", "Shard the relational database immediately", "Add more read replicas"],
+    "correct": 1,
+    "explanation": "\"NoSQL\" is not a diagnosis. Slowness usually has a named cause. Often it's a missing index or an N+1 query (Phase 3) — a relational fix. Reaching for a whole new database before naming the pressure gets you the wrong tool and a distributed-systems problem you didn't need."
+  },
+  {
+    "stage": "check",
+    "question": "Why does the CAP theorem force a distributed store to choose between consistency and availability, while a single-node Postgres can ignore it?",
+    "options": ["Postgres is simply better engineered", "CAP only bites during a network partition between nodes; a single node has no inter-node network to partition — but it also can't scale out, which is the trade", "Postgres uses ACID and ACID beats CAP", "CAP was disproven"],
+    "correct": 1,
+    "explanation": "CAP says: during a network Partition you must choose Consistency (refuse stale answers, go unavailable) or Availability (answer, risk staleness). A single node has no partition to survive, so it dodges the choice — at the cost of being unable to scale horizontally, which is exactly why write-firehose and scale-out workloads leave it."
+  },
+  {
+    "stage": "check",
+    "question": "You need to store account balances and money transfers. Why is BASE (eventual consistency) the wrong bet here?",
+    "options": ["BASE is always slower than ACID", "A transfer must be atomic and strongly consistent — a stale read could let the same balance be spent twice; money needs ACID, not \"replicas converge eventually\"", "BASE databases can't store numbers", "There is no difference for this workload"],
+    "correct": 1,
+    "explanation": "Money is the canonical case for strong consistency and atomic multi-row transactions. Under eventual consistency, two replicas can briefly disagree on a balance, allowing double-spends or lost updates. Match the guarantee to the data: strong consistency for ledgers, eventual consistency for a likes counter or feed."
+  },
+  {
+    "stage": "post",
+    "question": "Which pressure best matches \"a product catalog where every category has different attributes and marketing adds fields weekly\"?",
+    "options": ["Write throughput a single primary can't absorb", "Rigid schema vs. heterogeneous, fast-evolving data — a fit for the document model, or a Postgres JSONB column", "Deep relationship traversal", "The consistency-vs-availability trade of CAP"],
+    "correct": 1,
+    "explanation": "This is the schema pressure: heterogeneous records and constant field churn fight a fixed table. The document model (schema-on-read) fits — but so does a Postgres JSONB column, which often wins because it avoids adding a whole second database to operate. Name the pressure, then check if relational already solves it."
+  },
+  {
+    "stage": "post",
+    "question": "Why is \"NoSQL scales better than SQL\" an imprecise claim in 2020s terms?",
+    "options": ["It's completely false; SQL always scales better", "Distributed NoSQL scales writes horizontally by partition key without cross-node joins, but relational databases absorbed JSONB/partitioning and NoSQL absorbed transactions/secondary indexes — the categories converged, so the true statement is narrow and specific", "NoSQL and SQL are identical now", "Scaling has nothing to do with the database"],
+    "correct": 1,
+    "explanation": "The precise version: stores designed to be distributed spread writes across nodes by a partition key and avoid cross-node joins, so they scale writes out where a single-primary RDBMS can't. But the blanket claim ignores that Postgres gained JSONB, partitioning, and replication while NoSQL gained transactions and secondary indexes — the line moved, so choose by the specific pressure, not the label."
+  }
+]

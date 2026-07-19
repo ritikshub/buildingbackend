@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You have structured logs with a shared trace_id on every line, from all eight services a request touched. Why can you still not say where the 4.2 seconds went?",
+    "options": [
+      "Log lines are points in time, so a duration must be inferred by subtracting two timestamps — and timestamps from different machines are subject to clock skew, so the arithmetic is both tedious and wrong",
+      "Log lines are usually sampled, so most of the request's lines were discarded before they reached storage",
+      "Logs are stored in a search index that cannot sort by timestamp at query time",
+      "The trace_id only identifies the request at the edge; downstream services generate their own unrelated ids"
+    ],
+    "correct": 0,
+    "explanation": "A log records an instant; latency is an interval. Reconstructing intervals means pairing start and end events you may never have logged, and comparing wall clocks across machines that differ by milliseconds or more. A span solves this by recording a start AND an end on one machine, so the duration is measured by a single clock."
+  },
+  {
+    "stage": "check",
+    "question": "A waterfall shows a 1200 ms SERVER span whose only child is a 40 ms database call. Where is the time?",
+    "options": [
+      "In the database, since the child span excludes network round-trip time",
+      "In a downstream service that failed to propagate traceparent, so its spans are missing",
+      "In your own code inside that handler — between, before or after the calls: serialization, a tight loop, a lock, or garbage collection",
+      "In the trace exporter, which blocked the request thread while shipping spans"
+    ],
+    "correct": 2,
+    "explanation": "A long parent with short children means the unaccounted time is in the parent's own execution, not downstream. This is the classic signal to add manual INTERNAL spans around the suspicious blocks of your own logic until the gap is attributed."
+  },
+  {
+    "stage": "check",
+    "question": "Why does a probabilistic head sampler compute its decision from a hash of the trace ID rather than calling random() at each service?",
+    "options": [
+      "Hashing is faster than generating a random number on the request path",
+      "It makes the decision deterministic and identical in every service, so a trace is never collected half-way even if a hop drops the traceparent header",
+      "It guarantees exactly one trace in every hundred is kept, rather than approximately one",
+      "It lets the collector reconstruct the sampling ratio from the stored spans"
+    ],
+    "correct": 1,
+    "explanation": "Independent random draws would keep service A's spans and drop service B's for the same request, producing fragmentary traces that are worse than none. Hashing the trace ID makes the decision consistent, which is why it is called consistent or deterministic sampling. Over a large population it still converges on the target ratio — 25.3% of 10,000 ids in the lesson's run against a 25% target."
+  },
+  {
+    "stage": "check",
+    "question": "Your tail-sampling collector worked perfectly on one replica. You scale it to three replicas behind a normal round-robin load balancer and it starts keeping traces that contain only two or three spans. Why?",
+    "options": [
+      "Three replicas triple the decision_wait, so traces time out before they are complete",
+      "The probabilistic policy is evaluated once per replica, so its effective rate triples",
+      "Round-robin scatters a single trace's spans across all three replicas, so each one judges a fragment rather than the whole trace",
+      "OTLP cannot multiplex spans from one trace over more than one gRPC connection"
+    ],
+    "correct": 2,
+    "explanation": "Tail sampling can only judge a trace it holds entirely. Every span of a given trace must reach the same collector instance, which is why a multi-replica deployment needs a loadbalancing exporter sharding on trace_id in front of the tail-sampling layer."
+  },
+  {
+    "stage": "post",
+    "question": "Why is the OpenTelemetry API deliberately separated from the SDK, and what does the API do when no SDK is installed?",
+    "options": [
+      "So the API can be written in C for speed; without an SDK it buffers spans on disk until one appears",
+      "So that instrumentation and configuration ship in separate releases; without an SDK it raises a clear configuration error at startup",
+      "So the SDK can be replaced by a vendor agent at runtime; without an SDK it falls back to writing spans to stdout",
+      "So a library can instrument itself against a stable, vendor-neutral API without imposing any backend dependency on its users; without an SDK the API is a no-op"
+    ],
+    "correct": 3,
+    "explanation": "The API/SDK split is what lets an HTTP client or ORM ship instrumentation in the library itself. Applications that never configure an SDK pay nothing because the API calls do nothing, and applications that do configure one choose their sampler, processors and exporter without the library knowing or caring."
+  },
+  {
+    "stage": "post",
+    "question": "You must choose one sampling policy for a payments service. Which is the strongest default, and why?",
+    "options": [
+      "Keep 100% of errors and slow requests via tail sampling, and sample the remaining successful traces hard",
+      "A flat 1% head sample, because it is unbiased and therefore statistically honest about your latency distribution",
+      "Keep 100% of everything and rely on short retention to control cost",
+      "Head-sample at 50% during business hours and 5% overnight, so cost tracks traffic"
+    ],
+    "correct": 0,
+    "explanation": "The traces you actually open during an incident are the failed and the slow ones, and a uniform head sample keeps them at exactly the same low rate as the boring ones — in the lesson's run, a flat 10% head sample kept 0 of 3 errors and 0 of 3 slow traces, while the tail policy kept 3/3 and 3/3. Keeping everything is unaffordable at real traffic, and time-of-day ratios still sample errors blindly."
+  }
+]

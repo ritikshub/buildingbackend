@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A service serves 300 req/s per box and falls over at 380. CPU sits at 34%, the disk is idle, and the 10 GbE network interface is moving 0.4% of its line rate. What is the most likely explanation?",
+    "options": [
+      "The dashboards are broken — something must be at 100%",
+      "The binding wall is a resource none of those graphs shows, such as durable writes, memory bandwidth, or a lock",
+      "The machine is correctly sized and 380 req/s is simply what this hardware does",
+      "The load balancer is limiting each instance to 380 req/s"
+    ],
+    "correct": 1,
+    "explanation": "A machine has more ceilings than the four graphs everyone puts on a dashboard. Durable writes (fsync), memory bandwidth, syscall rate, a per-connection memory cost or a contended lock can all saturate while CPU, disk %util and network throughput look calm. Option 3 is the tempting one, because 'this is what the hardware does' is unfalsifiable until someone measures — and in this lesson's own measurement, one fsync per request capped a box at 1,985 req/s while the next wall sat 12.7x further out. The first job is always to name the wall and quote its number."
+  },
+  {
+    "stage": "check",
+    "question": "The code measured a 4 KiB write at 1.46 us buffered and 503.87 us with fsync() — a factor of 346. What does that factor actually price?",
+    "options": [
+      "The speed of the storage device, which is 346x slower than RAM",
+      "Python's syscall overhead, which dominates any real I/O cost",
+      "Waiting for the device to confirm the data is on stable media, a wait that cannot overlap with anything else in the request",
+      "The kernel copying 4 KiB from user space into the page cache"
+    ],
+    "correct": 2,
+    "explanation": "The buffered write already did the copy into the page cache — that is the 1.46 us. The extra 502 us is the durability barrier: fsync() blocks until the device acknowledges the data is persistent, and that wait is serial with respect to the request. Option 1 is tempting because the number looks like a device speed, but NVMe reads take 50-100 us; the flush is slower than a read because it is a synchronisation point, not a transfer. This is exactly why group commit exists (Gray & Reuter 1993, ch. 12): amortise one flush over many transactions and the wall moves — measured here from 1,985 req/s to 254,031 req/s."
+  },
+  {
+    "stage": "check",
+    "question": "Which of these walls gets larger when you move from a 2-core box to a 20-core box of the same generation?",
+    "options": [
+      "Memory bandwidth, because more cores means more memory controllers in use",
+      "The durable-write ceiling, because more cores can issue more fsyncs in parallel",
+      "The CPU wall — and only if you actually run more worker processes, since one CPython process uses one core",
+      "All four walls, which is what 'a bigger machine' means"
+    ],
+    "correct": 2,
+    "explanation": "Roughly half the walls on a machine are per-box, not per-core. Memory bandwidth is one shared bus, the disk is one device with one queue, and the NIC is one link — adding cores does not multiply any of them. The CPU wall does scale, but with a language-specific catch: a single CPython process is bound by the GIL to one core's worth of bytecode execution, so the capacity only materialises if you run one worker process per core. Option 4 is the intuition that makes people buy a 64-core box and get far less than 32x the throughput of a 2-core one."
+  },
+  {
+    "stage": "check",
+    "question": "The ablation measured deleting a defensive deepcopy at 2.45x, replacing two linear scans with a set and a dict at 3.66x, and hoisting globals plus replacing eight string concatenations with one join at 1.17x. What is the practical lesson?",
+    "options": [
+      "String concatenation is still the main performance problem in Python",
+      "The costs that matter are usually allocations and accidental O(n) lookups, not the micro-optimisations code review argues about",
+      "Only algorithmic complexity changes matter; constant factors are irrelevant",
+      "The measurement is unreliable because all three changes were made to the same function"
+    ],
+    "correct": 1,
+    "explanation": "The two changes that carried the 10.5x are the two that nobody flags in review: a defensive copy that was never needed, and two membership/index lookups against collections of 100 and 200 items — small enough that they do not feel algorithmic. The change everybody has an opinion about moved three machines to three, because CPython 3.12's specialising interpreter already handles global lookups and short-string building well. Option 3 is wrong in the other direction: these were all constant-factor or small-n changes, and together they were worth 24 machines at 12,000 req/s."
+  },
+  {
+    "stage": "post",
+    "question": "Two machines behind a load balancer, each 99.9% available, are deployed in the same rack, on the same power feed, receiving the same config pushes. Estimating that 10% of failures are common-mode, what does the second machine buy?",
+    "options": [
+      "Six nines — 31.5 seconds of downtime per year, as the independence formula gives",
+      "Nothing at all, since a shared rack means the replicas always fail together",
+      "About four nines — roughly 53 minutes per year, one extra nine rather than three",
+      "Exactly three nines, unchanged, because availability is set by the least reliable component"
+    ],
+    "correct": 2,
+    "explanation": "P(both down) = c x P(one down) + (1-c) x P(one down)^2. With c = 0.10 the common-mode term dominates: the measured table gives 4.0 nines (53.0 min/year) instead of the 6.0 nines (31.5 s/year) that independence would give. Option 1 is the trap, because it is what the textbook formula says and what capacity plans usually assume. The practical consequence is sharper than the arithmetic: once the common-mode term dominates, a third and fourth replica add essentially nothing — the measured table shows 4.0 nines for two, three and four replicas alike. Buying independence is a different purchase from buying replicas."
+  },
+  {
+    "stage": "post",
+    "question": "A team wants to split their monolith into 10 services, each of which will run at 99.95% availability, and every request will need all 10 to answer. What happens to request-level availability, and what does it imply?",
+    "options": [
+      "It stays at 99.95%, because each service is independently reliable",
+      "It improves, because a failure in one service no longer takes down the others",
+      "It falls to about 99.50% — from 4.4 to 43.7 hours of badness a year — so the split spends availability and must buy it back deliberately",
+      "It cannot be computed without knowing the request rate"
+    ],
+    "correct": 2,
+    "explanation": "Availability multiplies down a serial dependency chain: 0.9995^10 = 99.5011%, which the code prints as 43.7 hours per year against 4.4 for a single service. Option 2 is the intuition that sells microservices, and it is only true for failures that are genuinely isolated — it is false for any request that must touch all ten. This is precisely why the rest of the phase is spent on replicas, health checks, outlier ejection, hedging and blast-radius containment: they exist to win back the availability that distribution just spent. Distribution buys scalability with availability, and nobody sends an invoice for it."
+  }
+]

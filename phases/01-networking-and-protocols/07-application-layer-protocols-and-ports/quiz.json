@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A server has one IP address but runs a web server, a mail server, and SSH at once. How does the kernel deliver an incoming packet to the right one?",
+    "options": [
+      "It broadcasts the packet to every program and lets them decide",
+      "It reads the destination port number and hands the bytes to the program listening on that port",
+      "It uses the packet's size to guess the service",
+      "Each service must run on a separate IP address"
+    ],
+    "correct": 1,
+    "explanation": "A port is the 16-bit number in the TCP/UDP header that selects a program on a machine. The kernel keeps a table of which program listens on which port; port 443 goes to the web server, port 22 to SSH. Same IP, different doors."
+  },
+  {
+    "stage": "check",
+    "question": "Which best describes the well-known port range and why it exists?",
+    "options": [
+      "1024–49151; ports applications register for their own software",
+      "49152–65535; short-lived ports the OS assigns to outgoing client connections",
+      "0–1023; fixed ports for standard services (80 HTTP, 443 HTTPS, 22 SSH) so clients need no directory to find them",
+      "0–65535; the entire space, assigned randomly per connection"
+    ],
+    "correct": 2,
+    "explanation": "Well-known ports are 0–1023 (IANA/RFC 6335). They are fixed by universal agreement so 'connect to port 443' just means 'talk to the web server.' The 1024–49151 range is registered, and 49152–65535 is ephemeral for client-side source ports."
+  },
+  {
+    "stage": "check",
+    "question": "HTTP is described as a stateless protocol. What does that mean?",
+    "options": [
+      "HTTP cannot transfer any data",
+      "The server keeps no memory between requests — each request carries everything needed to handle it, so any server can handle any request",
+      "HTTP connections never stay open",
+      "HTTP encrypts every request by default"
+    ],
+    "correct": 1,
+    "explanation": "Stateless means the server holds no session memory across requests; two requests are independent as far as the protocol is concerned. That is why HTTP scales horizontally — any server can serve any request. Cookies/sessions are how applications add state back on top."
+  },
+  {
+    "stage": "check",
+    "question": "In the port scanner, why does a successful connect() to a port mean the port is 'open'?",
+    "options": [
+      "Because the scanner sends a special open command",
+      "A closed port refuses the connection instantly, while an open port has a program listening that completes the TCP handshake",
+      "Every port is open unless a firewall blocks it",
+      "connect() always succeeds; the timeout decides open vs closed"
+    ],
+    "correct": 1,
+    "explanation": "A port with no listener refuses the connection immediately; a port with a listening service completes the TCP handshake. So probing each port with a short-timeout connect() (connect_ex returning 0) tells you exactly which services are present — the core of tools like nmap."
+  },
+  {
+    "stage": "post",
+    "question": "In the SMTP dialogue, why must the client send MAIL FROM before RCPT TO before DATA?",
+    "options": [
+      "The commands can be sent in any order; SMTP sorts them",
+      "SMTP is stateful within a transaction — MAIL FROM opens it, RCPT TO adds a recipient to that transaction, and DATA sends the body of the same transaction, so order matters",
+      "It is a performance optimization only",
+      "Because SMTP is a binary protocol that requires fixed offsets"
+    ],
+    "correct": 1,
+    "explanation": "SMTP (RFC 5321) is stateful within a mail transaction. Each command builds on the previous one: MAIL FROM begins the transaction, RCPT TO names a recipient in it, and DATA transfers the message body. Sending them out of order is a protocol error because the server tracks where you are in the session."
+  },
+  {
+    "stage": "post",
+    "question": "You need to move large files between two servers and later add a real-time event feed to a browser. Which pairing fits best?",
+    "options": [
+      "FTP (stateful, control + data channels) for the file transfer; a streaming/push protocol like WebSockets for the live feed",
+      "DNS for the files; Telnet for the feed",
+      "SMTP for both, since it is text-based",
+      "NTP for the files; POP3 for the feed"
+    ],
+    "correct": 0,
+    "explanation": "FTP is purpose-built for bulk file transfer and keeps session state across a control channel (21) and a separate data channel (20). A live browser feed needs server-to-client push without a request per message, which is what streaming protocols like WebSockets provide — request-response polling would waste round-trips."
+  }
+]

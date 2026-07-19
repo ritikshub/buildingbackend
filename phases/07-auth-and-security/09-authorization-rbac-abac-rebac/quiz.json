@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A handler checks `if user.role in {\"admin\",\"editor\"}` and then returns `db.documents.get(doc_id)`. Any editor can now read any document by changing the id. What kind of failure is this?",
+    "options": [
+      "An authentication failure — the user isn't properly logged in",
+      "Broken object-level authorization (the IDOR): the code checks that the user may use the endpoint (route-level) but never checks that they may access THIS specific document (object-level). The role check is necessary but not sufficient; you must also verify ownership or a sharing relationship for doc_id. This is the #1 API vulnerability",
+      "A rate-limiting failure",
+      "Nothing — role-based checks are always sufficient"
+    ],
+    "correct": 1,
+    "explanation": "Route-level authorization answers 'may this user call this endpoint?' Object-level authorization answers 'may this user act on this particular record?' Passing the first while skipping the second is Broken Object-Level Authorization (IDOR) — OWASP API Security #1. The fix is to authorize the object itself (owner/shared-with) on every access, not just to confirm the user has a role."
+  },
+  {
+    "stage": "check",
+    "question": "What does RBAC give you over per-resource ACLs, and where does it break down?",
+    "options": [
+      "RBAC encrypts permissions; ACLs don't",
+      "RBAC adds a layer of indirection — users get roles, roles get permissions — so you grant a capability once to a role instead of editing millions of per-resource entries, and onboarding is 'assign a role.' It breaks down when rules depend on the specific object or context ('edit only YOUR documents,' 'refunds only in business hours'): roles are coarse, so teams mint ever-more-specific roles, which is role explosion",
+      "RBAC works only for admins; ACLs work for everyone",
+      "There is no difference; they're two names for the same thing"
+    ],
+    "correct": 1,
+    "explanation": "RBAC scales administration by grouping permissions under roles, which is why it's the workhorse for coarse access. Its limitation is granularity: a role can't express object-specific or contextual conditions, so those requirements spawn near-duplicate roles (role explosion) until the model is unmanageable. That's the signal to add ABAC or ReBAC."
+  },
+  {
+    "stage": "check",
+    "question": "What distinguishes ReBAC (the Zanzibar model) from ABAC, and when is ReBAC the better fit?",
+    "options": [
+      "ReBAC is just ABAC with a different name",
+      "ABAC decides via a boolean over attributes (department, time, sensitivity). ReBAC models permissions as a graph of relationships and answers by finding a path — 'alice is a member of group eng, which is an editor of doc 42, so alice can edit it.' ReBAC fits sharing, folders, groups, and hierarchies naturally (it's how Google Docs/Drive authorize at scale via Zanzibar/OpenFGA/SpiceDB), which ABAC and RBAC express awkwardly",
+      "ReBAC only works for two users at a time",
+      "ABAC is for databases and ReBAC is for files"
+    ],
+    "correct": 1,
+    "explanation": "ABAC evaluates attribute predicates; ReBAC traverses relationship tuples. When access is fundamentally about relationships between users and objects — ownership, membership, sharing, folder hierarchies — ReBAC expresses it directly and scales, which is why Zanzibar and its open implementations (OpenFGA, SpiceDB, Ory Keto) power document-sharing products. Real systems often combine RBAC (coarse gates), ABAC (context), and ReBAC (sharing)."
+  },
+  {
+    "stage": "check",
+    "question": "Why separate the Policy Enforcement Point (PEP) from the Policy Decision Point (PDP), and what must the default decision be?",
+    "options": [
+      "For performance only; there's no security reason",
+      "Separating enforcement (the code that intercepts a request and applies the verdict) from the decision (the logic that computes allow/deny from a model) makes authorization centralized, auditable ('who can do what' has one answer), changeable without touching every handler, and complete (one choke point every request passes). The default must be DENY — access requires an explicit allow, never merely the absence of a deny (fail closed)",
+      "So that clients can make the decision themselves",
+      "The default should be allow, to avoid breaking features"
+    ],
+    "correct": 1,
+    "explanation": "The PEP/PDP split turns scattered inline checks into one auditable, evolvable decision point — which is exactly what lets you answer questions and change policy safely. Deny-by-default is the fail-closed principle applied per object: an unspecified access is refused, so forgetting to write an allow rule denies rather than exposes. Allow-by-default turns every missing rule into a hole."
+  },
+  {
+    "stage": "post",
+    "question": "Why must the authorization decision be computed from server-side state rather than from a role claim in the request — even a validly signed JWT that says `role: admin`?",
+    "options": [
+      "It doesn't matter; a signed JWT is trustworthy, so its role claim can be used directly for access decisions",
+      "A signed JWT proves the claim wasn't tampered with, but the authorization decision still needs the CURRENT, authoritative state — a token's role can be stale (the user was demoted after the token was issued, and a stateless token isn't revoked until it expires), and object-level facts like ownership and sharing simply aren't in the token. Decide from server-side data (roles, ownership, relationships) at the time of the request, using the token only to identify the subject",
+      "Because JWTs can't contain a role field",
+      "Because the client can always forge a signed JWT"
+    ],
+    "correct": 1,
+    "explanation": "Signature validity is about integrity, not freshness or completeness. A user demoted from admin still holds a validly signed token asserting `role: admin` until it expires; trusting that claim grants access that should be gone. And per-object authorization (does alice own doc 42?) is server-side data the token never carries. Use the token to establish identity, then compute the decision from current server state."
+  },
+  {
+    "stage": "post",
+    "question": "Your team keeps minting roles: `editor`, `editor_contractor`, `editor_contractor_non_confidential`, `editor_eu_only`. What's happening, and what's the cleaner approach?",
+    "options": [
+      "This is healthy, granular RBAC; keep adding roles as needed",
+      "This is role explosion — encoding object- and context-specific conditions into role names because RBAC can't express them. The cleaner approach is to move those conditions into a model built for them: ABAC for context/attributes ('allow if not resource.confidential and subject.region == \"EU\"') and/or ReBAC for object relationships, keeping RBAC only for coarse gates. The rules become explicit policy instead of a combinatorial explosion of roles",
+      "Switch everything to per-resource ACLs",
+      "Delete all roles and allow every logged-in user"
+    ],
+    "correct": 1,
+    "explanation": "Role names that encode attributes and exceptions are role explosion — a symptom of forcing fine-grained, contextual rules into a coarse model. Expressing 'non-confidential', 'EU only', or 'contractor' as attribute conditions (ABAC) or relationships (ReBAC) makes the policy readable, auditable, and non-combinatorial. Most mature systems layer the models: RBAC for broad gates, ABAC for context, ReBAC for sharing and hierarchy."
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is a column's data type, fundamentally?",
+    "options": ["A hint the database ignores", "An enforced contract on every value: what's allowed in, its size, how it sorts/compares, and valid operations", "The column's display name", "A performance setting only"],
+    "correct": 1,
+    "explanation": "The type is a guarantee the database enforces on every value the column will ever hold. It controls what can be stored, storage size, sorting/comparison, and which operations are valid."
+  },
+  {
+    "stage": "check",
+    "question": "Why should money be stored as NUMERIC/DECIMAL (or integer cents), never as a float?",
+    "options": ["Floats are slower", "Floats store an approximation in binary, so values like 0.1 + 0.2 don't come out exact — fractions of a cent won't reconcile", "NUMERIC uses less space", "Floats can't be negative"],
+    "correct": 1,
+    "explanation": "Floating point is approximate: 0.1 + 0.2 = 0.30000000000000004. For money that means unreconcilable rounding errors. Use exact NUMERIC/DECIMAL or store an integer count of the smallest unit (cents)."
+  },
+  {
+    "stage": "check",
+    "question": "You store IDs as TEXT and they sort as 1, 10, 100, 2, 20. Why, and what fixes it?",
+    "options": ["The database is broken; nothing fixes it", "Text sorts character-by-character so '10' < '9'; store them as an integer type to sort numerically", "TEXT reverses order; use CHAR", "Add an index"],
+    "correct": 1,
+    "explanation": "String comparison goes character by character, so '10' sorts before '9'. Numbers stored as a real integer type sort numerically (9 < 10). Storing numbers as text makes ordering lie."
+  },
+  {
+    "stage": "check",
+    "question": "What does NULL mean, and how must you test for it?",
+    "options": ["Zero, tested with = 0", "An empty string, tested with = ''", "'No value' (unknown/absent) — tested with IS NULL, because = NULL is always UNKNOWN and matches nothing", "False, tested with = false"],
+    "correct": 2,
+    "explanation": "NULL marks the absence of a value — not zero, empty, or false. Under three-valued logic any comparison with NULL is UNKNOWN, so `= NULL` never matches. The only correct test is IS NULL / IS NOT NULL."
+  },
+  {
+    "stage": "post",
+    "question": "A table has 90 rows where age <> 30 and 5 rows where age IS NULL. How many rows does `SELECT * FROM t WHERE age <> 30` return?",
+    "options": ["95 — all non-30 rows", "90 — the NULL rows are excluded because `NULL <> 30` is UNKNOWN, and only TRUE rows are returned", "5 — only the NULLs", "0"],
+    "correct": 1,
+    "explanation": "For the NULL-age rows, `age <> 30` evaluates to UNKNOWN, and WHERE only returns rows where the condition is TRUE. To include them you'd write `WHERE age <> 30 OR age IS NULL`."
+  },
+  {
+    "stage": "post",
+    "question": "Which timestamp choice is almost always right for recording when something happened?",
+    "options": ["TEXT like '2026-07-17 14:30'", "TIMESTAMP without time zone", "TIMESTAMPTZ, storing the instant in UTC and converting to local time only for display", "DATE only"],
+    "correct": 2,
+    "explanation": "TIMESTAMPTZ records a true instant normalized to UTC, avoiding timezone ambiguity. Storing timestamps as TEXT throws away validation, correct sorting, and date arithmetic; plain TIMESTAMP loses the zone."
+  }
+]

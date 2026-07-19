@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "A byte just holds a number from 0 to 255. So what has to happen for the number 72 to mean the letter 'H'?",
+    "options": ["The hardware physically changes", "Everyone agrees on a table that maps numbers to characters", "72 always means H by law of physics", "The byte becomes bigger"],
+    "correct": 1,
+    "explanation": "Text is just numbers plus a shared agreement (an encoding/table) that says which number is which character. ASCII is that table for the first 128 characters."
+  },
+  {
+    "stage": "check",
+    "question": "In ASCII, 'A' is 65. What is 'a', given that uppercase and lowercase are 32 apart?",
+    "options": ["33", "66", "97", "128"],
+    "correct": 2,
+    "explanation": "'a' = 65 + 32 = 97. ASCII was designed so uppercase and lowercase letters differ by exactly 32, which is a single bit flip."
+  },
+  {
+    "stage": "check",
+    "question": "What is the single biggest reason UTF-8 became the dominant text encoding on the internet?",
+    "options": ["It is the smallest possible for every character", "Every character is exactly one byte", "The first 128 code points (all of ASCII) stay one byte, so old ASCII text is already valid UTF-8", "It has no replacement character"],
+    "correct": 2,
+    "explanation": "UTF-8 encodes code points 0-127 (all of ASCII) as a single identical byte, so decades of existing ASCII text is automatically valid UTF-8. Backward compatibility drove its adoption."
+  },
+  {
+    "stage": "check",
+    "question": "Why does the word 'café' take 5 bytes in UTF-8 even though it is 4 characters?",
+    "options": ["UTF-8 adds a byte at the end", "'é' is not ASCII, so UTF-8 stores it as 2 bytes", "All characters are 2 bytes", "It is a bug"],
+    "correct": 1,
+    "explanation": "UTF-8 is variable-length. 'c', 'a', 'f' are ASCII (1 byte each), but 'é' has a larger code point (U+00E9) that UTF-8 stores in 2 bytes — so 4 characters become 5 bytes. Character count is not byte count."
+  },
+  {
+    "stage": "post",
+    "question": "You see 'café' where 'café' should be. What almost certainly happened?",
+    "options": ["The file is corrupted and must be retyped", "Bytes written in UTF-8 were decoded with a different encoding (e.g. Latin-1)", "The font is missing", "The network dropped a byte"],
+    "correct": 1,
+    "explanation": "That garble is mojibake: the bytes are fine, but they were read back with the wrong encoding, so each byte was looked up in the wrong table. The fix is to decode with the correct encoding (UTF-8), not to retype anything."
+  },
+  {
+    "stage": "post",
+    "question": "What is the difference between Unicode and UTF-8?",
+    "options": ["They are the same thing", "Unicode is the catalog assigning each character a number (code point); UTF-8 is one way to store those numbers as bytes", "UTF-8 is older than Unicode", "Unicode is only for emoji"],
+    "correct": 1,
+    "explanation": "Unicode defines which number (code point) each character is; it says nothing about bytes. An encoding like UTF-8 is the rule for turning those code points into actual bytes. Other encodings of Unicode exist (UTF-16, UTF-32), but UTF-8 dominates."
+  }
+]

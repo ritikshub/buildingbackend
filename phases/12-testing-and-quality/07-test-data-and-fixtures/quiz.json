@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your integration suite loads a 4,374-line `fixtures/seed.sql` before every run. To test pagination you add one row — a third order for the shared admin user, `user_id = 1`. Roughly how many of the suite's 240 tests should you expect to go red?",
+    "options": [
+      "One or two — only tests that specifically assert on that user's order list can be affected",
+      "About 52, roughly a fifth of the suite, most of them about things other than orders",
+      "None — adding a row cannot break a test, only changing or deleting one can",
+      "All 240, because the whole suite shares the same fixture file"
+    ],
+    "correct": 1,
+    "explanation": "Measured in this lesson: 52 of 240 tests (21.7%), against 0 for the same suite built on factories. The tempting answer is 'one or two', and it is the answer a careful engineer gives, because it is what the *change* logically touches. It is wrong because it reasons about the change instead of about the binding: 116 of the 240 tests (48.3%) bound to user 1, since a shared seed is searched by grep and the first row that satisfies your precondition is almost always the god fixture. Anything reading that user's order count, order list or order sum is now red — invoice totals, dashboard totals, refund credit — none of which are about pagination. 'All 240' overshoots for the same reason in reverse: only the tests whose assertions actually read the changed cells break."
+  },
+  {
+    "stage": "check",
+    "question": "The lesson measures that the same 240-test suite performs 298 assertion reads in both the shared-seed world and the factory world — the identical number. What changes between the two, and why does it matter?",
+    "options": [
+      "The factory world performs fewer reads per test, which is what makes it cheaper to change",
+      "The reads spread across 266 distinct cells instead of 92, and only one cell is shared by more than one test",
+      "The factory world reads fewer rows in total, so there is less data to keep consistent",
+      "Nothing meaningful changes; the two worlds are equivalent and the choice is a style preference"
+    ],
+    "correct": 1,
+    "explanation": "Both worlds do exactly 298 reads because the suite asserts the same things either way — the assertions did not change, only where their data came from. The shared world concentrates those reads onto 92 cells (28 tests on `user[1].orders.sum_total` alone, 34 cells read by two or more tests); the factory world spreads them across 266, of which exactly 1 is shared by more than one test, and that one is the VAT reference rate. Answer 1 is tempting because factories feel lighter, but they are not: the SubFactory chain writes 9 rows per requested row, so factories usually write *more*. The win is not volume, it is that a change to one test's data can only affect that test."
+  },
+  {
+    "stage": "check",
+    "question": "A test factory generates supposedly-unique emails with `f\"user{random.randint(1, 10**6)}@test.com\"`. At what suite size does this alone give roughly a 1% chance of a red build on any given run?",
+    "options": [
+      "Around 143 tests — the collision probability grows with the square of the suite size",
+      "Around 10,000 tests — you need to approach the size of the value space before collisions matter",
+      "Around 1,000 tests — one in a thousand draws will hit a used value",
+      "It never reaches 1%; with a million slots the probability stays negligible at any realistic suite size"
+    ],
+    "correct": 0,
+    "explanation": "Computed exactly and confirmed by simulation in this lesson: 143 tests. It is a birthday problem (Feller 1968, sec. II.3), so what matters is not draws-versus-slots but *pairs* of draws — n(n-1)/2 of them — which makes the probability grow with the square of the suite size. Answers 2 and 3 are the intuitive linear readings and they are the reason this bug survives in real suites: at 1,000 tests the measured probability is already 39.3267% analytic and 41.6000% simulated, and at 5,000 it is 99.999634%, meaning the suite passes 0.000366% of the time. A `factory_boy` Sequence removes the whole class for the price of one integer of state."
+  },
+  {
+    "stage": "check",
+    "question": "300 tests each need a 1,000-row corpus. Building it per test with a batched `executemany` writes 300,000 rows in 1,200 statements. A session-scoped corpus built once should therefore write 1,000 rows — a 300x saving. Measured, it writes 70,000. Why?",
+    "options": [
+      "Batched inserts are compressed, so the row counts are not directly comparable",
+      "The session fixture is rebuilt whenever pytest changes module, so it runs several times",
+      "69 of the 300 tests (23.0%) write to the corpus and cannot share it, so they build their own",
+      "sqlite3 counts index maintenance as additional row writes"
+    ],
+    "correct": 2,
+    "explanation": "Measured: 23.0% of the tests mutate the corpus, so the shared corpus delivers 4.3x rather than the 300x it appears to promise — 1,000 rows for the shared build plus 69 x 1,000 for the writers. This is the rule the whole section reduces to: you cannot share a corpus with a test that changes it. Answer 2 is the tempting one because session-scope surprises are real (notably `pytest-xdist`, which gives every worker its own session fixture), but scope was not the mechanism here. Note also what batching does and does not do: it cut statements 300,900 to 1,200 — 251x — and cut rows written by exactly 0x. Rows are the floor you cannot batch away."
+  },
+  {
+    "stage": "post",
+    "question": "A team replaces its shared seed with object mothers — `admin_user()`, `suspended_user()`, and so on — and reports that fixtures are now self-documenting. What does this lesson's measurement say they have and have not fixed?",
+    "options": [
+      "Fixed: both coupling and visibility. Object mothers are equivalent to factories with better names",
+      "Fixed: nothing measurable. An object mother is a shared fixture behind a function call",
+      "Fixed: coupling, since each mother is independent. Not fixed: visibility — 240 of 240 tests still assert on values the test body never states, and the suite needed 145 distinct mothers for 240 tests",
+      "Fixed: visibility, since the mother's name states the precondition. Not fixed: performance, since each mother writes more rows"
+    ],
+    "correct": 2,
+    "explanation": "Object mothers do decouple — each call returns a fresh specimen, so the blast-radius problem genuinely goes away. What they do not fix is relevance: `admin_user()` is a name, not data, so the 22 fields it sets live one hop away and 240 of 240 tests still assert on a value their own body never mentions, exactly as with the shared seed. And the name being the precondition set is what makes them scale badly: 240 tests demanded 145 distinct mothers (1.7 tests each, ceiling 2^15), costing 1,063 lines against a factory's 55, and one new required column costs 145 edits against 1. Answer 4 is the common belief and inverts the result."
+  },
+  {
+    "stage": "post",
+    "question": "You are told a production dump is safe for testing because emails were replaced with `sha256(email)` and the city column was shuffled so no row describes a real person. What do this lesson's measurements say?",
+    "options": [
+      "Both controls are sound; the remaining risk is access control on the test database",
+      "The hash is sound but the shuffle is not, because shuffling changes the marginal distribution the tests rely on",
+      "The hash was reversed for 100% of rows by enumerating 60,000 candidate addresses, and the shuffle preserved the marginal exactly while destroying joins — leaving 4.86% of rows in their own address's city and breaking 43 of 240 tests",
+      "Neither matters, because 99.9% of rows are already unique on (postcode, birth date, gender) so the email column is irrelevant"
+    ],
+    "correct": 2,
+    "explanation": "Both controls failed, and in opposite directions. The hash covers a domain the attacker can enumerate — corporate addresses follow a published format, so hashing the whole 200 x 300 name space, 60,000 candidates, re-identified 20,000 of 20,000 rows. The shuffle preserved the marginal distribution *exactly* (every city appears the same number of times, every dashboard looks right) and destroyed the joint distribution: only 4.86% of rows still match their own address's city, and 43 of the 240 tests assert a cross-table invariant and go red for no reason connected to the code. Answer 4 states a true fact from the lesson — (postcode, birth_year, birth_day, gender) leaves 99.9% of rows unique — and draws the wrong conclusion: a second independent re-identification path does not make the first one harmless."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "After a successful login, the next request the user makes arrives with no memory of who they are. Why, and what's wrong with just storing `user=alice` in a cookie to fix it?",
+    "options": [
+      "HTTP keeps a connection open, so this shouldn't happen; it's a bug in the server",
+      "HTTP is stateless — each request is independent — so the server must be reminded who the caller is on every request. Storing `user=alice` in a cookie fails because the client fully controls the cookie: anyone can send `user=admin`. Identity the client asserts is not identity; the server must hand out an unguessable token it maps to server-side state",
+      "The cookie approach is fine as long as the cookie is sent over HTTPS",
+      "You should re-send the password on every request instead"
+    ],
+    "correct": 1,
+    "explanation": "Statelessness means no request remembers the last, so a session is the server's mechanism for carrying identity forward. A plaintext identity cookie is the forged-token bug from Lesson 1 — client-controlled data can't establish identity. The fix is a random session ID mapped to server-held data, or a signed cookie whose contents can't be tampered with. Re-sending the password everywhere massively increases exposure and breaks MFA."
+  },
+  {
+    "stage": "check",
+    "question": "Why must a session ID be generated from a CSPRNG with high entropy, rather than something like `session_<incrementing_number>`?",
+    "options": [
+      "Because long IDs compress better in the cookie store",
+      "Because the session ID is a bearer token — whoever presents it is treated as the user, with no password needed. If IDs are sequential, derived from the user ID, or from a weak RNG, an attacker predicts or enumerates valid sessions and walks into accounts. It needs ≥128 bits of unpredictable entropy and must be opaque (encode nothing an attacker can read or forge)",
+      "Because the framework requires IDs to be exactly 32 bytes",
+      "Because random IDs are easier to store in Redis than sequential ones"
+    ],
+    "correct": 1,
+    "explanation": "A session ID is the credential once login is done, so its only defense against theft-by-guessing is unpredictability. Sequential or user-derived IDs are trivially enumerated; a weak PRNG is reconstructable from outputs (Lesson 2). ≥128 bits from a CSPRNG makes the space unsearchable, and keeping it opaque means it leaks no exploitable structure."
+  },
+  {
+    "stage": "check",
+    "question": "Your session cookie is missing the `HttpOnly` attribute. A stored-XSS bug appears on the site. What does that combination allow?",
+    "options": [
+      "Nothing new — HttpOnly only affects performance",
+      "The injected JavaScript can read `document.cookie` and exfiltrate the session ID to the attacker, who then replays it and is logged in as the victim — no password needed. `HttpOnly` would have hidden the cookie from JavaScript entirely, preventing the theft (though the XSS could still make in-page requests riding the session, so you still fix the XSS)",
+      "The attacker can read the cookie only if it also lacks the Secure flag",
+      "The browser will refuse to send the cookie, logging the user out"
+    ],
+    "correct": 1,
+    "explanation": "HttpOnly removes the cookie from JavaScript's reach, so an XSS payload can't steal it via document.cookie — the single most common session-theft vector. Without it, one XSS bug equals full account takeover across every affected user. HttpOnly is not a substitute for fixing XSS (script running in the page can still act as the user), but it turns 'steal the session forever' into 'act only while the script runs'."
+  },
+  {
+    "stage": "check",
+    "question": "What does the `SameSite` cookie attribute defend against, and what does `SameSite=Lax` do?",
+    "options": [
+      "It encrypts the cookie so other sites can't read its value",
+      "It controls whether the browser attaches the cookie to requests initiated by OTHER sites, which is the mechanism behind CSRF. `Lax` (the modern default) sends the cookie on top-level navigations to your site but NOT on cross-site POSTs or subresource loads, so a malicious site can't silently make state-changing requests that ride the victim's session. `Strict` never sends it cross-site; `None` always does and then requires Secure",
+      "It restricts the cookie to a single browser tab",
+      "It prevents the cookie from being sent over HTTP, like Secure does"
+    ],
+    "correct": 1,
+    "explanation": "CSRF works because the browser auto-attaches your cookies to requests another site triggers. SameSite lets the server say 'don't send this cross-site.' Lax blocks the dangerous cross-site POST while keeping normal navigation working, which is why it's the default; Strict is stronger but can log users out when they follow inbound links. SameSite is a primary CSRF defense, completed with tokens in Lesson 10."
+  },
+  {
+    "stage": "post",
+    "question": "Session fixation is defeated by rotating the session ID at login. Precisely why does rotation break the attack?",
+    "options": [
+      "Because the new ID is longer and harder to guess",
+      "Because the attack depends on the victim authenticating under an ID the attacker already knows. If the server issues a brand-new random ID upon successful login and discards the pre-login one, the only ID the attacker ever holds is the pre-login value — which now authenticates no one. The attacker's copy becomes worthless because it was never the ID that got logged in",
+      "Because rotation encrypts the session data so the attacker can't read it",
+      "Because it forces the victim to log in again, alerting them to the attack"
+    ],
+    "correct": 1,
+    "explanation": "Fixation plants a known ID and waits for it to become authenticated. Rotation severs that link: authentication produces a fresh ID the attacker never saw, and the planted ID is either discarded or remains unauthenticated. Rotating only at logout wouldn't help — the damage happens the moment the victim's login blesses the attacker-known ID, so rotation must occur exactly at (and after) every privilege change."
+  },
+  {
+    "stage": "post",
+    "question": "A signed cookie (stateless) and a server-side session both authenticate requests. What's the decisive difference when you need to force-log-out a user immediately?",
+    "options": [
+      "There is no difference; both revoke instantly",
+      "Server-side sessions win: the data lives in a store the server checks every request, so deleting the entry kills the session instantly and globally (and lets you revoke all of a user's sessions). A signed cookie is validated purely by its signature with no server lookup, so you can't revoke a specific one before it expires without adding extra state (a denylist), which reintroduces the very statefulness you avoided",
+      "Signed cookies revoke instantly because the server controls the signing key",
+      "Server-side sessions can't be revoked because the client holds the cookie"
+    ],
+    "correct": 1,
+    "explanation": "Revocability is the core tradeoff. Because a server-side session requires a per-request store lookup, removing the record ends the session immediately — enabling logout-everywhere, force-logout on password change, and anomaly response. A signed/stateless token is trusted on signature alone, so short of maintaining a denylist (extra state) it stays valid until expiry. This exact tradeoff drives the JWT discussion in Lesson 6."
+  }
+]

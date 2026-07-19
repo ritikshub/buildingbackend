@@ -1,0 +1,30 @@
+[
+  {
+    "question": "A payment POST times out. Why is retrying without an idempotency key unsafe?",
+    "options": ["Retries are always blocked by the server", "The client can't tell whether the request never arrived, failed, or succeeded with the response lost — a blind retry in the last case double-charges", "The token expires", "POST is idempotent so it's actually safe"],
+    "correct": 1,
+    "explanation": "On timeout the client faces three indistinguishable worlds; the only safe move is to retry, but if the original actually succeeded and only the response was lost, a blind retry creates a second charge. POST is not idempotent, so each retry can act again.",
+    "stage": "pre"
+  },
+  {
+    "question": "Why must the server 'claim the key' (insert the record) BEFORE executing the operation, rather than checking if it exists and then inserting?",
+    "options": ["It's faster", "Check-then-insert is a race — two simultaneous duplicates both pass the check; an atomic claim via the primary-key constraint lets exactly one win", "The database requires it", "To avoid storing the response"],
+    "correct": 1,
+    "explanation": "Two concurrent duplicate requests can both see 'key doesn't exist' and both execute. Inserting the key row atomically first (INSERT ... ON CONFLICT DO NOTHING) means exactly one wins the insert and executes; the loser sees the row and waits or replays.",
+    "stage": "post"
+  },
+  {
+    "question": "What should happen when a key is reused with a DIFFERENT request body?",
+    "options": ["Execute the new request", "Reject it (e.g. 422) — same key with a different payload is a client bug, not a retry", "Silently replay the old response", "Merge the two requests"],
+    "correct": 1,
+    "explanation": "The server fingerprints the request (hash of method+path+body). If a stored key arrives with a different fingerprint, that's a client bug, not a retry, and returning the unrelated stored response would be wrong — so reject it.",
+    "stage": "post"
+  },
+  {
+    "question": "Which methods actually need idempotency-key bookkeeping?",
+    "options": ["All of them", "GET only", "POST — GET/PUT/DELETE are already idempotent by contract", "Only DELETE"],
+    "correct": 2,
+    "explanation": "GET (safe), PUT (full replace), and DELETE are idempotent by definition, so retries are already safe with no extra state. Only POST creates on each call, so only POST needs the idempotency-key mechanism.",
+    "stage": "post"
+  }
+]

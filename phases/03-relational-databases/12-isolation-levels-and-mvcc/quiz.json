@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why do databases offer multiple isolation levels instead of always giving perfect isolation?",
+    "options": ["To confuse developers", "Perfect isolation is expensive — it forces transactions to wait on each other — so databases let you trade correctness against concurrency", "Lower levels store less data", "It's a historical accident with no real effect"],
+    "correct": 1,
+    "explanation": "Making every transaction behave exactly as if alone forces waiting, which kills concurrency. Isolation is a spectrum so you can choose how much anomaly-protection you need versus how much parallelism you want."
+  },
+  {
+    "stage": "check",
+    "question": "What is a dirty read?",
+    "options": ["Reading a corrupted disk block", "Reading another transaction's uncommitted change, which may later be rolled back — so you acted on data that never really existed", "Reading the same row twice", "Reading with a stale index"],
+    "correct": 1,
+    "explanation": "A dirty read sees uncommitted data from another transaction. If that transaction rolls back, you made decisions based on a value that never truly existed. Read Committed and above prevent it."
+  },
+  {
+    "stage": "check",
+    "question": "What distinguishes a non-repeatable read from a phantom read?",
+    "options": ["They're identical", "Non-repeatable: the same ROW gives a different value on re-read (a committed update); phantom: the same QUERY returns a different SET of rows (a committed insert/delete)", "Non-repeatable is about writes only", "Phantom reads only happen at Serializable"],
+    "correct": 1,
+    "explanation": "A non-repeatable read is a changed value for a row you read before. A phantom is a changed result set — rows appearing or disappearing when you re-run the same query — because another transaction inserted or deleted."
+  },
+  {
+    "stage": "check",
+    "question": "What is the core idea of MVCC (Multi-Version Concurrency Control)?",
+    "options": ["It locks every row before reading", "It keeps multiple versions of each row so each transaction reads a consistent snapshot — readers don't block writers and writers don't block readers", "It stores only the latest version", "It disables concurrency"],
+    "correct": 1,
+    "explanation": "Instead of overwriting, an update writes a new row version and leaves the old one. Each transaction reads from a snapshot of versions committed as of its start, so long reads and busy writes proceed without blocking each other."
+  },
+  {
+    "stage": "post",
+    "question": "A heavily-updated Postgres table grows on disk even though its row count is stable. Why, and what reclaims the space?",
+    "options": ["A bug in Postgres", "MVCC leaves old row versions behind on every update/delete; these dead versions bloat the table until VACUUM (autovacuum) reclaims the space", "The indexes are duplicated", "The disk is failing"],
+    "correct": 1,
+    "explanation": "Under MVCC, updates create new versions and leave old ones as dead tuples no transaction can see. They accumulate as bloat until VACUUM reclaims them — the cost MVCC pays for non-blocking reads and writes."
+  },
+  {
+    "stage": "post",
+    "question": "Which is the right approach to choosing an isolation level?",
+    "options": ["Always use Serializable everywhere", "Always use Read Uncommitted for speed", "Choose per transaction: Read Committed by default, higher when a transaction needs a stable view or multi-row invariant, and retry on serialization failures", "Never change it from the database default"],
+    "correct": 2,
+    "explanation": "Isolation is a deliberate per-transaction choice. Read Committed is a good default; reach for Repeatable Read or Serializable when correctness demands it, and be ready to catch and retry serialization failures at the strongest level."
+  }
+]

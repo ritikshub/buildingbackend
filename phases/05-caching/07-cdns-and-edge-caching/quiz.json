@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why can't a fast origin server alone give a distant user a fast experience?",
+    "options": ["Because servers get tired", "Because round-trip latency is bounded by the speed of light over distance — bytes spend most of the time in flight across the ocean", "Because DNS is slow", "Because the user's browser is slow"],
+    "correct": 1,
+    "explanation": "A Sydney-to-Virginia round trip is ~160 ms of pure propagation at best. No matter how fast the origin answers, the distance dominates. The fix is to stop sending requests across the planet — cache near the user."
+  },
+  {
+    "stage": "check",
+    "question": "What is a CDN, in one sentence?",
+    "options": ["A faster type of database", "A globally distributed fleet of edge caching servers in PoPs near users, so requests hit a nearby edge instead of your distant origin", "A load balancer inside your datacenter", "A DNS provider"],
+    "correct": 1,
+    "explanation": "A Content Delivery Network places caching servers (edges) in Points of Presence worldwide. Users are routed to the nearest edge, which serves cached content and only falls back to origin on a miss."
+  },
+  {
+    "stage": "check",
+    "question": "How does anycast route a user to the nearest edge?",
+    "options": ["It asks the user to pick a region", "The same IP is announced from every PoP, and internet routing (BGP) delivers the packet to the topologically nearest announcement", "It uses a different IP per user", "It sends the request to all edges at once"],
+    "correct": 1,
+    "explanation": "With anycast, hundreds of PoPs advertise one identical IP. BGP naturally routes each user's packets to the closest one, so 'nearest server' is decided by the network with no per-user logic."
+  },
+  {
+    "stage": "check",
+    "question": "Why does a CDN use an origin shield (a middle tier) between edges and origin?",
+    "options": ["To store more data", "So a hot object expiring doesn't trigger hundreds of simultaneous edge-to-origin fetches — the shield collapses many edge misses into one origin fetch (global single-flight)", "To terminate TLS", "To pick the nearest edge"],
+    "correct": 1,
+    "explanation": "Without a shield, 300 edges each missing would stampede the origin. The shield is a regional intermediary all edges consult on a miss, collapsing the herd into one origin fetch — lesson 6's idea at planetary scale."
+  },
+  {
+    "stage": "post",
+    "question": "Why is fingerprinting a static asset's filename (app.9f8c2a.js) with a near-infinite TTL a best practice?",
+    "options": ["It makes files smaller", "The content hash is in the URL, so a change produces a NEW URL — caches keep the old one forever safely and fetch the new one automatically, with no purge and no stale risk", "It encrypts the file", "It forces revalidation on every request"],
+    "correct": 1,
+    "explanation": "Versioned URLs are immutable: change the content, change the URL. You can cache each version forever; the browser/edge fetches the new filename after a deploy and the old one simply ages out — no purge call, no staleness."
+  },
+  {
+    "stage": "post",
+    "question": "What's the dangerous pitfall of marking a personalized page Cache-Control: public on a CDN?",
+    "options": ["It uses more bandwidth", "A shared edge cache stores one user's authenticated response and serves it to a different user requesting the same URL — a data breach", "The page loads slower", "Nothing; public is always safe"],
+    "correct": 1,
+    "explanation": "Shared caches are shared. Marking authenticated/personalized content public lets the edge hand user A's data to user B. Such responses must be private/no-store (or keyed so they can never be shared)."
+  }
+]

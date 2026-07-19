@@ -1,0 +1,59 @@
+# The experiment sandbox. One command brings up:
+#   - app      : Python + all lesson deps, with the repo mounted live at /workspace
+#   - postgres : for the database / idempotency / pagination lessons
+#   - redis    : for the caching / rate-limiting lessons
+#
+#   docker compose up -d          # start everything
+#   docker compose exec app bash  # get a shell inside the sandbox
+#   docker compose down           # stop (add -v to also wipe the db volume)
+#
+# Nothing here touches your global system; it all lives in containers.
+
+services:
+  app:
+    build: .
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace          # live bind-mount: edit on your Mac, run in the container
+    ports:
+      - "9999:8000"            # FastAPI/uvicorn -> reach it at http://localhost:9999 on your Mac
+                               # (run a lesson inside: uvicorn app:app --host 0.0.0.0 --port 8000)
+    environment:
+      DATABASE_URL: postgresql+asyncpg://dev:dev@postgres:5432/backend
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: backend
+    ports:
+      - "55432:5432"           # connect from your Mac at localhost:55432 (psql/GUI); internal stays 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev -d backend"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "63790:6379"           # connect from your Mac at localhost:63790; internal stays 6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

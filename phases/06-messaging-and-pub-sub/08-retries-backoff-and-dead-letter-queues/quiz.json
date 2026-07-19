@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A consumer calls a payment API and gets back a 400 Bad Request because the message has a null amount_cents field. Your handler catches the exception and retries with exponential backoff, up to 12 deliveries. What actually happens?",
+    "options": [
+      "The retry eventually succeeds, because backoff gives the payment API time to recover from whatever caused the 400",
+      "All 12 attempts fail identically, because the cause is the message itself rather than a condition in the world. Those 11 extra attempts are pure waste that fill logs, burn consumer capacity, and - in an ordered partition - block every message behind this one for the whole 254-second retry window. A permanent failure must be dead-lettered on the first attempt",
+      "The broker detects that the error is non-retryable and moves the message to the DLQ automatically after the first failure",
+      "It is harmless: 11 extra attempts against one message is negligible load, and retrying uniformly keeps the error-handling code simple"
+    ],
+    "correct": 1,
+    "explanation": "Retrying a permanent failure is the defining beginner mistake in this subject. The measured run classified 79 permanently-broken messages out of 600: retrying them 5 times each cost 316 attempts that could not possibly succeed - 28.4% of all work done - and changed the number of successful messages not at all (521 either way). Brokers do not classify errors for you; only your code knows whether a 400 means 'bad bytes' or something recoverable. RFC 9110's 4xx/5xx split is the starting map."
+  },
+  {
+    "stage": "check",
+    "question": "Your fleet uses capped exponential backoff with no jitter. A dependency dies, then recovers 45 seconds later. Why does the recovery frequently fail, and what does adding jitter change?",
+    "options": [
+      "Recovery fails because exponential delays grow too long, so clients give up before the dependency is back; jitter shortens the average delay and gets them back sooner",
+      "Recovery fails because of clock skew between clients; jitter compensates by randomising each client's view of the current time",
+      "Because every client computes the same delay from the same formula, clients that failed together retry together forever. Backoff spreads retries in time but not across clients, so the whole backlog arrives in one second - measured at 112 retries/s against a 60 req/s capacity, which is shed and re-synchronises the fleet. Full jitter spread the same attempts to a 15/s peak and halved the drain time from 160.0s to 74.7s",
+      "Nothing is wrong with the recovery itself - jitter only reduces total request count, which lowers cost but does not affect success rates"
+    ],
+    "correct": 2,
+    "explanation": "This is the thundering herd. Backoff addresses the frequency of retry waves; only jitter addresses their amplitude, because amplitude comes from synchronisation across clients. The histogram makes it visible: exponential renders as spikes that get further apart but never shorter, while full jitter is a decaying smear with no spike at all. Note that the jittered run made slightly MORE total attempts (1,494 vs 1,440) and still drained in less than half the time - the win is the shape of the load, not the amount."
+  },
+  {
+    "stage": "check",
+    "question": "A team caps every consumer at max_attempts = 3 across a 300-instance fleet and considers retry amplification handled. What does a struggling dependency actually experience, and what does a retry budget add?",
+    "options": [
+      "A per-request limit bounds what one request does, but the dependency sees the sum across all clients: up to 3x its normal load, delivered precisely when it is weakest, with no individual client misbehaving. A retry budget bounds retries as a fraction of traffic (10% is typical), so the bound holds regardless of client count - and because a failing system generates little successful traffic, it earns almost no budget and retries stop almost entirely",
+      "Nothing further is needed - 3 attempts per request is already a hard bound on the load any dependency can receive",
+      "The fleet should switch to unlimited retries with longer backoff, since a longer delay is what protects the dependency rather than an attempt cap",
+      "A retry budget is equivalent to max_attempts = 3 but expressed as a percentage, so it changes the accounting without changing the behaviour"
+    ],
+    "correct": 0,
+    "explanation": "Retry amplification is a fleet-level property that per-request limits cannot see. The token-bucket budget has the crucial feedback direction: it gets MORE conservative exactly as the situation gets worse, because tokens are earned from successful traffic. In the measured run, the budget cut load on the dying dependency from 1,294 calls to 504 while still delivering all 200 messages - the cost was paid in drain time (74.7s to 195.2s) and 493 park events, not in lost messages. Denied retries must be parked, never discarded."
+  },
+  {
+    "stage": "check",
+    "question": "A poison message sits at offset 12 of an ordered partition holding 40 messages. Your consumer retries it in place with exponential backoff. What is the measured cost, and what does moving it to a retry topic actually trade away?",
+    "options": [
+      "Retrying in place is fine because the backoff keeps CPU usage low; the retry topic only saves memory on the consumer",
+      "Both approaches cost the same throughput; the retry topic only matters because it gives you a nicer place to inspect failed messages",
+      "Moving the message to a retry topic loses it entirely unless the retry topic has its own DLQ, so retrying in place is the safer default",
+      "Retrying in place forever collapsed throughput from 50 msg/s to 0.04 msg/s - a 1,250x drop - with 27 messages blocked indefinitely, because the broker cannot deliver offset 13 until offset 12 is acknowledged. Parking to a retry topic on the first failure cost 1.01x throughput, essentially nothing, and the price was ordering: 27 messages for that key overtook the parked one"
+    ],
+    "correct": 3,
+    "explanation": "Head-of-line blocking is what makes a poison message a pipeline outage rather than a single failure. Bounding it with a max delivery count only improved throughput to 0.18 msg/s - better solely in that it terminates after 212 seconds. Parking is nearly free in throughput and expensive in exactly one currency: ordering for that partition key. Whether that is acceptable is the Lesson 07 question - was ordering a correctness requirement, or a habit? If applying message 13 before 12 genuinely corrupts state, halting and paging a human may be the correct choice."
+  },
+  {
+    "stage": "post",
+    "question": "You redrive 120 messages that have sat in the DLQ for 6.2 hours after a downstream outage. Your consumer is idempotent, using an idempotency key with a dedup store. What determines whether the replay is safe?",
+    "options": [
+      "Nothing further - the consumer is idempotent, so replaying any message any number of times is safe by definition",
+      "Whether the dedup store's TTL is longer than the time the messages spent in the DLQ. Messages that were partially applied before failing (the charge landed, the ack timed out) are only suppressed while their idempotency keys still exist. Measured on the same 120 messages: a 24-hour TTL suppressed all 35 duplicates for zero double charges, while a 1-hour TTL suppressed none and double-charged EUR 4,622.09",
+      "Whether the redrive is rate-limited - replaying too fast is the only real risk, and duplicates are handled by the broker's exactly-once delivery mode",
+      "Whether the original messages were removed from the DLQ before replay, since leaving them creates a loop that reprocesses each message twice"
+    ],
+    "correct": 1,
+    "explanation": "Idempotency in practice is a store of processed keys with an expiry, and an expiry is a deadline on your own safety guarantee. Once a key ages out, the consumer has no memory that the work was done and will do it again. The invariant that almost nobody writes down: dedup TTL must exceed the maximum time a message can sit in the DLQ - which means it must be checked against DLQ retention, not chosen in isolation. Same code, same messages, same button; the only variable was a TTL."
+  },
+  {
+    "stage": "post",
+    "question": "Service A retries 3 times into B, which retries 3 times into C, which retries 3 times into the database. A colleague also notes that one call has no timeout configured. What are the two distinct problems, and what fixes them?",
+    "options": [
+      "There is one problem - too many retries - and reducing every layer to a single attempt solves it",
+      "The amplification is harmless because each layer's retries are spread by backoff; only the missing timeout matters, and the fix is a longer visibility timeout",
+      "Retry amplification multiplies rather than adds: one request becomes 3x3x3 = 27 calls at the database, the deepest and usually least scalable layer. Fix by retrying at one layer only, propagating a deadline so inner layers stop when the caller has given up, and using retry budgets so the bound is a ratio not a product. The missing timeout is separate and worse: without it the retry never fires, the consumer slot is held forever, and you get neither success, failure, nor retry",
+      "Both are solved by adding jitter at every layer, since jitter prevents the retries from arriving simultaneously at the database"
+    ],
+    "correct": 2,
+    "explanation": "These are independent failures that compound. Amplification is multiplicative down a chain, so the layer with the least headroom sees the largest multiple - jitter changes the shape of that load but not its total, so it is not the fix here. The missing timeout is the more insidious one: an unbounded wait is worse than a failure, because a failure is actionable and a hang is not. Every remote call needs an explicit timeout shorter than the visibility timeout of the message being held, and the total retry window must be shorter than any deadline promised upstream."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A developer stores `{\"user\":\"alice\",\"admin\":false}` in a cookie, Base64-encodes it \"so users can't read or change it,\" and ships. What's wrong?",
+    "options": [
+      "Nothing — Base64 is a lightweight form of encryption suitable for cookies",
+      "Base64 is an encoding, not encryption: it has no key and hides nothing. Anyone decodes it in one line, changes `admin` to `true`, re-encodes, and sends it back. Encoding provides zero confidentiality and zero integrity — to make the cookie unforgeable you need a MAC (or a signature) over its contents; to make it unreadable you need encryption",
+      "The problem is only that JSON is used; a binary format would be safe",
+      "It's fine as long as the cookie is sent over HTTPS, since TLS encrypts it"
+    ],
+    "correct": 1,
+    "explanation": "Base64 exists to make bytes survive a text channel, not to keep a secret — it is a public, reversible round-trip. TLS protects the cookie in transit, but the client is the attacker here: they hold the cookie and can decode and edit it at rest. Integrity (unforgeability) comes from a MAC/signature over the contents; confidentiality (unreadability) comes from encryption. This is the forged-token bug from Lesson 1."
+  },
+  {
+    "stage": "check",
+    "question": "Why must you compare a MAC/tag with `hmac.compare_digest` rather than `==`?",
+    "options": [
+      "`==` is slower than compare_digest, so it hurts performance",
+      "`==` doesn't work correctly on byte strings, so it can return wrong results",
+      "`==` short-circuits at the first differing byte, so a guess with a correct first byte takes measurably longer to reject than one with a wrong first byte. Over many requests an attacker uses that timing signal to recover the correct tag one byte at a time. compare_digest always inspects every byte and takes constant time, removing the signal",
+      "compare_digest also encrypts the values before comparing them"
+    ],
+    "correct": 2,
+    "explanation": "This is a timing side-channel. A short-circuiting comparison leaks how many leading bytes matched, turning an infeasible 2^256 search into a linear byte-by-byte one against a server that will answer millions of times. Constant-time comparison inspects the whole input regardless of where the first difference is, so the response time reveals nothing. Use it for every secret-versus-secret check: MACs, tokens, password-hash outputs."
+  },
+  {
+    "stage": "check",
+    "question": "You need to generate session tokens. Why is `secrets.token_hex(16)` correct and `random.Random().randint(...)` dangerous?",
+    "options": [
+      "They are equivalent; `secrets` is just a newer name for the same generator",
+      "`random` is a PRNG built for statistical randomness and seeded from predictable state; from a handful of its outputs an attacker can reconstruct its internal state and predict all future values — including the next user's token. `secrets` is a CSPRNG seeded from the OS entropy pool and designed so past outputs reveal nothing about future ones",
+      "`random` produces numbers that are too small to be secure, but is otherwise fine for tokens",
+      "`secrets` is required only because it returns hex strings, which are easier to store"
+    ],
+    "correct": 1,
+    "explanation": "The Mersenne Twister behind `random` is fully reconstructable from its outputs and is not designed to resist prediction — exactly the wrong property for anything an attacker shouldn't guess. A CSPRNG (`secrets`, `os.urandom`) is seeded from OS entropy and built so that observing outputs gives no advantage in predicting the next one. Every security-bearing value — tokens, salts, keys, nonces, CSRF tokens — must come from the CSPRNG."
+  },
+  {
+    "stage": "check",
+    "question": "With asymmetric keys, you want to (a) send data only the recipient can read, and (b) prove a message came from you. Which key does each use?",
+    "options": [
+      "(a) encrypt with your private key; (b) sign with the recipient's public key",
+      "(a) encrypt with the recipient's public key, so only their private key can decrypt (confidentiality); (b) sign with your private key, so anyone can verify with your public key (authenticity). The two directions of a key pair carry two different meanings, which is why one key can't do both jobs",
+      "(a) and (b) both use the recipient's public key",
+      "(a) and (b) both use your private key, since it is the secret one"
+    ],
+    "correct": 1,
+    "explanation": "A key pair runs in two directions. Encrypting to a recipient uses their public key (they alone hold the matching private key to decrypt) — confidentiality. Signing uses your private key (only you hold it) and is verified with your public key that anyone can have — authenticity/integrity. Confusing the two is a classic error; the public key is for the world, the private key never leaves you."
+  },
+  {
+    "stage": "post",
+    "question": "An engineer encrypts each message with AES-GCM but reuses the same 96-bit nonce every time \"to save space.\" Why is this dangerous?",
+    "options": [
+      "It isn't dangerous as long as the key is strong and kept secret",
+      "Nonce reuse only makes the ciphertext slightly more compressible; the encryption is still secure",
+      "For AES-GCM, reusing a nonce with the same key is catastrophic: it leaks the XOR of plaintexts (breaking confidentiality) and, worse, lets an attacker recover the authentication subkey and forge valid tags — defeating the integrity guarantee entirely. A nonce must be unique per encryption under a key, which is why it comes from a CSPRNG (or a guaranteed-unique counter), never a fixed value",
+      "The risk is only that decryption becomes slower over time"
+    ],
+    "correct": 2,
+    "explanation": "GCM's security depends on the nonce never repeating for a given key. Repeat it and two things break: the keystream repeats (so XOR of two ciphertexts reveals XOR of plaintexts), and the GHASH authentication key becomes recoverable, allowing forgery of authenticated ciphertexts. So nonce reuse can be worse than no encryption, because it also destroys the tamper-detection you were relying on. Generate a fresh 96-bit nonce per message and store it with the ciphertext."
+  },
+  {
+    "stage": "post",
+    "question": "A teammate stores password-reset tokens as `sha256(user_id + server_secret)` and says \"it's hashed, so it's secure.\" What's the flaw?",
+    "options": [
+      "None — SHA-256 is a strong hash, so the token is unforgeable",
+      "A bare hash provides no keyed authenticity here and the construction `hash(secret + data)` is vulnerable (length-extension on SHA-256, and it's guessable if user_id is enumerable). The token also isn't random. The right approach is a high-entropy random token from a CSPRNG stored (hashed) server-side, or an HMAC/signature over the data with compare_digest verification — not a hand-rolled hash-of-secret-concatenation",
+      "The only problem is that SHA-256 is too slow for tokens; use MD5 instead",
+      "It should use `==` to compare tokens so the check is exact"
+    ],
+    "correct": 1,
+    "explanation": "Two issues. First, `hash(secret || data)` is the naive MAC construction HMAC exists to replace — SHA-256 is length-extendable, so an attacker who sees one valid token can sometimes forge others without the secret. Second, the token's unpredictability rests on user_id, which is often sequential and guessable. Reset tokens should be high-entropy random values (CSPRNG), single-use, expiring, and stored hashed; if you must authenticate data, use HMAC and verify in constant time — never a hand-assembled hash-of-concatenation."
+  }
+]

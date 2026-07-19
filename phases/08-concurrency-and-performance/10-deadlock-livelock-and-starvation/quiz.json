@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A transfer function does `with src.lock: with dst.lock: ...`. Two threads call it at the same moment with the arguments reversed — transfer(A, B) and transfer(B, A) — and the service stops responding. What will you find in your logs and metrics?",
+    "options": [
+      "A `LockError` or `TimeoutError` raised by whichever thread lost the race, with a stack trace pointing at the second acquisition",
+      "Nothing at all: no exception is raised, no log line is written, balances are unchanged, and the process burns about 0.1% of a core while the health check keeps returning 200. The only evidence that exists is a thread dump showing both threads stopped on the same `with dst.lock:` line",
+      "A spike to 100% CPU as both threads spin retrying the contended lock, which is what makes deadlock easy to spot on a dashboard",
+      "A segmentation fault or interpreter crash, because two threads holding each other's locks corrupts the lock's internal state"
+    ],
+    "correct": 1,
+    "explanation": "Deadlock is not an error condition — nothing failed, so nothing reports. Both threads are parked in the kernel on a futex, consuming no CPU and raising nothing. That silence is what makes it dangerous: your process stays alive and healthy-looking while every request touching those locks piles up behind it. A thread dump is the only artefact, and two threads stopped on the same acquisition line is the signature."
+  },
+  {
+    "stage": "check",
+    "question": "Coffman, Elphick and Shoshani (1971) proved deadlock requires mutual exclusion, hold-and-wait, no preemption, AND circular wait. Why does that decomposition matter practically?",
+    "options": [
+      "Because you must eliminate all four conditions to be safe, which is why deadlock-free concurrent code is so rare in practice",
+      "Because the four conditions let you calculate the probability of deadlock for a given workload and decide whether it is worth mitigating",
+      "Because all four are necessary, breaking any single one makes deadlock structurally impossible rather than merely rare — and each maps to a real technique: lock ordering (circular wait), acquire-all-at-once (hold-and-wait), timeout-and-backoff (no preemption), and immutability or message passing (mutual exclusion)",
+      "Because it proves that deadlock can only occur with exactly two threads and two locks, so any cycle longer than two is a different bug"
+    ],
+    "correct": 2,
+    "explanation": "Necessary conditions are a gift: you do not have to defeat all of them, only one. That turns an intractable problem — reasoning about every interleaving of every thread — into picking a discipline you can enforce and documenting it. The dining philosophers make this concrete: three different fixes, each removing a different one of the four conditions, all correct, with measurably different throughput."
+  },
+  {
+    "stage": "check",
+    "question": "In the Build It, three ways of ordering two account locks were benchmarked over 250,000 single-threaded two-lock transfers. What were the results?",
+    "options": [
+      "Unordered 430 ns baseline; `sorted((a,b), key=lambda x: x.id)` 681 ns (+251 ns, +58.3%); a plain `if a.id < b.id` comparison 460 ns (+30 ns, +6.9%). Both orderings give the identical safety guarantee, but the sort pays for a list allocation, two lambda calls and a general-purpose sort to order two items",
+      "All three were within measurement noise of each other, because lock acquisition dominates and the ordering logic is irrelevant",
+      "The sorted version was fastest, because Timsort has a fast path for already-ordered pairs that beats an explicit comparison",
+      "Ordering cost roughly 3x, which is the unavoidable price of deadlock freedom and the reason many teams accept occasional deadlocks instead"
+    ],
+    "correct": 0,
+    "explanation": "The safety guarantee is free; the idiom you use to express it is not. A comparison costs 30 ns and makes circular wait unconstructible — take that trade every time. But `sorted()` with a key lambda costs eight times as much for two elements, and on a path running 100k times a second that is real money. The lesson generalises: when a correctness discipline is nearly free, the only thing that can make it expensive is a careless implementation."
+  },
+  {
+    "stage": "check",
+    "question": "Your service has stopped making progress. You run `top` and see it consuming 37% of a core steadily, with throughput at zero and no errors in the logs. What is the most likely diagnosis and the fix?",
+    "options": [
+      "Deadlock — grab a thread dump, find the wait-for cycle, and impose a lock order on the pair involved",
+      "Livelock: threads are running, taking and releasing locks and redoing work, but a constant backoff keeps them colliding on the same schedule forever. In the Build It this pattern made 30 attempts and 60 lock operations with zero progress; adding `random.uniform(0, 2*period)` to the backoff resolved the same work in 6 attempts",
+      "Starvation — one thread is being denied the lock by barging, so switch to a FIFO lock to bound its wait",
+      "Normal operation under a CPU-bound workload; 37% of a core with no errors is not a fault condition"
+    ],
+    "correct": 1,
+    "explanation": "CPU usage is the fastest discriminator between the three stall modes and it takes five seconds to check. A deadlocked process is nearly idle — the Build It measured 0.1% of a core over the same wall time — because blocked threads consume nothing. A livelocked one is busy precisely because it is working, repeatedly, and throwing the result away. The cure is jitter, and it is the same mathematics as the retry storms in Phase 6: constant backoff re-synchronises contenders, randomised backoff separates them."
+  },
+  {
+    "stage": "post",
+    "question": "Eight threads hammered one `threading.Lock` for 0.8 s: 18,233 acquisitions/second, distributed [224, 279, 549, 961, 1764, 1782, 3877, 5164], with p50 and p99 wait both 0.000 ms and a max of 460 ms. Why did the percentiles look perfect?",
+    "options": [
+      "Because `threading.Lock` reports wait times only for uncontended acquisitions, so contended waits never enter the sample",
+      "Because 0.000 ms is a rounding artefact and the true p99 was around 290 ms, which the measurement was too coarse to capture",
+      "Because the starved thread barely appears in the sample: it acquired 224 times out of ~14,500 total, so its waits cannot move a p99 no matter how badly it suffered. Starvation is structurally invisible to percentiles over all requests; only the max and the per-thread counts reveal it",
+      "Because most mutexes are fair, so a well-behaved lock genuinely produces near-zero waits and the 460 ms max was an unrelated GC pause"
+    ],
+    "correct": 2,
+    "explanation": "A percentile is a rank over a sample, and the victim of starvation contributes almost no sample. This is the one failure mode in the lesson that aggregate latency metrics cannot see by construction — the dashboard shows a flawless lock while one actor waits 291 ms for a 50-microsecond critical section. Detecting it requires distributions across actors (per-thread, per-tenant, per-client), not across requests. The hand-built FIFO ticket lock fixed the tail at 3.06 ms but cost 60% of throughput: fairness is a purchase, not a free upgrade."
+  },
+  {
+    "stage": "post",
+    "question": "Your application starts receiving PostgreSQL `deadlock detected` errors (SQLSTATE 40P01) a few times an hour under normal traffic. What is the correct response?",
+    "options": [
+      "Page on-call for each one — a deadlock indicates data corruption and the affected transactions may have committed partially",
+      "Raise `deadlock_timeout` above your slowest transaction so the detector stops firing, which eliminates the errors",
+      "Disable the deadlock detector and rely on `lock_timeout` instead, since a timeout is cheaper than building the wait-for graph",
+      "Treat it as an expected outcome of concurrency: the detector built the wait-for graph, found a cycle and aborted a victim, so retry the whole transaction with randomised backoff, count the errors, and alert only on the rate. Then fix the cause by giving rows a deterministic lock order — `SELECT ... ORDER BY id FOR UPDATE` rather than letting the planner choose"
+    ],
+    "correct": 3,
+    "explanation": "A database cannot impose a lock order on SQL its users write, so it uses detection-and-recovery instead of prevention: after `deadlock_timeout` (default 1 s) it searches the wait-for graph for a cycle and rolls one transaction back. The victim's work is fully undone, so a retry is safe — that is exactly what atomicity buys you. Raising `deadlock_timeout` only delays detection while the cycle sits there; the real fix is application-side ordering, and the retry must be jittered or your retries will collide the same way the original transactions did."
+  }
+]

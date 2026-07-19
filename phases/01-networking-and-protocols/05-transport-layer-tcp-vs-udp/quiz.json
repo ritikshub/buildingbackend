@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "An IP address identifies a machine. What does a port number identify?",
+    "options": [
+      "The physical network cable in use",
+      "A specific program (endpoint) on that machine",
+      "The speed of the connection",
+      "The country the server is located in"
+    ],
+    "correct": 1,
+    "explanation": "A port is a 16-bit number (0–65535) that selects which program on a machine gets the bytes. The pair (IP address, port) is a socket, and a connection is fully identified by the 4-tuple of source IP+port and destination IP+port."
+  },
+  {
+    "stage": "pre",
+    "question": "Which sequence establishes a TCP connection before any data is sent?",
+    "options": [
+      "A single SYN packet",
+      "SYN, then SYN-ACK, then ACK (the three-way handshake)",
+      "A DNS lookup followed by a ping",
+      "Nothing — TCP just starts sending data"
+    ],
+    "correct": 1,
+    "explanation": "TCP is connection-oriented: the client sends SYN, the server replies SYN-ACK, the client sends ACK. This exchange synchronizes both sides' sequence numbers so every later byte can be acknowledged."
+  },
+  {
+    "stage": "check",
+    "question": "How does TCP recover from a packet that is lost in the network?",
+    "options": [
+      "It cannot; the data is lost permanently",
+      "The receiver keeps acking the last in-order byte, so the sender retransmits the missing segment",
+      "It switches to UDP automatically",
+      "The application must detect the loss and resend"
+    ],
+    "correct": 1,
+    "explanation": "Each byte has a sequence number and each reply an ack number. If a segment is lost, the receiver's acks stop advancing past the gap, signaling the sender to retransmit. That acknowledgment-and-retransmit loop is TCP's reliability mechanism."
+  },
+  {
+    "stage": "check",
+    "question": "Why does UDP echo code typically set a socket timeout on the client?",
+    "options": [
+      "To make the connection faster",
+      "Because UDP requires a handshake that can time out",
+      "Because a reply may never arrive — lost datagrams are normal for UDP, so blocking forever would hang",
+      "To encrypt the datagram"
+    ],
+    "correct": 2,
+    "explanation": "UDP is unreliable and has no acknowledgments or retransmission. A dropped datagram is simply gone and neither side is told, so a client that blocks on recvfrom() with no timeout could wait forever. The timeout turns 'no reply' into a normal, handleable case."
+  },
+  {
+    "stage": "check",
+    "question": "A TCP header is 20 bytes minimum; a UDP header is 8 bytes. What explains the difference?",
+    "options": [
+      "TCP uses larger port numbers than UDP",
+      "TCP carries sequence numbers, ack numbers, flags, and a window for reliability/ordering/flow control; UDP carries none of that",
+      "UDP compresses its header",
+      "The difference is arbitrary and set by the OS"
+    ],
+    "correct": 1,
+    "explanation": "TCP's extra 12+ bytes hold the machinery for its guarantees: 32-bit sequence and acknowledgment numbers, control flags, and a flow-control window. UDP provides none of those mechanisms, so its header only needs ports, a length, and a checksum."
+  },
+  {
+    "stage": "post",
+    "question": "For a live voice call, which transport is usually the better fit, and why?",
+    "options": [
+      "TCP, because every audio packet must arrive even if late",
+      "UDP, because a late retransmitted packet is useless for real-time audio — a dropped frame is better than a stalled stream",
+      "TCP, because it is always faster than UDP",
+      "Neither; voice uses the network layer directly"
+    ],
+    "correct": 1,
+    "explanation": "In real-time media, latency matters more than perfect delivery. TCP would retransmit a lost audio packet, but by the time it arrives the moment has passed and everything behind it stalled (head-of-line blocking). UDP lets the app skip the lost packet and stay live."
+  },
+  {
+    "stage": "post",
+    "question": "HTTP/3 runs over QUIC, which is built on UDP. Why build a reliable protocol on top of unreliable UDP?",
+    "options": [
+      "UDP is the only protocol browsers support",
+      "To rebuild reliability and ordering per-stream in userspace and avoid TCP's connection-wide head-of-line blocking",
+      "Because UDP encrypts data automatically",
+      "To avoid using port numbers"
+    ],
+    "correct": 1,
+    "explanation": "QUIC wants reliability but not TCP's single ordered byte stream, where one lost packet blocks all data behind it. By building its own reliability on UDP, QUIC can deliver independent streams that don't stall each other, and iterate faster than the kernel's TCP stack allows."
+  }
+]

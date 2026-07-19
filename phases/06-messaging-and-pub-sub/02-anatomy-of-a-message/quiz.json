@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "A teammate proposes publishing order events using Python's pickle module, arguing that a language-native binary serializer will be smaller and faster than JSON. What is the strongest objection?",
+    "options": ["Pickle is slower than JSON because it is written in pure Python rather than C", "Pickle's wire format contains opcodes that call arbitrary importable functions, so pickle.loads() on any message from the network is remote code execution by design, not by bug. It is also Python-only, breaks when classes are refactored, and in the measured run was 104 bytes against JSON's 98 -- it was not even a size win", "Pickle cannot represent nested dictionaries or lists, so complex order payloads will not round-trip", "Pickle output is not valid UTF-8, so most brokers will reject the message body"],
+    "correct": 1,
+    "explanation": "The measured run makes both halves concrete: pickle produced 104 bytes where JSON produced 98, so the assumed size win is absent, and a 43-byte crafted 'message' executed attacker-chosen code the moment pickle.loads touched it. Language-native serializers (pickle, Java Serializable, .NET BinaryFormatter) are designed to restore objects inside a trusted process. A message queue is by definition an untrusted boundary, so 'deserialize' and 'execute' must never be the same operation."
+  },
+  {
+    "stage": "check",
+    "question": "An order flow emits six messages. You have correlation_id on all of them but no causation_id. Which question becomes unanswerable?",
+    "options": ["Whether all six messages belong to the same business transaction", "How many messages the transaction produced in total", "Which message caused which -- so when the shipment request is missing you can see that something is absent but not which branch died, and you cannot tell whether shipment.requested was caused by payment.authorized or directly by order.placed", "When each message was published, since correlation_id carries no timestamp"],
+    "correct": 2,
+    "explanation": "Correlation gives you a set; causation gives you the edges, and a set plus edges is a tree. Correlation is created once and copied unchanged onto every descendant, so it answers 'which transaction?'. Causation is the immediate parent's message_id and changes at every hop, so it answers 'what caused this?'. Causation also enables the orphan check: a message whose causation_id names no message you hold means its parent was lost, which is a single join over your event store."
+  },
+  {
+    "stage": "check",
+    "question": "The measured run shows compressing one 205-byte binary message produces 209 bytes, while batching 100 JSON messages before compressing gives 4.13x versus 1.67x per message. What explains the difference?",
+    "options": ["zlib has a fixed minimum output size of roughly 200 bytes regardless of input", "Compressors exploit redundancy, and in a message stream the redundancy lives ACROSS messages -- the same field names, type strings and SKU codes repeated over and over. A single small message contains almost none, and the compressor's own header and trailer then cost more than they save. This is why Kafka compresses at batch level and why linger.ms exists", "Binary formats cannot be compressed because their bytes are already uniformly distributed random data", "The difference is measurement noise; compression ratios are not stable enough to compare"],
+    "correct": 1,
+    "explanation": "Batching before compressing was worth 2.48x on its own in the measured run. The rule to carry away is that compression is a property of batches, not of messages. Note also that the already-compact binary format gained far less from compression (1.40x on batches) than JSON did (4.13x), because the field names that JSON repeats on every message had already been removed at encode time -- compression and a compact schema are partly substitutes on the size axis."
+  },
+  {
+    "stage": "check",
+    "question": "Why must a broker be able to route, deduplicate and dead-letter a message without deserializing its body?",
+    "options": ["Because most brokers are written in languages that lack JSON parsers", "Because the body is always encrypted in production systems", "It is both a performance and a security boundary: parsing is the expensive part of message handling and a broker moving a million messages a second cannot afford a million parses, and every check that runs on envelope fields runs BEFORE untrusted bytes reach any parser. In the measured run six malformed messages were rejected and not one body was parsed", "Because the body may exceed the broker's memory limit, while the envelope never does"],
+    "correct": 2,
+    "explanation": "This is the operational form of the envelope/payload split: any decision made by anything other than the final consumer must be answerable from the envelope alone. The consequence for design is that if you need a field to route, filter or alert on, it must be promoted into the envelope as a header -- accepting that promoted fields become part of your infrastructure contract, duplicate data held in the body, and enlarge every message. Promote deliberately."
+  },
+  {
+    "stage": "post",
+    "question": "The same 4,000 order events encoded to 814 bytes each as JSON, 680 as MessagePack-style binary, and 205 with a schema-ful binary format. Why is MessagePack only 83.5% of JSON while the schema-ful format reaches 25.2%?",
+    "options": ["MessagePack uses a weaker compression algorithm than Protobuf-style encodings", "MessagePack is binary but still SELF-DESCRIBING, so every field name still travels on every message -- it merely frames those names more efficiently. The schema-ful format replaces names with varint field numbers, enums with single bytes, a 36-character UUID with 16 raw bytes and timestamps with deltas, which is where the 4x comes from. That requires both sides to hold a schema", "MessagePack cannot encode integers compactly, so numeric fields dominate its output", "The difference is the body only; the envelopes are identical sizes in both formats"],
+    "correct": 1,
+    "explanation": "The per-field table makes it visible: message_id fell from 52 bytes of JSON to 49 in MessagePack but 18 in binary, and traceparent from 72 to 69 to 28. The envelope alone went from 523 bytes to 124, a 4.2x saving. The axis that matters is self-describing versus schema-required, not text versus binary -- and the price of the schema-required column is a schema registry and a compatibility discipline, which is lesson 12."
+  },
+  {
+    "stage": "post",
+    "question": "You adopt the claim-check pattern: payloads go to object storage and the message carries a URI, a sha256 digest, the size and an expiry. What is the principal liability this introduces, and what mitigates it?",
+    "options": ["The message becomes too small for the broker to route efficiently; mitigate by padding it", "Two systems now own one fact with no transaction between them, so the blob can be deleted before the message is consumed (a dangling pointer) or the message can be lost while the blob leaks. Mitigate by writing the blob BEFORE publishing, carrying an explicit expires_at so a consumer can distinguish expired from corrupt, and setting the storage lifecycle to at least max retention plus max dead-letter age", "The digest makes the message tamper-proof, so no mitigation is required", "Object storage is slower than the broker, so consumers must poll until the blob appears"],
+    "correct": 1,
+    "explanation": "In the measured run a 408,890-byte message the broker refused became 795 bytes, a 514x reduction -- but the pattern splits one fact across two systems with no atomicity. Replay makes it sharper: an event replayed from a log a year later still needs its blob. The digest is also load-bearing but limited: it detects corruption and truncation, not a malicious partner, since anyone who can substitute the blob can recompute a CRC or sha256. Against an untrusted publisher you need a signature or a MAC, not a checksum."
+  }
+]

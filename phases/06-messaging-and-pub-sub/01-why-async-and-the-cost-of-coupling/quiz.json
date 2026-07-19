@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "An order request synchronously calls five services, each 99.9% available and each required for the order to succeed. What is the combined availability of that request, and why?",
+    "options": ["99.9%, because each service independently meets its target and the slowest one dominates", "99.5%. Availability down a serial dependency chain is the product of its members: 0.999^5 = 0.9950, which is 43.8 hours of downtime per year versus 8.8 for a single service. Every dependency added to the critical path makes the whole path permanently worse, and no amount of work inside any one service fixes it", "99.98%, because failures in different services are independent and therefore cancel out", "It cannot be calculated without knowing each service's latency"],
+    "correct": 1,
+    "explanation": "Required dependencies multiply. Five nines-of-three services give 0.999^5 = 99.50%; twenty give 0.999^20 = 98.02%, which is 7.2 days of downtime a year. This is the arithmetic that turns 'should this call be async?' from a style preference into a number — and the fix is not to make each service better, it is to remove services from the critical path."
+  },
+  {
+    "stage": "check",
+    "question": "A broker is said to break three couplings. Which one explains why a new analytics service can start reacting to orders without anyone editing or redeploying the orders service?",
+    "options": ["Temporal coupling — the analytics service does not need to be up when the order is placed", "Load coupling — the queue absorbs the analytics service's slower processing rate", "Spatial (referential) coupling — the producer writes to a topic and never names a consumer, so subscribers can be added, removed or replaced without the producer knowing they exist", "None of them; the orders service must always be updated to add a new consumer"],
+    "correct": 2,
+    "explanation": "All three couplings are real, but this one is spatial. In a synchronous design the caller holds the callee's address, so a sixth side effect means editing, testing and redeploying the producer. With pub/sub the producer emits OrderPlaced and stops growing a limb every time the business grows a requirement. Temporal coupling is about *when* both parties must be alive; load coupling is about matching *rates*."
+  },
+  {
+    "stage": "check",
+    "question": "Your consumer processes 100 messages/second and you are running it at 95% utilisation because 'the CPU graph looks efficient'. Traffic grows 4%. What happens?",
+    "options": ["Latency grows about 4%, proportional to the load increase", "Nothing, until utilisation reaches 100%", "Wait time is 1/(mu - lambda), so it goes from 1/(100-95) = 200 ms to 1/(100-99) = 1,000 ms — a 5x latency increase from a 4% traffic increase. Latency degrades hyperbolically with utilisation, and the knee is near 80%", "Throughput drops to zero because the queue overflows immediately"],
+    "correct": 2,
+    "explanation": "For an M/M/1 queue, W = 1/(mu - lambda). At 50% utilisation the wait is 20 ms; at 90% it is 100 ms; at 99% it is 1,000 ms — 50x the wait for twice the load. High utilisation is not efficiency, it is standing on the vertical part of a curve. This is why capacity planning targets roughly 70-80% and why a consumer pool sized to exactly match average load will fall over on any variance."
+  },
+  {
+    "stage": "check",
+    "question": "A producer publishes a request message to a queue and then blocks reading a correlated reply queue with a 5-second timeout. Which couplings has this design actually broken?",
+    "options": ["All three — any design using a broker is asynchronous by definition", "Essentially none of the ones that matter. The producer still waits for a result, so temporal coupling remains (the consumer must be up now or the call times out) and latency stays on the critical path. It gains spatial decoupling and load balancing, but it is synchronous communication carried over a message transport", "Only load coupling, because the queue buffers the requests", "Temporal and load, but not spatial"],
+    "correct": 1,
+    "explanation": "The test is: if the receiving service is switched off for ten minutes, does the sender's work survive? Here it does not — it times out. Request-reply over a broker is a legitimate pattern that buys location transparency and load balancing, but calling it 'decoupled' is a mistake. If the producer waits for a result, it is synchronous communication no matter what transport carries it."
+  },
+  {
+    "stage": "post",
+    "question": "A colleague argues that 'async removes queueing from the system.' What is wrong with that claim?",
+    "options": ["Nothing — that is precisely what a broker does", "Async does not remove queueing, it relocates it. In a synchronous system the queue still forms, made of held threads, exhausted connection pools and the kernel's TCP accept backlog — invisible, unbounded, in RAM, and with the user standing in it. Async makes that same queue explicit, durable, bounded and observable, so you can measure depth and alarm on it", "It is correct for queues but not for pub/sub topics", "Async removes queueing only if consumers are scaled to match producers exactly"],
+    "correct": 1,
+    "explanation": "Queueing is a property of any system where arrivals sometimes exceed service capacity, not something a broker introduces. The design choice is where the queue lives and who waits in it. Making it explicit is most of the value: an implicit queue has no metric and ends in an out-of-memory kill, while an explicit one has a depth you can chart, bound, and page on — and Little's Law (L = lambda*W) converts that depth into seconds of backlog."
+  },
+  {
+    "stage": "post",
+    "question": "You need 500 messages/second of throughput and each message takes 200 ms to process. Separately, a queue is sitting at 5,000 messages deep and draining at 500/s. What do Little's Law's two readings tell you?",
+    "options": ["You need 500 consumers, and the backlog is 5,000 seconds deep", "L = lambda*W, so you need 500 x 0.2 = 100 messages in flight — that is 100 concurrent consumers. And depth divided by drain rate means 5,000/500 = 10 seconds of backlog, which is the number your depth alarm should actually be expressed in", "You need 100 consumers, and the backlog cannot be computed without the arrival rate", "Little's Law only applies to M/M/1 queues, so neither figure is valid here"],
+    "correct": 1,
+    "explanation": "Little's Law (L = lambda*W) holds for any stable queue regardless of arrival or service distribution, which is what makes it so broadly useful. Read forwards it sizes a consumer pool: arrival rate times processing time equals the concurrency you need. Read backwards it converts queue depth into time: depth divided by drain rate gives seconds of backlog, which is far more actionable for an alert than a raw message count that means nothing without knowing the drain rate."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Prometheus collects metrics by 'pulling'. What does that mean in practice?",
+    "options": [
+      "The application opens a persistent connection to Prometheus and streams samples as they are recorded.",
+      "Prometheus makes an ordinary HTTP GET request to a /metrics endpoint on each target, on a fixed interval, and the response body is the samples.",
+      "Prometheus reads log files from each machine's disk over SSH and extracts numbers from them.",
+      "A sidecar agent on each host batches metrics and forwards them to Prometheus over gRPC."
+    ],
+    "correct": 1,
+    "explanation": "A scrape is a plain HTTP GET against the target's /metrics endpoint, and the response body is the exposition text. Because it is ordinary HTTP you can debug it with curl, and because Prometheus initiates it, a failed request becomes the synthetic `up` series — a liveness signal you never had to instrument. The push model (option 1) is what remote_write does on the way out of Prometheus, not on the way in."
+  },
+  {
+    "stage": "check",
+    "question": "A target is scraped every 15s and its `http_requests_total` counter reads 412. Why is that value, on its own, useless?",
+    "options": [
+      "Because counters are stored as 32-bit integers and wrap around at unpredictable points.",
+      "Because Prometheus discards absolute values and only stores deltas between consecutive scrapes.",
+      "Because a counter is measured from process start, so 412 means '412 since the last restart' — an accident of uptime, not a fact about traffic.",
+      "Because the value has no timestamp attached, so you cannot tell when it was recorded."
+    ],
+    "correct": 2,
+    "explanation": "A counter's absolute value depends entirely on how long the process has been up, so it says nothing comparable across instances or over time. What carries information is the rate of increase: rate(http_requests_total[5m]) gives per-second growth, which means the same thing on a process that started an hour ago and one that started last week. Prometheus does store the absolute value (option 2 is wrong); it is the interpretation that is meaningless."
+  },
+  {
+    "stage": "check",
+    "question": "One of forty instances restarts mid-window, so its counter drops from 127 to 15. What does rate() do that a naive 'last value minus first value' does not?",
+    "options": [
+      "It detects that a sample is lower than its predecessor, treats the decrease as a reset, and adds the pre-reset value back before subtracting — so (75 + 127) - 86 instead of 75 - 86.",
+      "It queries the target's process_start_time_seconds metric and discards every sample recorded before the restart.",
+      "It falls back to the _sum and _count series, which are unaffected by restarts.",
+      "It interpolates a straight line between the two samples on either side of the gap and reports that slope."
+    ],
+    "correct": 0,
+    "explanation": "Counters only go up, so any decrease can only mean the process restarted. rate() walks the samples in the window, and each time it sees a drop it adds the pre-reset value into a running correction. Without that, last-minus-first across the reset returns a negative rate — literally impossible for a counter — which is exactly what the Build-It prints: -0.092 req/s naive versus +1.105 req/s from rate()."
+  },
+  {
+    "stage": "check",
+    "question": "Why must you write `sum(rate(x[5m]))` rather than summing the counters first and rating the total?",
+    "options": [
+      "Because rate() can only be applied to a single series and errors out on a vector with more than one member.",
+      "Because summing is much more expensive than rating, so doing it second reduces the query's memory footprint.",
+      "Because rate() detects a reset by seeing a decrease in one series; adding forty counters together first hides one instance's restart behind thirty-nine that kept climbing, so the reset — and the traffic it represents — silently disappears.",
+      "Because the sum of several counters is a gauge, and PromQL refuses to apply rate() to a gauge."
+    ],
+    "correct": 2,
+    "explanation": "Reset detection is per-series and depends on seeing the value drop. Once you sum, one instance dropping from 127 to 15 may be completely masked by the others still increasing, so the total never visibly dips and rate() has nothing to correct. The result is a silently deflated number with no error. Rate first — turning each series into a plain per-second value — then aggregate, because adding rates is always safe."
+  },
+  {
+    "stage": "post",
+    "question": "You run `histogram_quantile(0.99, sum by (route) (rate(http_request_duration_seconds_bucket[5m])))` and get nonsense. What is wrong?",
+    "options": [
+      "The window is too short; histogram_quantile needs at least a 15-minute range to converge.",
+      "The `le` label was dropped by `sum by (route)`, so the buckets collapsed together and the cumulative histogram no longer exists to interpolate over.",
+      "You must use irate() instead of rate() inside histogram_quantile, because bucket counters are sampled differently.",
+      "0.99 is out of range; histogram_quantile takes a percentile from 0 to 100, so it should be 99."
+    ],
+    "correct": 1,
+    "explanation": "histogram_quantile reads the `le` label off each series to know which bucket boundary a count belongs to. `sum by (route)` keeps only `route` and throws `le` away, collapsing every bucket into one number and destroying the histogram. The correct form keeps both: `sum by (le, route) (rate(..._bucket[5m]))`. Quantile arguments are fractions between 0 and 1, so 0.99 is right."
+  },
+  {
+    "stage": "post",
+    "question": "A Kubernetes pod is deleted at 14:00. At 14:02 you query its series. What does Prometheus return, and why?",
+    "options": [
+      "The last scraped value, held constant forever, because Prometheus carries the most recent sample forward until a new one arrives.",
+      "Zero, because Prometheus writes an explicit 0 for every series belonging to a target that has disappeared.",
+      "An error, because the target no longer exists in service discovery and the query cannot be resolved.",
+      "Nothing — Prometheus writes a stale marker when the target vanishes, and an instant query looks back at most 5 minutes for a sample anyway, so the series is simply absent from the result."
+    ],
+    "correct": 3,
+    "explanation": "Staleness handling is what makes a graph show a gap rather than a misleading flat line when a pod dies. Prometheus writes an explicit stale marker into each series of a departed target, and separately an instant query never looks back further than 5 minutes for a value. This is also why `absent()` and `up == 0` exist: you alert on the disappearance itself rather than on a value that would never change again."
+  }
+]

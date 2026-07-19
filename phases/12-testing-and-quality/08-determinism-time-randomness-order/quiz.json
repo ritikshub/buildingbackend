@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service has a 300-second cache TTL, a retry with exponential backoff, and a 30-second timeout. You wrap the tests in `@freeze_time(\"2026-07-18\")` so they stop depending on the wall clock. What have you actually made testable?",
+    "options": [
+      "All of it. Freezing the clock removes time as a hidden input, so every time-dependent behaviour is now deterministic and fast.",
+      "Only the behaviours that ask what is true AT an instant. Measured over six behaviours, freezing reached 4 of 6: the backoff schedule and the timeout became unreachable, because a frozen clock cannot let time pass inside a single call. Worse, `wait_for` returned the expected `False` having advanced 0.0 s — it never reached a deadline at all.",
+      "All of it, but slowly — the frozen clock still has to wait out the 300-second TTL, so the suite gains about 937 s of runtime.",
+      "None of it. Freezing only affects `datetime.now()`, so any code using `time.monotonic()` for its TTL is completely unaffected and the tests are unchanged."
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer is right about the half of the problem freezing does solve, and that is exactly why the other half hides. A frozen clock can be re-frozen at any instant between calls, so 'is this key expired 1 s before, exactly at, and 1 s after the 300 s boundary' all work — and the exact-boundary case is actually easier than with a real clock. What breaks is any behaviour where the code under test observes time PASSING within one call: a retry loop reading the clock between its own sleeps, or a poll loop comparing against a deadline it computed itself. Those did not get slow, they became unreachable (4 of 6). The dangerous part is the failure mode: `wait_for` under a frozen clock returned False, which is the answer the assertion wanted, having moved the clock 0.0 s — it exhausted an iteration guard rather than reaching a timeout. That test would pass just as happily if you deleted the timeout logic entirely. Option 3 has it backwards: freezing costs 0 s; it was the REAL clock that billed 937 s (15.6 min) for six assertions. The fix is a controllable clock — one extra method, `advance()` — which reached 6 of 6 for 0 s."
+  },
+  {
+    "stage": "check",
+    "question": "A subscription-renewal test fails on the 23:00 UTC nightly build and passes on every daytime run. The build servers are in Berlin (UTC+1 / UTC+2). Evaluated at all 8,784 hours of 2024, what does the measurement show?",
+    "options": [
+      "The failures are spread roughly evenly across the day; 23:00 is just where the cron happens to sit, and moving the cron to 03:00 would move the problem rather than reveal it.",
+      "This is a DST bug. The failures cluster on the two transition days in March and October, so pinning the test to a fixed date in June removes them.",
+      "The wall-clock implementation computes the wrong renewal instant at 1,454 of 8,784 hours (16.6%) — 1,438 of them an hour out across a DST change and 16 a whole day out from disagreeing month clamps. The same-day-of-month property fails at 704 hours, and 572 of those are at 22:00 and 23:00 UTC, because those are the hours at which Berlin's calendar has already rolled over to tomorrow.",
+      "Nothing is wrong with the code; the runner's clock has drifted, and enabling NTP on the build fleet resolves it."
+    ],
+    "correct": 2,
+    "explanation": "The trap is treating this as randomness with a schedule attached. It is not a distribution, it is a step function: for a UTC+1 server the local calendar date is one day ahead for the hour from 23:00, and for UTC+2 it is ahead from 22:00, so the failure region is a sharply bounded 1-2 hours wide and the nightly cron sits exactly inside it. That is why the measured split is so lopsided — 361 failures at 23:00, 211 at 22:00, and only 132 across all twenty-two other hours combined. Option 2 identifies a real bug class but the wrong one: DST accounts for the 1,438 renewals that land an hour out, which is a separate defect from the 704 day-of-month failures, and 'pin the test to June' hides both rather than fixing either. Note the two-bug diagnosis the measurement forces: moving all arithmetic to UTC fixes 1,438 of the 1,454, and the remaining 16 need an explicit product decision about what 'one month after 31 January' means."
+  },
+  {
+    "stage": "check",
+    "question": "A 200-test suite is green in file order and contains three real order dependencies. You want to find them. What does shuffling actually buy, and what does it cost?",
+    "options": [
+      "Shuffling is unreliable for this — the only sound method is to run every test in its own process, which makes order irrelevant by construction and costs nothing but CI minutes.",
+      "One shuffled run is enough. If a suite has any order dependency, a random permutation violates it with probability close to 1, which is why `pytest-randomly` reshuffles once per run rather than many times.",
+      "Detecting that SOME dependency exists takes 3 shuffled runs at 99% confidence (per-run detection 0.8353), but the rarest of the three is caught with probability 0.0265 per run and needs 182 runs for the same confidence. A single reversed run caught 2 of the 3 for free and could never catch the third, because that one is a count dependency (20 leakers before it, 19 after, 39 needed), not a precedence dependency.",
+      "Shuffling catches precedence dependencies and nothing else, so the three would each be found in about 7 runs; the useful addition is process isolation for the shared-state cases."
+    ],
+    "correct": 2,
+    "explanation": "The tempting answer is option 2, and it is right about the aggregate and wrong about what you need. Per-run detection for 'any dependency' really is 0.8353, so three runs settle the cheap question — but that question is 'does this suite have a problem', not 'have I found them all'. The audit is priced by the rarest dependency, and the rare one here fails only when all 39 leaking tests happen to precede the assertion: probability 1/40, measured 0.0265, so 182 runs for 99% confidence. At one CI run per merge that is weeks, during which the test is failing occasionally and being re-run. Two details are worth keeping. First, simulation and closed form agreed to within 0.008 on all four rows, so you can compute this for your own suite rather than guess: runs = log(1 - confidence) / log(1 - p). Second, the cheapest instrument is not shuffling at all — one reversed run caught 2 of 3 with certainty, because a green file order means every 'A must precede B' pair is satisfied by file order and reversal violates all of them. Option 1's process-per-test does eliminate in-process leaks, but it is far from free and it does not help with state that leaks through a database or the filesystem."
+  },
+  {
+    "stage": "check",
+    "question": "A test creates two records back to back and asserts `first.id < second.id`. Your team is migrating primary keys from UUIDv4 to UUIDv7 for index locality. What happens to that assertion?",
+    "options": [
+      "It becomes reliable. UUIDv7 encodes a timestamp in its leading bits, so value order is creation order and the assertion is now sound.",
+      "It stays a coin flip in exactly the case the test exercises. Over 10,000 pairs, UUIDv4 failed it 50.00% of the time and UUIDv7 pairs created inside the same millisecond failed 49.68% — and two records created back to back are in the same millisecond. UUIDv7 fixes index locality and range scans; it does not make an ordering assertion in a fast test safe.",
+      "It gets worse. UUIDv7 puts the timestamp in the low-order bits, so byte-order comparison sorts on the random portion first and inverts more pairs than UUIDv4 did.",
+      "It becomes reliable, but only if you also switch the column type from `uuid` to `text`, because Postgres compares `uuid` values by hash rather than by byte order."
+    ],
+    "correct": 1,
+    "explanation": "Option 1 is the reason people adopt UUIDv7 and it is true at the scale the format is designed for: sorting 10,000 ids by value against creation order inverted 24,868,131 of 49,995,000 pairs (49.74%) under UUIDv4 and zero under UUIDv7 at one id per millisecond. But the resolution is the millisecond, so UUIDv7's inversions are exactly the ties inside one — 0.0456% at 10 ids/ms, 5.0161% at 1,000 ids/ms, and for two ids generated in the SAME millisecond, 49.68%, which is statistically indistinguishable from a coin. A test that creates two rows on consecutive lines is precisely that case. Filling `rand_a` with a monotonic counter (RFC 9562 section 6.2) removes the ties and takes inversions to 0, but that is a property of the generator you deploy, not something the test can assume. Option 3 has the layout backwards — the 48-bit timestamp is the LEADING field, which is the whole design. The general rule is stronger than any format: an id is a fact about the database's history, not about your test. The same lesson measured `assert order.id == 1` passing with `INTEGER PRIMARY KEY` and failing with `INTEGER PRIMARY KEY AUTOINCREMENT` (id = 4) on identical data — a keyword nobody read decided the outcome. Assert on what you put in the row, and order by an explicit `created_at`."
+  },
+  {
+    "stage": "post",
+    "question": "A reconciliation suite compares computed invoice totals against expected ones. Someone replaces the failing `assert total == expected` with `assert total == pytest.approx(expected)`. The suite goes green. What did that change?",
+    "options": [
+      "It fixed the problem correctly. `pytest.approx` exists for exactly this, and its default tolerance is calibrated to be tighter than any error a real bug would produce.",
+      "It fixed the false alarms and opened a hole that widens with the invoice. `pytest.approx` defaults to a relative tolerance of 1e-6, so it stops being able to see a one-cent error at a total of $10,000 — measured across six magnitudes it missed the seeded one-cent bug on 3 of 6, against 1 of 6 for `math.isclose`'s 1e-9 default. `isclose(rel_tol=0, abs_tol=0.005)` and `Decimal` each scored 0 false alarms and 0 missed bugs.",
+      "It made no measurable difference; float drift on summed currency values is around 1.43e-11, which is far below every tolerance under discussion, so `==` and `approx` accept the same set of inputs.",
+      "It broke the small cases instead: a relative tolerance is too tight at low magnitudes, so totals near $1.00 now produce false alarms that the exact comparison did not."
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer treats 'approximately equal' as a strictly safer version of 'equal', and half of that is right — the drift being papered over is real, about 1.43e-11 on a total accumulated a cent at a time, and `assert a == b` produced false alarms on 4 of the 6 magnitudes tested. What the switch also does is silently define how large an error you are willing to ship, and a RELATIVE tolerance defines it as a fraction of the number: 1e-6 of $10,000 is exactly one cent, so from that total upward the assertion can no longer distinguish a correct invoice from a wrong one. That is not a bug in pytest. A relative tolerance is the right default for a physical measurement, where 'correct to six significant figures' means something; it is the wrong default for money, where a cent is a cent at every magnitude and the assertion should get no weaker as the invoice gets bigger. Option 3 is the trap for the numerically confident: drift really is around 1e-11, but the question is not whether the tolerance covers the drift, it is whether it also covers the bug. Use integer minor units or `Decimal`; if you must compare floats, set `abs_tol` to half the smallest unit you care about and set `rel_tol` explicitly to 0, because `math.isclose` ORs its two conditions and a non-zero `rel_tol` reopens the hole."
+  },
+  {
+    "stage": "post",
+    "question": "You enable `pytest-xdist` with 8 workers. Test data comes from a factory that calls `random.randrange(0, 1_000_000)` for email addresses, and `conftest.py` calls `random.seed(20260718)` at session start so runs are reproducible. What does the measurement show, and what is the correct fix?",
+    "options": [
+      "The seeding is correct and parallelism is safe; any failures under xdist are the usual shared-database contention and should be fixed with per-worker schemas.",
+      "Every worker replays the identical stream, so 3,501 of 4,000 generated values are duplicates (87.52%) with only 499 distinct. Seeding per worker fixes the duplication but leaves 7 collisions, matching the birthday model's 7.99 expected and 99.9664% chance of at least one. Only a per-worker namespace like `f\"u{worker}-{i}@test\"` reaches 0 — uniqueness has to be a property of the design, not a probability.",
+      "The global seed is the problem, and widening the value space from 10^6 to 10^12 solves it, since collisions scale as n squared over the space and the duplicate rate falls below one in a million.",
+      "Nothing goes wrong: `random` uses thread-local state, so each xdist worker gets an independently seeded generator automatically and the values are already distinct across workers."
+    ],
+    "correct": 1,
+    "explanation": "Option 4 is the assumption that makes this bug survive review — xdist workers are separate processes, and each one runs `conftest.py` and seeds the same generator with the same constant, so 'reproducible' becomes 'identical' and seven of every eight rows are duplicates by construction. The stack trace lands on your factory or on a `UNIQUE` constraint, which points at the wrong file entirely, and the symptom gets worse as you add workers, which is the opposite of the direction people look. The half-fix is the interesting part: seeding per worker removes the duplication and leaves the birthday problem exactly where it was, with model and simulation agreeing at about 8 collisions per run and a 99.9664% chance of at least one. That is not bad luck you can re-run away from — it is arithmetic, and each collision is a genuinely irreproducible flake because the seed that produced it is gone. Option 3 makes the collisions rarer without changing their nature, which converts a frequent visible flake into a rare invisible one; that is a downgrade, not a fix. The correct move is to stop asking for uniqueness probabilistically and give each worker a namespace it counts inside, keeping the seeded RNG for values that only need to be plausible. Note the related trap: `secrets` and `os.urandom` cannot be seeded at all, and `Faker` unseeded is the same generator with friendlier output."
+  }
+]

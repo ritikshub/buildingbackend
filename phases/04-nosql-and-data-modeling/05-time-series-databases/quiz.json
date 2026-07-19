@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What makes time-series data different from the general data a relational database expects?",
+    "options": ["Nothing — it's ordinary rows that happen to have a timestamp column", "It's append-only and time-ordered, written once and almost never updated, queried by time range and usually aggregated, kept hot-recent/dropped-old, and arrives at enormous volume — a rigid shape a TSDB is built to exploit", "It must always be stored as text, not numbers", "It can only be queried one point at a time by exact timestamp"],
+    "correct": 1,
+    "explanation": "A time series has an unusually predictable shape: points append in time order and are never updated, you read ranges (not single points) and usually aggregate them, recent data is hot while old data is dropped on a retention schedule, and the volume is huge. A relational database is a general tool that assumes none of this; a TSDB is designed to exploit every one of these properties."
+  },
+  {
+    "stage": "check",
+    "question": "In the time-series data model, what is 'cardinality' and why does it decide whether a TSDB survives?",
+    "options": ["The number of points in a series; more points is always fine", "The total count of distinct series — the product of how many distinct values each tag can take; a high-cardinality value in a tag (like user_id) explodes it into millions of series and kills the database", "The compression ratio the database achieves", "How many days of data you retain"],
+    "correct": 1,
+    "explanation": "A series is identified by measurement + tags, so the number of distinct series is the product of each tag's distinct values. Low-cardinality tags (host, region) are fine. Put an unbounded-cardinality value like user_id or request_id in a tag and you spawn one series per value — millions or billions — which is the single most common way people take a TSDB down. Tags are for dimensions you group by, never unique identifiers."
+  },
+  {
+    "stage": "check",
+    "question": "Why does partitioning each series into time-bucketed chunks make retention nearly free?",
+    "options": ["It doesn't — you still DELETE old rows one by one", "Because dropping 'everything older than N days' becomes deleting whole chunks (an O(number-of-chunks) operation that frees disk instantly), instead of a row-by-row DELETE that scans, tombstones, and bloats the table", "Because chunks are stored in RAM and vanish on restart", "Because the database compresses deleted rows instead of removing them"],
+    "correct": 1,
+    "explanation": "Chunks are partitioned by the same axis — time — that you expire data on. So retention drops entire immutable chunks at once (O(chunks)), freeing disk with none of the DELETE/tombstone/vacuum pain a relational table suffers when removing millions of rows. It also keeps ingest fast (writes only touch the newest chunk) and lets range queries skip every chunk outside the window."
+  },
+  {
+    "stage": "check",
+    "question": "How do delta-of-delta and XOR compression let a TSDB store a point in ~1-2 bytes instead of 16?",
+    "options": ["They round the values to integers and drop the timestamps", "Timestamps arrive at a near-constant interval, so the change in the gap (delta-of-delta) is usually zero — one bit; and neighboring float values differ in only a few bits, so XOR-ing against the previous value leaves mostly zeros, and you store just the meaningful middle bits", "They use a general zip algorithm on the whole file", "They keep only every tenth point and interpolate the rest"],
+    "correct": 1,
+    "explanation": "Both tricks exploit that time-series neighbors barely differ. A regular interval means the delta between timestamps is constant, so the delta-of-delta is 0 — a single bit per on-schedule point. Two nearby float64 values share sign, exponent, and high mantissa bits, so their XOR is mostly leading and trailing zeros; you store only the meaningful window. This is Facebook's Gorilla scheme (~1.37 bytes/point), and crucially it's lossless — it works only because it knows the data is a time series, which a general compressor doesn't."
+  },
+  {
+    "stage": "post",
+    "question": "Your dashboard plots the last 90 days of a metric collected every second. How does a TSDB answer without scanning billions of raw points?",
+    "options": ["It scans every raw point every time; that's just how it works", "Downsampling / rollups: it precomputes aggregates (e.g. 1-minute and 1-hour averages/min/max) so the query reads a few thousand rollup rows instead of billions of raw points — typically with tiered retention keeping raw briefly, 1-minute rollups longer, 1-hour rollups for years", "It deletes the raw points so there's nothing to scan", "It caches the entire raw dataset in RAM"],
+    "correct": 1,
+    "explanation": "Because time-series reads are almost always aggregated, TSDBs precompute rollups (continuous aggregates / continuous queries). A '90 days' dashboard reads 1-minute or 1-hour summaries — a few thousand rows — not the raw firehose. Paired with tiered retention (raw for days, 1-minute rollups for months, 1-hour rollups for years) you get precision where it's fresh and a cheap summary where it's old."
+  },
+  {
+    "stage": "post",
+    "question": "A team says 'we're on Postgres and don't want to run a whole separate metrics database.' What's the senior move?",
+    "options": ["Tell them time-series data is impossible in Postgres", "Reach for TimescaleDB — a Postgres extension whose hypertables give automatic time-chunking, compression, continuous aggregates, and retention policies inside the database they already run, keeping SQL, joins, and transactions — instead of adding a separate system (Lesson 1's 'the line has moved', Lesson 8)", "Store metrics as JSON blobs in a normal table", "Switch the entire company to InfluxDB immediately"],
+    "correct": 1,
+    "explanation": "Just as Postgres JSONB removed many 'we need MongoDB' moments, TimescaleDB removes many 'we need a separate TSDB' moments: hypertables are transparently time-partitioned, compressed, and retained, with continuous aggregates for rollups — all with full SQL and transactions. Reach for a dedicated Prometheus/InfluxDB when the scale or the pull-based/operational model genuinely justifies a second system (Lesson 8), not by reflex."
+  }
+]

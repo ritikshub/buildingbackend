@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A service reports p99 = 93 ms on its own latency dashboard, has a 0.00% error rate, and sits at 5% CPU — while users report six-second waits. What is the most likely explanation?",
+    "options": [
+      "The dashboard is averaging the p99 across instances, and averaging percentiles is undefined, so the real fleet-wide p99 is much higher than any instance reports",
+      "The service's timer starts after the request has already waited in a queue or on a lock, so it measures the work and never the waiting — the user's clock starts at arrival, the service's starts much later",
+      "The users are on slow networks, so the extra seconds are client-side latency the server cannot see and should not be held responsible for",
+      "The CPU graph is sampled every 15 seconds and is hiding short bursts of 100% utilisation that are the real cause of the six-second waits"
+    ],
+    "correct": 1,
+    "explanation": "In the capstone the same requests measure 92.9 ms by the service's own in-handler timer and 6,667 ms from their intended arrival time — a 72x gap — because the timer starts after `lock.acquire()`. Averaging percentiles really is undefined and slow clients really do exist, which is what makes those answers tempting, but neither produces a systematic 72x gap between two instruments watching the same requests. Any histogram that starts after a queue is structurally blind to that queue."
+  },
+  {
+    "stage": "check",
+    "question": "A wall-clock profile of one request shows: connect 45.4%, item fetches 24.4%, list/profile/settings 20.3%, score_items() 5.1%. score_items() is also 100% of the on-CPU samples. Which change should you make first, and why?",
+    "options": [
+      "Rewrite score_items() in C, because it dominates the CPU profile and CPU is the only resource you can actually make faster",
+      "Add connection pooling first, because `connect` is the single largest line in the wall-clock profile at 45.4%",
+      "Batch the item fetches, because the call COUNT (8 item fetches and 11 connections per request) shows that 8 of the 11 handshakes exist only to serve the N+1 — a combined 57.5% of the budget, ceiling 2.35x",
+      "Add more worker threads first, because it is the cheapest change to make and it raises throughput without touching the request path at all"
+    ],
+    "correct": 2,
+    "explanation": "Pooling is the tempting answer because `connect` is the biggest single row — but the percentage tells you where the time is, not why. The call count reveals that eight of the eleven connections exist only because the handler loops over items, so batching removes the item calls AND their handshakes: 57.5% of the budget, an Amdahl ceiling of 2.35x, measured at 2.02x. Rewriting score_items() perfectly buys 1.05x, which is the arithmetic that ends that argument."
+  },
+  {
+    "stage": "check",
+    "question": "You make three independent I/O calls concurrent. Latency improves 1.70x, all tests pass, the error rate stays at 0.00% — and a counter that should read 352 reads 186. What actually happened?",
+    "options": [
+      "The thread pool silently dropped 47% of the submitted tasks because its queue was full, so those calls were never made and the counter is correct",
+      "Concurrent execution reordered the increments, and Python's memory model allows a thread to observe a stale value indefinitely unless the variable is declared volatile",
+      "The counter overflowed its bucket and wrapped, which is why the observed value is roughly half the true value rather than an arbitrary fraction of it",
+      "The counter's `n = n + 1` was never atomic; the global lock had been serialising whole requests, so it was safe by accident, and fanning out inside one request removed that accident"
+    ],
+    "correct": 3,
+    "explanation": "A read-modify-write is three operations, and another thread can land between them (Lesson 8). The lock never protected the counter deliberately — it protected it as a side effect of serialising entire requests, and the concurrency change removed that side effect. Dropped tasks would show up as missing work, not miscounted work, and Python has no `volatile`; the tempting wrong answers both assume the bug is somewhere other than the increment. The fix is a dedicated lock around the counter, which cost 39.9 to 39.8 req/s: nothing measurable."
+  },
+  {
+    "stage": "check",
+    "question": "At saturation you raise the worker count from 24 to 128. Throughput goes from 648 to 634 req/s (probes: 583/648/713 versus 472/634/643) and the p99 service time goes from 73 ms to 331 ms. What is the correct reading?",
+    "options": [
+      "Throughput fell 2%, so the change is a small regression on both axes and should be reverted for the throughput loss",
+      "Throughput is FLAT — the probe ranges overlap, so 648 versus 634 is noise — while the tail is 4.5x worse, which Little's Law predicts exactly: at the ceiling, latency = in-flight / throughput",
+      "Throughput is limited by the GIL either way, so the extra threads changed nothing at all and the latency difference must come from measurement error in the probe",
+      "The extra threads caused lock contention on the connection pool, and the fix is to make the pool lock-free rather than to reduce the worker count"
+    ],
+    "correct": 1,
+    "explanation": "Knowing the noise floor is what makes this a five-minute decision: three probes of the IDENTICAL build spanned 583-713 req/s, a 22% spread, so a 2% difference is not a result in either direction. The latency change is real and does not overlap, and Little's Law explains it exactly — 24/648 predicts 37 ms and 128/634 predicts 202 ms against 73 and 331 measured. Above the knee, concurrency converts one-for-one into latency and moves your queue into the dependency, where you cannot see it."
+  },
+  {
+    "stage": "post",
+    "question": "Under 3x its capacity, build A completes every request with a 0.00% error rate at 711 responses/second. Build B sheds 54% of requests with a 503 and completes the rest. Which is better, and by what measure?",
+    "options": [
+      "Build B, because goodput — responses delivered inside the deadline — is 744/s against build A's 111/s, and build A's throughput is being spent on answers whose callers have already left",
+      "Build A, because a completed request is always better than a rejected one and its error rate proves no user was turned away",
+      "Build A, because shedding merely moves the failure to the client, which will retry and add even more load to a service that is already overloaded",
+      "Neither is better; they are the same system under the same load and the difference is entirely an artefact of how each one labels a slow response"
+    ],
+    "correct": 0,
+    "explanation": "Build A is metastable: its queue fills with work whose caller has gone, and serving that dead work is exactly what stops it serving anyone new — goodput hits zero 0.4 s into the burst while throughput stays at 570-790/s for two more seconds. An error rate is not a quality measure; goodput is. Retry storms are a genuine risk, which is what makes the \"shedding just moves the failure to the client\" answer tempting, but the response to that is a retry budget and backoff, not accepting work you cannot finish in time."
+  },
+  {
+    "stage": "post",
+    "question": "Your service is at p99 = 90 ms against a 300 ms SLO, with 4x headroom over peak. Your measurement noise floor is 20%. Which argument for stopping optimisation work is the strongest?",
+    "options": [
+      "Optimisation always risks introducing concurrency bugs, and since the service is correct today, any further change is a net expected loss",
+      "The p99 is already 3.3x inside the SLO, and being further inside an objective has no value at all under any circumstances",
+      "The remaining candidates are each under 5% of the wall clock, so the Amdahl ceiling on all of them together is about 1.05x — smaller than the 20% noise floor, so a win could not even be demonstrated, let alone defended in CI",
+      "Hardware is always cheaper than engineering time, so the correct answer to every performance question is to buy a larger instance and move on"
+    ],
+    "correct": 2,
+    "explanation": "The strongest stop condition is arithmetic, not sentiment: compute the Amdahl ceiling on what is left and compare it to your measurement noise. If the best possible outcome is 1.05x and you cannot resolve anything under 20%, the work is undemonstrable before it is undesirable. The other options overstate real considerations — risk, headroom having no value, hardware being universally cheaper — into absolutes. Headroom does have value above the knee, and a structural bug like an N+1 scales with your data and is worth fixing even when hardware is cheap."
+  }
+]

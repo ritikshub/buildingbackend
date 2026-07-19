@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "In the cache-aside pattern, what happens on a cache miss?",
+    "options": ["The request fails", "The app reads the source of truth (DB), stores the result in the cache, and returns it", "The cache blocks until another request fills it", "The DB is bypassed entirely"],
+    "correct": 1,
+    "explanation": "Cache-aside lazily loads: on a miss the application reads the database, populates the cache (ideally with a TTL), and returns the value, so the next read is a hit."
+  },
+  {
+    "stage": "check",
+    "question": "Why is cache-aside resilient to a cache outage while read-through often isn't?",
+    "options": ["Cache-aside stores data on disk", "In cache-aside the app can fall through to the DB when the cache is down; read-through is inline, so a cache failure can break reads", "Read-through never uses a database", "They behave identically"],
+    "correct": 1,
+    "explanation": "Because the application orchestrates cache-aside, a cache miss (or a cache being down) simply routes to the DB — slower but still serving. Read-through puts the cache on the critical path."
+  },
+  {
+    "stage": "check",
+    "question": "What's the key risk of write-behind (write-back) caching?",
+    "options": ["It's too slow for writes", "Writes are acknowledged from the cache before reaching the DB, so a cache crash before the async flush loses those writes", "It can't cache reads", "It doubles read latency"],
+    "correct": 1,
+    "explanation": "Write-behind returns as soon as the cache is written and flushes to the DB later. Fast, and great for absorbing bursts — but if the cache dies before flushing, those writes are gone, so it's unsafe for critical data."
+  },
+  {
+    "stage": "check",
+    "question": "On a write, why delete the cached key instead of updating it in place?",
+    "options": ["Deleting is faster to type", "Concurrent writers can apply cache updates in the wrong order (leaving a stale value forever); deleting forces the next reader to reload the current DB value", "Updating corrupts Redis", "You should always update, never delete"],
+    "correct": 1,
+    "explanation": "Two writers updating the cache can interleave so the cache ends up with an older value than the DB — stale forever. Deleting defers the reload to the next reader, who fetches the truth. It also avoids computing values that may never be read."
+  },
+  {
+    "stage": "post",
+    "question": "For cache-aside with invalidation, what's the correct ordering on a write?",
+    "options": ["Delete the cache, then update the DB", "Update the DB first, then delete the cache", "Update the cache, then the DB", "Order doesn't matter"],
+    "correct": 1,
+    "explanation": "DB-first-then-delete keeps the source of truth correct before dropping the stale copy. Deleting first lets a concurrent reader miss, read the OLD row, and repopulate stale data that outlives your write."
+  },
+  {
+    "stage": "post",
+    "question": "Even with careful invalidation, why give every cache entry a TTL?",
+    "options": ["TTLs make reads faster", "A TTL bounds how long any missed or raced invalidation can serve stale data — it turns 'stale forever' into 'stale for at most TTL'", "TTLs are required by Redis", "To reduce memory only"],
+    "correct": 1,
+    "explanation": "Invalidation can be missed or lost to a race. A TTL is the backstop: no matter what goes wrong, an entry self-expires, capping the worst-case staleness window."
+  }
+]

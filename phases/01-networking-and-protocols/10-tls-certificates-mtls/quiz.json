@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is the relationship between HTTPS and TLS?",
+    "options": [
+      "HTTPS is a faster version of HTTP that replaces TLS",
+      "HTTPS is ordinary HTTP sent inside a TLS-encrypted connection",
+      "TLS is a type of HTML used only on secure pages",
+      "They are unrelated; HTTPS uses UDP while TLS uses TCP"
+    ],
+    "correct": 1,
+    "explanation": "HTTPS (HTTP Secure) is just HTTP carried inside TLS. The client opens TCP to port 443, runs the TLS handshake, and then sends the same HTTP request it always would — now encrypted. TLS adds the security; the HTTP semantics are unchanged."
+  },
+  {
+    "stage": "pre",
+    "question": "TLS provides three guarantees. Which set is correct?",
+    "options": [
+      "Speed, compression, and caching",
+      "Confidentiality, integrity, and authentication",
+      "Reliability, ordering, and flow control",
+      "Routing, addressing, and fragmentation"
+    ],
+    "correct": 1,
+    "explanation": "TLS gives confidentiality (encryption, so eavesdroppers cannot read the data), integrity (tampering is detected), and authentication (the server proves its identity with a certificate). Reliability and ordering come from TCP underneath; TLS adds security on top."
+  },
+  {
+    "stage": "check",
+    "question": "Why does the TLS handshake use asymmetric (public-key) cryptography to set up a shared symmetric key, instead of just encrypting all data with public-key crypto?",
+    "options": [
+      "Public-key crypto cannot encrypt application data at all",
+      "Symmetric keys are illegal to send over the network",
+      "Asymmetric crypto is slow, so it is used only to establish a fast symmetric key that then protects the bulk data",
+      "Symmetric crypto is only used during the handshake, not for data"
+    ],
+    "correct": 2,
+    "explanation": "Public-key operations are secure but computationally expensive. TLS uses them only during the handshake to agree on a shared secret and authenticate the server, then switches to fast symmetric encryption for the actual data — combining the security of asymmetric setup with the speed of symmetric transfer."
+  },
+  {
+    "stage": "check",
+    "question": "A client is validating a server whose leaf certificate was signed by an intermediate CA, which was signed by a root CA. How does the client decide to trust it?",
+    "options": [
+      "It trusts any certificate that is not expired",
+      "It walks the chain from the leaf up to a root CA that is already in its trust store, verifying each signature",
+      "It asks the server whether the certificate is valid",
+      "It trusts the certificate only if the subject name is 'localhost'"
+    ],
+    "correct": 1,
+    "explanation": "Trust flows down a chain and is verified upward. The client checks that the leaf was signed by the intermediate, the intermediate by the root, and that the root is one it already trusts. If any signature fails, the name is wrong, or the root is untrusted, the connection is refused."
+  },
+  {
+    "stage": "check",
+    "question": "In the code, the demo client sets check_hostname=False and verify_mode=ssl.CERT_NONE. What is the real-world consequence of shipping that?",
+    "options": [
+      "The connection becomes faster but stays fully authenticated",
+      "The client will accept ANY certificate, defeating authentication and allowing a man-in-the-middle attack",
+      "Nothing — CERT_NONE only affects the server side",
+      "The data is no longer encrypted at all"
+    ],
+    "correct": 1,
+    "explanation": "CERT_NONE tells the client to accept any certificate without verifying the chain or the hostname, so an attacker impersonating the server would be trusted. The demo uses it only because the cert is self-signed on localhost; production clients must keep the defaults (check_hostname=True, CERT_REQUIRED)."
+  },
+  {
+    "stage": "post",
+    "question": "How does mTLS (mutual TLS) differ from ordinary TLS, and where is it most commonly used?",
+    "options": [
+      "mTLS uses two servers instead of one; it is used for load balancing",
+      "In mTLS the client also presents a certificate so both sides authenticate; it is common for service-to-service traffic",
+      "mTLS encrypts twice for extra security; it is used for banking web pages",
+      "mTLS removes the certificate entirely and uses passwords; it is used for browsers"
+    ],
+    "correct": 1,
+    "explanation": "In ordinary TLS only the server presents a certificate. In mTLS the client presents one too, so each side cryptographically proves its identity before data flows. Because it needs certificates on both ends, it fits service-to-service (microservice) traffic rather than human browsers."
+  },
+  {
+    "stage": "post",
+    "question": "A single IP address hosts many HTTPS sites. Since the TLS handshake happens before the HTTP request (and its Host header), how does the server know which certificate to send?",
+    "options": [
+      "It sends every certificate it has and lets the client choose",
+      "The client includes the target hostname in the ClientHello via SNI (Server Name Indication)",
+      "It uses the source IP address to guess the site",
+      "It always sends one shared certificate for every site"
+    ],
+    "correct": 1,
+    "explanation": "SNI (Server Name Indication, RFC 6066) puts the requested hostname directly in the ClientHello, before the handshake completes. The server reads it and selects the matching certificate, which is what lets one IP address serve many TLS sites each with its own certificate."
+  }
+]

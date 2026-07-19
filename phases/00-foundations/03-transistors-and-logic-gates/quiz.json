@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is a transistor, in the simplest terms?",
+    "options": ["A tiny battery", "A tiny switch, controlled by electricity, that is either on (1) or off (0)", "A small screen", "A unit of memory equal to one byte"],
+    "correct": 1,
+    "explanation": "A transistor is a tiny electrically-controlled switch. A voltage on its gate decides whether current flows. Billions of them, switching fast, are the physical basis of a computer."
+  },
+  {
+    "stage": "check",
+    "question": "An AND gate outputs 1 in which case?",
+    "options": ["When either input is 1", "Only when both inputs are 1", "Only when both inputs are 0", "Always"],
+    "correct": 1,
+    "explanation": "AND outputs 1 only when both inputs are 1. OR, by contrast, outputs 1 when either input is 1. Their truth tables define them completely."
+  },
+  {
+    "stage": "check",
+    "question": "When you add two single bits, the SUM column matches which gate and the CARRY column matches which gate?",
+    "options": ["Sum = AND, carry = OR", "Sum = XOR, carry = AND", "Sum = OR, carry = NOT", "Sum = NOT, carry = XOR"],
+    "correct": 1,
+    "explanation": "Adding two bits: the sum is 1 when the inputs differ (that's XOR), and the carry is 1 only when both are 1 (that's AND). Those two gates form a half-adder."
+  },
+  {
+    "stage": "check",
+    "question": "Why is it significant that XOR can be built from AND, OR, and NOT?",
+    "options": ["It makes XOR slower", "It shows complex logic is composed from a few simple gates, so a chip needs only a small set of building blocks", "It means XOR is not a real gate", "It has no significance"],
+    "correct": 1,
+    "explanation": "Because every complex operation can be composed from a handful of simple gates (and those from transistors), a chip designer only needs to build a small set of primitives well. In fact NAND alone is universal."
+  },
+  {
+    "stage": "post",
+    "question": "How does a CPU add two multi-bit numbers?",
+    "options": ["It looks the answer up in a table", "It chains full-adders so each bit position adds its bits plus the carry from the position below", "It uses software only", "It cannot add without the internet"],
+    "correct": 1,
+    "explanation": "A full-adder adds two bits plus a carry-in and produces a sum and carry-out. Chaining them across bit positions adds any-width numbers — the actual hardware behind integer addition."
+  },
+  {
+    "stage": "post",
+    "question": "In one sentence, what is a CPU made of, conceptually?",
+    "options": ["Software instructions", "Transistors arranged into logic gates arranged into arithmetic and control circuits", "A very fast hard drive", "Millions of tiny batteries"],
+    "correct": 1,
+    "explanation": "A CPU is transistors wired into gates, wired into adders/comparators/memory/control — layers of arrangement over the same on/off switch. Everything it does reduces to transistors switching."
+  }
+]

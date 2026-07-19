@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You have forty hand-written tests over a fifteen-line pagination cursor codec. They cover empty keys, 200-character keys, CJK, an emoji, an apostrophe, a newline, -1 and 2**31-1. All forty are green. Three real bugs are then switched on, one at a time. How many does the suite catch?",
+    "options": [
+      "Two of three. A suite that deliberate will catch anything at a value boundary; only the bug involving multiple rows interacting could slip through",
+      "Zero of three. It stayed 40/40 green on every one — the same verdict it gives on correct code. Three properties (15 lines) caught 3 of 3, in 5, 4 and 10 generated cases",
+      "All three, eventually — the suite is thorough enough that each bug breaks at least one assertion, which is exactly what those boundary cases are for",
+      "One of three. The unicode bug is caught by the CJK and emoji cases; the other two involve behaviour outside the codec itself and are out of scope for a unit test"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer treats a list of edge cases as coverage of the input space, and it is not. Every one of the three bugs needs an input a person does not type: a token whose base64 happens to contain '+', a sort key that is not already NFC-normalised, and two rows that share a sort key across a page boundary. CJK and emoji are irrelevant to the unicode bug — the trigger is decomposed characters, not non-ASCII ones, and everything you type on a keyboard arrives normalised. The failure is not diligence; it is that you never write a test for the input you failed to imagine, and that is very nearly the set of inputs you already got right."
+  },
+  {
+    "stage": "check",
+    "question": "A property test fails on a randomly generated 4,000-character string. Before shrinking, that is a bad bug report. What does shrinking actually cost, and what does it produce?",
+    "options": [
+      "It costs roughly one property evaluation per character removed, so about 4,000 calls, which is why shrinking is usually disabled for slow properties",
+      "It costs 58 property evaluations and produces a 2-character input. Only 15 of the 58 were accepted; the first five reductions halved the input for 2 evaluations each, and the last two stopped shortening and simplified a character and the row id",
+      "It is a search over all subsets of the input, so it is exponential in the input size and only practical because implementations cap it at a few hundred candidates",
+      "It costs nothing measurable — the library records the random seed and replays a smaller draw, so no additional property evaluations are needed at all"
+    ],
+    "correct": 1,
+    "explanation": "The intuition that shrinking is expensive comes from imagining a per-character search, and the actual algorithm is much cheaper: propose 'delete the second half', and either it still fails (keep it, one call) or it does not (discard it, one call). Halving a failing input is almost free and it is where nearly all of the reduction happens. Note also that shrinking does not stop at length — evaluation 48 took the row id from 727 to 0, because a bug report containing an arbitrary number invites the reader to wonder whether the number matters. Option 4 describes something no implementation does: a smaller seed does not produce a smaller value, so the reduction must be searched for by re-running the property."
+  },
+  {
+    "stage": "check",
+    "question": "One property — normalise_limit(raw) must return a value in [1, 100] — is run against a bug that fires only when raw == 0. The code, the property and the 200,000-case budget are held fixed. Only the integer generator changes. What happens?",
+    "options": [
+      "The generators differ by a small constant factor. Any uniform generator over a wide range will hit zero within a few thousand draws, since the range includes it",
+      "Uniform over int32 never found it in 200,000 cases and would need about 4.29 billion; a boundary-biased generator found it in 8. That is 537 million to one — and the narrow uniform generator, rng.randint(0, 1000), found it in 1,122 while being structurally blind to the negative bug",
+      "Uniform over int32 is strictly the best choice because it is the only honest model of what a client can send; the boundary-biased generator is a convenience that trades correctness for speed",
+      "The difference is real but bounded by the range ratio: int32 is about 4 million times wider than 0..1000, so that is the multiple you should expect between them on every bug"
+    ],
+    "correct": 1,
+    "explanation": "The trap is treating the generator as neutral plumbing. It is the hypothesis: uniform over int32 hits exactly zero with probability 2.33e-10, so a bug that lives on a single value is unreachable at any budget you would pay for. The result that should be uncomfortable is the middle one — rng.randint(0, 1000) is what a person writes when asked to generate 'a page size', and it beats the honest uniform generator on two of the three bugs while being unable to produce a negative number at all. Nobody deliberated over that trade; it fell out of a range chosen in two seconds. This is why every real library ships boundary-biased strategies — that bias is the product, not a convenience."
+  },
+  {
+    "stage": "check",
+    "question": "An LRU cache of capacity 3 has a subtle bug: get() does not refresh recency, so eviction ends up insertion-ordered. You test it by generating sequences of operations against a simple model. What does the maximum sequence length do to your chances?",
+    "options": [
+      "Longer sequences find it proportionally faster, so a cap of 4 is roughly half as effective as a cap of 8 — you trade discovery speed against how long the shrinker takes",
+      "At a cap of 4 it is never found in 20,000 sequences and never will be at any budget, because the minimal counterexample is 5 operations. At 5 it takes 2,654 sequences, at 6 it takes 327, at 40 it is found on the first one",
+      "Sequence length barely matters once evictions are possible; what matters is the key space, since the bug needs a key to be read and then evicted",
+      "Very long sequences are counterproductive — they find the bug but produce counterexamples too large to diagnose, which is why the default step count in real tools is deliberately low"
+    ],
+    "correct": 1,
+    "explanation": "The important word is 'never'. This is a cliff, not a gradient: three puts to fill the cache, a get that should refresh, and one more put to force an eviction — five operations, and no shorter sequence can express the bug. A test capped below that reports green forever while being structurally incapable of finding the defect. Option 4 states a real worry with the wrong conclusion: the raw failing sequence here was 21 operations and shrank to 5 in 112 evaluations, landing on a 5-operation counterexample on 60 seeds out of 60. Generate long and let the shrinker cut it — the shrinker is what makes long generation safe."
+  },
+  {
+    "stage": "post",
+    "question": "A query-string parser crashes only when a key both contains '[' and ends with ']'. A random fuzzer over printable ASCII reaches '[' in a key at execution 8 and ']' at the end of a key at execution 272. A coverage-guided fuzzer reaches those same branches at 168 and 410 — later on both. Which crashes first, and why?",
+    "options": [
+      "The random fuzzer, since it is ahead on every intermediate branch and the crash requires nothing more than reaching both of them",
+      "The coverage-guided fuzzer, at 888 executions against the random fuzzer's 6,846 — it is slower to each individual rung and 7.7x faster to the conjunction, because it keeps the input that got halfway and mutates that instead of starting over",
+      "They crash at roughly the same execution count, since both discovered the same 13 branches and branch coverage is what determines bug-finding rate",
+      "The coverage-guided fuzzer, because its instrumentation lets it solve for the exact bytes needed rather than searching for them"
+    ],
+    "correct": 1,
+    "explanation": "Option 1 is the reasoning that makes this measurement interesting, and it is wrong for a precise reason: reaching a branch and retaining the input that reached it are different things. Uniform noise contains bracket characters more often than a mutated query string does, so it wins every individual rung — and then discards each near miss, so it must produce both conditions in one input by luck. Guidance is memory, not better random numbers. Note that all three fuzzers found the same 13 branches (option 3's premise is true and its conclusion does not follow), and that no implementation solves for bytes (option 4) — libFuzzer and AFL both search; they just remember what worked."
+  },
+  {
+    "stage": "post",
+    "question": "Your team's flake policy says: a test that goes red on one run and green on the next, on the same commit, gets quarantined. A property test now fails on a pull request that did not touch the relevant code, and passes when re-run. What is the right reading?",
+    "options": [
+      "It is a flake by the definition, so quarantine it and investigate later — that is what the policy exists for and property tests are a known source of non-determinism",
+      "It is a delayed true positive, not a flake. Measured over 1,800 runs on correct code the property went red zero times; on broken code it went red on 59.0% of seeds at max_examples=5 and 100% at 50. The variance is in discovery, never in the verdict about correct code",
+      "It is a flake caused by an unseeded generator; setting derandomize=True fixes it properly and should be the default for any property test in CI",
+      "It is a genuine failure but the policy is still right, because a test whose verdict is not reproducible cannot gate a deploy regardless of whether the code is wrong"
+    ],
+    "correct": 1,
+    "explanation": "The distinction that resolves the apparent contradiction is false positive versus true positive. A flake says 'broken' about code that is fine, and its cost is trust — after enough false alarms, a red build stops carrying information. A property test that finds a new bug on a new seed says 'broken' about code that was broken on build 1 and on build 40; only your knowledge changed, and its cost is latency. Option 3 fixes reproducibility by freezing the set of cases you ever try, turning the property back into an example suite with extra steps; record the shrunk counterexample instead, which took every subsequent run to red at case 1 across seven different seeds. And note the failure mode option 1 creates: quarantining converts a true positive into permanent blindness, and unlike a real flake, nothing will ever tell you again."
+  }
+]

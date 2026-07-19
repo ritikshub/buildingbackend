@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A team says \"our goal is 100% uptime.\" What is the strongest engineering objection?",
+    "options": [
+      "It is impossible (most of the path to the user is infrastructure you don't own), uneconomic (each extra nine costs roughly 10x the last), and imperceptible (the user's own network is less reliable than your last two nines).",
+      "100% uptime is achievable but requires a service mesh and Kubernetes, which most teams don't run.",
+      "Uptime is the wrong word; the correct term is availability, and the two are measured differently.",
+      "It's fine as a goal, it just needs a longer measurement window so brief outages average out."
+    ],
+    "correct": 0,
+    "explanation": "All three objections matter, but the economic and perceptual ones do the real work. Going from 99.9% to 99.99% shrinks your annual badness allowance from 8h 45m to 52 minutes — bought with multi-region failover and automated rollback, not effort. And a user on a 99.5%-reliable mobile network cannot perceive the difference: you removed about 15% of the badness they experience for roughly 10x the cost."
+  },
+  {
+    "stage": "check",
+    "question": "Which of these is a valid SLI (Service Level Indicator) for a checkout API?",
+    "options": [
+      "CPU utilization stays under 80% across the fleet.",
+      "Database replica lag stays under 5 seconds.",
+      "Non-5xx responses divided by all valid checkout requests.",
+      "Deploy frequency stays above 10 per week."
+    ],
+    "correct": 2,
+    "explanation": "An SLI is a ratio of good events over valid events, measuring something a user can feel. CPU and replica lag are causes, not symptoms — both can be green during a total outage and red while every user is happy. Deploy frequency is a process metric. Only the response ratio tracks what a shopper actually experiences."
+  },
+  {
+    "stage": "check",
+    "question": "Your SLO is \"99% of requests under 300 ms,\" and your histogram buckets are 0.1, 0.25, 0.5, 1 and 2.5 seconds. What is the problem?",
+    "options": [
+      "Nothing — you compute the p99 with a quantile function and compare it to 300 ms.",
+      "There is no le=\"0.3\" bucket, so you cannot count requests at or under 300 ms; interpolating between the 0.25 and 0.5 buckets assumes a uniform distribution your latency does not have.",
+      "The buckets are in seconds but the SLO is in milliseconds, so you need to convert the units.",
+      "Five buckets is too few to compute any percentile accurately at all."
+    ],
+    "correct": 1,
+    "explanation": "A histogram can only tell you how many observations fell at or below a boundary it actually has. With no 0.3 boundary, the best you can do is linearly interpolate between 0.25 and 0.5 — which assumes latency is uniformly spread inside that bucket, and it never is. The fix is one line: add 0.3 to the bucket list before publishing the SLO. Pick the threshold and the bucket boundary in the same conversation."
+  },
+  {
+    "stage": "check",
+    "question": "Your SLO is 99.9% over 30 days. Your service is completely down. What is the burn rate, and how long until the budget is gone?",
+    "options": [
+      "Burn rate 100x; the budget lasts 7.2 hours.",
+      "Burn rate 14.4x; the budget lasts 50 hours.",
+      "Burn rate 999x; the budget lasts about 6 hours.",
+      "Burn rate 1000x; the budget lasts 43.2 minutes."
+    ],
+    "correct": 3,
+    "explanation": "Burn rate is the observed error ratio divided by the budget ratio: 100% / 0.1% = 1000x. A 30-day window is 720 hours, so 720 / 1000 = 0.72 hours = 43.2 minutes — which is exactly the 30-day budget from the nines table. A complete outage spends a month of 99.9% in 43 minutes."
+  },
+  {
+    "stage": "post",
+    "question": "Why does the standard burn-rate alert pair a long window with a short one (for example 1 hour and 5 minutes) rather than using a single window?",
+    "options": [
+      "The long window suppresses false alarms from brief blips, while the short window makes the alert clear within minutes of the burn stopping instead of lingering for the length of the long window.",
+      "The short window is used during business hours and the long window overnight, so on-call engineers get fewer pages while asleep.",
+      "Two windows let you compute an average of the two burn rates, which is more statistically robust than either alone.",
+      "The short window measures latency and the long window measures availability, so together they cover both SLIs."
+    ],
+    "correct": 0,
+    "explanation": "Each window fixes a failure of the other. A 30-second blip at 500x burn is a rounding error against a 1-hour window, so the long window kills the noise. But a long window alone keeps firing for a full hour after the incident ends, as the bad minutes slowly age out — so requiring a short window (about 1/12 of the long one) to also be over threshold clears the alert quickly. That is the difference between an alerting system people trust and one they mute."
+  },
+  {
+    "stage": "post",
+    "question": "A team measures its actual availability at 99.94% and sets the SLO to 99.94%. What is wrong with this?",
+    "options": [
+      "Nothing — an SLO based on measured reality is more defensible than one picked from a table.",
+      "The number has too many significant figures; SLOs should always be round numbers like 99.9% or 99.99%.",
+      "It encodes the status quo as a requirement rather than a user need, and since the target equals typical performance, roughly half of all windows will breach it by definition, so the budget policy fires constantly for no reason.",
+      "It is too strict for any service that has not yet deployed to multiple regions."
+    ],
+    "correct": 2,
+    "explanation": "An SLO should express what users need, not what you currently deliver. Setting it to your typical performance is self-defeating arithmetic: about half your windows land below your median, so the freeze policy fires constantly and gets ignored within a month. Set the target where user complaints begin, then discover whether you're above or below it — if you're comfortably above, that is useful information too, and you may be able to ship faster."
+  }
+]

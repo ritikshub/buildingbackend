@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why can't you just use a plain map as a long-lived cache?",
+    "options": ["Maps are too slow to look up", "A map grows without bound and eventually exhausts memory — you need a size cap and an eviction policy", "Maps can't store strings", "Maps lose data on every write"],
+    "correct": 1,
+    "explanation": "An unbounded map never removes entries, so it climbs until the process is OOM-killed. Bounding the size forces the real question: which entry to evict when it's full."
+  },
+  {
+    "stage": "check",
+    "question": "What does LRU use to decide what to evict, and why is that a good bet?",
+    "options": ["The largest value, to free the most memory", "The least-recently-used item, because temporal locality makes recency a strong predictor of near-future use", "A random item, for fairness", "The most frequently used item"],
+    "correct": 1,
+    "explanation": "LRU evicts whatever was touched longest ago. Temporal locality says recently used items are likely to be used again, so the least-recently-used one is the safest to forget."
+  },
+  {
+    "stage": "check",
+    "question": "Why does an O(1) LRU need BOTH a hash map and a doubly linked list?",
+    "options": ["For redundancy in case one fails", "The map gives O(1) key lookup but no order; the list gives recency order but O(n) search — combined (map points at list nodes) both lookup and eviction are O(1)", "The list stores keys and the map stores values", "To support concurrent readers"],
+    "correct": 1,
+    "explanation": "Neither structure alone does all of lookup, ordering, and O(1) eviction. The map finds the node instantly; the doubly linked list lets you unlink it and evict the tail in constant time."
+  },
+  {
+    "stage": "check",
+    "question": "Why must the recency list be DOUBLY linked, not singly linked?",
+    "options": ["To use more memory", "To unlink a node in O(1) you need its previous neighbor — only a doubly linked node knows who precedes it", "Singly linked lists can't grow", "To store two values per node"],
+    "correct": 1,
+    "explanation": "Removing a node in constant time requires rewiring its predecessor's next pointer. A singly linked node doesn't know its predecessor, forcing an O(n) scan to find it."
+  },
+  {
+    "stage": "post",
+    "question": "A nightly analytics job scans every row once. What can this do to a pure-LRU cache serving live traffic?",
+    "options": ["Nothing — LRU is scan-resistant", "Scan pollution: each cold key is touched once, marked recently-used, and evicts the hot set, collapsing the hit ratio", "It doubles the hit ratio", "It permanently corrupts the cache"],
+    "correct": 1,
+    "explanation": "A one-time sequential scan makes every cold key look 'recently used,' pushing out the genuinely hot items. Frequency-aware policies (TinyLFU/W-TinyLFU) defend against this by admission control."
+  },
+  {
+    "stage": "post",
+    "question": "In a plain LRU, why is even a read (Get) not safe for concurrent use without a lock?",
+    "options": ["Reads never touch shared state", "Get performs a move-to-front, which mutates the shared list — so reads are effectively writes and must be synchronized", "Go maps are always thread-safe", "Only Put changes the cache"],
+    "correct": 1,
+    "explanation": "Get updates recency by moving the node to the front, mutating the list. That's why production caches shard the keyspace across many locks instead of serializing everything behind one."
+  }
+]

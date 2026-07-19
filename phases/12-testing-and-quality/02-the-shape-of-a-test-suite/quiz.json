@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A team has 4,000 unit tests, 94% line coverage, and a 40-second suite — and still ships a defect every sprint where two individually-correct components disagree at their boundary. What is the most accurate diagnosis?",
+    "options": [
+      "Their coverage target is too low. At 94% there are still uncovered lines, and defects concentrate in uncovered code — pushing the gate to 100% would close the gap",
+      "Their unit tests are badly written. Better assertions, more boundary cases and less mocking would let the same 4,000 tests catch these defects",
+      "It is a ceiling, not a shortfall. Measured on this service's defect population, the unit level can reach 34.0% of it at INFINITE test count — 'wiring' defects are a hard zero at that level because a unit test's scope is one function and a wiring defect lives on the edge between two",
+      "They need more unit tests. 4,000 sounds like a lot but the marginal test still adds detection, so the answer is to keep going until the incidents stop"
+    ],
+    "correct": 2,
+    "explanation": "All three tempting answers assume the gap is a matter of degree — more tests, better tests, higher coverage. It is a matter of kind. A test detects a defect only if its environment can express the defect (capability), it executes the site (scope), and its assertion notices (oracle). A unit test's scope is a single function, so an edge between two functions is never inside it, at any test count and any assertion quality. The same argument makes schema, migration, config, contract, auth, serialization, concurrency, duplicate-delivery and N+1 defects hard zeros at the unit level: there is no database, no real config and no queue in the process. Measured, that leaves a 34.0% ceiling. Coverage does not contradict this — 94% coverage and a 34% reachable share measure different things, since coverage says which lines ran, not which defect classes the environment can produce."
+  },
+  {
+    "stage": "check",
+    "question": "Solving the allocation numerically — maximise expected defects caught subject to a fixed CI budget — the optimum at 30 seconds is 91.7% unit tests by count, and at 600 seconds it is 6.1% unit tests by count. What do those same two optima look like measured in CI seconds?",
+    "options": [
+      "Roughly the same, since a share is a share: if unit tests are 91.7% of the count they are close to 91.7% of the work the suite does",
+      "Unit tests hold 26.1% of the seconds at a 30-second budget and 0.1% at a 600-second budget. By test count the optimum is a pyramid at small budgets; by CI seconds it is never a pyramid at any budget",
+      "Unit tests hold more of the seconds than of the count, because there are so many of them that their aggregate cost dominates despite the low per-test price",
+      "The seconds split is undefined until you fix the number of CI workers, since parallelism changes how long each level takes"
+    ],
+    "correct": 1,
+    "explanation": "The trap is treating count-share and cost-share as interchangeable, which they are only if all tests cost the same — and here an end-to-end test costs 1,400 times a unit test. Unit tests are enormous in count precisely because they are negligible in cost; those are the same fact stated twice. This matters because every drawing of the pyramid you have seen is in counts, while your CI bill, your feedback latency and your flake budget are all denominated in seconds. Two teams can look at one suite, one in each unit, and honestly reach opposite conclusions about whether it is healthy. Note that parallel workers (option 4) divide wall time, not CI seconds, so they do not change this split at all."
+  },
+  {
+    "stage": "check",
+    "question": "At the 600-second detection optimum, adding one more unit test changes expected detection by 0.000000 — the higher levels have already saturated everything unit tests can reach. Yet it is the only one of the four levels with positive marginal net value in engineer-minutes. Why?",
+    "options": [
+      "Because unit tests are effectively free, so any non-negative contribution beats the alternatives — the value comes from the near-zero cost, not from anything the test does",
+      "Because the marginal-detection figure is a rounding artifact; run the model at higher precision and unit tests do add detection, which is where the value comes from",
+      "Because it re-attributes catches to a cheaper level. Defects are caught by the earliest gate in cost order, and diagnosing a failure costs 9.3 minutes at the unit level against 50.3 at end-to-end — so moving a catch downward saves ~41 minutes even though the same defect was already being caught",
+      "Because more unit tests raise the probability a clean build goes green, and build-green probability dominates the value model"
+    ],
+    "correct": 2,
+    "explanation": "The first option is close but incomplete: zero cost times zero benefit is still zero, so cheapness alone cannot make the value positive — something has to be gained. What is gained is failure localisation, finally expressed as money. A failing unit test implicates 28 lines in one architectural layer; a failing end-to-end test implicates 369 lines across 4.7 layers. When a cheaper gate catches the defect first, you pay the cheaper diagnosis. This is the numerical form of the argument everyone makes qualitatively about unit tests pinning bugs down, and it is why the detection-maximising suite (30 unit tests) and the value-maximising suite (900 unit tests) at the same 600-second budget are different suites. Option 4 has it backwards: adding tests of any kind lowers build-green probability, since every test carries a flake rate."
+  },
+  {
+    "stage": "check",
+    "question": "Holding the catch matrix completely fixed and varying only the price of an end-to-end test, the optimiser buys 571 of them at 1 s each and exactly 1 at 120 s each. What does that establish?",
+    "options": [
+      "That the model is unstable — an optimum that swings by three orders of magnitude on one parameter cannot be trusted for planning",
+      "That end-to-end tests become more valuable as they get faster, because a faster test can be run more often and therefore catches regressions sooner",
+      "That the pyramid is an economic consequence rather than a value judgement about test types. Nothing about the tests' detection power changed across those rows — only the price. Which means making an expensive level cheaper is often higher-leverage than writing or deleting any tests",
+      "That cost is the only thing that matters, and detection probability can be ignored when choosing a suite composition"
+    ],
+    "correct": 2,
+    "explanation": "The swing is the finding, not a defect in the model: the whole point of the sweep is that the shape is downstream of the cost ratio, so it must move when the ratio moves. Mike Cohn's original pyramid argument (Succeeding with Agile, 2009) was exactly this economic argument, made about 2009-era record-and-replay UI tests that cost hundreds of times more than a unit test and broke whenever a button moved. Given those ratios, 'have few of them' follows. The version quoted today attaches fixed percentages, in units nobody pays in, derived from a different decade's tooling. The practical consequence of option 3 is the useful one: a session-scoped container instead of a per-test one, or a template database instead of a migration run, moves you up that table, and the right composition then changes on its own. Option 4 overshoots — detection still matters, which is why the optimiser buys any expensive tests at all."
+  },
+  {
+    "stage": "post",
+    "question": "Over 200 sprints with an identical defect stream, policy A ('add an end-to-end test after every escaped defect') ends at 46 escapes and policy B ('add a test at the cheapest level that could have caught it') ends at 47. Given B is very slightly worse at catching defects, why is B the better policy?",
+    "options": [
+      "It is not — 46 escapes beats 47, and detection is the only thing a test suite exists to provide, so policy A is correct and its cost is the price of quality",
+      "One escape is within noise, and B delivers that same detection for 35% less CI (9.4 minutes versus 14.6), a clean build that goes green 41.8% of the time instead of 34.0%, and 28,951 fewer engineer-minutes — 483 hours — over the same period",
+      "Because policy B produces a pyramid-shaped suite and policy A produces an ice-cream cone, and pyramid-shaped suites are known to be better",
+      "Because policy A's end-to-end tests are redundant with tests that already exist, so B is catching genuinely new defect classes that A is not"
+    ],
+    "correct": 1,
+    "explanation": "The trap in option 1 is treating detection as the only axis, which is exactly the mistake that builds ice-cream cones one approved action item at a time. Policy A is not wrong about any individual test — each end-to-end test it added genuinely did raise detection, which is why every one was approved in a meeting. The failure is that a local decision was taken 46 times with no global budget, in a unit nobody tracked. Option 3 is a trap of a different kind: policy A's suite IS still 91% unit tests by count, a textbook pyramid to anyone auditing in those units — while spending 76.6% of its CI seconds on 1.6% of its tests. An ice-cream cone is a pyramid that was never measured in the units it is paid for, which is why the diagnosis has to be made in seconds."
+  },
+  {
+    "stage": "post",
+    "question": "Your end-to-end tests have a 1.2% per-test flake rate. Re-solving the allocation on engineer-minutes, the optimiser buys 20 of them and refuses to spend more than 401 of the 600 seconds it was offered. Drop the flake rate to 0.15% and it buys 37 and spends the whole budget. What is the actionable reading?",
+    "options": [
+      "Delete the end-to-end tests. At a 1.2% flake rate they are worth less than nothing, which is why the optimiser is leaving budget unspent",
+      "Add automatic retries. A retried flake is indistinguishable from a pass, so retries restore the value of the level without any other work",
+      "Flake rations the expensive level and rations the whole budget with it. Fixing flake is not hygiene done after the suite is built — it is the precondition for being able to buy the coverage you want, worth 3.6 points of detection and 9.1 minutes per build here",
+      "Raise the CI budget. If 600 seconds is not enough to buy both flake tolerance and coverage, the answer is more seconds"
+    ],
+    "correct": 2,
+    "explanation": "Option 1 over-reads the result — the optimiser buys 20 end-to-end tests, not zero, because they are the only level that reaches config, concurrency, duplicate-delivery and N+1 defects, 21% of the population between them. It rations rather than bans. Option 4 fails on the evidence in front of you: given 1,200 or 2,400 seconds the value-maximising suite still builds the same ~400-second suite, because past that point one more test buys more false reds than defects — the budget is an output of the model, not an input. Option 2 is the most dangerous answer and the reason this appears in a shape lesson at all: a retry policy cannot tell a flaky test from a flaky product, so it suppresses both, and the genuine intermittent race you were hoping to catch disappears along with the noise."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service has an SLO of 99.95% availability measured over a monthly window. How much total downtime does that permit per month, counting every cause — deploys, dependencies, DNS, human error and deliberate tests?",
+    "options": [
+      "About 21.9 minutes",
+      "About 3 hours 39 minutes",
+      "About 43 minutes",
+      "About 5 minutes"
+    ],
+    "correct": 0,
+    "explanation": "A month averages 365.25/12 = 30.44 days = 43,830 minutes, and 0.05% of that is 21.9 minutes, or 1,315 error-seconds. 43 minutes is the answer for 99.9%, which is the number people usually have in their head and is 2x too generous. 3 hours 39 minutes is what five 99.9% dependencies in series actually deliver (0.999^5 = 99.50%) — a real and important number, but it is the composed result, not the budget. The reason this arithmetic matters before anything else is that it makes the budget a spending account: in the capstone run, six minutes of deliberate failure injection consumed 21.5% of the whole month for the naive build."
+  },
+  {
+    "stage": "check",
+    "question": "One instance in a 30-instance fleet stops responding: the process stays up, still accepts TCP connections, but never sends a reply. A layer-4 health check probes it every 30 seconds. What happens?",
+    "options": [
+      "The check fails on the first probe, and the instance is ejected within 30 seconds",
+      "The check passes indefinitely, because the port is open, so the instance is never ejected",
+      "The check fails only once the instance's connection backlog overflows",
+      "TCP keepalive detects the dead peer and the load balancer ejects it automatically"
+    ],
+    "correct": 1,
+    "explanation": "A layer-4 check asks exactly one question — 'does this port accept a connection' — and the answer is yes, because the process is alive enough to complete a handshake. It just never writes a response. Option A is the tempting one because it is what everyone assumes their health check does; it is true only for a layer-7 check that reads an actual response. Option C confuses a symptom that may never occur (the backlog only overflows if arrival rate exceeds accept rate, and accept is cheap). Option D misreads keepalive, which detects a peer that has gone away at the TCP level, not one that is connected and silent. Measured in the capstone: the layer-7 build ejected it after 6.0 s; the layer-4 build never ejected it at all, and burned the full 400 ms deadline on every one of the 3.3% of requests routed there."
+  },
+  {
+    "stage": "check",
+    "question": "Under round-robin balancing, 6.7% of a fleet degrades to 8x its normal service time. The measured traffic loss was 6.71%. If those instances had instead been 100x slow rather than 8x, what would round-robin's loss be, approximately?",
+    "options": [
+      "Roughly 12 times worse, in proportion to how much slower the instances became",
+      "Roughly the same, about 6.7%",
+      "Close to zero, because the balancer would detect the latency and route around them",
+      "100%, because the slow instances would back up the entire fleet"
+    ],
+    "correct": 1,
+    "explanation": "Round-robin does not measure anything — it hands out requests in order, so it sends exactly 1/N of traffic to each instance regardless of that instance's state. Its failure rate is therefore a function of how MANY instances are sick, not how sick they are; both an 8x-slow and a 100x-slow instance receive the same share and fail essentially all of it. That is why the measured numbers matched so exactly: 6.71% of traffic lost against 6.67% of the fleet sick. Option A assumes the balancer's loss scales with severity, which is precisely what round-robin cannot do. Option C describes least-request, which reads the outstanding-request count it already has and stops picking the sick instance — that signal is free, and it is the entire difference. Option D would require a shared resource; the instances here are independent."
+  },
+  {
+    "stage": "check",
+    "question": "A region has 3 availability zones and takes 300 req/s, split 50/50 with a second region by DNS. Each instance serves 25 req/s and the region runs 15 instances. One AZ is lost. What is the resulting per-region utilization?",
+    "options": [
+      "rho = 0.80 — the fleet is still comfortably within capacity",
+      "rho = 0.96 — tight, but under 1.0 and therefore survivable",
+      "rho = 1.20 — a deficit that accumulates without bound",
+      "rho = 0.60 — the other region absorbs the difference automatically"
+    ],
+    "correct": 2,
+    "explanation": "Losing one of three zones leaves 10 instances x 25 req/s = 250 req/s of capacity against the 300 req/s the region must still serve: rho = 1.20. The trap in option D is the most dangerous one, and it is why the arithmetic must be done per failure domain rather than fleet-wide — DNS is still splitting traffic 50/50 and has no idea an AZ died, so nothing shifts. Option B is the fleet-wide calculation (25 of 30 instances left across both regions serving 600 req/s), which looks survivable and is wrong. And rho = 1.20 is not a utilization at all: it is a shortfall of 50 requests per second that accumulates forever, which is why the measured availability collapsed to 2.93%. Lesson 12's N/(N-1) rule exists to prevent exactly this: 3 zones means provisioning 1.5x peak inside each region."
+  },
+  {
+    "stage": "post",
+    "question": "In the ablation, removing shuffle sharding RAISED aggregate availability from 90.10% to 93.21%, while the number of customers driven below 95% availability rose from 29 to 60. What is the correct reading?",
+    "options": [
+      "The measurement is flawed; a defence cannot make aggregate availability worse",
+      "Shuffle sharding should be removed, since the aggregate number is the one that matters",
+      "Shuffle sharding does not reduce total damage — it concentrates it on the tenant responsible instead of spreading it across everyone",
+      "The fleet was too large for shuffle sharding to be configured correctly"
+    ],
+    "correct": 2,
+    "explanation": "This is the most instructive row in the whole ablation. With enough headroom, spreading one poison tenant's load thinly across sixty instances genuinely does less aggregate harm than concentrating it on three — so the aggregate number really did improve. But the blast column shows what that costs: every one of the sixty customers was degraded instead of twenty-nine, and the customer who was effectively down went from being the one who caused the problem (at 3.5%) to being all of them. Option B is the trap: aggregate availability is the wrong metric for a multi-tenant fairness property, and optimising for it means choosing to harm fifty-nine innocent customers a little rather than one guilty one a lot. Option A mistakes an inconvenient result for an invalid one — negative ablation results are exactly what makes an ablation worth running, since anything else is just confirming what you already believed."
+  },
+  {
+    "stage": "post",
+    "question": "Removing load shedding alone cost 46.5 error-seconds; removing the retry budget alone cost 11.6. Removing both cost 148.5, which is 2.6x their sum of 58.1. Why do they interact so strongly?",
+    "options": [
+      "The two defences share a code path, so disabling both triggers a bug that neither triggers alone",
+      "Shedding without a retry budget rejects a request in zero milliseconds and is handed the same request straight back, so the load is recirculated rather than removed",
+      "The retry budget is what keeps the autoscaler from over-provisioning during the shed",
+      "Error-seconds are logarithmic, so deltas are expected to compound rather than add"
+    ],
+    "correct": 1,
+    "explanation": "A shedder's entire value proposition is that it removes work from the system. An unbudgeted client turns every rejection back into an arrival, so offered load settles at base/(1-f) and rises as the failure rate rises — in the naive run this drove offered load to 4,800 req/s against 600 req/s of real demand. The shedder is then doing maximum work to accomplish nothing, which is why the pair costs far more than the parts. Option D is wrong on the arithmetic: error-seconds are a plain linear sum of unavailability over time, which is exactly why a super-additive result is informative rather than an artifact. Option A would make this a bug report, not a property; the interaction is structural and would appear in any correct implementation. The general lesson is that the reliability stack is a dependency graph, not a checklist: shedding must exist before a retry budget helps, headroom before an autoscaler has anything to reclaim, and statelessness before failover is possible at all."
+  }
+]

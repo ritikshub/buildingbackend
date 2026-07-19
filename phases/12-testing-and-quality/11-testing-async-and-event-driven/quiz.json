@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A test asserts on a row that a background worker writes after `POST /orders` returns 202. It fails about 30% of the time. You measure the end-to-end completion time and find a median of 41 ms and a p99.9 of 2.0 seconds. You set the sleep to 2.0 s — comfortably the p99.9 — across all 500 asynchronous assertions in the suite. What have you bought?",
+    "options": [
+      "A reliable suite. Sleeping to the p99.9 means a test fails only one time in a thousand, which for a 500-test suite is well inside normal CI noise",
+      "16.3 minutes of suite time and a build that is still red 46.5% of the time. A 0.129% per-test flake rate across 500 tests gives a 52.4% predicted green-build rate — measured 53.5% over 200 builds. The fixed sleep that would reach 99% green is 3.0 s, which is essentially the maximum of a 200,000-sample calibration",
+      "A slow but correct suite. The cost is real — about 16 minutes — but the flakiness is gone, and that is the trade you make when you cannot change the system under test",
+      "Nothing useful either way, because sleeping past the p99 means the tail events are all absorbed and the remaining failures are genuine bugs rather than flakes"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer treats a per-test flake rate as if the suite ran one test. It runs 500, and a build is green only if all 500 pass, so the rate that matters is (1 − f)^500. At f = 0.129% that is 52.4% — measured 53.5% over 200 independent builds, which agrees. The deeper problem is what a genuinely safe sleep would have to be: solving 0.99^(1/500) gives a required per-test success rate of 0.999980, the p99.998 of the distribution, which measured out at 3.0 s against a sample maximum of 3.1 s. You would be sleeping for the slowest thing that happened in two hundred thousand tries, on every test, for 25.1 minutes. And you cannot even estimate that quantile: it took 200,000 observations, and a suite gives you 500."
+  },
+  {
+    "stage": "check",
+    "question": "Across 200 builds of a 500-test suite, four fixed sleeps and one polling primitive were measured on both flake rate and suite time. What does the two-dimensional result actually show?",
+    "options": [
+      "Polling dominates every fixed sleep on both axes simultaneously, which is what makes fixed sleeps indefensible in all cases",
+      "Fixed sleeps trade duration against flakiness along a frontier — 20.3 s at 49.75% flake up to 16.3 min at 0.129% — and polling sits off that frontier at 30.7 s with 0.000% flake and 200/200 green builds. The one sleep that is faster, sleep(p50) at 20.3 s, produced 0 green builds out of 200",
+      "The two axes are independent, so the right approach is to tune the sleep per test: short sleeps for fast paths, long sleeps for the slow ones",
+      "Polling is faster on average but has a worse worst case, because a test that never completes pays the full 10-second timeout while a fixed sleep pays only 2 seconds"
+    ],
+    "correct": 1,
+    "explanation": "Option 1 is nearly right and overclaims in a way worth being precise about: sleep(p50) at 20.3 s is genuinely faster than polling at 30.7 s. It is also worthless, because it went green 0 times out of 200 — being fast is not a property of a suite that never passes. Polling escapes the frontier for a structural reason, not a clever one: a fixed sleep pays the worst case on every test, while polling pays each test's own latency, and 97.8% of runs finished inside 150 ms. That also reframes the timeout in option 4 — the 10-second deadline is not a wait, it is the point at which you give up, and it is only ever paid by a test that was going to fail anyway."
+  },
+  {
+    "stage": "check",
+    "question": "Five genuinely different systems are broken — the consumer crashed on the payload, the test asserts an id nobody emitted, the projection is lagging, a partial write left the order without items, and the worker never subscribed. One assertion is pointed at all five. How much can each way of waiting tell you?",
+    "options": [
+      "`sleep` then `assert` gives 1 distinct message of 5, a polling helper that catches the exception and reports its own deadline also gives 1 of 5, and a polling helper that keeps the last error and runs a diagnostic probe gives 5 of 5",
+      "All three give five distinct messages, since the exception that the system raises propagates in every case; the difference between them is only how long the failing test takes",
+      "`sleep` then `assert` gives 1 of 5, but any polling helper gives 5 of 5, because polling re-evaluates the condition and therefore surfaces whatever error it hit",
+      "The polling helper gives 5 of 5 and `sleep` gives 3 of 5, because Python's assertion rewriting reports the sub-expressions of a failed assert and those differ across the five causes"
+    ],
+    "correct": 0,
+    "explanation": "Option 3 is the one most people pick, and it is wrong for a specific reason: polling does not preserve the error by default. The naive helper everybody writes first catches the exception, discards it, loops, and eventually raises its own `TimeoutError: condition not met within 2.0s` — a fact about the helper containing no information about the system. It scores exactly as badly as the bare sleep. Keeping `last` and re-raising it as `__cause__`, plus a probe that dumps the read model and the DLQ, is four extra lines and is the entire difference between 1 of 5 and 5 of 5. On option 4: assertion rewriting has no sub-expressions to report when the expression is a single call, so all five collapse to `AssertionError`. If you use `tenacity` for this, `reraise=True` is the setting that buys the same thing."
+  },
+  {
+    "stage": "check",
+    "question": "A consumer applies `payment_captured` events by adding the amount to an order's balance. Your suite delivers each of 400 test events exactly once and asserts every balance. The suite is green. What has it established about the consumer?",
+    "options": [
+      "That the consumer is correct for the delivery guarantee it was designed against; if the broker later starts redelivering, that is a broker configuration problem rather than a consumer bug",
+      "That the consumer handles the happy path. Duplicates would be caught by the integration tests, which run against the real broker and therefore experience real redelivery",
+      "Nothing about duplicate handling. Measured, the same consumer given the same 400 events at an 8% redelivery rate got 32 of 400 balances wrong and over-credited 357,120c ($3,571.20), with one order 35,442c too high — while an idempotent version got 0 of 400 wrong and suppressed all 36 duplicates. Both consumers pass the exactly-once suite",
+      "That the consumer is correct, provided the broker is configured for exactly-once semantics — which is what transactional producers and read-committed consumers exist to provide"
+    ],
+    "correct": 2,
+    "explanation": "The distinction that resolves options 1 and 4 is the one Phase 6 makes: exactly-once *delivery* is impossible, and a broker that redelivers a message whose acknowledgement it never saw is behaving correctly, not misconfigured. Transactional producers give you exactly-once *effect* within one broker's own read-process-write cycle, not across your database. So the guarantee your consumer must satisfy is idempotence, and the only test that can establish it is one that sends the duplicate — four lines, and the difference between 0/400 and 32/400 wrong. Option 2 is the common organisational version of the same mistake: an integration test against a real broker that never provokes a redelivery does not experience one either, because redelivery requires a lost ack, which does not happen spontaneously in a 200 ms test."
+  },
+  {
+    "stage": "post",
+    "question": "A message handler writes an order row and then calls a receipt service, which times out. The message is retried with backoff; on the fourth attempt the receipt service answers 200 and the message is acknowledged. Your dashboards show DLQ depth 0, error rate recovered, retry count within policy. What actually happened, and what would catch it?",
+    "options": [
+      "Nothing went wrong — a transient failure was retried and succeeded, which is exactly what the retry policy exists to do; the empty DLQ is the correct signal",
+      "Four rows were written for one order and 16,800c charged instead of 4,200c. The DLQ is empty in both the broken and the fixed version, so no alert can fire — measured at scale, 300 events with 20 failing twice after the write gave 340 rows and 389,902c over-charged. Only a test that provokes a retry and then counts rows can see it",
+      "The retry duplicated the receipt, not the row, since the write is inside a transaction that rolls back when the handler raises — the fix is to move the receipt call inside the same transaction",
+      "The message was processed four times, so the correct fix is to lower max_attempts to 1 and let the DLQ catch genuine failures rather than allowing retries to compound"
+    ],
+    "correct": 1,
+    "explanation": "Option 1 is exactly what every instrument on the box reports, which is why this bug survives: from the pipeline's point of view the retry policy worked perfectly. The failure landed after the write, so the retry re-ran the handler from the top including the write, and then succeeded — leaving no error, no dead letter and no signal except a duplicate row. Option 3 describes what you wish were true; a handler that commits its write before making an outbound call has already committed, and an exception afterwards rolls back nothing. Option 4 makes things worse by converting every transient failure into a dead letter. The fix is an idempotency key on the write itself, which took 340 rows back to 300 and the over-charge to zero, and the test is the one that asserts a row *count* after forcing a retry."
+  },
+  {
+    "stage": "post",
+    "question": "Two async-suite hazards are measured in this lesson: six assertions written without `await` against a system where every answer is `False`, and background tasks that outlive the test that spawned them. What do they have in common?",
+    "options": [
+      "Both are caught by static analysis, so neither needs a runtime guard — mypy flags the un-awaited coroutine and a linter flags create_task outside a TaskGroup",
+      "Both make a test slower rather than wrong: the un-awaited coroutine is garbage-collected with a RuntimeWarning, and the leaked task delays the next test until it completes",
+      "Both produce green suites over broken systems, and both are invisible at the point where they are written. All 6 un-awaited assertions passed because a coroutine object has no __bool__ and so is truthy; leaked tasks corrupted 3 of 3 innocent later tests, and the failure lands in a test that did nothing wrong",
+      "Both are artefacts of pytest-asyncio's event-loop scoping and disappear once asyncio_mode is set to auto with a session-scoped loop"
+    ],
+    "correct": 2,
+    "explanation": "The shared property is that the damage appears somewhere other than the mistake. A missing five-letter word turns an assertion into a truthiness check on an object that is unconditionally true — 6 of 6 passed against a system returning False every time — and no failure is reported anywhere. A leaked task fires during a *later* test and corrupts state that test believes it owns, so the red lands on an innocent file and moves when the suite is shuffled, which is the classic order-dependence signature. Option 1 overstates static analysis: mypy and Ruff catch a useful subset, and neither sees a coroutine returned from a helper you did not annotate, which is why a four-line `strict_assert` in conftest.py is worth having. Option 4 has it backwards — a session-scoped loop makes task leakage worse, because the leaked task now shares a loop with every subsequent test."
+  }
+]

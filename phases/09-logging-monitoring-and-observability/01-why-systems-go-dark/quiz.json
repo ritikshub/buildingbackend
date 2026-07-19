@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service returns a 500 to one user in production. Why can't you debug it the way you would on your laptop?",
+    "options": [
+      "Production machines run a different version of the language",
+      "Production code is compiled and laptops run interpreted code",
+      "The request is unreproducible, you can't attach a debugger to a live process serving real users, you don't know which of forty machines handled it, and the request's internal state was freed microseconds after it finished — you know only what the program deliberately wrote down while it ran",
+      "You can debug it identically; you just need SSH access"
+    ],
+    "correct": 2,
+    "explanation": "Production is a black box. Every internal fact — the branch taken, the variable's value, how long the database call blocked — exists for microseconds and is then garbage-collected. Nothing recovers it after the fact. What you can know at 03:14 is exactly and only the telemetry the program emitted while the request was alive, which is why emitting it is a feature you design rather than an afterthought."
+  },
+  {
+    "stage": "check",
+    "question": "What is the actual difference between monitoring and observability?",
+    "options": [
+      "They're synonyms; 'observability' is just the newer marketing word",
+      "Monitoring is an activity — collect predefined numbers and alert on thresholds, answering 'is it broken?' for failure modes you anticipated (known unknowns). Observability is a property of the system — how well you can infer internal state from emitted signals, answering 'why is it broken?' for failures nobody anticipated (unknown unknowns), without deploying new code",
+      "Monitoring is for infrastructure and observability is for application code",
+      "Observability means having more dashboards than monitoring does"
+    ],
+    "correct": 1,
+    "explanation": "The term is borrowed from control theory: Kálmán (1960) called a system observable if its internal state can be determined from its external outputs. Monitoring is something you do — you pre-decide the checks, so it only covers failure modes you thought of. Observability is something your system either has or lacks — the ability to answer a brand-new question about a never-before-seen failure from data already emitted. Counting dashboards measures the first, not the second."
+  },
+  {
+    "stage": "check",
+    "question": "A metric shows 412 requests returned 500 in the last five minutes. Why can that metric never tell you which users were affected?",
+    "options": [
+      "Because a metric is aggregated at the moment it is recorded — the counter increments and the individual request is gone. That aggregation is exactly what makes metrics cheap enough to keep for a year and graph fleet-wide, and it is what makes them incapable of identifying an individual",
+      "Because metrics are stored for too short a time",
+      "Because metrics are sampled and most requests are dropped",
+      "Because user IDs are encrypted inside metrics"
+    ],
+    "correct": 0,
+    "explanation": "Aggregation is the metric's defining trade: a counter costs a few bytes whether it counts ten requests or ten billion, which is why you keep metrics for months. The price is that the individual is destroyed on the way in. The tempting fix — adding a user_id label — is the cardinality explosion from Phase 4, Lesson 5: one series per user, millions of series, and a dead metrics database. High-cardinality identity belongs in logs and traces, never in a metric label."
+  },
+  {
+    "stage": "check",
+    "question": "In the standard investigation funnel, what job does each pillar do and in what order?",
+    "options": [
+      "Logs first always, since they have the most detail",
+      "Traces first, then metrics, then dashboards",
+      "You query all three independently and compare them by hand",
+      "A metric alerts you that something is wrong (error rate for /checkout jumped at 03:09) → a trace localizes which hop is responsible (payment-service went from 40ms to 4s) → a log explains that hop ('connection pool exhausted, waited 3980ms')"
+    ],
+    "correct": 3,
+    "explanation": "Each pillar hands off to the next, moving from cheap-and-broad to expensive-and-specific. Metrics are cheap enough to watch everything continuously, so they detect. Traces carry causality across process boundaries, so they localize. Logs carry full per-event context, so they explain. This is also why 'just add more logging' fails as a strategy — you pay log prices for questions a metric answers, and still lack the cross-service causality only a trace records."
+  },
+  {
+    "stage": "post",
+    "question": "Your logs, metrics, and traces are all excellent, but nothing carries a shared request identifier. What breaks?",
+    "options": [
+      "Nothing — each signal is independently useful, so you just read them side by side",
+      "You can still see aggregate health and read individual signals, but you can no longer reconstruct one request's story across services: you can't jump from a latency spike to the trace that caused it, or from a slow span to the log lines that explain it. Three rich haystacks instead of one narrative — which is why a trace ID (the W3C traceparent standard) is propagated through every service and stamped on every log line and span",
+      "Metrics stop working entirely",
+      "Traces still work but logs become unparseable"
+    ],
+    "correct": 1,
+    "explanation": "Correlation is what converts three datasets into one investigation. A trace ID generated once at the edge and propagated through every hop lets you filter every log line for one request, nest spans into a waterfall, and (via exemplars) click a spike on a graph and land on the trace behind it. Without it, every handoff in the funnel becomes a manual guess based on timestamps — which is why the industry standardized the wire format as the W3C Trace Context traceparent header."
+  },
+  {
+    "stage": "post",
+    "question": "A teammate proposes: 'Let's log every request body and response body, forever, and we'll never be blind again.' What's wrong with it?",
+    "options": [
+      "Nothing — maximum data is always the safest choice",
+      "It's fine as long as you use JSON formatting",
+      "It maximizes every cost at once: the bill (log volume scales linearly with traffic; observability commonly runs 10-30% of infra spend and log bills have exceeded the compute they watch), request latency (logging is synchronous I/O), and legal/security risk (bodies contain passwords, tokens, card numbers, and personal data that becomes regulated data with a retention obligation) — while still not answering aggregate or cross-service-causality questions well",
+      "It only fails if you have more than one server"
+    ],
+    "correct": 2,
+    "explanation": "'Log everything' is the expensive way to stay confused. Volume scales with traffic and never stops growing; synchronous logging adds latency to every request; and raw bodies are the single most common way secrets and personal data leak into a system with weak access controls and long retention. The goal is the smallest set of signals that answers the questions you're actually asked under pressure — and when a question comes that you can't answer, add exactly that signal so you're never blind to it again."
+  }
+]

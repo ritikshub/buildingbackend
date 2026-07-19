@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is the single job of the physical layer (layer 1)?",
+    "options": [
+      "To assign IP addresses to machines",
+      "To move raw bits between two directly connected devices as a physical signal over a medium",
+      "To guarantee that no packet is ever lost",
+      "To decide which program on a machine receives the data"
+    ],
+    "correct": 1,
+    "explanation": "The physical layer only turns bits into a physical signal (voltage, light, or radio) and moves them over the medium. Addressing, reliability, and delivering to a program all belong to higher layers."
+  },
+  {
+    "stage": "check",
+    "question": "In a star topology where every node connects to one central switch, what is the single point of failure?",
+    "options": [
+      "Any one of the leaf nodes",
+      "The central switch — its loss disconnects everyone",
+      "There is no single point of failure",
+      "The cable between two leaf nodes"
+    ],
+    "correct": 1,
+    "explanation": "A star isolates leaf failures: one node or its cable going down affects only that node. But every node depends on the central switch, so the switch is the single point of failure. That is why real designs add a redundant switch."
+  },
+  {
+    "stage": "check",
+    "question": "How many links does a FULL mesh of n nodes require?",
+    "options": [
+      "n links",
+      "n - 1 links",
+      "n(n-1)/2 links",
+      "2n links"
+    ],
+    "correct": 2,
+    "explanation": "In a full mesh every node connects to every other node, so the count is the number of unique pairs: n(n-1)/2. That is 6 links for 4 nodes and 45 for 10 — the cost is why full meshes stay in network cores, not on desktops."
+  },
+  {
+    "stage": "check",
+    "question": "Why is Manchester encoding called 'self-clocking' while NRZ is not?",
+    "options": [
+      "Manchester uses a separate clock wire",
+      "Manchester guarantees a signal transition in the middle of every bit, so the receiver recovers timing from the signal itself",
+      "Manchester sends bits twice for redundancy",
+      "NRZ transmits faster so it needs no clock"
+    ],
+    "correct": 1,
+    "explanation": "Manchester puts a transition at the middle of every bit (IEEE 802.3: 0 = high-to-low, 1 = low-to-high), so the receiver's clock always has an edge to lock onto. NRZ just holds a level, so a long run of identical bits gives no transitions and the receiver's clock can drift."
+  },
+  {
+    "stage": "post",
+    "question": "A hub and a switch can both wire a physical star. How do they differ for collisions?",
+    "options": [
+      "A hub gives each port its own collision domain; a switch shares one",
+      "Both put every device into one shared collision domain",
+      "A hub puts everything in one shared collision domain; a switch gives each port its own",
+      "Neither has collision domains; that is a physical-layer myth"
+    ],
+    "correct": 2,
+    "explanation": "A hub is a dumb repeater that blasts every signal out all ports, so everything it connects is one shared collision domain (a physical star that behaves like a bus). A switch gives each port a dedicated link and its own collision domain, letting pairs talk simultaneously without colliding."
+  },
+  {
+    "stage": "post",
+    "question": "A run needs to span 40 km between two buildings with no signal regeneration in between. Which medium fits, and why?",
+    "options": [
+      "Cat6a twisted pair, because it supports 10 Gbps",
+      "Single-mode fiber, because it attenuates far less and carries light over tens of kilometres",
+      "Coaxial cable, because it has a metal shield",
+      "Wi-Fi, because it needs no cable"
+    ],
+    "correct": 1,
+    "explanation": "Twisted pair tops out near 100 m because copper attenuates quickly. Single-mode fiber carries laser light through a hair-thin core with very low attenuation, so it spans tens to hundreds of kilometres — the reason long-haul links are fiber, not copper."
+  }
+]

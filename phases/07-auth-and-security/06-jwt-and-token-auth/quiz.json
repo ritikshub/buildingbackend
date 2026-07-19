@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You split a monolith into a dozen services. Why does a stateless signed token (JWT) fit this better than the server-side session from Lesson 5?",
+    "options": [
+      "JWTs are encrypted, so services can pass them safely between each other",
+      "Because a server-side session requires every service to call the central session store on every request to resolve the ID into an identity — a network hop and shared dependency on the hot path. A JWT carries the identity and a signature, so each service verifies it locally with the key and no lookup. The tradeoff is that a JWT can't be instantly revoked",
+      "Because JWTs are smaller than session IDs",
+      "Because JWTs cannot be stolen, unlike session cookies"
+    ],
+    "correct": 1,
+    "explanation": "The win is lookup-free, local verification: a self-contained token means no callback to a shared store on every inter-service call, which removes a latency hop and a single point of failure. That's exactly what many-service and API architectures need. The cost is revocation — a stateless token is trusted on its signature until it expires — which is why short lifetimes and refresh tokens exist. JWTs are signed, not encrypted, and are as stealable as any bearer token."
+  },
+  {
+    "stage": "check",
+    "question": "A developer puts the user's email and a `is_admin` flag in a JWT payload and says the data is safe because the token is signed. What's the misconception?",
+    "options": [
+      "None — signing protects the payload from being read",
+      "Signing provides integrity and authenticity, NOT confidentiality. The payload is only Base64url-encoded, so anyone holding the token decodes and reads every claim (email, flags, everything). The signature stops tampering, not reading. Never put anything secret in a JWT; if the claims must be hidden you need encryption (a JWE)",
+      "The problem is only that email is too long for a JWT",
+      "It's fine as long as the token uses RS256 instead of HS256"
+    ],
+    "correct": 1,
+    "explanation": "Base64url is encoding (Lesson 2) — fully reversible, no key. A JWT's three parts are all readable; only the signature is protective, and it protects integrity, not secrecy. So a JWT is the wrong place for a password, card number, or any sensitive PII. The `is_admin` flag itself is fine to expose (it's not secret), but it's only trustworthy after you verify the signature and standard claims."
+  },
+  {
+    "stage": "check",
+    "question": "Why is `exp` considered the load-bearing claim in a JWT, and what limitation does it work around?",
+    "options": [
+      "Because expired tokens compress better",
+      "Because a stateless JWT is trusted on its signature alone with no server lookup, so unlike a server-side session it cannot be instantly revoked — a stolen token stays valid until it expires. A short `exp` is therefore the primary way to bound the damage of a leaked token, which is why the access+refresh pattern pairs a short-lived JWT with a revocable server-side refresh token",
+      "Because `exp` encrypts the rest of the payload after it passes",
+      "Because without `exp` the signature cannot be computed"
+    ],
+    "correct": 1,
+    "explanation": "Statelessness is a double-edged property: no lookup means great scale, but also no way to reach out and invalidate a specific token. Expiry is the built-in kill switch, so it must be short and always checked. Full stateless revocation requires reintroducing state (a jti denylist), which is why the standard compromise is short access tokens plus a long-lived, revocable refresh token."
+  },
+  {
+    "stage": "check",
+    "question": "What's the practical difference between signing a JWT with HS256 versus RS256/ES256?",
+    "options": [
+      "RS256 is just a faster version of HS256",
+      "HS256 uses one shared secret — issuer and every verifier hold the same key, so anyone who can verify can also forge tokens; it only fits within a single trust boundary. RS256/ES256 uses a key pair — the issuer signs with a private key it alone holds, and others verify with the public key (distributed via a JWKS endpoint), so verifiers can check but not mint. Asymmetric is what enables cross-service and third-party trust (and OIDC)",
+      "HS256 is asymmetric and RS256 is symmetric",
+      "They are identical except for the hash length"
+    ],
+    "correct": 1,
+    "explanation": "The signing family determines who can forge. With a shared secret (HS256), every verifier is also a minter and a place the secret can leak — acceptable inside one app. With a key pair (RS256/ES256), only the private-key holder mints, everyone else just verifies with the public key, and JWKS lets the issuer rotate keys without redeploying verifiers. That separation is the foundation of federated identity in Lesson 7."
+  },
+  {
+    "stage": "post",
+    "question": "How does the `alg:none` forgery work, and what stops it?",
+    "options": [
+      "The attacker guesses the signing key and re-signs the token; a longer key stops it",
+      "The attacker sets the header to `{\"alg\":\"none\"}` and sends an empty signature. A verifier that reads the algorithm from the token's header sees 'none', concludes there's nothing to check, and accepts the forged claims (e.g. role=admin). The fix is to pin the accepted algorithm server-side — the verifier decides it's HS256 (or RS256) and rejects any token whose alg isn't in that allow-list, so 'none' never gets a pass",
+      "The attacker strips the payload; validating the payload length stops it",
+      "It only affects RS256 tokens and is fixed by switching to HS256"
+    ],
+    "correct": 1,
+    "explanation": "alg:none exploits a verifier that lets the token dictate how it's verified. The RFC even defines an 'unsecured JWT' with alg=none, which is precisely why a real verifier must refuse it. Pinning the algorithm — checking `header.alg == EXPECTED` before doing anything else — makes the attacker-chosen 'none' fail immediately. Never branch on the token's own alg field to decide whether to verify."
+  },
+  {
+    "stage": "post",
+    "question": "In the HS/RS key-confusion attack, how does the attacker turn your RSA public key into a forgery, and what's the fix?",
+    "options": [
+      "They factor the RSA public key to recover the private key",
+      "The server expects RS256 and verifies with its RSA public key — which is public by design. The attacker crafts a token with `alg:HS256` and computes the HMAC using that public key as the secret. A verifier that reads `alg` from the token then HMAC-verifies with the public key it holds, the signature matches, and the forgery is accepted. The fix is to pin the algorithm to RS256, so a token claiming HS256 is rejected before any key is used — never let the token choose the algorithm",
+      "They intercept the private key during the TLS handshake",
+      "They exploit a weakness in SHA-256 itself"
+    ],
+    "correct": 1,
+    "explanation": "The attack abuses a verifier that both trusts the token's alg AND uses a single key polymorphically. When alg=HS256, the verifier treats the RSA public key as an HMAC secret — and since the attacker signed with exactly that public value, it validates. Publishing the public key is correct and safe; the bug is verification that lets the token switch algorithms. Pinning alg=RS256 (as every good library forces via an explicit algorithms list) closes it."
+  }
+]

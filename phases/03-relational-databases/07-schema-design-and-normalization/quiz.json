@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "You store customer_name and customer_email on every order row. The customer changes their email. What can go wrong?",
+    "options": ["Nothing", "Update anomaly: the email is duplicated across many rows, so if you miss one the data now contradicts itself", "The order is deleted", "The email column disappears"],
+    "correct": 1,
+    "explanation": "A fact about the customer (email) is copied onto every order. Updating it means changing many rows; miss one and the database holds two different emails for the same person — the update anomaly."
+  },
+  {
+    "stage": "check",
+    "question": "What does the functional dependency X → Y mean, and how does it guide normalization?",
+    "options": ["X and Y are unrelated", "'X determines Y' — knowing X gives exactly one Y; normalization arranges tables so every non-key column depends on the key, the whole key, and nothing but the key", "Y comes before X", "X must be indexed"],
+    "correct": 1,
+    "explanation": "A functional dependency says X determines a unique Y. Normalization ensures each non-key column depends only on its table's full primary key; when a column depends on something else, it's in the wrong table and causes anomalies."
+  },
+  {
+    "stage": "check",
+    "question": "A line-items table keyed on (order_id, product_id) also stores product_name. Which normal form does this violate and why?",
+    "options": ["1NF, because names aren't atomic", "2NF, because product_name depends only on product_id (part of the composite key), not the whole key — a partial dependency", "3NF, because of a transitive dependency", "It violates nothing"],
+    "correct": 1,
+    "explanation": "product_name depends on just product_id, half of the composite key — a partial dependency, which 2NF forbids. The fix is to move product_name to a product table keyed by product_id."
+  },
+  {
+    "stage": "check",
+    "question": "An orders table stores order_id → customer_id → customer_email. What is this, and which normal form removes it?",
+    "options": ["A partial dependency, removed by 2NF", "A transitive dependency (non-key customer_email depends on non-key customer_id), removed by 3NF", "A foreign key, removed by 1NF", "Nothing wrong"],
+    "correct": 1,
+    "explanation": "customer_email depends on customer_id, itself a non-key column — a transitive dependency (key → A → B). 3NF removes it by moving customer_email to a customer table, leaving only customer_id as a foreign key on the order."
+  },
+  {
+    "stage": "post",
+    "question": "What is the practical target normal form for most schemas?",
+    "options": ["1NF is enough", "3NF — it eliminates the anomalies that actually bite and usually gives BCNF for free; higher forms rarely matter day to day", "Always 5NF", "Normalization is optional"],
+    "correct": 1,
+    "explanation": "3NF removes partial and transitive dependencies, killing the update/insert/delete anomalies. BCNF is a stricter edge-case refinement, and 4NF/5NF rarely come up. Aim for 3NF."
+  },
+  {
+    "stage": "post",
+    "question": "When is denormalization (deliberately reintroducing duplication) the right call?",
+    "options": ["Always — normalization is a myth", "Never", "Normalize first; denormalize only for a measured read-performance problem, and then own the job of keeping the duplicated copies in sync", "Only for small tables"],
+    "correct": 2,
+    "explanation": "Normalization optimizes correctness but makes reads join more tables. Denormalizing on purpose (a cached total, a name snapshot) trades write complexity for read speed — legitimate after measuring, as long as you keep the copies consistent."
+  }
+]

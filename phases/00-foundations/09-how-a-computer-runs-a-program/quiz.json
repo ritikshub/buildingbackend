@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "You are editing a document and the power suddenly cuts out before you saved. Why can the unsaved work be lost?",
+    "options": ["Disks erase themselves on power loss", "The work was only in RAM, which is volatile and wiped when power is lost", "The CPU deletes it", "Files are temporary by default"],
+    "correct": 1,
+    "explanation": "Work-in-progress lives in RAM, which is fast but volatile — it loses everything when power is cut. Saving copies it to persistent storage (disk), which survives."
+  },
+  {
+    "stage": "check",
+    "question": "What is the CPU's basic job, repeated billions of times a second?",
+    "options": ["Store files permanently", "Fetch the next instruction from memory and execute it", "Manage the network", "Draw the screen"],
+    "correct": 1,
+    "explanation": "The CPU runs the fetch-execute cycle: fetch the next instruction from memory, execute it, repeat. It understands only machine code, which is itself just numbers."
+  },
+  {
+    "stage": "check",
+    "question": "What does it mean, mechanically, to 'run' a program?",
+    "options": ["The disk executes the file directly", "The OS copies the program's bytes from disk into RAM and points the CPU at the first instruction", "The CPU reads the file from disk one line at a time", "The program is emailed to the CPU"],
+    "correct": 1,
+    "explanation": "A program is bytes on disk. To run it, the operating system loads those bytes into RAM (as instructions + data) and directs the CPU to start executing them."
+  },
+  {
+    "stage": "check",
+    "question": "Your laptop shows 200 running programs but has only 8 CPU cores. How is that possible?",
+    "options": ["Each program gets its own hidden CPU", "The OS rapidly switches the CPU between programs, so they appear to run simultaneously", "199 of them are fake", "RAM runs the extra programs"],
+    "correct": 1,
+    "explanation": "The operating system time-shares the CPU, switching between processes so quickly it looks simultaneous. This illusion of many-at-once is called concurrency."
+  },
+  {
+    "stage": "post",
+    "question": "What is the difference between a process and a thread?",
+    "options": ["They are the same", "A process is a running program with its own memory; threads are workers inside a process that share its memory", "A thread is bigger than a process", "A process has no memory"],
+    "correct": 1,
+    "explanation": "A process is one running program with its own protected memory space and a PID. A process can contain multiple threads that run concurrently and share that memory — powerful, but the source of concurrency bugs covered later."
+  },
+  {
+    "stage": "post",
+    "question": "A backend server process is pegged at 100% CPU but using only 5% of its RAM. What is the bottleneck?",
+    "options": ["Memory", "The CPU (compute)", "The disk", "There is no bottleneck"],
+    "correct": 1,
+    "explanation": "CPU and memory are the two core limits of a process. Here the CPU is saturated while memory is nearly idle, so compute is the bottleneck — the fix is less work per request or more CPU/processes, not more RAM."
+  }
+]

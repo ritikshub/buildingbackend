@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "A database engine is built in layers. Which set of components forms the essential 'spine' MiniDB keeps?",
+    "options": ["A GUI, a web server, and a cache", "Durability via a write-ahead log, atomicity via transactions, and fast ordered access via a B-tree index", "Only a hash map", "A SQL parser and nothing else"],
+    "correct": 1,
+    "explanation": "MiniDB drops the SQL parser, on-disk paging, MVCC, and the planner, but keeps the spine that makes it a database rather than a dict: WAL (durability), transactions (atomicity), and a B-tree (ordered access)."
+  },
+  {
+    "stage": "check",
+    "question": "In what order does a committed put flow through MiniDB's layers, and why does the order matter?",
+    "options": ["Apply to the index first, then log — for speed", "Log the write and commit record to the WAL and fsync FIRST, then apply to the B-tree — so a crash between the two is recovered by replaying the log", "Both happen simultaneously with no ordering", "Only the index is updated; the log is optional"],
+    "correct": 1,
+    "explanation": "Log-first, then apply (the write-ahead rule). If the process dies after the fsync but before the index update, recovery replays the log and redoes the apply. The ordering is what makes commits durable and atomic."
+  },
+  {
+    "stage": "check",
+    "question": "At which instant does a committed write become durable, and at which does it become findable?",
+    "options": ["Both when the transaction begins", "Durable when its commit record is fsync'd to the WAL; findable when it's applied to the B-tree index", "Durable when applied to the index; findable when logged", "They are the same instant"],
+    "correct": 1,
+    "explanation": "The fsync of the commit record is the durable commit point (the log is the source of truth). Applying to the B-tree afterward is what makes the row retrievable by get/scan. Two distinct moments in the write path."
+  },
+  {
+    "stage": "check",
+    "question": "MiniDB rebuilds its entire B-tree index from the WAL on startup. Why is that safe?",
+    "options": ["It isn't safe", "The index is a derived structure and the log is the source of truth, so rebuilding from committed log records can never leave the index disagreeing with the durable state", "The index is stored on disk separately", "Because the WAL is deleted on startup"],
+    "correct": 1,
+    "explanation": "The index is derived data; the WAL is authoritative. Recovery replays committed puts in order to rebuild the index, so a crash can never leave the index and the durable truth inconsistent — you just regenerate the index."
+  },
+  {
+    "stage": "post",
+    "question": "The process crashes after a commit record is fsync'd but before the B-tree is updated. What does recovery do?",
+    "options": ["The row is lost forever", "It replays the WAL, sees the committed transaction, and re-applies its writes to the rebuilt index — so the row is present; this delivered durability and atomicity for free", "It rolls back the committed transaction", "It corrupts the database"],
+    "correct": 1,
+    "explanation": "Because the commit record was durably logged, recovery redoes the write when rebuilding the index. The row survives (durability) and no half-transaction lingers (atomicity) — both emerge from the log-first layering."
+  },
+  {
+    "stage": "post",
+    "question": "Which feature does MiniDB lack that a production database like Postgres adds, and where was it covered?",
+    "options": ["A B-tree index", "MVCC / concurrent transactions (Lesson 12), a query planner (Lesson 10), and on-disk paging with a buffer pool (Lesson 8)", "A write-ahead log", "The ability to store rows"],
+    "correct": 1,
+    "explanation": "MiniDB keeps the spine but omits concurrency control (MVCC, Lesson 12), query planning (Lesson 10), and on-disk paging/buffer management (Lesson 8). Those gaps are exactly the rest of the database curriculum — you now have the map."
+  }
+]

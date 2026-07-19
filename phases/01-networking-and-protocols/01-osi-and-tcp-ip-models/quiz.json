@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why is networking split into layers instead of written as one big program?",
+    "options": [
+      "To make the data travel faster over the wire",
+      "So each layer can change independently — swap Wi-Fi for a cable and the apps above keep working unchanged",
+      "Because computers can only run one protocol at a time",
+      "To reduce the number of bytes each message needs"
+    ],
+    "correct": 1,
+    "explanation": "A layer is a contract: it depends only on the service the layer below promises, not on how that service is implemented. That is what lets you replace one layer (say, the physical medium) without rewriting the ones above it. Layering actually adds a few bytes of overhead per layer; the payoff is an internet that can evolve one piece at a time."
+  },
+  {
+    "stage": "pre",
+    "question": "When a layer 'encapsulates' data, what does it do?",
+    "options": [
+      "It encrypts the data so lower layers cannot read it",
+      "It compresses the data to make it smaller",
+      "It prepends its own header, turning the layer above's whole output into its payload",
+      "It splits the data into exactly 8-bit pieces"
+    ],
+    "correct": 2,
+    "explanation": "Encapsulation means putting a header in front of whatever came from the layer above, without changing those bytes — like sealing a letter inside an envelope inside a mailbag. Each layer treats the layer above's header-plus-data as an opaque payload it simply carries."
+  },
+  {
+    "stage": "check",
+    "question": "TCP/IP has four layers and OSI has seven. Which OSI layers does the TCP/IP 'Application' layer correspond to?",
+    "options": [
+      "Only OSI layer 7 (Application)",
+      "OSI layers 5, 6, and 7 (Session, Presentation, Application)",
+      "OSI layers 1 and 2 (Physical, Data Link)",
+      "OSI layers 3 and 4 (Network, Transport)"
+    ],
+    "correct": 1,
+    "explanation": "TCP/IP folds OSI's top three layers into one Application layer, because in real software the app protocol, its data format, and its session state are handled together. The middle layers map one-to-one (Transport↔Transport, Internet↔Network) and TCP/IP's Link layer covers OSI's bottom two (Data Link + Physical)."
+  },
+  {
+    "stage": "check",
+    "question": "As data heads down the stack to be sent, what is the correct order of PDU (Protocol Data Unit) names?",
+    "options": [
+      "frame → packet → segment → data",
+      "packet → frame → data → segment",
+      "data → segment → packet → frame → bits",
+      "bits → data → packet → frame"
+    ],
+    "correct": 2,
+    "explanation": "Going down: the application produces data, the transport layer wraps it into a segment (a datagram for UDP), the network layer wraps that into a packet, the link layer wraps that into a frame, and the physical layer sends it as bits. The receiver unwraps in the reverse order. Using these names precisely points at the right layer."
+  },
+  {
+    "stage": "check",
+    "question": "In the Build It code, the message grows from 24 bytes to 28, then 36, then 48 as it goes down the stack. What are those added bytes?",
+    "options": [
+      "Padding the operating system adds for alignment",
+      "Each layer's header: +4 bytes of ports (transport), +8 bytes of IPs (network), +12 bytes of MACs (link)",
+      "Copies of the original message, one per layer",
+      "Encryption keys inserted by each layer"
+    ],
+    "correct": 1,
+    "explanation": "Each layer prepends a fixed-size header and leaves the payload untouched: the transport header adds two 16-bit ports (4 bytes), the network header adds two 4-byte IPv4 addresses (8 bytes), and the link header adds two 6-byte MAC addresses (12 bytes). 24 + 4 + 8 + 12 = 48. Decapsulation strips them in reverse, recovering the original 24 bytes exactly."
+  },
+  {
+    "stage": "post",
+    "question": "A service that was working now returns 'connection refused' the instant you connect, but the host name resolves fine and other machines on the same network are reachable. Which layer does this most point to?",
+    "options": [
+      "The physical layer — a cable is unplugged",
+      "The application-layer name system (DNS), since the address must be wrong",
+      "The transport layer — nothing is listening on that port, so the connection setup is rejected",
+      "The presentation layer — an encoding mismatch"
+    ],
+    "correct": 2,
+    "explanation": "'Connection refused' arrives immediately and means the transport-layer setup was actively rejected — typically because no program is listening on that port. The name resolved (so DNS/application is fine) and the network is reachable (so link/physical is fine), which isolates the problem to layer 4. Naming the layer tells you which tool to reach for next."
+  },
+  {
+    "stage": "post",
+    "question": "On the receiving machine, in what order are the headers removed as data travels up the stack?",
+    "options": [
+      "Application header first, then transport, then network, then link",
+      "They are all removed at once by the physical layer",
+      "Link header first, then network, then transport, delivering the original data to the application",
+      "In the same order they were added on the sender"
+    ],
+    "correct": 2,
+    "explanation": "Decapsulation is the mirror image of encapsulation. Bits arrive and become a frame; the link layer reads and strips its MAC header, the network layer strips the IP header, the transport layer strips the port header (learning which program to deliver to), and the application finally sees the untouched original bytes. Last header added on the sender is the last one still present, so it comes off first."
+  }
+]

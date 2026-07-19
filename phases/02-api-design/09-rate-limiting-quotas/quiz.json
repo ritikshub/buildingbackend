@@ -1,0 +1,30 @@
+[
+  {
+    "question": "A client sends 100 requests at 11:59:58 and 100 more at 12:00:02 against a '100 per minute' fixed-window limiter. What happens?",
+    "options": ["The second 100 are rejected", "All 200 are allowed — the bursts land in different fixed windows (the boundary-burst problem)", "The client is banned", "Only 50 get through"],
+    "correct": 1,
+    "explanation": "Fixed windows align to the clock, not the client. The two bursts fall in different windows, so all 200 pass — effective worst-case is 2x the limit at boundaries. A sliding window (log or counter) or a token bucket would bound it.",
+    "stage": "pre"
+  },
+  {
+    "question": "Why does a purely in-process rate limiter break when you scale from 1 to 6 replicas?",
+    "options": ["It uses too much memory", "Each replica counts only its own traffic and enforces the full limit, so the effective limit becomes ~6x and drifts with autoscaling", "Redis is required by law", "The counters overflow"],
+    "correct": 1,
+    "explanation": "With N replicas behind a load balancer, each sees a fraction of traffic but enforces the whole limit independently, so the aggregate allowed rate becomes ~N x the intended limit. The fix is shared state (Redis INCR+EXPIRE made atomic with a Lua script).",
+    "stage": "post"
+  },
+  {
+    "question": "Your /login limiter keys on client IP. A university reports none of its 4,000 students can log in. Why, and what do you change?",
+    "options": ["Redis is down; restart it", "The campus is behind NAT sharing one public IP, exhausting the per-IP limit; move the primary limit to per-account", "The password policy is too strict", "IPv6 isn't supported"],
+    "correct": 1,
+    "explanation": "NAT means thousands of users share one public IP and collectively blow the per-IP limit. Move the primary limit to per-account (e.g. 5 attempts/min/username), keep a looser per-IP limit only as a volumetric backstop, and only trust X-Forwarded-For entries your own edge appends.",
+    "stage": "post"
+  },
+  {
+    "question": "Why is exponential backoff alone insufficient without jitter?",
+    "options": ["It's too slow", "Clients that fail simultaneously share the same schedule and retry in synchronized waves (a thundering herd) that re-overload the server", "Jitter is required by RFC 9110", "Backoff disables Retry-After"],
+    "correct": 1,
+    "explanation": "Deterministic backoff means all clients that failed together retry at the same moments, hammering the recovering server in waves. Full jitter (sleep uniformly random between 0 and the exponential cap) decorrelates the retries and smears them over time.",
+    "stage": "post"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Twenty minutes ago you changed one timeout value in production by editing a ConfigMap. There is now an incident and someone says 'roll back the deploy.' Your deploy history records image digests and nothing else, and the last three changes to this service were all config-only. What happens when the rollback runs?",
+    "options": [
+      "The rollback restores the previous timeout, because configuration is part of what a deployment records",
+      "The rollback fails with an error, because there is no previous image digest to return to",
+      "The rollback reports success and changes nothing, because all three recent states point at the same image digest — the fault survives the rollback",
+      "The orchestrator automatically reverts the ConfigMap alongside the Deployment, so both halves return together"
+    ],
+    "correct": 2,
+    "explanation": "A release is the pair (artifact + config), and it needs its own identity. If your history versions only the artifact, then config-only changes are invisible to it: rolling back returns you to the digest you are already running, the rollback 'succeeds', and nothing improves. Deriving a release id as hash(artifact_digest + config_hash) is what makes a config change a first-class, rollback-able event — one artifact combined with four configurations produced four distinct release ids in this lesson's run."
+  },
+  {
+    "stage": "check",
+    "question": "Your service reads a feature flag with `if bool(os.environ['FEATURE_NEW_CHECKOUT']):` and the deployment sets that variable to the string `false`. What does the service do?",
+    "options": [
+      "Serves the new checkout, because every non-empty string is truthy in Python — including the string 'false' — so the flag you explicitly disabled ships enabled, with no error anywhere",
+      "Serves the old checkout, because Python parses the string 'false' to the boolean False",
+      "Raises a ValueError at startup, because 'false' is not a valid boolean literal",
+      "Serves the old checkout, because an environment variable set to a falsy word is treated as unset"
+    ],
+    "correct": 0,
+    "explanation": "Every environment variable is a string, and `bool(s)` is True for any non-empty string. `bool('false')` is `True`. This is the single most common config type bug because it produces no error, no log line and no crash — just the wrong behaviour. A schema with a declared type and an explicit parser (true/false/1/0/yes/no/on/off) closes it; so does a `bool` field in pydantic-settings, which does the same parsing for you."
+  },
+  {
+    "stage": "check",
+    "question": "Your config loader ignores keys it does not recognise, which seems forgiving and harmless. During a deploy someone sets `LOG_LEVL=debug` instead of `LOG_LEVEL=debug`. What is the observable symptom?",
+    "options": [
+      "The process refuses to start, since an unrecognised key is a strong signal that the deploy is wrong",
+      "There is none — the key is ignored, the previous value stays in force, nothing errors or warns, and the only evidence is that the change did not take effect",
+      "The key is loaded with a value of None, so the first read of it raises a TypeError",
+      "The loader emits a warning at startup naming the unrecognised key"
+    ],
+    "correct": 1,
+    "explanation": "An ignored unknown key is exactly what a typo looks like, and it is silent by construction: nothing reads the typo'd name, so the default or previous value stays in force and no code path ever notices. A closed schema — unknown keys are an error — turns this into a boot failure, and `difflib.get_close_matches` turns it into a helpful one ('did you mean LOG_LEVEL?'). In pydantic-settings this is `extra='forbid'`, which is not the default."
+  },
+  {
+    "stage": "check",
+    "question": "You edit a ConfigMap that 40 running pods consume via `envFrom`, and `kubectl apply` reports success. What happens to those 40 pods?",
+    "options": [
+      "All 40 are restarted by the control loop so they pick up the new values",
+      "All 40 pick up the new values within about a minute, when the kubelet next syncs",
+      "The apply is rejected, because a ConfigMap in use by running pods is immutable",
+      "Nothing at all — the Deployment's pod template is unchanged, so no new ReplicaSet is created and no pod is replaced; the processes keep the values they read at startup"
+    ],
+    "correct": 3,
+    "explanation": "A Deployment rolls out when its pod template changes, and editing a ConfigMap leaves that template byte-identical. So the apply succeeds and nothing happens — and worse, any pod replaced later for an unrelated reason boots with the new values, leaving the fleet split across two configurations with no record of which is which. The fix is a `checksum/config` annotation carrying a digest of the ConfigMap in the pod template: it is the release id, in the one place the control loop will notice it. (Option 2 is the tempting one because it is true for a ConfigMap mounted as a volume — but never for environment variables, which are read once at execve.)"
+  },
+  {
+    "stage": "post",
+    "question": "`REQUEST_TIMEOUT_MS` is 2000 in both staging and production, so a drift report that compares values says the two environments agree. Your checker still flags it. Why, and what does it predict?",
+    "options": [
+      "It is a false positive: identical effective values in both environments is the definition of parity",
+      "The two environments resolve it from different layers — staging from a config file, production from the environment — so an edit to the file moves staging, does not move production, and looks verified because staging updated",
+      "It is flagged because 2000 ms exceeds the recommended downstream timeout for a caller with a 1000 ms budget",
+      "It is flagged because the key is set in two layers at once in staging, which is ambiguous"
+    ],
+    "correct": 1,
+    "explanation": "Source drift is invisible until someone tries to change the value, and then it is maximally deceptive: the engineer edits the file, watches staging update, concludes the change works, and ships something production ignores entirely. Value parity is not parity — what must match across environments is which keys exist, what layer supplies them, and whether they parse. Values are allowed and expected to differ."
+  },
+  {
+    "stage": "post",
+    "question": "Your config dump redacts secrets correctly. A colleague adds a minimum-length check on the session signing key whose failure message reads: `SESSION_SIGNING_KEY 'hunter2xy' is too short, need 32 chars`. What is wrong, and what is the fix?",
+    "options": [
+      "Nothing is wrong — a startup error is written before the logging pipeline is attached, so it never leaves the process",
+      "The message is fine but the minimum should be raised to 64 characters for an HMAC key",
+      "The secret is now in the boot log, the alert, and probably a ticket — build the message from the field's declared constraints only ('length 9, minimum 32'), so no output path can echo the value",
+      "The fix is to catch the exception and re-raise it with the value replaced by asterisks at the call site"
+    ],
+    "correct": 2,
+    "explanation": "The error path is where secrets leak, because it is the path nobody reviews and the one that fans out to logs, alerts and tickets. Redaction has to be a property of the config type rather than a rule people remember: build validation messages from constraints (length, range, allowed values), never from the offending value, and assert in a test that no output surface — dump, provenance report, or error — contains a known secret. Option 3 fails because by the time you catch it the string already exists and any intermediate handler may have logged it."
+  }
+]

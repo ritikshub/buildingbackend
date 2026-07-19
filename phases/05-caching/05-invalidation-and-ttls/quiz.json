@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is a TTL, and what problem does it solve?",
+    "options": ["A limit on cache size", "A per-entry expiry that bounds staleness — 'trust this copy for N seconds' — turning 'be right forever' into a tunable 'be right for a while'", "A way to encrypt cached data", "The time to connect to Redis"],
+    "correct": 1,
+    "explanation": "A TTL (Time To Live) expires an entry after N seconds. It converts the unsolvable problem of knowing exactly when data changes into a tunable one: how much staleness you can tolerate."
+  },
+  {
+    "stage": "check",
+    "question": "Expiration and eviction both remove entries. How do they differ?",
+    "options": ["They're the same thing", "Expiration is time-driven (the TTL passed); eviction is memory-driven (the cache is full and must make room, stale or not)", "Expiration only affects strings", "Eviction only happens on restart"],
+    "correct": 1,
+    "explanation": "A TTL expires an entry when its time is up. Eviction happens under memory pressure — when maxmemory is hit, the policy removes some entry to free space, regardless of whether it's stale."
+  },
+  {
+    "stage": "check",
+    "question": "Why does Redis use BOTH passive and active expiration instead of just one?",
+    "options": ["For redundancy", "Passive (check-on-read) is cheap but leaves never-read dead keys in memory; active (background sampling) reclaims those without scanning the whole keyspace", "Active expiration is faster than passive for reads", "Passive expiration deletes keys that haven't expired"],
+    "correct": 1,
+    "explanation": "Passive expiry avoids scanning on the hot path but can't reclaim keys that are never accessed again. Active sampling periodically deletes expired keys so dead entries don't accumulate. Together they bound both wasted work and wasted memory."
+  },
+  {
+    "stage": "check",
+    "question": "You want to invalidate EVERY cached field for product 42 at once. What's the cleanest technique?",
+    "options": ["Run KEYS product:42:* and delete each", "Store a generation counter for the group, fold it into every key, and INCR it — old-generation keys become unreachable in O(1)", "Restart Redis", "Set all their TTLs to zero individually"],
+    "correct": 1,
+    "explanation": "Generation (namespace) versioning: keys embed a generation number. Bumping the counter with one INCR orphans every key of the old generation instantly — no wildcard scan, no per-key deletes."
+  },
+  {
+    "stage": "post",
+    "question": "Redis's default maxmemory-policy is noeviction. Why is that dangerous for a pure cache?",
+    "options": ["It deletes random data", "When the cache fills, Redis rejects new writes with an error, so an app that assumes it can always cache starts failing", "It uses too much CPU", "It disables TTLs"],
+    "correct": 1,
+    "explanation": "noeviction refuses to evict; once full, it errors on writes. For a cache you want allkeys-lru (or allkeys-lfu) so it sheds cold data gracefully instead of becoming a wall."
+  },
+  {
+    "stage": "post",
+    "question": "Why add jitter (a small random amount) to TTLs when warming many keys at once?",
+    "options": ["To make keys expire faster", "So a burst of entries written together don't all expire at the same instant and stampede the database with simultaneous misses", "To improve encryption", "Jitter has no real effect"],
+    "correct": 1,
+    "explanation": "Identical TTLs set in one burst expire as one wave, causing a flood of simultaneous misses. Jitter spreads the expiries across a window, smoothing the reload load — the first defense against a cache stampede."
+  }
+]

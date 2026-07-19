@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "An autoscaler is configured to hold CPU at 60%. Traffic doubles instantly and stays there. Roughly how long before the fleet is the right size — given a 60 s metric scrape, a 60 s averaging window, a 60 s decision interval, a 90 s boot and a 60 s warmup?",
+    "options": [
+      "About 60 seconds — the decision interval is the only real delay",
+      "About 4-5 minutes, because all of those delays are on the feedback path and add up",
+      "About 90 seconds — the boot time dominates and the rest is negligible",
+      "Immediately, because target-tracking computes the exact answer in one step"
+    ],
+    "correct": 1,
+    "explanation": "The delays are in series on the feedback path, so they add: 60 s scrape + 30 s (half the averaging window) + 30 s (half the decision interval) + 90 s boot + 60 s warmup = 270 s = 4.5 minutes. Option D is the tempting one and it is half right: the target-tracking formula IS exact — but only when there is no delay, because then the fleet that produced the metric is the fleet you have. Option A picks the one delay that is easiest to see on a config page and ignores provisioning, which is the largest term."
+  },
+  {
+    "stage": "check",
+    "question": "The lesson's simulator ran the identical controller against identical, perfectly flat traffic and varied only the dead time. At 0 s the fleet parked on 24 instances; at 210 s it swung between 6 and 145. What caused the swing?",
+    "options": [
+      "The traffic became bursty once the dead time was increased",
+      "The controller's gain was too high and needed a lower setpoint",
+      "The loop was acting on measurements older than the time it takes its own actions to show up, so it kept correcting for a state that no longer existed",
+      "The instances were failing health checks and being replaced"
+    ],
+    "correct": 2,
+    "explanation": "The traffic is provably constant across the measured plateau — that is the whole point of the experiment, and it is why the result is about the controller and not the workload. A control loop cannot stabilise a plant whose dead time exceeds its reaction period; the delay turns negative feedback into positive feedback at some frequency and the loop settles into a limit cycle of roughly twice the dead time (measured: 9.6 minutes against a predicted 7.0). Lowering the setpoint (option B) changes where it oscillates around, not whether it oscillates."
+  },
+  {
+    "stage": "check",
+    "question": "A service with 8 worker threads normally takes 12 ms per request, of which 6 ms is CPU. Its database degrades and the request now takes 120 ms, still with 6 ms of CPU. The instance saturates at 8 / 0.120 = 67 req/s. What does a CPU-target autoscaler do?",
+    "options": [
+      "Scales out, because 67 req/s is well above the healthy per-instance rate",
+      "Holds steady, because CPU utilisation is unchanged at 60%",
+      "Scales in, because 67 req/s only uses 40% CPU and the target is 60%",
+      "Scales out, but too slowly to matter"
+    ],
+    "correct": 2,
+    "explanation": "At 67 req/s the instance is completely full — every worker slot is occupied — and it is burning only 67 x 6 ms = 0.4 s of CPU per second, which is 40%. The controller reads 40% against a 60% target and concludes it has too many instances. CPU does not merely lag here; it points the wrong way, because CPU measures work and a thread blocked on a socket is not working. Measured, that run held 15-25 instances while utilisation ran at 2.33x capacity and delivered 45.1% SLO. In-flight requests per instance (Little's Law, L = lambda x W) rises in both regimes, which is why max(CPU, in-flight) is the answer to ship."
+  },
+  {
+    "stage": "check",
+    "question": "During a retry storm, arrival rate is 3x real demand and the app tier autoscales from 6 to 20 instances. Each instance opens a pool of 20 connections against a database with max_connections = 300. Why did goodput measure exactly zero for the whole run?",
+    "options": [
+      "The new instances were still warming up and never became useful",
+      "Adding instances added retries, and the extra connections pushed the database past the peak of its scalability curve, cutting its throughput from 426 to 247 q/s",
+      "The autoscaler hit its max_replicas ceiling and stopped adding capacity",
+      "The client timeout was too short for the new instances to respond in time"
+    ],
+    "correct": 1,
+    "explanation": "Two things compound. First, a retry is not satisfied by being served quickly — it is satisfied by SUCCEEDING — so capacity aimed at retries does not reduce them. Second, database throughput is not linear in connections: past the Universal Scalability Law peak (44 connections here) it goes DOWN, so 400 wanted connections against a 300 limit both got a quarter refused and dragged the surviving 300 to 247 q/s, a 42% cut in the only tier that mattered. Option C is tempting but backwards: hitting the ceiling would have LIMITED the damage. The same trigger with load shedding and the fleet pinned at 6 recovered in 5 seconds at a third of the cost."
+  },
+  {
+    "stage": "post",
+    "question": "You must pick ONE change to an autoscaling policy that oscillates badly. Which improves the SLO rather than trading it away?",
+    "options": [
+      "Increase the metric averaging window from 60 s to 300 s to smooth the signal",
+      "Compute the desired count from the fleet size that produced the measurement, not the fleet size you have now",
+      "Add a 300 s stabilisation window to scale-out as well as scale-in",
+      "Lower the CPU target from 60% to 40% so there is more headroom"
+    ],
+    "correct": 1,
+    "explanation": "The naive formula multiplies current replicas by a ratio measured off the fleet you had a dead time ago, so instances still booting get counted — and ordered — twice. Dividing by the fleet that produced the measurement removes the double-count at zero cost in lag: measured, swing went 395 to 19, launches 1216 to 60, SLO 49.4% to 80.0%. Every other option buys stability by adding lag or money. Option A is the trap: a 300 s average adds ~150 s of dead time, which is the disease, and it cost 13.3 points of SLO in the measurement. Option C delays growth, which is the one direction you must never delay."
+  },
+  {
+    "stage": "post",
+    "question": "Your team is deciding how to survive the loss of one availability zone at peak. What does this lesson say about relying on the autoscaler to backfill the lost capacity?",
+    "options": [
+      "It is fine, because autoscalers are designed for exactly this and react in seconds",
+      "It is fine as long as max_size is set high enough to cover the lost zone",
+      "Do not rely on it: during a zone failure the control plane is saturated, the capacity pool is contended and quotas bind, so min_size must already cover the loss with no scaling action at all",
+      "Rely on it, but add a predictive scaling policy so the capacity is forecast in advance"
+    ],
+    "correct": 2,
+    "explanation": "Autoscaling is a control action taken by a control plane drawing on a shared capacity pool, and it is slowest at exactly the moment you need it fastest — every customer in the region is scaling out at once, and InsufficientInstanceCapacity is a real answer. That is the opposite of static stability. Option B is the most common mistake: max_size is a spend limit and a blast-radius limit, and it does nothing if the API cannot give you instances. Autoscaling is an optimisation for COST; buy reliability with a floor that is already running, warm and in the load balancer before the incident starts."
+  }
+]

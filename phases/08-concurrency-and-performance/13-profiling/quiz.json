@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A 900 ms checkout endpoint is slow. A senior engineer is confident it is the JSON serialization and spends two weeks rewriting it. What is the strongest argument for profiling before that sprint starts, rather than after it ships?",
+    "options": [
+      "Profilers usually disagree with human intuition, so the engineer's theory is statistically likely to be wrong and should be checked",
+      "Profiling gives the fraction f that the component occupies, and Amdahl's ceiling 1/(1-f) bounds the payoff BEFORE any work happens. In the lesson's run the serializer was f=2.0%, so even an infinitely fast version could only ever return a 1.02x speedup — a two-week outcome that was fully determined on day one and computable in seconds",
+      "Profiling would have shown the engineer which library to use for the rewrite, saving most of the two weeks",
+      "Without a profile there is no baseline to compare against afterwards, so nobody could prove the rewrite helped at all"
+    ],
+    "correct": 1,
+    "explanation": "The point is not that guesses are usually wrong — this one might have been right about the code being inefficient. The point is that a guess tells you nothing about how much the fix is WORTH. Amdahl's Law converts one measured fraction into a hard upper bound on the payoff, and a ceiling of 1.02x kills the project before anyone opens an editor. Compute it first and write it in the ticket."
+  },
+  {
+    "stage": "check",
+    "question": "The lesson's endpoint spends 500.8 ms of its 895.1 ms blocked in a payment call. The on-CPU sampler reports charge_payment at 0.0% of 1,476 samples. Why?",
+    "options": [
+      "The sampler's 1 ms interval is too coarse to catch a call that only happens once per request, so the wait falls between samples",
+      "The sampler explicitly filters out frames it recognises as I/O so that they do not crowd out application code in the flame graph",
+      "It is armed with setitimer(ITIMER_PROF), which counts down in process CPU TIME rather than wall-clock time. A blocked process accrues no CPU time, so the countdown stops and SIGPROF is never delivered — nothing is filtered, the profiler is simply never woken during the wait",
+      "The payment call runs in a different thread, and the sampler was only attached to the main thread"
+    ],
+    "correct": 2,
+    "explanation": "This is a definition, not a bug or a tuning problem. ITIMER_PROF is driven by CPU-time accounting, so off-CPU time is structurally invisible to it — and lowering the interval or sampling longer will never surface it. Worse, the missing 55.9% is redistributed across the remaining rows: price_line_items read 59.5% against a true 21.7%, which is how an engineer ends up optimizing the wrong loop for a fortnight."
+  },
+  {
+    "stage": "check",
+    "question": "Under cProfile the 50,000-call component grew from 194.2 ms to 248.0 ms (+27.7%) while the single-call component moved -0.0%, and an isolated one-line function went from 46 ns to 190 ns per call. What does this imply about reading a cProfile output?",
+    "options": [
+      "The overhead is proportional to elapsed time, so every function's reported time is inflated by roughly the same factor and the relative shares stay trustworthy",
+      "cProfile's timings are unusable and only its call counts should ever be read",
+      "The deterministic profiler taxes CALLS, not time, so the inflation lands entirely on whatever makes the most calls — which systematically makes many-small-calls code look hotter than it really is. The profile is distorted in a predictable direction, so a cProfile run will bias you toward optimizing call-heavy code",
+      "The distortion means cProfile should be run several times and the results averaged to cancel out the per-call noise"
+    ],
+    "correct": 2,
+    "explanation": "The tax is a fixed cost per call/return hook, so a function taking 5 ms never notices a ~150 ns hook while a function called 50,000 times pays it 50,000 times. That is not noise you can average away — it is a systematic bias, always in the same direction. cProfile remains the right tool for exact call counts and the call graph; just do not use its timings to choose between a call-heavy component and a compute-heavy one."
+  },
+  {
+    "stage": "check",
+    "question": "A colleague finds a function with ncalls=50,000, tottime=13.1 ms and cumtime=239.3 ms — about 4.79 microseconds per call. They say 4.79 us is fast and move on. What did they miss?",
+    "options": [
+      "tottime is the number that matters and 13.1 ms is genuinely negligible, so moving on was correct",
+      "An N+1 is a COUNT pathology, not a duration one: no individual call looks suspicious, and the signal is the 50,000 in the leftmost column. Those calls total 239.3 ms of cumulative time, and the fix is to stop making 50,000 of them rather than to make each one faster",
+      "cumtime is always larger than tottime, so the 239.3 ms figure is double-counting and should be ignored",
+      "They should have sorted by cumulative time instead, which would have surfaced the function at the top of the profile"
+    ],
+    "correct": 1,
+    "explanation": "Self time spreads an N+1 thin across tens of thousands of invocations so nothing looks hot, and per-call duration is by construction unremarkable — that is what makes the pattern so durable in production. Scan the ncalls column before the time columns. Then use the caller/callee view (pstats' print_callers) to find WHICH caller is issuing them, because the bug is in the loop, not in the function."
+  },
+  {
+    "stage": "post",
+    "question": "You sample an asyncio service and get a clean flame graph, but it accounts for only 150 ms of 1,202 ms of logical request time, with 67% of samples sitting in run_forever;_run_once;select. What is happening and what do you reach for?",
+    "options": [
+      "The sampler is misconfigured; raising the sample rate from 1 kHz to 10 kHz will resolve the missing time",
+      "The event loop itself is the bottleneck, since two thirds of samples are inside select() — the fix is a faster event loop implementation such as uvloop",
+      "The select() frames indicate the kernel is slow to return from epoll, which points at a network or NIC problem rather than an application one",
+      "A suspended coroutine has NO frames on any thread stack — at await its frames are parked on the task object — so the request's dominant cost is structurally unsamplable and gets charged to the loop's own select(). Reach for event-loop lag, asyncio debug mode's slow-callback logging, task-aware tools, and spans at the logical boundaries — which is to say, distributed tracing"
+    ],
+    "correct": 3,
+    "explanation": "Stack sampling assumes the unit of work is on a stack, and async breaks that assumption; more samples of an empty stack is still nothing. In the lesson's run, loop lag caught what the stacks could not: a p50 of 0.38 ms with a max of 150 ms, exactly fingerprinting three 50 ms blocking bursts that refused to yield. For async services, tracing is often the better profiler because a trace follows the logical request across suspensions while a stack profiler follows a thread."
+  },
+  {
+    "stage": "post",
+    "question": "A service's memory reaches 8.93 MB at peak and sits at 4.46 MB afterwards. Someone declares a leak. How do you actually decide?",
+    "options": [
+      "Take tracemalloc snapshots before and after and use compare_to(): genuine retention appears as a positive per-line delta that keeps growing across cycles, while a high-water mark nets out near zero and shows up only as peak exceeding current. In the lesson's run the diff attributed +3.76 MB to the never-evicted list and only +0.10 MB to the 20,000-row transient report",
+      "Compare peak against current: a peak more than twice the current value is the definition of a leak, so 8.93 vs 4.46 confirms it",
+      "Run the workload for longer and watch resident memory in top — if it keeps climbing at all, it is a leak",
+      "Force a garbage collection and re-read the numbers; whatever memory survives gc.collect() is by definition leaked"
+    ],
+    "correct": 0,
+    "explanation": "A single snapshot cannot distinguish unbounded retention, a high-water mark, and allocator fragmentation — all three look like 'a lot of memory was allocated here'. Only a diff separates them, because only a diff shows what SURVIVED. Note the trap in the peak-vs-current reading: the 4.47 MB gap between them is precisely the transient report that was correctly freed, so treating that gap as evidence of a leak sends you hunting for a bug that does not exist."
+  }
+]

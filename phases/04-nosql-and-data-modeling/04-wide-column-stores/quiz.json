@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is a \"wide-column\" store, and how is it different from a \"columnar\" analytics store?",
+    "options": ["They are the same thing — both store each column contiguously on disk for fast analytics", "A wide-column store (Cassandra, HBase) is a ROW store that partitions rows across a cluster and lets each row hold a different, sparse set of columns; a columnar store (Parquet, Redshift) stores each COLUMN contiguously for analytics scans — same words, opposite purpose", "A wide-column store can only hold numeric columns, a columnar store holds text", "\"Columnar\" is just the older name for the same wide-column technology"],
+    "correct": 1,
+    "explanation": "This is the single most common confusion in NoSQL. A wide-column store is a row store built for high-volume operational reads/writes by key — it partitions rows across nodes and each row can be wide and ragged. A columnar (column-oriented) analytics store lays each column out contiguously so an OLAP query can scan one column across millions of rows. Identical-sounding names, unrelated purposes."
+  },
+  {
+    "stage": "check",
+    "question": "In the wide-column data model, what does the partition key decide versus the clustering key?",
+    "options": ["Both decide the on-disk sort order of rows", "The partition key decides WHICH NODE owns the data (distribution, via consistent hashing); the clustering key decides the SORT ORDER of rows within a partition (enabling fast ordered range reads)", "The partition key sets the sort order; the clustering key picks the node", "Neither affects where data physically lives"],
+    "correct": 1,
+    "explanation": "The compound key does two jobs. The partition key is hashed onto a ring (Lesson 2) to pick the node, so different partition keys spread across the cluster — that's the horizontal scale. The clustering key stores the rows of a partition physically sorted, so 'the last 50 messages' is a contiguous range read off one node, not a scatter-gather."
+  },
+  {
+    "stage": "check",
+    "question": "You must serve two access patterns — \"messages in a conversation, newest first\" and \"all messages a user sent, newest first.\" Why does the wide-column model push you to TWO tables?",
+    "options": ["Because creating tables is cheap, so more is always better", "Because there are no cross-partition joins and the partition key must contain what you filter by; to also filter by user you build a second table (partitioned by user) and write each message into BOTH — duplicating on write is the intended design, not a hack", "Because a single table can only hold one clustering key ever", "Because the two queries need different consistency levels"],
+    "correct": 1,
+    "explanation": "You model queries, not data. The partition key must hold the thing you filter by, so 'by conversation' and 'by user' are two different partition keys — hence two tables, with each message written to both. A cross-partition scatter-read is expensive; storage is cheap. Duplicating on write to make each read a single-partition lookup is the defining discipline (Lesson 7)."
+  },
+  {
+    "stage": "check",
+    "question": "Why can an LSM-tree absorb writes faster than a B-tree, and what does it make HARDER in exchange?",
+    "options": ["It compresses data better, and nothing becomes harder", "Writes are cheap sequential appends — a commit-log append plus an in-memory memtable insert, flushed later as immutable sorted SSTables — instead of B-tree in-place random updates; in exchange a READ may have to check the memtable plus several SSTables, rescued by Bloom filters and compaction", "It keeps the whole dataset in RAM, so writes are free but reads are impossible", "It secretly uses a B-tree, so write and read cost are identical"],
+    "correct": 1,
+    "explanation": "The LSM-tree never does a random write: it appends to a durable commit log and inserts into an in-memory sorted memtable (memory-speed), flushing full memtables all at once as immutable sorted SSTables and merge-compacting them in the background. The cost is reads — a key may live in the memtable or any SSTable — so each SSTable carries a Bloom filter that answers 'definitely not here' instantly, and compaction keeps their count small. It's the write-optimized mirror of the read-optimized B-tree."
+  },
+  {
+    "stage": "post",
+    "question": "With replication factor N = 3 you set W = QUORUM (2) and R = QUORUM (2). Is a read guaranteed to see the latest write? What about W = 1, R = 1?",
+    "options": ["No — replicas can never be made to agree", "Yes: because R + W > N (2 + 2 = 4 > 3) the read set and write set must overlap on at least one replica holding the latest value — strong consistency. With W = 1, R = 1 you get 1 + 1 = 2 ≤ 3, so the read may hit a replica that hasn't caught up — eventual consistency, but faster and more available", "Yes, but only because 3 is an odd number", "No — quorum applies only to writes, never to reads"],
+    "correct": 1,
+    "explanation": "Cassandra turns CAP into a per-operation dial. If R + W > N, the R replicas answering a read and the W replicas that acknowledged the write are guaranteed to share at least one node, and that node has the newest value — strong consistency. Drop below the threshold (W = 1, R = 1) and you trade possible staleness for lower latency and higher availability. The same table can serve both: strong for a password change, eventual for a 'seen' marker."
+  },
+  {
+    "stage": "post",
+    "question": "You partition a metrics table by sensor_id alone. A year later, reads are slow and one node runs hot. What's happening, and what single change to the partition key fixes it?",
+    "options": ["The disk filled up — buy a bigger disk and move on", "An UNBOUNDED partition (one sensor's rows grow forever onto a single node, plus a HOT partition if that sensor dominates traffic); add a time bucket to the partition key (sensor_id + day) so each partition is bounded in size and load spreads across the cluster", "Tombstone build-up — the only fix is to run compaction by hand forever", "Nothing is wrong; slow reads are simply how wide-column stores behave at scale"],
+    "correct": 1,
+    "explanation": "Partitioning by sensor_id alone lets a single sensor's partition grow without limit, and it all lives on one node — the classic unbounded/large-partition trap, which also shows up as a hot node when that sensor is busy. Bucketing — folding a time window into the partition key (sensor_id + day) — caps each partition's size and distributes the buckets across nodes, fixing both at once. Choosing the partition key to avoid hot and unbounded partitions is the senior move."
+  }
+]

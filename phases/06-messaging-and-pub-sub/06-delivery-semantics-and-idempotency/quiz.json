@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A broker delivers a message, the consumer processes it and sends an acknowledgement, and the acknowledgement is dropped by the network. The broker's lease expires and it redelivers. Which component malfunctioned?",
+    "options": [
+      "The consumer, because it should have retried the acknowledgement until the broker confirmed receipt",
+      "The broker, because it should have waited longer before assuming the consumer had died",
+      "None of them. The broker cannot distinguish a lost message from a lost ack, and redelivering is the only safe behaviour available to it",
+      "The network, because a correctly provisioned VPC does not drop acknowledgement packets"
+    ],
+    "correct": 2,
+    "explanation": "Every component followed its contract. The broker's only options on silence are to redeliver (risking a duplicate) or to give up (risking a lost payment), and giving up is worse. Retrying the ack does not help, because that retry can also be lost, and so on forever - that infinite regress is the Two Generals Problem. Waiting longer never resolves it either: under asynchrony, 'no reply yet' and 'no reply ever' look identical. Duplicates here are not a defect to fix upstream; they are a property of the medium that the consumer must be built to absorb."
+  },
+  {
+    "stage": "check",
+    "question": "Why is exactly-once *delivery* over an unreliable network impossible, rather than merely difficult?",
+    "options": [
+      "Because clocks on different machines drift, so the two sides can never agree on whether the deadline for an acknowledgement has passed",
+      "Because any finite protocol has a last message, that message can itself be lost, and a protocol still correct without it was never minimal - so no such protocol exists",
+      "Because TCP does not provide delivery receipts at the application layer, so an application-level protocol would be required",
+      "Because brokers cannot write to disk fast enough to record every acknowledgement durably before the lease expires"
+    ],
+    "correct": 1,
+    "explanation": "This is the Two Generals Problem (Akkoyunlu, Ekanadham and Huber, SOSP 1975), and the argument is by contradiction rather than by engineering difficulty. Take the shortest protocol that supposedly guarantees mutual certainty and look at its final message: if correctness survives that message being lost, it was unnecessary and a shorter protocol exists; if correctness does not survive, the protocol never guaranteed certainty. Either branch is a contradiction. Clock drift, transport choice and disk speed are all real engineering concerns, but fixing every one of them would not produce the protocol - it cannot exist."
+  },
+  {
+    "stage": "check",
+    "question": "A consumer checks a dedup store, finds the key absent, charges a card, then records the key. Two instances hold the same message because a lease expired mid-work. What happens, and what is the correct fix?",
+    "options": [
+      "Nothing goes wrong, because the second instance will find the key recorded by the first and skip the charge",
+      "Both instances pass the check before either records the key, so the card is charged twice; the fix is to make the dedup record and the effect commit in one transaction, or to use a unique constraint and catch the violation",
+      "Both instances charge the card; the fix is to acquire a distributed lock around the whole handler so only one instance can be inside it at a time",
+      "Only one charge occurs, but the dedup store ends up with a duplicate row, which must be cleaned up by a periodic job"
+    ],
+    "correct": 1,
+    "explanation": "The measured run produced 180.00 against an expected 90.00 with check-then-act, and 90.00 exactly inside one transaction - the same dedup store and the same interleaving. The bug is the window between the SELECT and the INSERT, which a second worker fits into entirely. A distributed lock is not the fix: it has its own lease with its own expiry, so you now have two leases that can disagree, and you have added a dependency without removing the race. Only the database can genuinely serialise two writers, so the dedup record and the effect must land in one atomic commit - or, better, put a unique constraint on the natural business key and catch the violation."
+  },
+  {
+    "stage": "check",
+    "question": "A producer publishes with `message_id=str(uuid.uuid4())` generated inside its retry loop. The consumer is fully transactional and idempotent on that `message_id`. The measured run charged 1,060.00 against 780.00 owed. Why?",
+    "options": [
+      "The consumer's dedup store TTL expired between the original publish and the retry, so the key was no longer remembered",
+      "The broker delivered the retries to a different consumer instance, whose in-memory dedup set did not contain the key",
+      "A fresh UUID per publish attempt is a transmission id, not an idempotency key: each retry carries a different key, so the copies are genuinely distinct messages and every dedup mechanism downstream honours both",
+      "The transaction isolation level was too weak, allowing the second transaction to read the first one's uncommitted dedup record"
+    ],
+    "correct": 2,
+    "explanation": "The dedup store worked perfectly and was useless. Six lost publish confirms produced 18 wire records for 12 business events, and because the id changed on every attempt, all 18 were charged - 280.00 over. An idempotency key must be a deterministic function of the business event ('charge:order-1042', or a hash of tenant plus order plus operation) so that every retry, restart and redeploy computes the same value. Note that the stable-id run still put 18 records on the wire: it did not prevent the duplicates, it made them recognisable. Broker-side (producer_id, sequence) dedup - Kafka's enable.idempotence - removed 5 of the 6, and the one straddling a producer restart still got through."
+  },
+  {
+    "stage": "post",
+    "question": "Your dedup store has a 15-minute TTL. An on-call engineer redrives a dead-letter queue six hours after the original failures. What is the honest statement of your consumer's guarantee?",
+    "options": [
+      "The consumer is idempotent, so the redrive is safe regardless of when it happens",
+      "The consumer is idempotent for redeliveries arriving within 15 minutes; a six-hour redrive is outside the window, every record has expired, and the messages are reprocessed",
+      "The redrive is safe because dead-lettered messages carry a flag that suppresses reprocessing",
+      "The consumer is idempotent as long as the same instance handles the redrive, since it retains the keys in memory"
+    ],
+    "correct": 1,
+    "explanation": "The measured run makes this concrete: with a 15-minute TTL, 0 of 5 dedup records survived to the 6-hour redrive and all 5 customers were charged a second time - 750.00 against an expected 375.00. Identical code with a 24-hour TTL kept 5 of 5 alive and reprocessed 0. The idempotency was never in question; its memory was. So 'our consumer is idempotent' is an incomplete claim, and 'idempotent for redeliveries within 24 hours, which exceeds our maximum DLQ redrive age' is a complete one. Note also that a per-instance in-memory set deduplicates nothing, because redelivery is precisely the case where a different instance picks the message up."
+  },
+  {
+    "stage": "post",
+    "question": "A team enables Kafka transactions with `sendOffsetsToTransaction` and `isolation.level=read_committed`, and concludes they have exactly-once and no longer need idempotency keys. Their handler charges cards through Stripe. What is wrong?",
+    "options": [
+      "Nothing - Kafka transactions provide end-to-end exactly-once semantics for any effect the consumer performs",
+      "The transaction genuinely couples the result write and the offset commit, but the Stripe call is outside it and cannot be rolled back, so a retried transaction re-issues the charge; the fix is an Idempotency-Key derived from the business event",
+      "The problem is `read_committed`, which should be `read_uncommitted` so the consumer can observe results as they are produced",
+      "Kafka transactions only work within a single partition, so the guarantee is lost as soon as the topic is scaled beyond one partition"
+    ],
+    "correct": 1,
+    "explanation": "Kafka's exactly-once is real and its scope is exact: the effect must live in a system that can participate in the transaction - the same log, or the same database. An outbound HTTP call is not such a system. Stripe will not undo a charge because your commit failed, so if the transaction aborts and the read-process-write cycle repeats, the card is charged again. The fix is to push idempotency to the boundary with a stable, business-derived Idempotency-Key, which is exactly the same move as the consumer-side dedup key and covers duplicates from every source. read_committed is correct as written, and Kafka transactions do span partitions."
+  }
+]

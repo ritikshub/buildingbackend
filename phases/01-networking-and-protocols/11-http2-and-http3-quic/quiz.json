@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is the core limitation of an HTTP/1.1 connection that HTTP/2 was designed to fix?",
+    "options": [
+      "It cannot send request headers",
+      "It carries effectively one request at a time, so a slow response blocks the requests behind it",
+      "It only works over UDP",
+      "It cannot transfer binary files"
+    ],
+    "correct": 1,
+    "explanation": "An HTTP/1.1 connection is sequential: a request must get its full response before the next moves, so a slow response causes head-of-line blocking at the HTTP layer. Browsers opened multiple connections to work around it, but each still handled one request at a time."
+  },
+  {
+    "stage": "pre",
+    "question": "In HTTP/1.1, how are request and response headers put on the wire?",
+    "options": [
+      "As compressed binary indexes into a shared table",
+      "As plain text, resent in full on every request",
+      "They are never sent, only the body is",
+      "As a single 9-byte frame"
+    ],
+    "correct": 1,
+    "explanation": "HTTP/1.1 headers are text and are sent in full on every request — the same User-Agent, Cookie, and Accept lines repeated each time. HTTP/2's HPACK later replaced this with a shared table so repeated headers cost a few bytes."
+  },
+  {
+    "stage": "check",
+    "question": "How does HTTP/2 carry many concurrent requests over a single TCP connection?",
+    "options": [
+      "It opens one TCP connection per request",
+      "It multiplexes independent streams, each made of binary frames tagged with a stream identifier",
+      "It sends all requests as one giant text blob",
+      "It falls back to UDP for extra requests"
+    ],
+    "correct": 1,
+    "explanation": "HTTP/2 splits each message into binary frames, and every frame carries a stream identifier. Frames for different streams are interleaved (multiplexed) on one connection and sorted back out by stream id at the far end, so many requests are in flight at once."
+  },
+  {
+    "stage": "check",
+    "question": "The HTTP/2 frame header is 9 bytes. Which set of fields does it hold?",
+    "options": [
+      "Source port, destination port, length, checksum",
+      "A 24-bit length, an 8-bit type, an 8-bit flags byte, 1 reserved bit, and a 31-bit stream identifier",
+      "A 32-bit sequence number and a 32-bit ack number",
+      "Only a stream identifier"
+    ],
+    "correct": 1,
+    "explanation": "Per RFC 9113 §4.1 the 9-byte frame header is a 24-bit length, an 8-bit type, an 8-bit flags byte, then a 32-bit word split into 1 reserved bit and a 31-bit stream identifier. 24 + 8 + 8 + 1 + 31 = 72 bits = 9 bytes."
+  },
+  {
+    "stage": "check",
+    "question": "HTTP/2 multiplexes streams over one TCP connection. Why can a single lost TCP packet still stall every stream?",
+    "options": [
+      "Because HTTP/2 streams share an HPACK table that breaks on loss",
+      "Because TCP delivers one strictly ordered byte stream and holds back all later bytes until the gap is retransmitted — it has no idea there are independent streams inside",
+      "Because HTTP/2 retransmits every stream when one packet is lost",
+      "Because the reserved bit gets corrupted"
+    ],
+    "correct": 1,
+    "explanation": "This is TCP's own head-of-line blocking, from Lesson 05: TCP is a single ordered stream, so a lost segment blocks every byte after it until it is retransmitted. TCP cannot see HTTP/2's separate streams, so all of them stall at once even if their bytes already arrived."
+  },
+  {
+    "stage": "post",
+    "question": "HTTP/3 runs over QUIC, which is built on UDP. How does that remove the connection-wide head-of-line blocking HTTP/2 suffers?",
+    "options": [
+      "UDP never loses packets, so there is nothing to block",
+      "QUIC rebuilds reliability and ordering per stream, so a lost packet stalls only the one stream it belonged to",
+      "HTTP/3 sends each stream over its own TCP connection",
+      "QUIC disables ordering entirely, so nothing waits"
+    ],
+    "correct": 1,
+    "explanation": "UDP itself is fire-and-forget (Lesson 05), but QUIC (RFC 9000) adds reliability and ordering on top of it per stream rather than per connection. QUIC knows about streams — which TCP never did — so a lost packet only stalls its own stream and the others keep flowing."
+  },
+  {
+    "stage": "post",
+    "question": "Besides avoiding head-of-line blocking, which advantages does QUIC give HTTP/3 over HTTP/2 on TCP?",
+    "options": [
+      "It removes the need for headers and status codes",
+      "Faster handshakes (1-RTT, or 0-RTT on resumption) and connection migration across network changes",
+      "It makes every request cache automatically",
+      "It replaces TLS with plaintext for speed"
+    ],
+    "correct": 1,
+    "explanation": "QUIC folds the transport and TLS handshakes together for a 1-RTT (or 0-RTT resumed) start, versus TCP's separate handshake plus TLS. It also identifies a connection by a connection ID instead of the IP/port 4-tuple, so a connection survives moving from Wi-Fi to cellular. The request/response semantics stay identical to HTTP/2."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service opens a fresh database connection for every request. Which cost actually dominates, and why does it stay invisible in local development?",
+    "options": [
+      "The database has to re-parse and re-plan every query on a new connection, costing several milliseconds of CPU per statement; it hides locally because a development database has tiny tables and trivial plans to compile.",
+      "Serializing the wire protocol handshake burns CPU in the client driver; it hides locally because your laptop has spare cores that a CPU-limited production container does not.",
+      "Round trips and server-side allocation: a TCP handshake, one or two TLS round trips, an authentication exchange, and the database forking a multi-megabyte backend process — roughly 6 ms of setup for a 1 ms query. It hides locally because a loopback round trip is microseconds and one developer never approaches max_connections.",
+      "Memory churn in the client driver's buffer allocator; it hides locally because CPython keeps freed arenas warm across a single-threaded test run."
+    ],
+    "correct": 2,
+    "explanation": "The cost is latency (round trips) plus server-side resources (a forked backend with its own memory), not client CPU. In the lesson's measurement, 100 operations took 842.7 ms unpooled and 137.0 ms pooled — a 6.15x speedup, with 83.7% of the original wall clock being pure handshake. Query re-planning is a real cost but a much smaller one, and it is the tempting wrong answer because prepared-statement caching is genuinely connection-scoped."
+  },
+  {
+    "stage": "check",
+    "question": "You sweep your pool's sizing curve. At pool_size=12 you get 1,785 ops/s with a database-side p99 of 8.4 ms and a pool wait p99 of 34 ms. At pool_size=64 you get 1,394 ops/s, a database-side p99 of 48.8 ms, and a pool wait p99 of 0 ms. What did widening the pool actually accomplish?",
+    "options": [
+      "It removed contention on the pool's own lock, which is why the waiting disappeared; the latency rise is an unrelated database problem that needs more cores or a faster disk.",
+      "It moved the queue out of your process — where a waiter costs a few kilobytes of stack — and into the database, where the same queue costs context switches, latch contention and cache thrash. End-to-end p99 got worse too (41.1 ms to 48.8 ms) at 22% lower throughput.",
+      "It correctly raised concurrency: throughput per connection fell only slightly, so the fleet as a whole completes more work, and the latency increase is the expected price of higher utilization.",
+      "It exposed a measurement artifact: with 64 permits the client threads stop synchronizing on the pool, so the latency percentiles are no longer comparable to those from the narrow-pool runs."
+    ],
+    "correct": 1,
+    "explanation": "The pool wait dropping to zero is not a win — it is the tell. The requests still queued; they queued inside the database instead, where queueing is contagious because a waiting query holds a backend process, locks and buffer-cache state. Throughput fell 22% and end-to-end p99 rose, so the customer got nothing. Option C is tempting because higher utilization usually does trade latency for throughput — here you paid latency and got less throughput."
+  },
+  {
+    "stage": "check",
+    "question": "Your API runs pool_size=20 behind gunicorn with 4 worker processes per container, 8 replicas at steady state autoscaling to 20, against a PostgreSQL configured with max_connections=200. Which statement is correct?",
+    "options": [
+      "Steady state is fine at 20 x 8 = 160 connections; only the autoscaled peak is a risk, and raising max_connections to 400 resolves it without other consequences.",
+      "The four gunicorn workers share one pool because they were forked from a single parent process, so each container contributes 20 connections and the fleet peak is 400.",
+      "Connections are opened lazily, so the real total is bounded by concurrent in-flight requests rather than by pool_size; the configured numbers therefore do not multiply in practice.",
+      "Each worker process holds its own independent pool, so steady state is already 20 x 4 x 8 = 640 and the autoscaled peak is 20 x 4 x 20 = 1,600, against a usable budget near 192 once reserved slots are subtracted — the peak replica count is what has to fit."
+    ],
+    "correct": 3,
+    "explanation": "A pool is an in-memory structure guarded by an in-process lock, so it cannot be shared across processes; forking one is actively dangerous because children would write into the same TCP sockets. Total = pool_size x workers x PEAK replicas, plus crons, migrations and sidecars. Option B is the tempting one because forking does copy the parent's pool object — which is exactly the bug, not the feature."
+  },
+  {
+    "stage": "check",
+    "question": "An async handler runs `async with pool.acquire() as conn:` and then awaits a 50 ms HTTP call and a 5 ms query inside the block. Measured: 135 ops/s on 8 permits. What is the fix, and what does it buy?",
+    "options": [
+      "Move the HTTP call above the `async with` so the checkout covers only the query. Measured hold time drops from 58.9 ms to 6.3 ms, throughput rises to 866 ops/s (6.4x), and the permits needed to sustain 1,000 ops/s fall from 59 to 6.",
+      "Raise pool_size from 8 to 59 so the pool absorbs the longer hold time; the hold time is inherent to the workload, and 59 connections per worker process is unremarkable for an async service.",
+      "Run the HTTP call and the query concurrently on the same connection with asyncio.gather so the two awaits overlap, roughly halving the effective hold time at no cost in pool size.",
+      "Set command_timeout to 5 ms so the driver abandons the checkout if the query has not started yet, which bounds hold time no matter what else appears inside the block."
+    ],
+    "correct": 0,
+    "explanation": "Pool capacity in requests per second is pool_size / hold_time, so an unrelated await inside the checkout multiplies the connections you need by the ratio of hold times. Option B is the reflex that kills shared databases: 59 per process times the worker and replica count blows the max_connections budget. Option C is worse than wrong — two tasks issuing frames on one connection interleave the protocol and corrupt both results."
+  },
+  {
+    "stage": "post",
+    "question": "At 04:00, with traffic at 12% of daily peak, your pool sits at 100% utilization, checkout wait p99 is 3 s, timeouts are firing, and the database reports 6% CPU with no queries running longer than 20 ms. What is happening, and what is the wrong response?",
+    "options": [
+      "A genuine capacity shortfall caused by the nightly batch job competing for the same pool; enlarge the pool and do not shed, because the batch work is not user-facing and must complete.",
+      "Stale connections silently killed by the NAT idle timeout; enable pool_pre_ping, and do not go looking for a leak, since a leak would have cleared when daytime traffic dropped.",
+      "A connection leak. Utilization that survives the traffic trough while the database is idle means permits were taken and never returned. Raising pool_size is the wrong response: it buys minutes and hides growth that is monotonic and will recur.",
+      "A checkout timeout configured shorter than the query time, so requests abandon and immediately retry in a loop that keeps every permit busy; lengthen the checkout timeout."
+    ],
+    "correct": 2,
+    "explanation": "The trough is the discriminator. Slow queries, a real capacity shortfall and a held-open transaction all scale with load, so they ease off when traffic does; a leak is monotonic and does not. An idle database rules out contention as the cause, so the connection-seconds are being consumed by code that never released them. Stale connections (option B) produce errors and reconnect churn, not permanently pinned utilization."
+  },
+  {
+    "stage": "post",
+    "question": "Under a 2.5x open-loop overload, an unbounded checkout wait served all 240 requests with a p99 of 962 ms, of which 60 landed inside the client's 250 ms deadline. A 100 ms checkout timeout served 111, shed 129, and had a p99 of 126 ms. Why is the second outcome better?",
+    "options": [
+      "It is not better on its own terms — it served fewer than half as many requests — but it is preferable because failures are cheaper to log than successes, which lowers observability cost during an incident.",
+      "Goodput. 111 of 240 responses arrived before the caller stopped caring, versus 60; the unbounded run spent connection-seconds producing 180 answers nobody would read. Its tail also grows linearly with the length of the overload (the queue drained 962 ms after the last arrival), while the bounded tail stays near 126 ms however long the overload lasts.",
+      "Because shedding reduces the load reaching the database, letting each surviving query complete faster; the p99 improvement comes from lower database contention rather than from bounding the wait.",
+      "Because a timeout converts queueing delay into client retries, and retried requests hit a warmer cache, so the true success rate over a few seconds is higher than the raw served count implies."
+    ],
+    "correct": 1,
+    "explanation": "Throughput counts responses; goodput counts responses somebody still wanted. The unbounded run's completions past the deadline were pure waste that also occupied connections a useful request needed. The decisive property is boundedness: the unbounded tail is a function of incident duration, so it has no worst case, while the bounded one is a constant you can alert on and design around. Option C is wrong here because the pool size, and therefore the database's concurrency, was identical in both runs."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service sizes its worker pool from os.cpu_count(). It runs fine on your 10-core laptop. In production the container runs on a shared 64-core node with a CPU limit of 2. What does the running service do?",
+    "options": [
+      "It creates 2 workers, because the container runtime makes os.cpu_count() report the limit",
+      "It creates 64 workers competing for 2 CPUs' worth of time, with no error anywhere — throughput does not improve, time to first answer gets several times worse, and memory scales with the worker count",
+      "It fails to start, because the kernel refuses to schedule more threads than the CPU limit allows",
+      "It creates 64 workers and gets 64 CPUs, because a CPU limit is advisory and only applies when the node is saturated"
+    ],
+    "correct": 1,
+    "explanation": "os.cpu_count() reports the machine, not your slice; it is not namespaced and no runtime rewrites it. Nothing errors, because nothing is wrong — you asked about the machine and got a truthful answer about the machine. Measured in this lesson at 10 vs 2 CPUs: 5.0x oversubscription bought 6.3x the time to first answer (119 ms to 748 ms), 5.0x the memory (23.3 MB to 117.0 MB), and 28% LESS throughput. Read /sys/fs/cgroup/cpu.max and os.sched_getaffinity(0) instead."
+  },
+  {
+    "stage": "check",
+    "question": "A newly disclosed Linux kernel privilege-escalation bug is being exploited in the wild. You run one tenant's untrusted code in a container and another tenant's in a VM, both on the same physical host. What is the difference in exposure?",
+    "options": [
+      "No difference — both are isolated by the same hardware virtualization features",
+      "The VM is more exposed, because a guest kernel is an extra attack surface the container does not have",
+      "The container tenant can reach the one shared host kernel every container on the box calls into, so the bug crosses container boundaries; the VM tenant would additionally need a hypervisor escape, because its syscalls land in its own guest kernel",
+      "Neither is exposed, because container runtimes drop CAP_SYS_ADMIN and that prevents all kernel exploits"
+    ],
+    "correct": 2,
+    "explanation": "A container shares the host kernel and virtualizes only the view, so every container's syscalls enter the same kernel — one kernel bug is one boundary for all of them. A VM brings its own kernel, so the equivalent break needs a hypervisor escape, against a much smaller and more scrutinised codebase. This is exactly why serverless providers put a microVM (such as Firecracker) back underneath the container when running strangers' code. Dropping CAP_SYS_ADMIN raises the bar but does not change which kernel you are calling."
+  },
+  {
+    "stage": "check",
+    "question": "Your Kubernetes pod spec sets resources.limits (cpu: \"2\", memory: \"1Gi\") but no resources.requests. Two failures follow: some pods are slow from the first second, and one pod vanishes with exit code 137 and no application log line. What explains each?",
+    "options": [
+      "Both are the CPU limit: exceeding it first throttles you and then, if you keep exceeding it, terminates the container",
+      "Limits with no requests means Kubernetes defaults requests to the limits, so capacity is over-reserved; the slowness is scheduler placement, and 137 is a SIGKILL from the kernel OOM killer when the process exceeded memory.max — memory cannot be throttled, only killed",
+      "Both are a readiness probe misconfiguration; limits have no runtime effect until the node is saturated",
+      "Exit 137 is the CPU quota expiring mid-request, and the slowness is the memory limit forcing constant garbage collection"
+    ],
+    "correct": 1,
+    "explanation": "requests and limits do different jobs: requests is a scheduling reservation, limits is a kernel ceiling written into cgroup files (cpu.max and memory.max). Setting only limits makes requests default to them, which reserves your ceiling fleet-wide. And the two ceilings fail differently — a CPU limit throttles (the kernel freezes your runnable threads until the period rolls over), while a memory limit kills, because there is no way to give a process less memory than it already holds. Exit 137 is 128+9, SIGKILL, and it leaves nothing in your application logs."
+  },
+  {
+    "stage": "check",
+    "question": "A service has a 2-CPU limit (cpu.max = \"200000 100000\") and runs 32 threads. Its p99 latency is pinned near 100 ms, CPU utilisation graphs look healthy, and profiling finds no slow query. What is happening, and where would you see it?",
+    "options": [
+      "The 32 threads are contending on a lock; you would see it in a thread dump",
+      "The cgroup burns its whole 200 ms quota in about 6 ms of wall time and the kernel then freezes every thread in it for the remaining ~94 ms of each 100 ms period; it is invisible in CPU utilisation and shows up only as nr_throttled / throttled_usec in cpu.stat",
+      "The node is oversubscribed, so the scheduler is migrating threads between cores; you would see it in the node's load average",
+      "Nothing is wrong — 100 ms is the natural p99 of any service with 32 threads"
+    ],
+    "correct": 1,
+    "explanation": "cpu.max is a bandwidth limit, not a pinning limit: quota microseconds of CPU time per period. With W runnable threads the cgroup spends its quota in quota/W of wall time and is then throttled until the period rolls over — at W=32 against a 2-CPU quota that is 6.2 ms of running and 93.8 ms of being frozen, landing on whichever request was mid-flight. Utilisation looks fine because you are using exactly your quota. Graph nr_throttled next to your latency percentiles; it is the container metric nobody graphs."
+  },
+  {
+    "stage": "post",
+    "question": "Your traffic peaks at 1180 req/s and troughs at 38 — a 31x swing — and someone proposes moving to per-invocation billing because \"our traffic is spiky, so we shouldn't pay for idle.\" What does the arithmetic actually say?",
+    "options": [
+      "Per-invocation billing wins whenever the peak-to-trough ratio exceeds about 10x, so this is a clear move",
+      "Spikiness is the wrong test — average utilisation is. Provisioned for peak this workload runs at 37.8% utilisation, and the crossover for these prices is 5.6%, so always-on is cheaper by $46.02/day despite 62.2% of the capacity sitting idle",
+      "The two are equivalent, because per-invocation pricing is derived from instance-hour pricing plus a fixed margin",
+      "Always-on is cheaper only because the model ignores cold starts; pricing those in would flip the answer"
+    ],
+    "correct": 1,
+    "explanation": "The bill responds to the area under the traffic curve, not to the ratio of its highest point to its lowest. Even with a 31x swing and nearly two-thirds of the provisioned capacity idle, 37.8% average utilisation sits far above the 5.6% crossover, so always-on wins by 6.8x. Scale-to-zero's real case is LOW or genuinely intermittent traffic — internal tools, webhook receivers, nightly jobs, a product with no users yet. Cold starts are a latency cost that makes serverless look worse here, not better; the omission that could flip the answer is engineer-hours."
+  },
+  {
+    "stage": "post",
+    "question": "Your service runs three replicas and your team says it is redundant. During a data-centre power event, all three go down together. What was the missing property, and what is the correct rule?",
+    "options": [
+      "Three replicas is too few; redundancy requires at least five so a majority survives any single event",
+      "The replicas needed to be in different regions — availability zones share power and cooling by design",
+      "Replica count says nothing about correlated failure. The availability zone is the unit of correlated failure — independent power, cooling and physical network — so anything that must survive one infrastructure failure must span at least two AZs, with a failover that has actually been tested",
+      "The replicas should have been on bare metal; virtualized instances are co-scheduled onto the same host by default"
+    ],
+    "correct": 2,
+    "explanation": "Three instances in one AZ can fail together for reasons that have nothing to do with your code: a substation, a cooling loop, a rack, a network partition. An AZ is defined by having independent power, cooling and physical network, which is exactly what makes it the boundary your provider will make availability commitments about. Regions are the next boundary up and cost real latency and egress to span, so multi-region is a deliberate business decision about recovery objectives — but multi-AZ is table stakes. And an untested failover is an assumption, not a capability."
+  }
+]

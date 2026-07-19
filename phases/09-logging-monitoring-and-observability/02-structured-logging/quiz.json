@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service logs `Failed to process order for user 8842 after 3 retries`. Your manager asks how many order failures hit premium-tier users in eu-west in the last hour, grouped by error kind. Why is this hard?",
+    "options": [
+      "The log file is too large to search quickly",
+      "Log files are compressed, so text search doesn't work on them",
+      "Every fact you need is either trapped inside an English sentence (the user ID, the retry count) or was never written down at all (tier, region, error kind). Extracting the first group means a regex against prose that breaks the moment someone rewords the message; the second group cannot be recovered by any tool, because the data never left the process",
+      "You need a faster log storage backend"
+    ],
+    "correct": 2,
+    "explanation": "There are two distinct failures here and only one of them is about tooling. Facts embedded in a sentence can be parsed, but only by a regex that silently returns zero the day the message is reworded — you've made an English string load-bearing without telling anyone. Facts that were never emitted, like tier and region, are simply gone: no backend, index, or query language recovers a field the program never wrote."
+  },
+  {
+    "stage": "check",
+    "question": "Why must a log timestamp be ISO 8601 in UTC with millisecond precision, rather than local time or a raw epoch float?",
+    "options": [
+      "Local time is ambiguous — during a daylight-saving fall-back the same wall-clock time occurs twice, so two different events get identical timestamps with no way to order them — and only a single shared clock makes a server in Frankfurt comparable to one in Virginia. ISO 8601 also sorts correctly as plain text, so a sorted file is a sorted timeline with no parsing, while an epoch float loses precision as the epoch grows and is unreadable to a human scanning a line",
+      "UTC timestamps compress better than local timestamps",
+      "ISO 8601 is required by RFC 5424 for all log records",
+      "Millisecond precision is needed because most log backends reject timestamps with lower resolution"
+    ],
+    "correct": 0,
+    "explanation": "Three separate properties are at stake: unambiguity (no repeated hour), comparability (one clock across machines), and lexicographic sortability (string order equals time order, so tools need no date parser). The epoch float fails the last two for humans and drifts in precision as the number grows. This is why every structured logging library defaults to an ISO 8601 UTC string."
+  },
+  {
+    "stage": "check",
+    "question": "Your team logs `log.error(\"user not found\")` on every failed lookup, firing 12,000 times a day. What is actually wrong?",
+    "options": [
+      "Nothing — ERROR is correct because the lookup did not succeed",
+      "The message should be more descriptive so the count is easier to parse",
+      "The level should be CRITICAL, since a missing user could indicate data loss",
+      "ERROR means a human should care and act, not 'something unusual happened'. A lookup miss is the system working correctly, so this is INFO at most. Leaving it at ERROR trains the team to ignore ERROR entirely, and the one error that genuinely needed action gets lost in 12,000 that didn't"
+    ],
+    "correct": 3,
+    "explanation": "Level is a promise about who acts, not a measure of how surprising an event is. The discipline test is simple: if no human will ever take action on this line, it does not belong at ERROR. Ignoring the rule produces alert fatigue that arrives through the log pipeline instead of the pager — the team stops reading ERROR, and the signal you built the level for is gone."
+  },
+  {
+    "stage": "check",
+    "question": "What is the main argument for emitting one wide canonical log line per request instead of twelve narrow lines?",
+    "options": [
+      "Wide lines are easier for humans to read in a terminal",
+      "Every field lands on the SAME ROW, so any combination of them — tier, region, db_ms, cache_hit — is a single filter. Across twelve narrow lines the same question is a self-join grouped by request_id, which no log backend does cheaply at a billion rows a day. It also costs roughly 6.5x fewer bytes and one write instead of twelve on the request path",
+      "Narrow lines cannot carry structured fields, only prose messages",
+      "Wide lines are required in order to attach a trace ID to a request"
+    ],
+    "correct": 1,
+    "explanation": "The cost saving is real but secondary. The decisive property is co-location: filtering on several dimensions at once is trivial when they share a row and prohibitively expensive when they are spread across a dozen rows that must be joined by request_id. Narrow lines still earn their place inside long-running jobs, for independently auditable state changes, and at DEBUG while developing."
+  },
+  {
+    "stage": "post",
+    "question": "You add a recursive redaction step that replaces the values of `password`, `token`, and `api_key` with `[REDACTED]`. Is your logging now safe from leaking secrets?",
+    "options": [
+      "Yes — recursion covers nested objects, so nothing can get through",
+      "Yes, provided you also encrypt the log files at rest",
+      "No. Redaction matches key NAMES, not values, so a card number inside a field called `note`, a token concatenated into a URL you logged as `target`, or an entire request body logged as `payload` all pass straight through. It is a useful backstop, not a boundary — the actual rule is to log identifiers, never payloads",
+      "No, because redaction runs after serialization and therefore cannot modify the output"
+    ],
+    "correct": 2,
+    "explanation": "A name-based deny-list only catches secrets that arrived under a name you predicted. The two habitual leaks — dumping a whole request or response body, and interpolating a secret into a string field like a URL — both defeat it by construction. Treat redaction as defense in depth behind the real discipline: log `user_id` not `user`, `card_last4` not `card`. It matters legally too, since under GDPR a log line holding personal data is itself regulated data."
+  },
+  {
+    "stage": "post",
+    "question": "Someone proposes turning on DEBUG logging in production 'just for a week, so we have more data'. What are you actually agreeing to?",
+    "options": [
+      "Roughly a 40x increase in log volume — and therefore in shipping, indexing, and retention cost — plus added latency on every request, since each line is JSON serialization and a write syscall on the request path. DEBUG lines also carry internals like cache keys and payload shapes, which is exactly the category most likely to contain secrets or personal data",
+      "Nothing measurable; level filtering happens in the logging library so the cost is negligible",
+      "A small storage increase only, since DEBUG lines are shorter than INFO lines",
+      "A change that only affects developers, because DEBUG output is discarded by the log shipper"
+    ],
+    "correct": 0,
+    "explanation": "The volume jump from INFO to DEBUG is roughly two orders of magnitude on a busy service, and log pipelines bill on ingest and retention. The latency cost is real too, because logging is synchronous I/O on the request path — and note that level filtering does not save you from argument evaluation, so `log.debug(\"rows\", rows=fetch_all())` runs `fetch_all()` even while DEBUG is off. Worst of all, DEBUG lines are the ones most likely to dump payloads into a store with long retention."
+  }
+]

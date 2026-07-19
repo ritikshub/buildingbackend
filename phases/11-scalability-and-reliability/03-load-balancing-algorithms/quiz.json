@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Eight identical backends sit behind a round-robin balancer. The per-instance request-rate graph shows eight lines exactly on top of each other, all morning. What does that tell you about how evenly the work is distributed?",
+    "options": [
+      "The work is evenly distributed — identical request counts on identical hardware is the definition of balanced, and any remaining latency difference must come from the backends themselves",
+      "Nothing useful. Over the same 20,174 requests the counts differed by one request (0.04%) while the actual work differed by 24.14%, because 1% of requests cost 900 ms and carried 41% of the total work — round-robin dealt between 14 and 31 of those per backend because it cannot see request size",
+      "The work is evenly distributed on average, and the variance disappears entirely once you look at a long enough window",
+      "It tells you the balancer is broken — a healthy round-robin balancer should show slightly different counts per instance as it adapts to load"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer treats 'same number of requests' as 'same amount of work', which is only true if requests are the same size. They never are: a cache hit costs 3 ms and a large-tenant export costs 900 ms. Round-robin equalises arrivals perfectly — its maximum is exactly 1 when you throw n requests at n backends — and that is precisely why the flat graph is so misleading. The flatness is not evidence that routing is fine; it is evidence that the balancer is not measuring anything. Averaging over a longer window does not help either, because the damage is instantaneous queueing: 31.1% of requests waited behind something while another backend sat completely idle."
+  },
+  {
+    "stage": "check",
+    "question": "One backend in a fleet of eight is 3× slower than the rest — 60 ms where the others take 20 ms — but it passes every health check because the health check returns 200 OK without touching anything. Under round-robin, what is the consequence for the fleet as a whole?",
+    "options": [
+      "Roughly one eighth of requests are 3× slower, so p99 rises by about 12.5% — annoying but proportional to the size of the problem",
+      "The slow backend receives its full 12.5% share, which puts it at rho = 0.92 while the other seven average 30.4% busy; p99 becomes 538 ms against a 16.8 ms p50 (32×), and because every backend gets offered/n the fleet's 733 req/s of capacity is capped at 267 req/s — 64% unreachable",
+      "Nothing measurable happens until the slow backend fails its health check, at which point it is removed and traffic rebalances automatically",
+      "The slow backend's queue grows without bound immediately, so the correct fix is always to increase its timeout so requests are not abandoned mid-flight"
+    ],
+    "correct": 1,
+    "explanation": "The proportionality intuition is the trap: the damage is not proportional, because queueing is not linear. Round-robin does not send the slow backend 'a bit too much' — it sends it exactly as much as a healthy one, which drives it to rho = 0.92 while the rest idle at 30%, and W = S/(1-rho) does the rest. Two consequences follow. Your median stays healthy (seven eighths of users are fine) so the mean hides it, and your fleet's throughput ceiling is set by its slowest member rather than its total capacity, so buying more instances does not change the unreachable fraction. Raising the timeout makes it worse by holding doomed requests longer."
+  },
+  {
+    "stage": "check",
+    "question": "A backend crashes into a state where it returns HTTP 500 in 0.5 ms without doing any work. Over 19,285 requests across eight backends, how much traffic does each policy send into it, and why?",
+    "options": [
+      "All load-aware policies avoid it quickly, because an error rate of 100% is the strongest possible signal that a backend is unhealthy",
+      "Round-robin sends the most (12.5%) because it is the only policy with no feedback at all; every load-aware policy sends less",
+      "Least-connections sends 50.3% and peak EWMA on latency alone sends 90.6% — worse than round-robin's 12.5% — because 0 outstanding requests and 0.5 ms of latency genuinely are the best scores in the fleet. Scoring a failure as a 2,000 ms sample takes it to 1.1%, and adding passive ejection takes it to 0.5%",
+      "Peak EWMA handles it correctly because latency is a richer signal than connection count; only least-connections has the death-spiral problem"
+    ],
+    "correct": 2,
+    "explanation": "The tempting answers assume the balancer knows about errors. By default it does not — it knows outstanding requests and response times, and a backend that fails instantly is optimal on both. This is why the sophisticated policy performs worst: peak EWMA is more efficient at finding the lowest latency, and the lowest latency in the fleet belongs to the server that is doing nothing. Nothing here is a bug in the algorithm; the signal is correct and the interpretation ('low load means send more') is what fails. The fix is to change the signal, not the algorithm: record a failure as a very slow sample, then eject on error rate. Note P2C also caps the damage structurally at d/n = 25% (measured 23.0%) because no global argmin exists."
+  },
+  {
+    "stage": "check",
+    "question": "Thirty-two identical backends, no failures, no slow members. The only variable is whether each balancer's view of load is current or 250 ms old — during which 475 requests arrive. What happens to exact least-connections versus power-of-two-choices?",
+    "options": [
+      "Both degrade by roughly the same amount, since both read the same stale numbers and staleness affects any load-aware policy equally",
+      "Least-connections is unaffected because outstanding-request counts are maintained locally and therefore cannot be stale",
+      "On fresh state they are indistinguishable (93.0 ms vs 96.0 ms at p99). On the stale view least-connections collapses to a 1,502 ms p99 with a 230-deep queue while P2C reaches only 162 ms with a 21-deep queue — 9.3× — because every balancer computes the same argmin and stampedes the same host, while independent random pairs stay uncorrelated",
+      "P2C degrades more, because sampling only two backends means it is more likely to miss the genuinely least loaded one when its information is out of date"
+    ],
+    "correct": 2,
+    "explanation": "The trap is treating staleness as noise that hurts every policy equally. It is not noise — it is correlation. A deterministic argmin over shared state makes every independent balancer choose identically at the same instant, so the least loaded backend instantly becomes the most loaded. P2C's two random draws break that correlation: two balancers rarely pick the same pair out of 32. Note the detail that makes this hard to catch in production: the busiest backend still took only 3.89% of the day's traffic against an even share of 3.12%. Herding is an instant, not a total, so every averaged metric hides it and only your tail latency shows it."
+  },
+  {
+    "stage": "post",
+    "question": "Why do real service meshes sample exactly two backends rather than three, four, or all of them?",
+    "options": [
+      "Because sampling more than two would require locking the backend list, and the lock contention would cost more than the improvement is worth",
+      "Because the improvement is overwhelmingly concentrated in the second sample: measured at n = 100,000, going from one sample to two removes 4.42 of maximum load and the third removes only 0.50 more — about 9× less. Two samples turn Θ(log n / log log n) into Θ(log log n / log 2) with no global state",
+      "Because two is the smallest number that guarantees you never pick the worst backend in the fleet",
+      "Because three or more samples would make the distribution too even, which starves the balancer of the load variance it needs to detect slow backends"
+    ],
+    "correct": 1,
+    "explanation": "The answer is diminishing returns, measured. One random pick can land on the worst backend with probability 1/n and you have no defence; two picks land there only if BOTH draws are bad, which is quadratically unlikely — that squaring is what collapses the bound from log n / log log n to log log n / log 2. But squaring already extracts almost all the available benefit, so a third sample adds cost on every request for a fraction of the gain. Note that two samples do not guarantee avoiding the worst backend (option 3) — a bad host still wins whenever it is one of the two sampled, which is exactly the d/n bound. The value is that the damage becomes bounded rather than unbounded."
+  },
+  {
+    "stage": "post",
+    "question": "You add `hash $cookie_session consistent` to keep sessions on the same backend, using 150 virtual nodes per server. Three weeks later one backend is at 1.4× the average load. What is happening and what fixes it?",
+    "options": [
+      "150 virtual nodes is too few; raising it to 1,000 will even out the load, because virtual-node count is what controls balance on a hash ring",
+      "The ring is unbalanced because hash functions are not perfectly uniform; switching to a better hash (Maglev's permutation table) will fix the imbalance",
+      "Virtual nodes fix ARC skew, not TRAFFIC skew. With one vnode per backend the imbalance was 3.31×; 150 vnodes brought it to 1.41× and cannot go further, because the single hottest key is 9.6% of all requests and the ring must send all of it to one place. A (1+eps) load cap with clockwise overflow gives exactly 1.25×, at a cost of about 2% of key affinity",
+      "Consistent hashing is the wrong tool entirely; switch to least-request with choice_count 2, which balances properly"
+    ],
+    "correct": 2,
+    "explanation": "The tempting answer conflates two different sources of imbalance. Virtual nodes solve the geometric problem — eight random points do not cut a circle into eight equal arcs — and 150 of them solve it well, taking 3.31× down to 1.41×. What they cannot solve is that real key spaces are Zipfian: one tenant, one product page or one scraper session is a large fraction of traffic on its own, and a plain ring has no choice about where it goes. Consistent hashing with bounded loads caps each backend at (1+eps) times the current mean and overflows clockwise, delivering exactly the cap by construction. State the cost honestly: about 2% of requests land on an overflow node instead of their primary, so you trade a little cache hit rate for a hard ceiling. Abandoning hashing entirely (option 4) throws away the affinity you added it for."
+  }
+]

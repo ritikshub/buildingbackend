@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "One minute of traffic: 950 requests take 50 ms and 50 requests take 6 seconds. The dashboard shows a mean latency of 347 ms. What is wrong with that number?",
+    "options": ["Nothing — 347 ms is a correct arithmetic mean and therefore a correct summary", "It is arithmetically correct but describes zero of the 1,000 requests: no request took anything near 347 ms. The mean is an average of two populations that do not exist, and it hides the fact that 5% of users are timing out. p50 and p95 are both 50 ms; p99 is 6 seconds — those numbers describe real users", "The mean should have been computed over a longer window", "Latency should never be measured in milliseconds"],
+    "correct": 1,
+    "explanation": "An average is only a good summary of a distribution with a single mode and a short tail. Real latency distributions are the opposite: a big fast body and a long slow tail, so the mean lands in the empty space between them. Percentiles are answers to questions about actual users — 'what did the slowest 1% of requests experience' — which is why every latency SLO is written as a percentile and never as a mean."
+  },
+  {
+    "stage": "check",
+    "question": "A counter's scrapes over five intervals read 1240, 1402, 1559, 118, 297. Why can the query engine not simply sum the consecutive differences?",
+    "options": ["Because counters are stored as floats and floats accumulate rounding error", "Because scrape intervals are never exactly equal, so the deltas are not comparable", "Because the process restarted before the fourth scrape and the counter went back to zero. Naively summing deltas gives -943 (one interval alone is -1441). Any decrease must be read as a reset, with the new value counted as the increase, giving 616 requests over 60 seconds = 10.27 req/s", "Because a counter's value is only valid at the moment it is scraped"],
+    "correct": 2,
+    "explanation": "A counter is monotonic by definition, so a decrease can only mean the process restarted and started again from zero. That invariant is what makes the correction unambiguous: everything since the restart is exactly the current value. Every rate() and increase() implementation performs this correction for you, which is also why the raw counter value is close to meaningless — the rate of change is the signal."
+  },
+  {
+    "stage": "check",
+    "question": "Why are histogram buckets cumulative (`le`, less-than-or-equal) rather than each bucket holding only the observations in its own range?",
+    "options": ["Cumulative buckets compress better on disk", "Because a cumulative bucket count is the count of a single predicate — 'observations at most 0.5 s' — evaluated on the same ladder everywhere, so counts from different servers and different scrapes can simply be ADDED. Sum every le bucket across ten machines and you have a histogram of the whole fleet, from which one interpolation yields a real fleet-wide p99", "Because Prometheus cannot store negative numbers", "Because it makes the +Inf bucket unnecessary"],
+    "correct": 1,
+    "explanation": "Additivity is the entire justification for the redundancy. Two counts of the same predicate over disjoint populations combine into a count over the union, so bucket counts merge across instances and across time windows. That is exactly what a precomputed percentile cannot do: a p99 is a rank already collapsed out of a distribution, and there is no arithmetic that recombines two of them."
+  },
+  {
+    "stage": "check",
+    "question": "Three servers report p99 latencies of 881 ms (6,000 requests), 825 ms (3,000 requests) and 9,412 ms (400 requests). The true p99 across all 9,400 requests is 1,247 ms. What does averaging the three p99s give, and why?",
+    "options": ["About 1,250 ms — averaging percentiles is a good approximation when the servers are similar", "About 500 ms, because averaging always pulls the result toward the smallest value", "It gives 3,706 ms — 197% too high — because the arithmetic mean weights the 400-request server exactly as heavily as the 6,000-request one, and nothing in the exported p99 records how many observations produced it. Summing the bucket counts instead gives 1,263 ms, an error of 1.3%", "Averaging percentiles is exact as long as all servers use the same bucket ladder"],
+    "correct": 2,
+    "explanation": "The failure is not a rounding problem you can shrink with more servers — the operation is undefined. A percentile carries no weight and no distribution, so an average of percentiles answers no question about the combined population. It can land far above or far below the truth depending on the traffic mix. Histograms fix this because their raw form (bucket counts) survives addition."
+  },
+  {
+    "stage": "post",
+    "question": "You promise an SLO of 'p99 under 300 ms' and instrument latency with buckets at le = 0.01, 0.1, 1, 10 seconds. What goes wrong?",
+    "options": ["Nothing — four buckets keeps cardinality low, which is the main concern", "Your p99 is estimated by linearly interpolating inside a bucket 900 ms wide, so it can be wildly wrong and you cannot even tell whether you are meeting a 300 ms target — there is no boundary anywhere near 300 ms. In the lesson's run the same data gave a p99.9 of 8,800 ms against a true 1,414 ms: 522% wrong, with no warning of any kind", "The metric will refuse to record values above 10 seconds", "Prometheus will reject a histogram with fewer than ten buckets"],
+    "correct": 1,
+    "explanation": "Bucket boundaries are the resolution of every quantile you will ever compute from that histogram, and interpolation inside a wide bucket is a guess dressed up with three significant figures. Boundaries belong around the number you care about: a few below your SLO, several tightly around it, and a couple well above it so a bad tail has somewhere to land other than +Inf. A quantile that falls in +Inf is unbounded and can only be reported as 'at least the largest finite bound'."
+  },
+  {
+    "stage": "post",
+    "question": "A teammate wants to add a `user_id` label to `http_requests_total` so support can look up a specific customer's failures. What do you tell them?",
+    "options": ["Fine, as long as the metric is a counter rather than a histogram", "Fine, but only if the retention period is shortened to a week", "Fine, since Prometheus compresses repeated label values efficiently", "No: series count is the product of label value counts, so 20 routes x 5 statuses x 3 regions grows from 300 series to 15,000,000 at 50,000 users, and with a 10-bucket histogram it is 150 million. Nothing warns you — the deploy just starts creating one time series per user. Labels are dimensions you group by; per-user identity belongs in logs and traces, which already carry it"],
+    "correct": 3,
+    "explanation": "This is the cardinality rule from Phase 4, Lesson 5, restated for metrics: every distinct combination of label values is its own time series with its own index entry and in-memory chunk. Unbounded label values (user_id, request_id, session_id, email, raw URL, raw SQL) multiply the series count without bound and are the most common way teams take down a metrics backend. The question the teammate actually wants answered — 'what happened to this customer' — is a logs-and-traces question, and correlation by trace ID is what connects it back to the metric."
+  }
+]

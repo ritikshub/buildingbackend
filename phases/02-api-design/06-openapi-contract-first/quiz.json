@@ -1,0 +1,30 @@
+[
+  {
+    "question": "Where does FastAPI expose the generated OpenAPI document and its two documentation UIs?",
+    "options": ["/spec, /swagger, /docs", "/openapi.json, /docs (Swagger UI), /redoc (ReDoc)", "/api.yaml, /ui, /reference", "/schema, /docs, /explorer"],
+    "correct": 1,
+    "explanation": "FastAPI serves the spec at /openapi.json, interactive Swagger UI at /docs, and a clean ReDoc reference at /redoc — all generated from your route signatures and Pydantic models.",
+    "stage": "pre"
+  },
+  {
+    "question": "Beyond documentation, why does declaring response_model on a FastAPI route matter?",
+    "options": ["It speeds up the route", "It filters the outgoing payload to the declared schema, so internal fields can't leak", "It enables caching", "It is required for async routes"],
+    "correct": 1,
+    "explanation": "response_model both documents and filters the response — FastAPI strips any field not in the declared schema. Without it, stray internal model fields (password hashes, internal flags) can leak to clients.",
+    "stage": "post"
+  },
+  {
+    "question": "Why should even code-first teams snapshot /openapi.json in the repo and diff it in CI?",
+    "options": ["To speed up builds", "So an accidental breaking change (renamed field, narrowed type) fails review loudly instead of shipping silently", "To generate the database schema", "To satisfy TLS requirements"],
+    "correct": 1,
+    "explanation": "Treating the generated spec as a committed contract means any change to the public surface shows up as a reviewable diff. A silent breaking change (renaming a field, tightening a type) then fails CI instead of reaching clients.",
+    "stage": "post"
+  },
+  {
+    "question": "When is contract-first (hand-written spec, then implement) the better workflow?",
+    "options": ["Always", "For a fast-moving internal-only API", "When multiple teams or external partners consume the API and the contract is the coordination artifact", "Only for GraphQL"],
+    "correct": 2,
+    "explanation": "Contract-first shines when the spec is the agreement between separate teams or external consumers — they can build against it in parallel before the server exists. Code-first (generate the spec from code) fits fast-moving internal APIs where drift risk is lower.",
+    "stage": "post"
+  }
+]

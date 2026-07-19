@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your pipeline takes 20 minutes and bills 35 minutes of runner time. A senior engineer spends a sprint making the unit-test suite twice as fast — it drops from 6 minutes to 3. The next pipeline run still takes 20 minutes. What is the most likely explanation?",
+    "options": [
+      "The cache was cold on that run, so the saving will appear once it warms up",
+      "Unit-tests were not on the critical path — they had slack, so shortening them reduced billed work but changed the longest path through the DAG by nothing",
+      "The CI provider bills in whole minutes, so a 3-minute saving is rounded away",
+      "Twenty minutes is the provider's minimum scheduling quantum for a multi-job workflow"
+    ],
+    "correct": 1,
+    "explanation": "Wall time is the length of the longest path through the pipeline's dependency graph; total work is the sum of every stage. A stage with slack can be shortened, lengthened or deleted without moving the finish time at all. Measured in this lesson: halving unit-tests (350 s of slack) removed 105 s of billed work and saved the developer exactly 0 seconds, while halving integration-tests (0 slack) saved exactly 150 s. Compute the critical path before optimising anything, or you will pay for improvements no human can perceive."
+  },
+  {
+    "stage": "check",
+    "question": "A deploy pipeline runs a build step inside each environment's job — dev, staging and production each build from the same merge commit. The team argues this is safe because the source is identical and the base image is pinned by digest. What is actually true?",
+    "options": [
+      "It is safe: identical source plus a pinned base image makes the builds byte-identical, so all three digests match",
+      "It is safe as long as the staging and production builds run on the same runner image",
+      "The three builds produce three different digests, so the artifact you tested is provably not the artifact you shipped — a build argument or an embedded timestamp is enough to diverge",
+      "It is unsafe only for interpreted languages; compiled builds are reproducible by construction"
+    ],
+    "correct": 2,
+    "explanation": "Measured here: three rebuilds from identical source produced 3 distinct digests, 0 of which matched the tested artifact. A --build-arg and a build timestamp were sufficient. In real pipelines the list is longer and less visible — a transitive dependency that published a patch an hour ago, a runner image that rolled, a compiler embedding a build path. Reproducibility is a property you must engineer and verify; promotion of a single immutable digest gives you the guarantee for free, and it is the only thing that keeps your test results attached to the bytes in production."
+  },
+  {
+    "stage": "check",
+    "question": "Your pipeline has 20 jobs. Each one is independently 95% reliable — respectable in isolation, and no job owner considers theirs a problem. How often is the pipeline green on a change that contains no bug at all?",
+    "options": [
+      "About 95% of the time — reliability is per job, and the failures rarely coincide",
+      "About 99% — independent failures cancel out across a large enough number of jobs",
+      "About 36% (0.95 to the 20th power), so a clean change is red roughly two runs in three",
+      "About 5%, because a single failure fails the pipeline and 20 jobs make failure near-certain"
+    ],
+    "correct": 2,
+    "explanation": "For n independent jobs each passing with probability p, the pipeline is green with probability p^n. 0.95^20 = 35.8%, confirmed here by 60,000 seeded simulated runs per cell to within 0.5 percentage points. Nobody wrote a bug and every job looks fine on its own, which is exactly why this never gets fixed: there is no single culprit and therefore no owner. Reliability multiplies, so adding jobs to a pipeline degrades its trustworthiness even when every individual job improves."
+  },
+  {
+    "stage": "check",
+    "question": "To fight a red-a-third-of-the-time pipeline, a team enables automatic retry of any failed job, up to three attempts. The green rate goes from 67.7% to 97.4% and compute rises only 2%. Everyone is happy. What did they actually trade away?",
+    "options": [
+      "Nothing meaningful — a deterministic regression still fails all three attempts, so no real defect can slip through",
+      "Detection of non-deterministic defects: a genuine race that manifests in 40% of runs went from being caught 59.5% of the time to 9.1%, because retrying until green is retrying until the race hides",
+      "Only compute cost, which at 1.02x is negligible against the engineering time saved",
+      "Build reproducibility, since retried jobs may run on different runners"
+    ],
+    "correct": 1,
+    "explanation": "A retry policy cannot distinguish a flaky test from a flaky product, so it suppresses both. A deterministic regression is caught 100% of the time by every policy — which is precisely why blanket retries feel harmless. The column that matters is the intermittent defect: measured here, auto-retry dropped race detection from 59.5% to 9.1% while improving every number a CI dashboard displays. Quarantine the flaky job instead: it held 42.1% race detection at 1.00x compute, and its honest cost is visible — a real bug inside a quarantined job is caught only 3.7% of the time, so quarantine needs a named owner and a deadline."
+  },
+  {
+    "stage": "post",
+    "question": "Your deploy job stores a long-lived cloud access key in CI secrets. A colleague proposes replacing it with OIDC federation. What concretely changes about your security posture?",
+    "options": [
+      "The key is encrypted at rest by the CI provider rather than stored in plaintext, so a database compromise no longer exposes it",
+      "No standing secret exists to steal: the runner presents a short-lived signed token asserting repository, ref and environment, and the cloud provider's trust policy exchanges it for minutes-long credentials only when those claims match",
+      "The same key is used, but rotated automatically every 24 hours by the provider",
+      "Cloud access is restricted to the CI provider's published IP ranges, so a stolen key is useless off-network"
+    ],
+    "correct": 1,
+    "explanation": "OIDC (OpenID Connect) federation removes the credential rather than protecting it. There is nothing in CI variables to exfiltrate and nothing to rotate, issued credentials expire in minutes, and authorisation becomes claim-based rather than possession-based. The critical detail is the trust policy: match the full subject claim, such as repo:acme/api:environment:production. A wildcard like repo:acme/* grants every repository in the organisation the right to assume your production role, and repo:acme/api:* grants it to every branch, including one an attacker just pushed."
+  },
+  {
+    "stage": "post",
+    "question": "Two pull requests each pass the full pipeline against main and are merged within minutes of each other. main immediately goes red. Neither change is buggy on its own. What happened, and what prevents it?",
+    "options": [
+      "A flaky test coincided with both merges; a retry on the main branch build will resolve it",
+      "The cache was invalidated by the second merge; warming it before merging prevents recurrence",
+      "Each PR was tested against the branch it was written from, not against the state that exists after both merge — a merge queue that builds and tests the prospective merge result before merging prevents it",
+      "The two jobs raced for the same runner; increasing runner concurrency prevents it"
+    ],
+    "correct": 2,
+    "explanation": "This is semantic conflict: PR A renames a function, PR B adds a call to the old name, and neither branch ever contained both changes, so both are legitimately green. Testing a change against its own base does not test the post-merge state. A merge queue serialises this — it constructs the prospective merge result, tests that, and merges only if green, batching where possible and bisecting a failed batch to eject the guilty change. It is also what makes 'require branches to be up to date' viable without every author rebasing and re-running the full pipeline in a loop."
+  }
+]

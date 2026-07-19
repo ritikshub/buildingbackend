@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is a cache stampede (thundering herd)?",
+    "options": ["When the cache runs out of memory", "When a hot key expires and many concurrent requests all miss at once, recomputing the same value and overloading the source", "When Redis restarts", "When TTLs are too long"],
+    "correct": 1,
+    "explanation": "A single hot key's expiry turns a flood of cache hits into a flood of simultaneous misses, all hitting the database with the identical query in the same instant."
+  },
+  {
+    "stage": "check",
+    "question": "What are the four ingredients that together cause a stampede?",
+    "options": ["Slow disk, big values, no TTL, one server", "A hot key + a hard expiry + high concurrency + a slow recompute", "Too many keys, low memory, LRU, and TCP", "Encryption, replication, sharding, and jitter"],
+    "correct": 1,
+    "explanation": "Remove any one — spread the expiry, reduce concurrency to the source, or make recompute instant — and the stampede shrinks. The defenses each attack one of these factors."
+  },
+  {
+    "stage": "check",
+    "question": "How does single-flight (request coalescing) stop a stampede?",
+    "options": ["It caches more aggressively", "The first miss becomes the leader and recomputes once; all other concurrent requests for that key wait and share the leader's result", "It rejects excess requests with 429", "It increases the TTL automatically"],
+    "correct": 1,
+    "explanation": "Only one execution runs per key; everyone else parks on it and takes the shared result, so N concurrent misses cause exactly one recompute instead of N."
+  },
+  {
+    "stage": "check",
+    "question": "In-process single-flight has one key limitation. What is it, and what fixes it?",
+    "options": ["It's too slow; use a faster language", "It only coalesces within one process, so each instance still recomputes once — a fleet-wide distributed lock elects a single leader across all instances", "It leaks memory; restart often", "It can't handle strings; use bytes"],
+    "correct": 1,
+    "explanation": "Ten instances each elect their own leader, so the DB sees up to ten queries. For a truly hot key, a distributed lock (e.g. Redis SET NX) lets the whole fleet share one recompute."
+  },
+  {
+    "stage": "post",
+    "question": "How does probabilistic early expiration (XFetch) prevent the synchronized expiry cliff?",
+    "options": ["It disables TTLs", "Each reader may refresh slightly early at random — sooner for costlier-to-recompute keys — so recomputes smear across a window and the deadline is never a synchronized event", "It locks every read", "It doubles every TTL"],
+    "correct": 1,
+    "explanation": "XFetch rolls the dice on each access, pulling the effective deadline earlier by an amount scaled to the recompute cost. Expensive keys refresh first, and no single instant sees everyone miss at once — no locking needed."
+  },
+  {
+    "stage": "post",
+    "question": "Why is the TTL on a distributed recompute lock mandatory, not optional?",
+    "options": ["To make the lock faster", "If the leader crashes mid-recompute without a TTL, the lock is held forever and nothing ever refreshes — you've traded a stampede for a deadlock", "TTLs make locks more secure", "It isn't; locks should be permanent"],
+    "correct": 1,
+    "explanation": "A lock with no TTL that's never released (because its holder died) blocks all future recomputes indefinitely. The TTL guarantees the lock self-releases so the system recovers."
+  }
+]

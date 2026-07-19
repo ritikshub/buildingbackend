@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A load balancer's dashboard shows all 8 backends holding exactly 3 connections each. What does that tell you about how the request load is distributed?",
+    "options": [
+      "The request load is evenly distributed — equal connections means equal work",
+      "Almost nothing, because the number of requests carried by a connection varies enormously",
+      "The request load is uneven, but only if the balancer is misconfigured",
+      "Nothing can be said without knowing the balancing algorithm"
+    ],
+    "correct": 1,
+    "explanation": "Equal connection counts and equal request counts are the same thing only when connections are short and interchangeable. The measured run in this lesson split 24 connections across 8 backends perfectly — 3 each — and still produced a 22.6% / 6.8% request distribution, a 3.3x spread, because real per-connection request rates are lognormal (0.85 to 14.75 req/s here). Option A is the intuition the incident in The Problem is built on. Option D is tempting but wrong in an instructive way: the algorithm was round-robin in every configuration measured, including the one that gave a perfect 1.00x spread at L7 — so the algorithm was never the variable, the layer was."
+  },
+  {
+    "stage": "check",
+    "question": "You run gRPC behind a Layer 4 balancer. Autoscaling adds a new instance; it passes health checks and joins the pool. Hours later it has served zero requests. Why?",
+    "options": [
+      "Its health checks are passing but its readiness probe has not yet succeeded",
+      "The L4 balancer chose backends at connection setup, and no connection has been established since the instance joined",
+      "The balancer's connection-tracking table needs to be flushed before it will see the new backend",
+      "gRPC clients cache DNS results and must be restarted to discover new backends"
+    ],
+    "correct": 1,
+    "explanation": "An L4 balancer decides once, at connection setup, and gRPC connections do not end. With no new connections there is no new decision, so the new backend is never selected — measured here as exactly 0 requests across 600 seconds of being healthy and in the pool. Option A confuses the symptom's layer: the instance IS healthy and IS in the pool, which is what makes this so hard to spot. Option C sounds plausible but inverts the problem — the tracking table is correct; it is tracking connections that legitimately still exist. Option D describes a real and separate discovery failure, but here the balancer already knows about the backend. The fixes are L7 proxying, client-side balancing, or max_connection_age with jitter."
+  },
+  {
+    "stage": "check",
+    "question": "Your backend's health endpoint has a p50 of 121 ms, a p99 of 1,396 ms and a p99.9 of 3,225 ms. You set the probe timeout to 1 second with unhealthy_threshold 3. What happens?",
+    "options": [
+      "Nothing — 1 second is far above the p50, so healthy probes will pass",
+      "Slow backends are detected quickly, which is the point of a tight timeout",
+      "2.22% of probes to a perfectly healthy backend fail, producing roughly 94 false ejections per day across 200 backends",
+      "The probe will time out only when the backend is genuinely overloaded"
+    ],
+    "correct": 2,
+    "explanation": "A probe timeout is a latency threshold above which a response counts as a failure. Put it inside the healthy latency distribution and a fixed fraction of probes to a perfectly healthy backend fail forever — measured here at 2.22% for a 1 s timeout, which makes three consecutive failures happen about 94 times a day across 200 backends. Option A is the trap: reasoning from the p50 (or even the mean) ignores that the tail is where probes live. Option B has the causality backwards — you are not detecting slowness, you are manufacturing ejections. Every one of those ejections removes capacity from a healthy fleet, which raises everyone else's utilization and latency, which is the first step of the death spiral. The rule is timeout >= p99.9 of the probe path: 3 s here, giving one false ejection every 61 days."
+  },
+  {
+    "stage": "check",
+    "question": "A fleet of 20 instances at 92% of capacity begins failing health checks under load and ejects itself to zero healthy instances. Which mitigation restored on-time delivery most effectively in the measured run, and why?",
+    "options": [
+      "Adding more instances, because the fleet was short of capacity",
+      "max_ejection_percent = 10%, because it caps how much capacity the balancer may remove regardless of health status",
+      "Lowering unhealthy_threshold so failures are detected before the backlog builds",
+      "Increasing the health check interval so probes are less likely to coincide with load spikes"
+    ],
+    "correct": 1,
+    "explanation": "max_ejection_percent took on-time delivery from 21.3% to 99.7% with a floor of 18/20 healthy — and it added no capacity whatsoever. It bounds the feedback loop's gain directly, so the collapse never starts. Option A misreads the failure: the fleet always had 100% of the capacity that 92% demand required, which is exactly what makes this a control-system failure rather than a capacity one. Option C makes it strictly worse — a lower threshold ejects faster, which accelerates the spiral. Option D is the most tempting wrong answer because a longer interval does reduce probe pressure, but it does not change the loop's direction; it only slows the collapse down while lengthening detection of genuine failures. Panic mode (50%) helps too, reaching 65.4%, but it is a rescue after the fact rather than a constraint."
+  },
+  {
+    "stage": "post",
+    "question": "Your team proposes making /healthz 'more honest' by having it run SELECT 1 against the database before returning 200. In Kubernetes, where this endpoint is the readiness probe, what is the consequence?",
+    "options": [
+      "Better failure detection, since an instance that cannot reach the database genuinely cannot serve traffic",
+      "A brief database blip fails every replica's probe simultaneously and empties the EndpointSlice, turning a 4-second dependency hiccup into a total outage",
+      "No practical change, because Kubernetes will keep at least one endpoint in rotation",
+      "Slower probes, which is the only real cost"
+    ],
+    "correct": 1,
+    "explanation": "A deep health check asks every replica the same question about the same shared dependency, so their answers are perfectly correlated and they all leave rotation together. Kubernetes has no panic mode and no max_ejection_percent — nothing stops an EndpointSlice from going empty — which is why option C is false and dangerous to assume. Option A states the appealing intuition, and the reply is that removing instances does not fix a shared dependency: if the database is down, every instance is equally affected and ejecting any of them helps nobody. Handle it inside the instance with breakers and degraded responses, and keep the balancer's probe shallow and independent. If you want a dependency-aware check, put it on a separate endpoint that pages a human instead of removing capacity."
+  },
+  {
+    "stage": "post",
+    "question": "You want faster detection AND fewer false ejections from your active health checks. Which change achieves both, and what is the underlying reason?",
+    "options": [
+      "Lower the interval and lower unhealthy_threshold, because both make the check more responsive",
+      "Raise the interval and raise unhealthy_threshold, trading detection speed for stability",
+      "Lower the interval and raise unhealthy_threshold, because detection time is linear in both while false ejections fall as p^threshold",
+      "Leave the thresholds alone and raise the probe timeout, since timeouts are the only real cause of false ejections"
+    ],
+    "correct": 2,
+    "explanation": "The two knobs have different exponents, and that is what makes a strict improvement possible rather than a trade. Detection time is linear in interval x threshold, but the probability of k consecutive false failures is p^k — exponential in the threshold and only linear in 1/interval. Moving them in opposite directions (10s/3 to 2s/5) measured 10.0 s detection instead of 25.9 s (2.6x faster) AND 4.4e-05 false ejections/hr instead of 9.7e-03 (221x fewer), for 480 extra probes/s. Option A is the instinctive reaction and it is the worst option here: unhealthy_threshold = 1 costs 108 false ejections per hour per backend, or 21,600/hr across 200 backends. Option B is the conventional framing that assumes a single sensitivity dial. Option D fixes a real problem but only one of them — the timeout must also be right, but on its own it does nothing about detection latency."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A rolling deploy is halfway through when the new version's readiness probe starts failing on every new instance. The migration that went out with this release already dropped the old column. maxUnavailable is 1. What does the orchestrator do?",
+    "options": [
+      "It detects the failure and automatically rolls the Deployment back to the previous ReplicaSet",
+      "It holds the fleet in the half-migrated state indefinitely; after progressDeadlineSeconds it changes a status condition and keeps trying",
+      "It proceeds anyway, because a rollout that cannot finish is worse than a rollout with unhealthy instances",
+      "It scales the old version back to full capacity to protect the error rate"
+    ],
+    "correct": 1,
+    "explanation": "Nothing rolls back on its own. maxUnavailable: 1 forbids taking down another old instance until a new one is ready, and a level-triggered control loop keeps retrying forever, so the mixed fleet persists. progressDeadlineSeconds (default 600) flips the condition to ProgressDeadlineExceeded — it reports, it does not act. In the measured run this composition of three correct guards cost 48,983 5xx and 32,259 silent bad reads over 909 s, and rollback was unavailable because the old column was already gone."
+  },
+  {
+    "stage": "check",
+    "question": "Your change is gated by a flag at 1% exposure. You deploy the new artifact to 1 of 6 instances and run canary analysis for 10 minutes: 24,600 requests, zero errors, latency flat. You promote. What did the canary actually establish?",
+    "options": [
+      "That the new behaviour is safe at 1% exposure and can be ramped",
+      "That the new artifact starts and serves the old path fine — roughly 250 of those requests executed the new code, so the change itself is untested",
+      "Nothing, because 10 minutes is too short a bake time for a 1% canary",
+      "That the flag's sticky bucketing is working, since exposure held at 1%"
+    ],
+    "correct": 1,
+    "explanation": "An instance canary answers 'is this BUILD healthy'; a flag ramp answers 'is this BEHAVIOUR healthy'. The canary instance serves ~1/6 of all users; the flag cohort is 1% of all users; the intersection was 250 of 24,600 requests (1.02%). Zero errors over 24,600 requests is an accurate claim about the artifact and says nothing about the change. Bake time is not the problem — the analysis has to count requests that EXECUTED the new path, which is what took the correct run to 302 samples and a 2.98% divergence."
+  },
+  {
+    "stage": "check",
+    "question": "Your service drains for 5 seconds before exiting — comfortably more than the 400 ms it needs to finish in-flight requests. Callers use pooled keep-alive connections. To stop severing requests during rollouts, you set the client's maximum connection lifetime to 30 seconds. What happens?",
+    "options": [
+      "Severed requests drop to zero, because connections now recycle instead of being pinned forever",
+      "Severed requests drop by roughly half, since about half the connections recycle inside the window",
+      "Nothing changes — 480 severed requests before, 480 after — because 30 s is longer than the 5 s drain",
+      "Severed requests increase, because recycling connections adds reconnect churn during the drain"
+    ],
+    "correct": 2,
+    "explanation": "Bounding the lifetime is necessary and useless unless the bound is SHORTER than the drain window. A pooled connection is pinned to an address; deregistration stops new connections and touches none of the open ones, so at drain + 5 s the instance exits with those connections still attached. Measured: 480 failed either way. Dropping the bound to 3 s gives zero, and so does sending Connection: close (or an HTTP/2 GOAWAY) at the start of the drain — which is the fix you can ship without changing anyone else's config."
+  },
+  {
+    "stage": "check",
+    "question": "A feature has been at 100% exposure for a week. A tidy-up pull request drops the now-unused old column, and it is reviewed and merged the same afternoon. Nine minutes later the feature starts erroring under load. What has the tidy-up cost you?",
+    "options": [
+      "Nothing operationally — the column was unused, so no code path is affected",
+      "Only the rollback option; the flag kill switch still works because it lives in the flag service, not the database",
+      "Both the kill switch and the rollback: the flag-off path and the previous build both read that column, so the fastest mitigation went from 6.7 s to 849 s",
+      "Only forward migrations; you can still restore from backup within your RTO"
+    ],
+    "correct": 2,
+    "explanation": "A kill switch is a code path, and a code path needs its data. Flipping the flag to 0% routes traffic to the old path, which reads the dropped column — so the switch still flips and no longer works. The previous artifact reads it too, so rollback is gone as well: one DROP COLUMN removed two mitigations from two different layers. Measured: 6.7 s and 335 errors became 849 s and 42,450 errors, 127x slower for the identical incident. Contract closes the only window in which you have a fast mitigation, so it deserves its own release and a written decision."
+  },
+  {
+    "stage": "post",
+    "question": "You ramped a change 1% -> 5% -> 25% -> 100% with automated analysis at every step and every step was clean. Two hours later the feature starts failing 16% of requests. Which explanation is consistent with a correctly executed ramp?",
+    "options": [
+      "The analysis windows were too short to accumulate statistical power at low exposure",
+      "Sticky bucketing broke, so the 25% step was not really measuring 25% of users",
+      "The fault is a function of absolute volume — a quota, pool or rate limit — and the largest volume the ramp ever produced was its own final step",
+      "The flag's default was fail-open, so unmeasured users were on the new path throughout"
+    ],
+    "correct": 2,
+    "explanation": "A ramp measures behaviour at that exposure. Faults that scale with FRACTION (a bad code path, a wrong query) appear at 1%. Faults that scale with ABSOLUTE volume cannot appear until the volume does. Here the partner's quote quota is 260/s; the ramp's final step ran at 250/s — 96% of quota — and nothing alerted, because nobody had a saturation alert on a limit they do not own. Traffic then grew to 310/s and 50/s started failing. Progressive delivery does not remove the need for capacity headroom or a USE panel pointed at your dependencies."
+  },
+  {
+    "stage": "post",
+    "question": "Two of three ways of landing the same change reported a 0.00% user-facing error rate. One of them was the worst outcome in the run. What does that tell you about error-rate-based canary analysis?",
+    "options": [
+      "That the error-rate threshold was set too high and should be tightened to catch smaller regressions",
+      "That it is structurally blind to requests that succeed and are wrong, which is exactly what a bad computation produces — 57,614 mispriced orders at HTTP 200, found by a reconciliation job 7,200 s later",
+      "That latency should be the primary canary signal instead, since wrong answers usually take longer to compute",
+      "That the sample size was too small for the error-rate estimate to be meaningful"
+    ],
+    "correct": 1,
+    "explanation": "An error rate measures the requests that failed. A quoting bug that returns a plausible number with a 200 moves no error rate, no latency percentile and no SLO burn rate — the entire canary/alert/dashboard stack is built on the failure signal. The correct run caught it because its analysis compared the new path's OUTCOME against the old path's for the same orders, and aborted on a 2.98% divergence after 302 new-path samples, costing 9 mispriced orders instead of 57,614. Wrong-but-successful is found by reconciliation, not by monitoring."
+  }
+]

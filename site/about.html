@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>BE</text></svg>">
+  <meta name="description" content="Why Building Backend exists, who it is for, where it came from, and who builds it. A free, open-source, MIT-licensed curriculum.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/about.html">
+  <meta property="og:title" content="About · Building Backend">
+  <meta property="og:description" content="Why this curriculum exists, who it is for, and where it came from. Free, open source, MIT.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <meta property="og:url" content="https://buildingbackend.vercel.app/about.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About · Building Backend">
+  <meta name="twitter:description" content="Why this curriculum exists, who it is for, and where it came from.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260719l">
+  <style>
+    .about {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 100px 0 80px;
+    }
+    .about-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+      margin-bottom: 12px;
+    }
+    .about h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+      margin: 0 0 28px;
+    }
+    .about h2 {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+      margin: 40px 0 12px;
+    }
+    .about p {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--ink);
+      margin: 0 0 16px;
+    }
+    .about a { color: var(--blueprint); }
+    .about ul { font-family: var(--font-body); font-size: 1.05rem; line-height: 1.7; color: var(--ink); padding-left: 1.1em; }
+    .about li { margin-bottom: 6px; }
+    .about code {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      background: var(--bg-surface);
+      padding: 1px 5px;
+      border: 1px solid var(--rule-soft);
+    }
+    .about .lede { font-size: 1.15rem; color: var(--ink); }
+    @media (max-width: 768px) { .about { padding: 80px 0 48px; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> BUILDING BACKEND
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="catalog.html">Catalog</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="jargon.html">Jargon</a>
+        <a href="about.html" aria-current="page">About</a>
+      </nav>
+      <button class="search-toggle" type="button" data-cmd-palette
+        aria-label="Search (⌘K)" title="Search (⌘K)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <article class="about">
+      <div class="about-eyebrow">About</div>
+      <h1>About this project</h1>
+
+      <p class="lede">Building Backend is a free, open-source curriculum for learning how backends work, starting from zero. 164 lessons across 13 phases, built in the open, in Python.</p>
+
+      <h2>Why it exists</h2>
+      <p>Almost everyone starts with AI now. It is the first thing people reach for, and it is where most learning paths begin. I think that is backwards. AI sits on top of a very tall stack, and if you start at the top you never learn what is holding you up.</p>
+      <p>You cannot skip the bottom rungs of a ladder and land on the top one. You go up a step at a time. That means starting at zero, with the things nobody shows you: what is actually happening behind the scenes, what the machine is really doing, what the infrastructure underneath is for.</p>
+      <p>Get through that and AI is a fine place to end up. By then you will know what it is standing on. That is the order this was built in, and that is the whole reason it exists.</p>
+
+      <h2>Who it is for</h2>
+      <p>First, me. I built this to keep track of backend topics in one place, to go through them regularly, and to keep updating them as I learn more. It is my own record before it is anything else.</p>
+      <p>After that, anyone who wants to learn backend, or thinks they might want to. You do not need a background in it. You just need to be curious enough to start at the bottom.</p>
+      <p>This is not a mastery program and it does not promise to make you an expert. If it leaves you more curious about how backends work than when you arrived, it did its job.</p>
+
+      <h2>Where it came from</h2>
+      <p>This project began as a clone, and it would be strange not to say so. Two things shaped it.</p>
+      <p>The first is <a href="https://www.makingsoftware.com/" target="_blank" rel="noopener">Making Software</a> by Dan Hollick, a reference manual that explains how the software you use every day actually works. It does not teach you to build anything. It just makes you understand what is going on, and it assumes you are curious rather than technical.</p>
+      <p>The second is <a href="https://aiengineeringfromscratch.com/" target="_blank" rel="noopener">AI Engineering from Scratch</a>, maintained by Rohit Ghumare and contributors, which followed that same spirit and pointed it at AI, taking a subject people find intimidating and laying it out from the beginning.</p>
+      <p>This site is a fork of that one. The layout, the structure, and the shape of a lesson are all theirs, used under the MIT license and kept with thanks. What I changed is the subject: backend engineering instead of AI. The lineage is theirs. The mistakes are mine.</p>
+
+      <h2>Who builds it</h2>
+      <p>Maintained by <a href="https://x.com/ritikshub" target="_blank" rel="me noopener">@ritikshub</a> and anyone who wants to help. It is MIT-licensed and free forever. There is no token, no course upsell, and no gated content.</p>
+
+      <h2>Get involved</h2>
+      <ul>
+        <li>Read the source: <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">github.com/ritikshub/buildingbackend</a></li>
+        <li>Found an error or have a lesson idea? <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Open an issue</a>.</li>
+        <li>Start learning: <a href="catalog.html">browse the catalog</a> or <a href="prereqs.html">follow the roadmap</a>.</li>
+      </ul>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="catalog.html">Catalog</a>
+        <a href="jargon.html">Jargon</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "url": "https://buildingbackend.vercel.app/about.html",
+    "name": "About Building Backend",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Building Backend",
+      "url": "https://buildingbackend.vercel.app",
+      "sameAs": ["https://github.com/ritikshub/buildingbackend", "https://github.com/ritikshub", "https://x.com/ritikshub"],
+      "founder": { "@type": "Person", "name": "@ritikshub", "url": "https://x.com/ritikshub" }
+    }
+  }
+  </script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+
+      function updateIcon() {
+        var icon = document.getElementById('themeIcon');
+        if (!icon) return;
+        /* The sun/moon icons are swapped by CSS based on the data-theme attribute. */
+      }
+
+      updateIcon();
+
+      document.addEventListener('DOMContentLoaded', function () {
+        updateIcon();
+
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateIcon();
+          });
+        }
+      });
+    })();
+  </script>
+  <script src="data.js?v=20260719l"></script>
+  <script src="progress.js?v=20260719l"></script>
+  <script src="header.js?v=20260719l" defer></script>
+  <script src="cmdpalette.js?v=20260719l" defer></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>

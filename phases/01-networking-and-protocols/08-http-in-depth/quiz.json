@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "What kind of protocol is HTTP at its core?",
+    "options": [
+      "A binary streaming protocol with no defined message boundaries",
+      "A text-based request/response protocol running over TCP",
+      "A peer-to-peer protocol with no client or server role",
+      "An encryption protocol that replaces TLS"
+    ],
+    "correct": 1,
+    "explanation": "HTTP (HyperText Transfer Protocol) is a text-based request/response protocol: a client sends one request, the server sends one response, and the header portion is human-readable ASCII. It rides on top of TCP, which provides the reliable byte stream underneath."
+  },
+  {
+    "stage": "pre",
+    "question": "An HTTP message is made of four parts in order. Which is correct?",
+    "options": [
+      "Body, headers, blank line, start line",
+      "Start line, blank line, headers, body",
+      "Start line, headers, blank line, optional body",
+      "Headers, start line, body, checksum"
+    ],
+    "correct": 2,
+    "explanation": "Every HTTP message is a start line (request line or status line), then header lines, then a blank line (CRLF by itself) marking the end of headers, then an optional body. The blank line is how the receiver knows the headers are finished."
+  },
+  {
+    "stage": "check",
+    "question": "A client sends a request that times out with no reply. For which method is it safe to simply resend the same request?",
+    "options": [
+      "POST, because it creates a new resource each time",
+      "PUT, because it is idempotent — sending it again has the same effect as once",
+      "Any method, since HTTP retries are always safe",
+      "No method can ever be safely retried"
+    ],
+    "correct": 1,
+    "explanation": "Idempotent methods (GET, PUT, DELETE) produce the same result whether sent once or many times, so a client may safely retry them after a timeout. POST is not idempotent — resending it might create a second resource or charge a card twice."
+  },
+  {
+    "stage": "check",
+    "question": "A response comes back with status code 403. What does its family tell you, and what does the specific code mean?",
+    "options": [
+      "5xx server error; the server crashed",
+      "4xx client error; the caller is authenticated but not permitted to do this",
+      "3xx redirection; the resource moved",
+      "4xx client error; the caller has not authenticated yet"
+    ],
+    "correct": 1,
+    "explanation": "The leading 4 marks a client error — the request was wrong, so fix the caller. 403 Forbidden specifically means the client IS authenticated but is not allowed to access the resource. That contrasts with 401 Unauthorized, which means not authenticated at all."
+  },
+  {
+    "stage": "check",
+    "question": "On a keep-alive connection carrying several responses back to back, how does the client know where one response's body ends and the next response begins?",
+    "options": [
+      "The TCP connection closes after each body",
+      "It reads exactly Content-Length bytes (or the chunked terminator) for the body",
+      "A special magic byte separates every response",
+      "It guesses based on how long recv() blocks"
+    ],
+    "correct": 1,
+    "explanation": "TCP is a byte stream with no message boundaries, so HTTP must reintroduce them. The receiver reads headers up to the blank line, then reads exactly Content-Length more bytes as the body. Without a close to mark the end, honoring that length is what keeps consecutive responses from bleeding together."
+  },
+  {
+    "stage": "post",
+    "question": "Why does reusing one HTTP/1.1 connection for many requests (keep-alive) make a service noticeably faster under load?",
+    "options": [
+      "It compresses the request bodies automatically",
+      "It skips the TCP three-way handshake on every request after the first",
+      "It switches the requests from TCP to UDP",
+      "It lets the server skip sending status codes"
+    ],
+    "correct": 1,
+    "explanation": "Opening a TCP connection costs a three-way handshake — a full round-trip — before any HTTP bytes move. HTTP/1.1 keeps the connection open by default, so subsequent requests reuse it and pay that handshake cost only once. That is why connection pooling (a shared Session) is a major client-side performance win."
+  },
+  {
+    "stage": "post",
+    "question": "An API endpoint replies 405 Method Not Allowed to a DELETE request. What is the most accurate reading?",
+    "options": [
+      "The server crashed while handling the DELETE",
+      "The route (target) exists, but it does not accept the DELETE method",
+      "The client is not authenticated",
+      "The resource was permanently moved elsewhere"
+    ],
+    "correct": 1,
+    "explanation": "405 is a 4xx client error meaning the target resource exists but the method used is not supported on it — for example a read-only endpoint that allows GET but not DELETE. A well-behaved server also returns an Allow header listing the methods it does accept. It is not a 5xx (server fault) or an auth error."
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "What does RPC (Remote Procedure Call) let you do?",
+    "options": [
+      "Encrypt every packet on a connection",
+      "Call a procedure on another machine as if it were a local function, with the framework hiding the network",
+      "Compress JSON before sending it",
+      "Assign a machine an IP address automatically"
+    ],
+    "correct": 1,
+    "explanation": "RPC makes a remote call look like a local function call: your code reads like get_user(150), but the arguments are serialized, sent to a server, executed, and the result returned. Both sides must agree on the procedure name and the argument/return shapes."
+  },
+  {
+    "stage": "pre",
+    "question": "In a protobuf schema like `int32 id = 1;`, what is the `1`?",
+    "options": [
+      "A default value for id",
+      "The maximum number of ids allowed",
+      "The field NUMBER, which is what identifies the field on the wire",
+      "The version of the protobuf format"
+    ],
+    "correct": 2,
+    "explanation": "The `= 1` is the field number, not a default. Protocol Buffers puts field numbers (not names) on the wire, which is what makes the encoding compact and forward/backward compatible. Changing a field's number breaks the wire contract; renaming the field does not."
+  },
+  {
+    "stage": "check",
+    "question": "How is a field's tag byte computed in the protobuf wire format?",
+    "options": [
+      "tag = field_number + wire_type",
+      "tag = (field_number << 3) | wire_type, so the low 3 bits are the wire type",
+      "tag = field_number, and the wire type is sent in a separate byte",
+      "tag = a hash of the field name"
+    ],
+    "correct": 1,
+    "explanation": "The tag packs both values into one varint: tag = (field_number << 3) | wire_type. On decode, wire_type = tag & 0x07 (the low 3 bits) tells the reader how to consume the following bytes, and field_number = tag >> 3 says which field it is."
+  },
+  {
+    "stage": "check",
+    "question": "In a varint, what is the role of the high bit (MSB) of each byte?",
+    "options": [
+      "It is the sign bit (positive or negative)",
+      "It is a parity/error-check bit",
+      "It is a continuation flag: 1 means another byte follows, 0 means this is the last byte",
+      "It is always 0 and ignored"
+    ],
+    "correct": 2,
+    "explanation": "A varint stores 7 bits of value per byte; the 8th bit (the MSB) is a continuation flag. 1 means 'more bytes follow', 0 means 'last byte'. That is why 0-127 fit in one byte and only larger numbers spend more bytes."
+  },
+  {
+    "stage": "check",
+    "question": "A protobuf reader hits a field with wire type 2 (LEN, length-delimited). How does it read the value?",
+    "options": [
+      "It reads exactly 2 bytes",
+      "It reads a varint length, then that many following bytes",
+      "It reads until it sees a null byte",
+      "It reads 8 bytes, little-endian"
+    ],
+    "correct": 1,
+    "explanation": "Wire type 2 is length-delimited: after the tag comes a varint giving the byte length, then exactly that many bytes. This is how strings, bytes, and embedded messages are framed. Wire type 1 (I64) is a fixed 8 bytes and wire type 5 (I32) a fixed 4 bytes."
+  },
+  {
+    "stage": "post",
+    "question": "You add a new field `string email = 3;` to a message and deploy the new client against an OLD server that predates field 3. What happens?",
+    "options": [
+      "The old server crashes on the unknown field",
+      "The connection is rejected until both sides upgrade",
+      "The old server sees field number 3, doesn't recognize it, and skips it — the call still works",
+      "The email is silently sent as field 1, corrupting id"
+    ],
+    "correct": 2,
+    "explanation": "Because fields are identified by number, an old reader that doesn't know field 3 simply skips it using the wire type to know how many bytes to consume. That forward/backward compatibility — add fields freely, never reuse or renumber — is a core reason protobuf and gRPC are used for evolving service APIs."
+  },
+  {
+    "stage": "post",
+    "question": "A gRPC method is declared `rpc Subscribe(Topic) returns (stream Event);`. Which call type is this, and what carries it?",
+    "options": [
+      "Client streaming, carried over a fresh TCP connection per event",
+      "Server streaming: one request, a stream of responses, carried as length-prefixed messages over one HTTP/2 stream",
+      "Unary, carried over UDP for speed",
+      "Bidirectional streaming, carried over HTTP/1.1"
+    ],
+    "correct": 1,
+    "explanation": "One request plus `stream` on the response side is server streaming: the server pushes many messages back. gRPC frames each message as a Length-Prefixed-Message (flag + 4-byte length + protobuf) and sends them in HTTP/2 DATA frames on a single multiplexed stream, closing with a grpc-status trailer."
+  }
+]

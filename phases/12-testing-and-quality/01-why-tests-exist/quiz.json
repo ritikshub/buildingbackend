@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You are deciding which quality gates to keep in a pipeline that has type checking, unit tests, code review, CI integration tests and a staging environment. You measure how many of 40 seeded bugs each gate catches. Which number tells you what a gate is worth?",
+    "options": [
+      "How many of the 40 it catches on its own — a gate that catches 17 of 40 is clearly worth more than one that catches 5 of 40",
+      "How many it catches that no earlier gate in the pipeline already caught. Measured over the same 40 bugs, review caught 17 alone but 0 marginally, and staging caught 18 alone but 0 marginally, while types caught only 5 alone and all 5 were marginal",
+      "How many it catches divided by how long it takes to run, since the only real constraint on a pipeline is wall-clock time",
+      "The absolute count, weighted by bug severity — a gate that catches fewer but more serious bugs is more valuable than one that catches many trivial ones"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer is the absolute count, and it is the number every tool reports. It is also the number that would have told you to keep code review and staging over type checking, which is exactly backwards for this pipeline: everything review and staging can see, something cheaper already saw. A gate you add to a pipeline is only worth the bugs that reach it and die there. Severity weighting (option 4) is a real refinement but it applies to the marginal set, not the absolute one — weighting 17 bugs that were already caught still gives you zero."
+  },
+  {
+    "stage": "check",
+    "question": "A one-character change makes a volume discount exclusive instead of inclusive. Over a measured day of 2,000 orders it prices 75 of them wrong — 3.75% — and overcharges $408.00 in total. Why did this take three days to detect?",
+    "options": [
+      "Because $408.00 is too small to notice in a business doing $252,065.04 a day; the loss would have to be materially larger before anyone investigated",
+      "Because the bug is intermittent — it only manifests under certain load conditions, which is why it did not reproduce in staging",
+      "Because every other invoice in the day was byte-identical to the correct one, so the day's revenue moved 0.16% against a staging alarm threshold of 2%. Nothing that watches aggregates could see it; only a customer comparing one invoice against one expectation could",
+      "Because there were no tests at all on the pricing module, so nothing could have caught it at any stage"
+    ],
+    "correct": 2,
+    "explanation": "The trap is to reason about the total, which is what the first option does. The detection problem is not that $408 is small — it is that the bug's blast radius is 3.75% of orders, so every aggregate signal is diluted to 0.16%, an order of magnitude below the only automated alarm that watches for it. Nothing here is intermittent (option 2): the bug is perfectly deterministic and fires every time an order lands exactly on the threshold. And there were tests (option 4) — they were green, because none of them priced an order at exactly 5000 cents. Blast radius and cost are two different numbers, and small blast radius makes detection harder, not the bug cheaper: this one cost 702 engineer-minutes."
+  },
+  {
+    "stage": "check",
+    "question": "Two database columns are swapped on both the write path and the read path. What does the test suite say, and what actually happens?",
+    "options": [
+      "The round-trip test fails immediately, because writing and reading through mismatched columns cannot produce the original values",
+      "Every gate stays green — type checks, unit tests, review, integration and staging all pass — because the round-trip agrees with itself and the invoice that comes back is correct in every field. A separate finance job reading the tax column sums the day at $5,498.82 instead of $19,839.25, 72% low",
+      "Integration tests catch it, since they are the layer that exercises the database and would compare the stored row against a golden value",
+      "It is an equivalent mutant: the two orderings are observationally identical, so no test can ever detect it and there is no bug to fix"
+    ],
+    "correct": 1,
+    "explanation": "The intuition behind options 1 and 3 is that a round-trip test exercises the database, so it must see a database bug. It does not, because a round-trip test compares what it wrote with what it read, and both are wrong in the same direction — the lie is symmetric. The golden-value integration test in this lesson passes for exactly that reason. Option 4 confuses this bug with W01, the genuine equivalent mutant where swapped arguments feed a multiplication: there, no observation differs anywhere, ever. Here the observation differs enormously — just not for the process that wrote the row. This is the failure mode of any double you maintain on both sides of a boundary, which is why contract testing exists."
+  },
+  {
+    "stage": "check",
+    "question": "An `add32` function is wrong at exactly one point in its 2^64 space of input pairs. Two generators each get 200 cases, over 200 independent runs. What happens?",
+    "options": [
+      "Both find it at roughly the same rate — 200 cases out of 2^64 is a vanishing sample either way, so this is essentially a coin flip decided by luck",
+      "Uniform random does better, because it samples the whole space without bias, whereas a fixed pool of boundary values can only ever reach the inputs someone thought to put in the pool",
+      "Uniform random found it in 0 of 200 runs — not once. A boundary-biased generator drawing from a pool of 15 edge values found it in 199 of 200 runs, with a median of 31 cases to the first failure",
+      "Neither found it, which is the point: a one-in-2^64 bug is only reachable by exhaustive testing, which would take 584.9 years"
+    ],
+    "correct": 2,
+    "explanation": "Option 2 is the sophisticated-sounding wrong answer, and it inverts the actual result. Uniform random does sample the whole space without bias — and that is precisely the problem, because bugs are not distributed uniformly. They cluster on boundaries, and a boundary is a measure-zero slice of a uniform distribution, so uniform sampling reaches it essentially never. Option 1 misreads the arithmetic: the outcome is not luck, it is a property of the generator, and it reproduced across 200 independent runs. Option 4 is the pessimistic misread — 200 well-chosen cases found it in a median of 31 tries. This is why property-testing libraries bias hard toward boundaries instead of calling `random.randint`."
+  },
+  {
+    "stage": "post",
+    "question": "Your team's pipeline is cheap gates first: types, then unit tests, then review, then integration, then staging. Measured this way, staging's marginal catch is 0 of 40. A colleague argues this proves staging is worthless and should be deleted. What is the strongest correction?",
+    "options": [
+      "The measurement is wrong, because staging catches classes of bug — configuration, deployment, environment — that a 40-mutation set of single-token source edits cannot represent",
+      "Marginal value is path-dependent: reversing the pipeline order gives staging a marginal catch of 18 and unit tests a marginal catch of 1, with identical gates and identical bugs. The 0 describes staging's position in this pipeline, not staging's power — though in this pipeline it is still the correct number to act on",
+      "Staging's value is that it catches bugs faster than production would, so its marginal catch should be measured in time-to-detection rather than in bug count",
+      "The measurement holds and staging should be deleted, since a gate that catches nothing new while costing 25 minutes per release is a pure loss by construction"
+    ],
+    "correct": 1,
+    "explanation": "Option 4 reads the number correctly but stops one step early; option 1 is a genuinely good objection to the experiment's scope but does not engage with what was measured. The precise correction is that marginal value is a property of the pipeline, not of the gate: run the same five gates in reverse and staging goes from 0 to 18 while unit tests collapse from 25 to 1. Nothing about staging changed. This is why there is no portable ranking of test types, and why any 'integration tests are worth more than unit tests' claim is quoting someone else's pipeline. Note the honest coda: path-dependence explains the number, it does not overturn it — in *this* pipeline staging really does earn -25 minutes per release."
+  },
+  {
+    "stage": "post",
+    "question": "A suite with kill rate k lets (1-k) of your slips through, so for the same expected number of escapes you can make 1/(1-k) times as many edits. Your suite currently kills 70%. Where should the next unit of test effort go?",
+    "options": [
+      "Nowhere — 70% is already past the point of diminishing returns, and the remaining 30% is dominated by bugs no test can catch anyway",
+      "Into breadth: covering more modules at 70% each raises the aggregate kill rate faster than deepening one module, because the untested modules contribute a kill rate of zero",
+      "Into raising k, because the curve is a hyperbola: 70% buys 3.3x headroom, 85% buys 6.7x, and the same five percentage points that take you from 90% to 95% double your headroom again — the last points are worth as much as the first fifty",
+      "Into reducing the slip rate instead, since 1/(1-k) only helps if slips are rare enough that the linear term does not dominate"
+    ],
+    "correct": 2,
+    "explanation": "The tempting answer is option 1, and it is the reasoning behind almost every team that stops at 'we have decent coverage'. It has the shape of the curve backwards. 1/(1-k) is a hyperbola, so equal increments of k buy geometrically increasing headroom: measured here, 70% gave 3.3x and 85% gave 6.7x, and an independent simulation over 240,000 edits agreed at 3.2x and 6.7x. Option 4 misreads the algebra — the slip rate cancels out entirely, which is what makes this the rare testing number you can compute without estimating anything. Option 2 is not wrong as a tactic and may well be the right call in a specific codebase; it just is not what the curve says, and knowing where you are on the curve is what Lesson 13 measures."
+  }
+]

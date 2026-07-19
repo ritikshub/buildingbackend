@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You've done password storage perfectly — Argon2id, salts, a pepper, breach screening. Why do accounts still get taken over?",
+    "options": [
+      "Because Argon2id has known weaknesses that let attackers reverse the hashes",
+      "Because the three most common ways a password reaches an attacker — phishing a fake login page, reuse of a password leaked from another site, and bulk guessing of common passwords — all hand over a *real* password without ever touching your database, so how you store passwords is irrelevant to them. The fix is to stop relying on the password as the sole proof of identity: add a second factor",
+      "Because the salts weren't long enough",
+      "Because passwords should have been encrypted rather than hashed"
+    ],
+    "correct": 1,
+    "explanation": "Password storage defends the stolen database file. Phishing, credential stuffing, and bulk guessing bypass the database entirely by obtaining a genuine password — from the user, from another breach, or by guessing. No storage scheme helps once the attacker has the correct password. A second factor from a different category (something you have/are) means the phished password alone is no longer enough."
+  },
+  {
+    "stage": "check",
+    "question": "How does your phone's authenticator app (TOTP) produce the same 6 digits as the server without ever communicating with it?",
+    "options": [
+      "The app fetches the current code from the server over an encrypted channel",
+      "Both sides share one secret at enrollment, then each independently computes HMAC-SHA1(secret, current_time // 30) and truncates it to 6 digits. Because the algorithm is deterministic and both read the same clock, they arrive at the same code with no communication — the server only recomputes and compares, it never sends a code",
+      "The code is derived from the phone's IMEI, which the server also knows",
+      "The app and server run a real-time key-exchange each time a code is shown"
+    ],
+    "correct": 1,
+    "explanation": "TOTP is HOTP (RFC 4226) with the counter set to the current time divided by the step (RFC 6238). The only shared state is the secret exchanged once at enrollment (via the QR code). Both sides HMAC the same time-counter with the same secret and truncate identically, so they agree offline. Verification allows a ±1 step window for clock skew and must reject a code already used in its window."
+  },
+  {
+    "stage": "check",
+    "question": "TOTP removes SMS's SIM-swap risk, yet it's still described as phishable. How can an attacker defeat it?",
+    "options": [
+      "By computing the code from the user's phone number",
+      "By waiting for the 30-second window to expire",
+      "With a real-time phishing proxy: a fake login page that instantly forwards whatever the user types — password AND the 6-digit code — to the real site within the code's 30-second validity window. Because the code is just digits the human reads and types, nothing stops it being relayed. The user willingly enters it on the fake page",
+      "TOTP is not actually phishable; the claim is a myth"
+    ],
+    "correct": 2,
+    "explanation": "TOTP's weakness is that the second factor is a short string the user manually transcribes. An adversary-in-the-middle page captures both factors and replays them immediately, inside the window. TOTP still defeats reuse and bulk guessing and raises the effort for phishing, but it does not eliminate it. Only a credential bound to the origin — a passkey — can't be relayed, because the signature is tied to the real domain."
+  },
+  {
+    "stage": "check",
+    "question": "Why is SMS the weakest common second factor?",
+    "options": [
+      "Because text messages are slow to arrive",
+      "Because it fails on two fronts: the code is phishable (the user types it into a fake page just like TOTP), AND the phone number itself can be stolen via a SIM swap — social-engineering the carrier into porting the number to the attacker's SIM — after which the attacker receives all the codes. It also puts a third party (the telco) in your authentication path",
+      "Because SMS codes are only 4 digits and easy to brute-force",
+      "Because SMS is unencrypted and always intercepted in transit"
+    ],
+    "correct": 1,
+    "explanation": "SMS combines TOTP's phishability with an extra, easier attack: number portability abuse. SIM swaps are a well-documented, low-tech way to hijack the delivery channel entirely, and the carrier becomes a link in your security chain you don't control. SMS is still far better than password-only for the average account, but it should be avoided for anything valuable in favor of app-based TOTP or, better, passkeys."
+  },
+  {
+    "stage": "post",
+    "question": "A breach leaks your database. What can the attacker do with leaked TOTP shared secrets versus leaked passkey public keys?",
+    "options": [
+      "Both are equally dangerous, since both are used to verify logins",
+      "TOTP secrets are SHARED secrets — with them the attacker can generate valid codes for those users indefinitely, so they must be stored encrypted (in a KMS/secrets manager). Passkey PUBLIC keys can only *verify* a signature, never create one, so a leaked public key is useless to a thief — which is exactly why WebAuthn is called breach-proof and its public keys need no special protection",
+      "Neither is exploitable, because both are one-way hashes",
+      "TOTP secrets are safe because they change every 30 seconds; the leaked value is already expired"
+    ],
+    "correct": 1,
+    "explanation": "This is the core storage difference. TOTP's verification secret is symmetric — the same value that verifies also generates codes — so leaking it lets the attacker mint valid second factors; encrypt it at rest. WebAuthn is asymmetric: the server holds only the public key, which verifies signatures but cannot produce them, so a database dump exposes no usable login secret. The shared-secret nature is TOTP's structural ceiling."
+  },
+  {
+    "stage": "post",
+    "question": "WebAuthn/passkeys are called 'phishing-proof' because of origin binding. What exactly stops the attack?",
+    "options": [
+      "The user must approve a push notification, which they can decline if suspicious",
+      "The browser ties each credential to the origin it was registered for and signs that origin into every assertion, and it will only invoke a credential registered for the current origin. On acme-support.com the authenticator has no credential for that origin and produces no valid signature — and the attacker can't forward the request the way they relay a TOTP code, because the signature is cryptographically bound to the phishing origin, so the real site rejects it",
+      "Passkeys use longer keys that are harder to brute-force",
+      "The private key is sent to the server, which checks it against a blocklist of phishing domains"
+    ],
+    "correct": 1,
+    "explanation": "Origin binding is enforced by the browser and baked into the signed data. A phishing site at a different origin can't get the authenticator to sign for acme.com, and it can't relay the assertion to the real site because the assertion commits to the phishing origin — so acme.com's verification fails. Contrast TOTP, where the 6 digits carry no origin and are trivially relayed. The private key never leaves the device; nothing typable exists to steal."
+  }
+]

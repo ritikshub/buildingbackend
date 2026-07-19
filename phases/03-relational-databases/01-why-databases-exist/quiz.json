@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your program creates a user in a variable and then exits. What happens to that user?",
+    "options": ["It is automatically saved to disk", "It vanishes — it lived in volatile RAM, which forgets on exit", "It moves to the database", "It stays in memory until the computer restarts"],
+    "correct": 1,
+    "explanation": "Program variables live in volatile RAM, which loses everything when the process ends or power is cut. Keeping data means deliberately persisting it to non-volatile storage (disk)."
+  },
+  {
+    "stage": "check",
+    "question": "Why does looking up one record in a large flat file get slow as the file grows?",
+    "options": ["Disks get slower when files are bigger", "You must scan line by line until you find it — an O(n) full scan", "Text files can't hold many rows", "The operating system limits file reads"],
+    "correct": 1,
+    "explanation": "A flat file has no jump-to structure, so finding one record means reading rows until you hit it. Cost grows linearly with size. A database keeps an index and finds it in O(log n)."
+  },
+  {
+    "stage": "check",
+    "question": "Two requests append to the same flat file at the same instant and one write ends up mangled. Which database capability prevents this?",
+    "options": ["Indexing", "Concurrency control (locks/transactions)", "Compression", "Backups"],
+    "correct": 1,
+    "explanation": "Simultaneous writers to a raw file race and can interleave or overwrite each other. Concurrency control — locks and transactions — arbitrates who writes when so each sees a coherent result."
+  },
+  {
+    "stage": "check",
+    "question": "Power dies while a program is rewriting a file to update one field. What is the danger a database avoids here?",
+    "options": ["The file becomes read-only", "The file is left half-old, half-new, and corrupt — no atomicity", "The index rebuilds slowly", "The disk fills up"],
+    "correct": 1,
+    "explanation": "A partial rewrite leaves the data neither fully updated nor fully unchanged — corrupt. Databases give atomicity and durability (via techniques like write-ahead logging): a change lands completely or not at all."
+  },
+  {
+    "stage": "post",
+    "question": "What was the core breakthrough of Codd's 1970 relational model versus the hierarchical/network databases before it?",
+    "options": ["It made disks faster", "It separated the logical shape of data (tables you query by describing what you want) from how it is physically stored", "It removed the need for persistence", "It invented the hard drive"],
+    "correct": 1,
+    "explanation": "Earlier models made you navigate physical pointer paths by hand. Codd put data in simple tables and let you ask by describing what you want — 'data independence' — which is why relational databases are still the default."
+  },
+  {
+    "stage": "post",
+    "question": "Which of these is a legitimately good use of a plain flat file rather than a database?",
+    "options": ["Storing user accounts for a web app", "An append-only application log with a single writer, read start-to-finish", "An e-commerce order system with concurrent checkouts", "A bank ledger that must never lose a write"],
+    "correct": 1,
+    "explanation": "A file is fine when none of the five breaks bite: single writer, whole-file reads, no lookups by key, no correctness rules to enforce. An append-only log fits; anything shared, queried, or correctness-critical needs a database."
+  }
+]

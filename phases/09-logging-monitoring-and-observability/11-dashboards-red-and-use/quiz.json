@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your team has 214 dashboards covering every service and every machine. What does that tell you about the system's observability?",
+    "options": [
+      "The system is highly observable — 214 dashboards is far more coverage than most teams achieve",
+      "Almost nothing. Dashboards answer questions someone thought of in advance, so they serve monitoring (known unknowns) and say nothing about whether you can answer a novel question from data you already emit — and a large dashboard count is usually evidence of accretion, not coverage",
+      "It tells you the metrics backend is well provisioned, since dashboards are the main load on it",
+      "It means alerting is probably in good shape, because alerts are derived from dashboard panels"
+    ],
+    "correct": 1,
+    "explanation": "Lesson 1's distinction decides this. Dashboards make KNOWN answers fast; they cannot address unknown unknowns, which need ad-hoc querying of rich data. Worse, a count that high almost always means dashboards grew by accretion — a panel added per incident, none ever removed — so the marginal dashboard reduces the chance of finding the useful one."
+  },
+  {
+    "stage": "check",
+    "question": "Which PromQL expression correctly computes the 99th-percentile request duration for a service across all its instances?",
+    "options": [
+      "avg(rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]))",
+      "avg(histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])))",
+      "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))",
+      "quantile(0.99, rate(http_request_duration_seconds_count[5m]))"
+    ],
+    "correct": 2,
+    "explanation": "You must sum the per-instance bucket RATES by the `le` label first, then take the quantile of the merged histogram. Option A is the classic mean-latency idiom (sum divided by count) — an average, which hides the tail. Option B computes a p99 per instance and then averages them, and quantiles are not averageable: the mean of three p99s is a number with no statistical meaning."
+  },
+  {
+    "stage": "check",
+    "question": "A database connection pool has run at 100% utilization all week with no incidents. Today it is at 70% utilization and requests are timing out. What does this show about USE?",
+    "options": [
+      "Utilization is unreliable below 80%, so the panel's threshold should be lowered",
+      "Nothing coherent — 70% utilization cannot cause timeouts, so the pool is not the problem",
+      "It shows the pool is leaking connections, since utilization dropped while errors rose",
+      "Saturation, not utilization, is the signal that predicts failure: 100% utilization with an empty wait queue means the resource is fully used as intended, while 70% with callers blocked waiting means work is queuing and the resource is about to fall over"
+    ],
+    "correct": 3,
+    "explanation": "Utilization is bounded at 100%, so it stops carrying information exactly when you need it most. Saturation — queue depth, wait time, blocked callers — is unbounded and keeps rising, which is why it warns you before the cliff and still tells the truth after it. This is the same behaviour as the connection pool in Phase 3 Lesson 14 and backpressure in Phase 8, and it is the USE signal teams most often fail to instrument."
+  },
+  {
+    "stage": "check",
+    "question": "During an outage your p99 latency panel gets BETTER while the error ratio climbs. What is happening?",
+    "options": [
+      "Failed requests return fast — a 500 in 8 ms — and those fast failures are landing in the same latency histogram as successful requests, dragging the percentiles down and making the panel look healthier as the outage worsens",
+      "The service is shedding load correctly, so latency improving is the expected healthy signal",
+      "Prometheus dropped scrapes during the incident, so the histogram buckets are stale",
+      "The p99 is computed over a 5-minute window, which is too short to reflect an ongoing outage"
+    ],
+    "correct": 0,
+    "explanation": "A service that has given up answers instantly, so failures are the fastest requests it serves. Mixed into one histogram they pull the percentiles down exactly when things are worst. The fix is to label the duration histogram by outcome and plot failed-request latency on its own panel — one extra label with two values, so the bucket series count doubles and stays bounded."
+  },
+  {
+    "stage": "post",
+    "question": "Why does provisioning dashboards from files with `allowUiUpdates: false` matter more than it first appears?",
+    "options": [
+      "It reduces Grafana's memory usage, because dashboards are read from disk instead of the database",
+      "It is required for template variables like $service to resolve correctly",
+      "It makes the files the single source of truth: without it, a browser edit diverges from git and is silently overwritten on the next deploy, and once people have lost an edit that way they stop trusting the dashboards entirely",
+      "It prevents unauthorized users from viewing dashboards they do not own"
+    ],
+    "correct": 2,
+    "explanation": "Dashboards-as-code only pays off if there is exactly one source of truth. If the UI can also write, you get two, and they diverge silently — the deploy wins and someone's careful fix vanishes with no error. Locking UI updates forces changes through the generator and the pull request, which is what makes review, linting in CI, and regenerating for a 40th service possible."
+  },
+  {
+    "stage": "post",
+    "question": "Every service dashboard is green — rate normal, error ratio near zero, p99 flat — and support is flooded with reports that checkout is broken. Which dashboard level was missing, and why is this failure so common?",
+    "options": [
+      "The resource level (USE) — a saturated connection pool would explain it, and USE dashboards are usually the ones teams skip",
+      "None was missing; if RED is green the reports are almost certainly a client-side or ISP issue outside your control",
+      "The business/journey level — a panel like checkouts-per-minute would show zero, because a third-party redirect or a broken front end can take the product down while every one of your services correctly serves every request it receives",
+      "The alerting layer — a symptom alert on error rate would have fired before support noticed"
+    ],
+    "correct": 2,
+    "explanation": "RED measures requests your services actually receive. If users never reach the service — a dead payment redirect, a broken deploy of the front end, a DNS change — your services see reduced traffic and zero errors, which reads as healthy. A business/journey dashboard measures the outcome users care about, so checkouts-per-minute falling to zero is visible regardless of which layer failed. This is why the hierarchy starts above the service level rather than at it."
+  }
+]

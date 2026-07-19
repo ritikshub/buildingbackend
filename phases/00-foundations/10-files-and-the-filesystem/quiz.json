@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "RAM is wiped when the power goes out. So where does a computer keep data that must survive a reboot?",
+    "options": ["In the CPU", "In files on persistent storage (disk/SSD)", "In the network", "Nowhere — it can't"],
+    "correct": 1,
+    "explanation": "Persistent storage (disk/SSD) keeps its bytes with the power off. Data that must survive is written to files there; RAM only holds what a program is actively working on."
+  },
+  {
+    "stage": "check",
+    "question": "What, fundamentally, is a file?",
+    "options": ["A picture or document only", "A named sequence of bytes stored on persistent storage", "A block of RAM", "A running program"],
+    "correct": 1,
+    "explanation": "A file is just bytes on disk plus a name so you can find them again. Whether it's 'text' or 'binary' is only about how those bytes are meant to be interpreted."
+  },
+  {
+    "stage": "check",
+    "question": "What is the difference between an absolute path and a relative path?",
+    "options": ["Absolute paths are longer for no reason", "An absolute path starts from the root (/) and is unambiguous anywhere; a relative path starts from the current working directory", "Relative paths only work on Windows", "There is no difference"],
+    "correct": 1,
+    "explanation": "An absolute path like /home/user/notes.txt is fixed from the root. A relative path like notes.txt is resolved against wherever the program currently is (its working directory) — a very common source of 'file not found' bugs."
+  },
+  {
+    "stage": "check",
+    "question": "You rename photo.png to photo.txt. What have you actually changed?",
+    "options": ["The file is now genuinely a text file", "Only the name/extension hint — the bytes are unchanged, so it is still a PNG image", "The image data is deleted", "Nothing at all"],
+    "correct": 1,
+    "explanation": "An extension is a convention/hint, not the truth. Renaming changes only the hint; the bytes still form a PNG. The bytes decide what a file really is."
+  },
+  {
+    "stage": "post",
+    "question": "Besides its bytes, what does a filesystem track about each file?",
+    "options": ["Nothing else", "Metadata: name, size, timestamps, and permissions (who can read/write/execute)", "The user's password", "A copy in RAM"],
+    "correct": 1,
+    "explanation": "The filesystem stores metadata alongside the bytes: name, size in bytes, created/modified times, and permissions. Permissions are the filesystem's first line of access control."
+  },
+  {
+    "stage": "post",
+    "question": "Where does a relational database ultimately store its data?",
+    "options": ["Purely in RAM", "In files on disk, managed by the database", "In the CPU cache", "In the network"],
+    "correct": 1,
+    "explanation": "For all its cleverness, a database is ultimately a set of carefully managed files on persistent storage. That is why later lessons on write-ahead logs and B-trees are really about how those files are organized and kept durable."
+  }
+]

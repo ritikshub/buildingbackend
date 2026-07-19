@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "To fix a 'blocked by CORS' error, a developer sets `Access-Control-Allow-Origin: *` on their cookie-authenticated API. What did they actually do?",
+    "options": [
+      "Correctly fixed the problem — the wildcard is the standard configuration",
+      "They told browsers that any website may read their API's responses. Combined with cookie auth this is dangerous, which is why browsers refuse to honor `*` together with credentials — but the fix is not to work around that: it's to keep an allowlist of your own origins and reflect the request's Origin only if it's on the list. The wildcard turns a private API into one any site's JavaScript can read on the user's behalf",
+      "They improved performance by caching responses",
+      "Nothing changed; CORS headers are ignored by servers"
+    ],
+    "correct": 1,
+    "explanation": "CORS decides which origins a browser will let read a cross-origin response. `*` means 'everyone', and browsers deliberately forbid `*` with `Access-Control-Allow-Credentials: true` because that would let any site read authenticated responses. The correct approach is an explicit origin allowlist, reflecting the Origin header only for known origins (plus `Vary: Origin`). Working around the wildcard restriction re-creates the hole."
+  },
+  {
+    "stage": "check",
+    "question": "The Same-Origin Policy has a crucial send/read asymmetry. What is it, and why does it matter for these attacks?",
+    "options": [
+      "It blocks both sending and reading cross-origin, so nothing can happen across origins",
+      "A page CAN send a cross-origin request (submit a form, load an image, fire fetch) and the browser attaches that destination's cookies — but a script CANNOT read the cross-origin response unless the target opts in via CORS. This matters because CSRF only needs to SEND a state-changing request (the side effect happens on send), while CORS exists to safely allow READING when you want it",
+      "It allows reading but blocks sending cross-origin",
+      "It only applies to images, not to fetch or forms"
+    ],
+    "correct": 1,
+    "explanation": "Sending cross-origin is allowed (with cookies); reading the response is blocked by default. CSRF exploits the send side — a forged POST executes its side effect without the attacker ever reading anything. CORS governs the read side — it's how an API opts in to letting specific origins read its responses. Understanding this asymmetry is what unifies CORS, CSRF, and XSS into one model."
+  },
+  {
+    "stage": "check",
+    "question": "How does CSRF work, and which defenses actually stop it?",
+    "options": [
+      "The attacker steals the cookie via JavaScript; HttpOnly stops it",
+      "A malicious page triggers a state-changing request to your site, and the browser auto-attaches the user's cookie because the request's destination is your domain — so the server sees an authenticated request and performs the action, without the attacker reading anything. It's stopped by SameSite=Lax/Strict cookies (the browser won't send the cookie on a cross-site POST) and a CSRF token the attacker can't read (the SOP blocks reading your pages), plus an Origin check",
+      "The attacker guesses the session ID; longer IDs stop it",
+      "It only affects GET requests, so making everything POST stops it"
+    ],
+    "correct": 1,
+    "explanation": "CSRF abuses ambient cookie authority: cookies authenticate the browser regardless of who initiated the request. Validating the cookie is exactly what the attack relies on. The real defenses are not sending the cookie cross-site (SameSite) and requiring an unforgeable token the attacker's page can't obtain (because the SOP prevents it from reading your token), reinforced by checking the Origin/Referer header on state changes."
+  },
+  {
+    "stage": "check",
+    "question": "What is the root cause of XSS, and what is the primary defense?",
+    "options": [
+      "The root cause is weak passwords; the fix is MFA",
+      "The root cause is untrusted data being interpreted as code — user input placed into a page without being encoded for its context, so the browser runs it as script. The primary defense is context-aware OUTPUT ENCODING: escape data for where it lands (e.g. < becomes &lt; in HTML) so it renders as inert text, never executes. Frameworks auto-escape by default, which is why XSS usually appears when someone bypasses that (dangerouslySetInnerHTML, |safe)",
+      "The root cause is CORS misconfiguration; the fix is an allowlist",
+      "The root cause is missing HTTPS; the fix is TLS"
+    ],
+    "correct": 1,
+    "explanation": "XSS is a code/data confusion: attacker-controlled text becomes executable because it wasn't encoded for its output context. Escaping (context-aware, so HTML body, attributes, URLs, and script contexts are each handled correctly) turns the payload into displayed text. A Content-Security-Policy is a strong safety net and HttpOnly limits cookie theft, but encoding all output — and not bypassing the framework's auto-escaping — is the fix."
+  },
+  {
+    "stage": "post",
+    "question": "A teammate treats CORS as an access-control mechanism protecting the API from unauthorized callers. Why is that wrong?",
+    "options": [
+      "It's correct — CORS blocks unauthorized clients at the server",
+      "CORS is enforced by the BROWSER, not the server: it tells a browser which origins may read a response. It does nothing to a non-browser client — curl, a server-side script, or an attacker's backend can call your API and read every response regardless of CORS headers. So CORS is a browser convenience with security implications, not authentication or authorization. Real access control must be enforced server-side (auth + Lesson 9 authorization) on every request",
+      "CORS only works over HTTP, not HTTPS",
+      "CORS is server-side but only checks the User-Agent header"
+    ],
+    "correct": 1,
+    "explanation": "CORS constrains what in-browser JavaScript from other origins may read; it is advisory to the browser and invisible to non-browser clients. Anything not running in a browser ignores it entirely, so it can never be your access control. Authenticate and authorize every request on the server; treat CORS purely as the mechanism that lets your own front-end read your API cross-origin."
+  },
+  {
+    "stage": "post",
+    "question": "Why is XSS considered more dangerous than CSRF, and what does HttpOnly do (and not do) about it?",
+    "options": [
+      "XSS is less dangerous; CSRF is the worst possible attack",
+      "A successful XSS runs the attacker's script IN your origin, defeating the Same-Origin Policy entirely — it can read the DOM, read localStorage (where tokens are often kept), read non-HttpOnly cookies, and make authenticated requests as the user. HttpOnly keeps the session COOKIE out of JavaScript's reach, so an XSS can't exfiltrate that cookie — but it does NOT stop the script from acting as the user in-page or reading localStorage/DOM, so you still must fix the XSS",
+      "XSS and CSRF are equally dangerous and identical in effect",
+      "HttpOnly encrypts the page so scripts can't run"
+    ],
+    "correct": 1,
+    "explanation": "CSRF makes the browser send one forged authenticated request; XSS gives the attacker code execution as your origin, which is strictly more powerful — it can read and act with your page's full privileges. HttpOnly is valuable but narrow: it protects the session cookie from theft, which is why storing tokens in localStorage (readable by any XSS) is risky. It doesn't neutralize XSS, which can still ride the session in-page; encoding and CSP remain necessary."
+  }
+]

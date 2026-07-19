@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A local privilege-escalation CVE lands in the Linux kernel. Your services all run containerised, as a non-root uid, with all capabilities dropped and a read-only root filesystem. A colleague says the containers are isolated from the host kernel the way virtual machines are, so this is a host-patching problem and not an application one. What is actually true?",
+    "options": [
+      "Each container runs its own kernel from its base image, so you are exposed only until you rebuild on a patched base",
+      "Every container on the machine calls into the exact same host kernel — a container is a process, not a machine, so the vulnerable code is your code path too; the hardening narrows the syscall surface but does not remove the boundary, and only a real VM or microVM (Firecracker, Kata, gVisor) changes that answer",
+      "Dropping all capabilities removes the exposure, because privilege escalation requires holding at least one capability to begin with",
+      "A read-only root filesystem removes the exposure, because an escalation exploit has to write a binary somewhere first"
+    ],
+    "correct": 1,
+    "explanation": "There is no `struct container` in Linux. There is a process, plus namespaces (what it can see), cgroups (what it may use), a layered root filesystem (what it thinks its disk is), and a reduced capability set (what root means). Nothing in that list virtualises the kernel: every syscall your container makes is executed by the same 30-million-line host kernel as every other container on the box. Option 1 is the misconception the whole lesson exists to remove — base images ship userspace, never a kernel. The hardening in options 3 and 4 is real and worth having (this sandbox measured `CapEff = 0x00000000a80425fb`, 14 of 41 capabilities held) but it shrinks the attack surface rather than adding a boundary; changing the boundary means a hypervisor or a userspace kernel."
+  },
+  {
+    "stage": "check",
+    "question": "Your service ships a 40 MB vendor bundle inside the image and rewrites a few header bytes of it during warm-up. Ever since, the first request after each pod starts is measurably slower than every request after it, and the effect vanishes on the second request to the same pod. What is the mechanism?",
+    "options": [
+      "Python's bytecode cache is cold on first import, so the interpreter recompiles the module",
+      "The container image is pulled lazily, so the first read of that file blocks on a registry fetch",
+      "The bundle sits in a read-only lower layer, so the first write triggers an overlayfs copy-up of the entire file into the writable upper layer — 41,943,040 bytes moved to change a handful; the second write costs about 0.01 ms because the file now lives in upper",
+      "The kernel page cache is cold, so the first read faults every page in from disk"
+    ],
+    "correct": 2,
+    "explanation": "Overlayfs lower layers are read-only, so a single byte cannot be changed in place. Before the write happens the whole file is copied into the writable upper layer. The lesson measured this exactly: a one-byte append to a 40 MB lower-layer file moved 41,943,040 bytes — an amplification of 41,943,040x — taking ~10.5 ms warm, while the next write to the same file took 0.01 ms. The cost scales with FILE size, not write size (one byte into a 5 GB file copies 5 GB) and is paid once per file per container, which is exactly the 'first request is slow, the rest are fine' signature. Options 1 and 4 are the tempting defaults and they do exist, but neither is proportional to the file's size the way this is. The fix is to put write-heavy paths on a volume, which bypasses the overlay entirely."
+  },
+  {
+    "stage": "check",
+    "question": "Your CI job runs `docker build` inside a Kubernetes pod. The container runs as uid 0, and the build fails with EPERM (errno 1, 'Operation not permitted'). Someone proposes adding `CAP_SYS_ADMIN` via `capabilities.add`, reasoning that the one missing capability is the whole problem. Will that reliably fix it, and why?",
+    "options": [
+      "Yes — `CAP_SYS_ADMIN` gates `mount()`, `unshare()`, `setns()` and `pivot_root()`, so granting exactly it restores exactly what the build needs and nothing more",
+      "No — the error is really about uid 0 being remapped by a user namespace, so the fix is `hostUsers: true`",
+      "Not reliably — capabilities are only one of two independent gates. The runtime's default seccomp filter blocks the syscalls by number and argument regardless of what you hold, which is why `CLONE_NEWUSER` also failed here even though creating a user namespace needs no capability at all (`user.max_user_namespaces = 31735`, so the kernel was willing). A userspace builder that never calls `mount()` avoids both gates",
+      "Yes, but only if you also raise `user.max_user_namespaces`, which is zero by default in most distributions"
+    ],
+    "correct": 2,
+    "explanation": "The lesson's sandbox demonstrates both gates at once: all six `unshare()` calls fail with EPERM as root, `CapEff` decodes to 14 of 41 capabilities held with `CAP_SYS_ADMIN` among the 27 dropped — and `CLONE_NEWUSER` fails too, despite needing no capability on a modern kernel, with `Seccomp: filter (BPF), 1 filter installed` and a non-zero `user.max_user_namespaces` proving the kernel itself would have allowed it. Option 1 is the plausible half-knowledge answer: `CAP_SYS_ADMIN` is genuinely the capability involved, but capabilities are not the only thing saying no. This is also why `--privileged` appears to 'just work' and teaches the wrong lesson — it does not grant one thing, it switches off capabilities limits, seccomp, AppArmor/SELinux and device isolation together. A userspace builder (Kaniko, rootless Buildah, rootless BuildKit) constructs layers as ordinary file operations and needs neither gate opened."
+  },
+  {
+    "stage": "check",
+    "question": "A service is OOM-killed twice a week with exit code 137, always during a nightly job that streams several gigabytes of CSV through it. Its memory limit is 512 MB and a Python heap profiler insists the heap peaks at 180 MB. Raising the limit to 768 MB made it rarer but did not stop it. What is being charged that the profiler cannot see?",
+    "options": [
+      "Page cache — the kernel bills the pages it caches for your file reads and writes to your cgroup, so `memory.current` grows with file traffic while the heap does not move; the lesson measured writing and reading back a 64 MB file growing `memory.current` by 65.9 MB, 103% of the file, and dropping straight back when the file was deleted",
+      "Memory fragmentation in the allocator, which the profiler reports as free but the kernel counts as resident",
+      "The CSV parser's C extension allocates outside the Python heap, so the profiler cannot instrument it",
+      "Thread stacks — each worker thread reserves 8 MB, and the nightly job raises the pool size"
+    ],
+    "correct": 0,
+    "explanation": "`memory.max` is not a limit on your heap. It is a ceiling on everything the kernel has charged to your cgroup, and file-backed page cache is charged to whoever touched the file. This cache is reclaimable, so the kernel usually drops it under pressure instead of killing you — which is precisely why the problem is intermittent and looks like a phantom. Under a burst the kernel cannot always reclaim fast enough, and the OOM killer sends an uncatchable SIGKILL: no handler, no drain, no flush, no stack trace, exit 137 (128 + 9) and nothing in your logs, because your process was never consulted. Options 2 and 3 describe real phenomena and are the tempting answers, but neither tracks the volume of file bytes the way page cache does. Size the limit from `memory.peak` under real load, not from a heap profiler."
+  },
+  {
+    "stage": "post",
+    "question": "After a rollout that severed in-flight connections, you add a correct SIGTERM handler that flips a drain flag, and you verify it locally with `kill -TERM`. In production the rollout still severs connections, the pod still burns the full grace period, and the container's Dockerfile ends with `ENTRYPOINT python app.py`. What is happening?",
+    "options": [
+      "The handler runs but Python cannot interrupt a blocking accept() call, so the drain flag is never read until a request arrives",
+      "Shell-form ENTRYPOINT runs `/bin/sh -c \"python app.py\"`, so `sh` is PID 1 and receives the SIGTERM. It does not forward signals to its child, so your handler is never called — and because `sh` is PID 1 with no handler registered, the kernel discards the signal rather than applying the default action. Use exec form: `ENTRYPOINT [\"python\", \"app.py\"]`",
+      "terminationGracePeriodSeconds is shorter than the drain, so the orchestrator escalates to SIGKILL before the handler finishes",
+      "The orchestrator sends SIGQUIT rather than SIGTERM to containers whose entrypoint is not an init, so the handler is registered for the wrong signal"
+    ],
+    "correct": 1,
+    "explanation": "Two facts compose into this bug. Shell form inserts `/bin/sh -c` between the runtime and your program, so your process is not PID 1 and never sees the signal. And PID 1 of a namespace does not get POSIX default signal dispositions at all: a signal with no registered handler is silently discarded (`pid_namespaces(7)`), so `sh` neither dies nor forwards. The measured shape of this in the lesson: a server that ignores SIGTERM keeps admitting new work for the entire grace period, dies to SIGKILL at 1001 ms with exit 137, and still severs 8 in-flight requests — while the identical server with a working handler drains all 8 and exits 0 in ~235 ms. At 40 pods and 12 deploys a day that is 3,840 severed connections daily, and none of them appear in your error rate, because a TCP reset is not a 5xx: you generated no response, so your middleware recorded nothing. Option 3 is the natural first guess and is worth checking second, but it cannot explain a handler that never runs at all."
+  },
+  {
+    "stage": "post",
+    "question": "A long-running service starts failing in an odd way after about nine days of uptime: an unrelated code path that shells out to `ffmpeg` begins returning 'Resource temporarily unavailable', and a request handler that opens a thread pool fails at the same time. Restarting the pod clears it completely for another nine days. Memory and CPU graphs are flat. What should you look at?",
+    "options": [
+      "The file-descriptor limit — EAGAIN from a subprocess launch means the process ran out of fds for the pipe",
+      "`nr_throttled` in `cpu.stat`, since CFS throttling surfaces as latency and errors with no CPU-graph signal",
+      "The process count: your service spawns children whose parents exit first, so the orphans are re-parented to PID 1 — and your web framework has no `wait()` loop, so each one stays in state `Z` holding a process-table slot until `pids.max` is reached and `fork()` starts returning EAGAIN, in whichever unlucky code path forks next",
+      "The connection pool, since 'Resource temporarily unavailable' is the errno returned when a non-blocking socket has no available connection"
+    ],
+    "correct": 2,
+    "explanation": "A zombie is not running anything — it has no memory and no code, just a process-table entry and a held pid — which is exactly why memory and CPU graphs stay flat while the leak proceeds. Reaping orphans is PID 1's duty, and a real init has a loop for it; your web framework does not, because it was never written to be init. The lesson makes this visible directly: six children that exit immediately with no `wait()` show state `Z` in all six of their `/proc/<pid>/stat` entries and push `pids.current` from 16 to 22, and one `waitpid()` each takes it back to 0 zombies and 16 pids. The symptom appears in whichever code path happens to fork next, which is why it looks unrelated to the leak. Confirm with `ps` inside the container looking for state Z, and compare `pids.current` against `pids.max`. The fix is an init at PID 1 (`docker run --init`, or tini/dumb-init as ENTRYPOINT — there is no `--init` in Kubernetes, so bake it in), which also forwards signals and makes your app an ordinary child whose default dispositions apply again. Option 1 is the standard guess for EAGAIN on a subprocess launch and is worth ruling out, but fd exhaustion would break socket accepts long before it broke `ffmpeg`."
+  }
+]

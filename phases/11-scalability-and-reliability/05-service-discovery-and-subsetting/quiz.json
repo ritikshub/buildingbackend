@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A checkout fleet of 1,000 instances does client-side balancing against a pricing fleet of 800, each client holding one connection to each backend. Both fleets double, to 2,000 × 1,600. What happens to the total connection count?",
+    "options": [
+      "It doubles, from 800,000 to 1,600,000 — you doubled the machines",
+      "It quadruples, from 800,000 to 3,200,000",
+      "It stays at 800,000 — connections belong to clients, and each client still opens one per backend",
+      "It triples, from 800,000 to 2,400,000, because backends are shared"
+    ],
+    "correct": 1,
+    "explanation": "Connections are N × M, so doubling *both* factors multiplies by four: 2,000 × 1,600 = 3,200,000. 'It doubles' is the tempting answer because that is the intuition every other capacity number trains — CPU, memory and request rate really do scale linearly with fleet size, so the reflex is to double. The connection count is the one quantity that is quadratic, which is why it is the term that ambushes you: the fleet grew 2× on the dashboard and the socket cost grew 4×. This is Lesson 2's κ (coherency) term expressed in file descriptors, and it is why fleets hit RLIMIT_NOFILE walls that nobody's capacity model predicted."
+  },
+  {
+    "stage": "check",
+    "question": "In the deterministic subsetting algorithm from Beyer et al.'s Site Reliability Engineering, the client shuffles the backend list before slicing it. What is that shuffle seeded with?",
+    "options": [
+      "The client's own id, so every client gets a different permutation",
+      "The round id — client_id // (M / k) — so every client in the same round produces the identical permutation",
+      "A hash of the backend list, so the shuffle changes whenever the fleet changes",
+      "A value fetched from the registry, so all clients stay coordinated"
+    ],
+    "correct": 1,
+    "explanation": "Seeding by round_id is the entire trick. Every client in a round computes the same permutation from the same seed, then takes the disjoint slice [subset_id·k, subset_id·k + k). Because the slices are disjoint and there are exactly M/k of them, one round covers the backend list exactly once, so after R rounds every backend holds exactly R clients — measured min 25, max 25, stddev 0.00 at N=1000/M=800/k=20. Seeding by client_id is the tempting wrong answer, and it is precisely the mistake that turns the algorithm back into random subsetting: independent permutations make independent choices, which is balls-in-bins, which is what produced 6 permanently idle backends and a peak of 2.67× ideal load in the measured sparse case. Fetching a seed from the registry would work but destroys the best property — the algorithm needs no communication at all, so it keeps working when the control plane is down."
+  },
+  {
+    "stage": "check",
+    "question": "The service registry becomes unreachable for 120 seconds. During the outage 5% of backends are genuinely replaced. Comparing a client that resolves per request and fails when it cannot (fail-closed) against a client that serves its last-known-good cached endpoint list, what were the measured success rates during the outage?",
+    "options": [
+      "0.00% fail-closed, 97.81% serve-stale",
+      "0.00% fail-closed, 95.00% serve-stale — it loses exactly the 5% that churned",
+      "50.00% fail-closed, 100.00% serve-stale",
+      "0.00% fail-closed, 100.00% serve-stale — a cached list cannot fail"
+    ],
+    "correct": 0,
+    "explanation": "Fail-closed delivered 0.00% (144,000 of 144,000 requests failed) and serve-stale delivered 97.81% (3,153 failed). The tempting answer is 95.00%, on the reasoning that if 5% of backends moved, a stale list must lose exactly 5% of traffic — but the churn is spread over the outage rather than applied at t=0, so the average loss across the window is smaller than the final churn. The other trap is 100.00%: a stale list absolutely does fail, because some of the endpoints in it no longer exist. That 2.19% is not a defect in serve-stale; it is the churn that happened while the client was blind, which no policy could have known about. Adding outlier ejection on top reaches 99.48%, because after three consecutive failures the client drops the moved backend from its own view without asking anyone."
+  },
+  {
+    "stage": "check",
+    "question": "A fleet uses k = 3 to keep connection counts minimal. A rack failure kills 20% of backends. What is the probability that one specific client finds its entire subset dead, and what does it cost to fix?",
+    "options": [
+      "0.8% — about 8 clients in 1,000 — and moving to k = 20 raises connections from 0.4% to 2.5% of a full mesh",
+      "20% — the same as the fleet-wide loss, since every client sees the same failure rate",
+      "6% — three backends each 20% likely to be dead, so 3 × 20% × 10%",
+      "0.8%, but it cannot be fixed without returning to a full mesh"
+    ],
+    "correct": 0,
+    "explanation": "A client loses everything only when all k of its backends are dead, which for an independent dead fraction f is f^k: 0.2^3 = 0.008 = 0.8%, or roughly 8 clients in 1,000 per failure event. The measurement agrees — 40 kill draws stranded 338 client-draws, an average of 8.45. The tempting answer is 20%, because that is the fleet-wide loss and it feels like it should apply uniformly; but the fleet-wide number and the individual-client number are different questions. Fleet-wide, everyone loses 20% no matter what k is. What k controls is the *variance* — whether some unlucky client loses far more than 20%. The cost of fixing it is almost nothing: k=3 is 0.4% of the full mesh and k=20 is 2.5%, so you are arguing over 17,000 connections out of 800,000 to buy away a client going to zero capacity while 640 healthy backends idle."
+  },
+  {
+    "stage": "post",
+    "question": "Your registry lease TTL is 30 seconds and instances heartbeat every 25 seconds. Renewals are lost about 2% of the time from packet loss and GC pauses. What does this configuration do?",
+    "options": [
+      "Nothing unusual — 25 s is safely under the 30 s TTL, so a healthy instance never expires",
+      "It evicts each perfectly healthy instance about 2.857 times per hour, because it tolerates zero lost renewals",
+      "It makes dead instances take 30 s longer to detect, but healthy instances are unaffected",
+      "It doubles registry write load, which is the only real cost"
+    ],
+    "correct": 1,
+    "explanation": "The registry evicts you when the gap between two *received* renewals exceeds the TTL. With hb = 25 s and ttl = 30 s, a single lost renewal produces a 50-second gap, which is well past 30 — so misses tolerated = floor(30/25) − 1 = 0. At 2% loss that is a measured 2.857 bad evictions per healthy instance per hour, matching the closed form (3600/hb) × loss^(tolerated+1) = 2.880. On a 1,000-instance fleet that is a healthy machine being wrongly removed and re-added roughly every 1.3 seconds, forever, with no error anywhere to explain it. The tempting answer is the first one: 25 < 30, so it looks safe, and it is safe in the no-loss case that everyone reasons about. The rule that removes the trap is heartbeat ≤ ttl/3, which tolerates two consecutive losses and drops the same 2% loss rate to a measured 0.005 evictions per instance per hour."
+  },
+  {
+    "stage": "post",
+    "question": "A team switches from random subsetting to deterministic subsetting at the same k. What do they gain, and what do they give up?",
+    "options": [
+      "They gain even load but pay for it with more connections, since deterministic subsets overlap less",
+      "They gain even load and lower connection counts, but the algorithm now requires clients to coordinate through the registry",
+      "They gain even load at exactly the same connection count (N × k either way); what they give up is independence — a client's subset now depends on the other clients' — plus subset churn when the backend list changes",
+      "They gain nothing measurable; the two algorithms differ only in code style"
+    ],
+    "correct": 2,
+    "explanation": "Both algorithms open exactly N × k connections — the deterministic one is not more expensive, which is unusual enough to be worth saying out loud. Measured at N=1000/M=800/k=20, random gives min 13, max 44, stddev 4.94, while deterministic gives min 25, max 25, stddev 0.00. The first option is the natural suspicion that evenness must be bought with something, and here it simply is not bought with connections. The second option is wrong in the way that matters most: the algorithm needs *no* communication, because a client derives its subset from three numbers it already has (its own id, the backend list, and k) — which is exactly why it survives the control plane being down. The real costs are the two in the correct answer: the choices are now dependent, which is precisely the property that buys the evenness, and changing the backend list reshuffles every round, so removing one backend from a list of 800 moves a substantial fraction of connections. Production implementations soften that churn with a consistent-hashing variant such as Envoy's deterministic aperture."
+  }
+]

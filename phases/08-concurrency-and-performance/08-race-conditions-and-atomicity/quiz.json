@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Eight threads each run `counter += 1` one hundred thousand times against one shared counter. What comes out, and what does the program do about it?",
+    "options": [
+      "800,000 every time — Python's Global Interpreter Lock guarantees that only one thread runs at a time, so shared-state updates cannot interleave",
+      "A number slightly below 800,000, and the interpreter emits a RuntimeWarning about concurrent modification so you can find it in the logs",
+      "A different wrong number nearly every run — the lesson's run gave 214,734, then 173,918-ish values across twenty runs with 20 distinct answers, 0 correct, and a spread of 84,955 — and the program raises nothing at all: no exception, no log line, no crash. `counter += 1` is a load, an add and a store, and any schedule where two threads load the same value silently discards one increment",
+      "800,000 in CPython but a wrong number on other interpreters, because only CPython refcounting makes integer arithmetic safe"
+    ],
+    "correct": 2,
+    "explanation": "The GIL serialises bytecode execution, which is not the same as making a multi-bytecode sequence indivisible: the interpreter can and does switch threads between the load and the store. The truly dangerous property is the silence — every increment executed without error and the final number is simply wrong, so there is no signal to alert on and nothing for a test to assert against, since the wrong value is different every run."
+  },
+  {
+    "stage": "check",
+    "question": "In the lesson's run, `box[0] += 1` in a tight loop across 8 threads x 100,000 lost exactly 0 updates, while the identical arithmetic written as `c.value += 1` (where `value` is a `@property`) lost 585,266. What is the actual difference?",
+    "options": [
+      "CPython only polls for a thread switch at certain points — a loop's back edge and function entry among them — so a bare read-modify-write inside a tight loop contains no switch point and is never interrupted. The property inserts a Python-level function call between the load and the store, which IS a switch point, so 73.2% of the work is lost. The safety of the first version is an artefact of one interpreter's instruction placement, not a language guarantee",
+      "Properties are slower, so the property version simply had more time to accumulate races; using `__slots__` or a plain attribute would make the loss proportionally smaller",
+      "`box[0] += 1` operates on a list, and CPython's list operations take an internal lock, whereas attribute assignment on an ordinary object takes no lock",
+      "The property version is genuinely buggy Python; a correctly written property with a lock-free setter would lose nothing"
+    ],
+    "correct": 0,
+    "explanation": "This is the whole 'atomic in CPython' trap made measurable. The first result invites the conclusion that Python protects you; the second shows that a single accessor — an ORM column, a validated setter, a config object, anything a real codebase is full of — removes the protection entirely. The rule to carry away is that if you cannot point at the lock, the queue, the immutability or the thread confinement that makes an operation safe, you have a coincidence rather than a guarantee, and it evaporates under free-threaded CPython or any other interpreter."
+  },
+  {
+    "stage": "check",
+    "question": "The same oversell test (120 rounds, 12 buyers, 1 seat) was run three times, changing only how long the code sits between `if seats > 0` and `seats -= 1`. Results: no gap = 0/120 rounds oversold; 50 microseconds = 119/120; 500 microseconds = 120/120 with 1,290 of 1,320 possible phantom seats. What is the lesson?",
+    "options": [
+      "The bug only exists when you add an artificial delay; production code without a sleep between the check and the act is safe",
+      "The 50 and 500 microsecond rows show that the race is caused by the sleep releasing the GIL, so the fix is to avoid calls that release the GIL inside business logic",
+      "Race probability scales linearly with the number of threads, so the fix is to cap the thread pool at a size where the observed failure rate is acceptable",
+      "The probability of a check-then-act failure is a function of the width of the window and essentially nothing you control in a test. The logic was identical in all three rows: the bug did not appear when the window widened, it merely became findable. The top row is the one that ships — a few-bytecode window fails so rarely that a 120-round test finds nothing, and then meets a million requests a day"
+    ],
+    "correct": 3,
+    "explanation": "This is the epistemology of race debugging in one table: testing can confirm a race exists but can never confirm one does not. Real code always has something in that window — a fraud check, an audit write, a metric, a log line, an ORM round trip — so the wide-window rows are the realistic ones, not the artificial ones. It also explains why 'I ran it a thousand times and it never happened' and 'I added a log line and it went away' are both worthless as evidence: every observation changes the schedule the bug depends on."
+  },
+  {
+    "stage": "check",
+    "question": "A ledger with two accounts is modified by exactly ONE writer thread doing 60,000 transfers, so no update can possibly be lost — and indeed the final total was exactly 1000, to the cent. Yet an auditor thread that just sums the two balances saw a wrong total in 14,931 of 60,937 samples (24.50%), with a largest discrepancy of exactly 1. What happened?",
+    "options": [
+      "The auditor thread has its own stale cached copy of the balances; adding a memory barrier or marking the fields volatile would fix the readings",
+      "The transfer is two writes — debit A, then credit B — and the invariant 'a + b == 1000' is false in the interval between them. Nothing was corrupted; the auditor observed a state that never legitimately existed. The largest discrepancy being exactly the transfer amount is the signature that distinguishes a torn read of an invariant from an actual lost update",
+      "Integer arithmetic in Python is not atomic across threads, so some of the 60,000 transfers computed incorrect intermediate sums that the auditor happened to catch",
+      "The auditor is racing with itself because `stats` is shared, so the 24.50% figure is a measurement artefact rather than a real observation of the ledger"
+    ],
+    "correct": 1,
+    "explanation": "This separates two failures that get conflated. A lost update destroys data; a torn read of an invariant destroys nobody's data and still produces a wrong answer, to a reader. That reader is your nightly reconciliation job, your balance endpoint, or your CSV export — and it will page you about a discrepancy that no longer exists by the time you look. It also shows why the reframing matters: name the invariant, find the interval where it is false, and make that interval unobservable."
+  },
+  {
+    "stage": "post",
+    "question": "`ThreadSafeInventory` holds a lock inside every method: `available()` is atomic, `take()` is atomic, and there is not one unsynchronised memory access in the class. Callers write `if inv.available(): inv.take()`. In the lesson's run this oversold 120 out of 120 rounds and sold 1,173 phantom seats. Why?",
+    "options": [
+      "The two locks are different lock objects, so the calls do not actually exclude each other; sharing a single module-level lock would fix it",
+      "Python's `with lock:` releases the lock on any exception, so a spurious exception between the two calls leaves the inventory unprotected",
+      "`available()` returns a bool that is copied out of the lock, and copying a bool across threads is a data race that a detector would flag",
+      "There is no data race — every memory access is synchronised — but there is a race condition, because the DECISION was made outside any lock. The invariant is not 'seats is read consistently', it is 'a seat is sold at most once', and that invariant spans two calls. Moving the decision inside one lock with `take_if_available()` gave 0 out of 120: thread-safe parts do not compose into a thread-safe whole"
+    ],
+    "correct": 3,
+    "explanation": "A data race is a low-level, mechanical condition — unsynchronised concurrent access with at least one write — and tools like ThreadSanitizer or Go's -race find exactly that. A race condition is a semantic condition about outcomes depending on timing, and you can have one with zero data races. This is why 'we use a concurrent collection' or 'the library is thread-safe' is never an answer to 'is this correct': a library can only guarantee that its own operations are atomic, and your invariant is not its invariant."
+  },
+  {
+    "stage": "post",
+    "question": "You ship the locked version. It runs as four processes of eight threads each, behind a load balancer, all talking to one Postgres database. A user still ends up with two accounts under the same username. What went wrong and what is the fix?",
+    "options": [
+      "A `threading.Lock` is scoped to one process, so the four processes never exclude each other and `if not user_exists(u): create_user(u)` is a check-then-act across sessions. The fix pushes atomicity to the shared thing they all talk to: a `UNIQUE` constraint plus `INSERT ... ON CONFLICT DO NOTHING`, or `UPDATE ... WHERE version = $1`, or `SELECT ... FOR UPDATE` — enforced by the database on every write forever, rather than by a convention every code path must remember",
+      "The lock was held for too short a time; extending it to cover the surrounding request handler would serialise the four processes correctly",
+      "The load balancer routed the two requests to different processes, so enabling sticky sessions on the username hash removes the race",
+      "Postgres READ COMMITTED allows phantom reads, so raising every transaction to SERIALIZABLE is both necessary and sufficient without touching the schema"
+    ],
+    "correct": 0,
+    "explanation": "The pattern is identical at every scale but the mechanism that enforces atomicity is not: in-process it is a lock, in a database it is a constraint, a row lock or a version check, and across services it is compare-and-set or an idempotency key. The deeper point is about where the guarantee lives. A `UNIQUE` index is checked on every insert by every process forever — including the admin console, the migration script and the backfill someone runs at 2am — while 'we always check first' is a convention, and conventions have a half-life."
+  }
+]

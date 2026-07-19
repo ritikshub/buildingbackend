@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A service runs db.commit() and then broker.publish(). The process is SIGKILLed between the two. What is the state of the system afterwards, and what does your monitoring show?",
+    "options": [
+      "The transaction is rolled back during crash recovery because the unit of work never completed, so the order row disappears along with the event and the customer sees a clean error they can retry",
+      "The order row is durable and no event will ever be emitted, and nothing errored anywhere -- no exception, no 500, no dead-letter entry, and no retry, because nothing knows there is anything to retry",
+      "The broker's producer client notices the gap in its sequence numbers when the service reconnects and re-sends the buffered event, so the system self-heals within the client's configured retry window",
+      "The database's write-ahead log replays the recorded publish intent during crash recovery and hands it to the producer, so the event is emitted once the process comes back up"
+    ],
+    "correct": 1,
+    "explanation": "COMMIT already made the row durable, so nothing rolls back; publish never ran, so no event exists. The measured run produced 45 orphaned orders from 45 kills with zero exceptions raised. The other options invent recovery machinery that does not exist: the broker client died with the process and never saw the event, and the database's WAL records database changes only -- it has no knowledge of your intent to publish, which lived solely in the registers of a process that no longer exists. That invisibility is what makes this bug so damaging: it is discovered weeks later by a support ticket."
+  },
+  {
+    "stage": "check",
+    "question": "Two-phase commit (2PC/XA) genuinely does make a database write and a broker publish atomic. Why is it still the wrong tool between an application database and a message broker?",
+    "options": [
+      "Because 2PC cannot span heterogeneous systems: the prepare phase requires both participants to expose the same internal lock manager, so XA only ever worked between instances of a single database engine at a matching version",
+      "Because the coordinator's blocking window is an implementation flaw rather than a property of the protocol -- mature transaction managers have not fixed it yet, so 2PC is a reasonable choice once vendors ship non-blocking coordinators in the next few years",
+      "Because participants hold locks through the prepare phase, the coordinator's blocking window is inherent rather than fixable, most brokers have no XA support, and it makes your write path's availability the product of the database's and the broker's -- recoupling exactly what the broker was adopted to decouple",
+      "Because 2PC requires every participant to share a clock synchronised to within a few milliseconds in order to agree on transaction ordering, and clock skew across a network makes that guarantee impossible to provide in practice"
+    ],
+    "correct": 2,
+    "explanation": "2PC does work across heterogeneous systems and needs no synchronised clock, so those distractors are wrong on the facts. The blocking window is not an implementation defect either -- Skeen and Stonebraker (IEEE TSE, 1983) established it is inherent to the protocol, and three-phase commit only removes it by assuming a synchronous, partition-free network you do not have. The decisive practical objection is the availability one: a transaction spanning both can only commit if both are healthy, so your uptime becomes the product of theirs, undoing the arithmetic from Lesson 1 that motivated using a broker at all."
+  },
+  {
+    "stage": "check",
+    "question": "The transactional outbox eliminates orphans and phantoms, but the relay still publishes to the broker and then updates the database -- structurally the same dual write. Why is the relay's version acceptable when the original was not?",
+    "options": [
+      "Because the relay's publish and mark run inside a single distributed transaction managed by the connection pool, a facility the application request path could not use because it holds no pooled broker session",
+      "Because the relay runs in the background, so any inconsistency it produces is off the user's critical path by definition, and an event that is late or missing there degrades the system rather than corrupting it",
+      "Because the relay retries the UPDATE with backoff until it succeeds, which closes the window entirely and upgrades the delivery guarantee from at-least-once to exactly-once without any consumer-side work",
+      "Because the relay's dual write is asymmetric: it can only fail toward redelivery, never toward loss. A crash after publishing leaves the row unmarked, so it is published again -- converting an unrecoverable lost event into a recoverable duplicate"
+    ],
+    "correct": 3,
+    "explanation": "The structure is identical; the failure directions are not. The naive version could lose an event permanently. The relay's only failure mode is publishing an event whose row it did not get to mark, so the next poll republishes it -- 6 crashes produced 13 duplicates in 413 deliveries in the measured run. There is no distributed transaction involved, and retrying does not close the window because the process can die before any retry runs, so delivery is at-least-once and never exactly-once. 'It is a background process' is not an argument: a lost order event is equally destructive whenever it happens."
+  },
+  {
+    "stage": "check",
+    "question": "You need a second relay instance for high availability, so you start one with the same polling query as the first. What does the measured run show happens, and what is the fix?",
+    "options": [
+      "The two relays interleave harmlessly, because marking a row published is an atomic UPDATE: whichever instance commits second simply overwrites a published_at that was already set, and an idempotent write cannot corrupt anything",
+      "Both instances SELECT the same pending rows before either marks them, so both publish everything -- 48 rows produced 96 events, a 100% duplication rate. The fix is leader election, or claiming rows atomically with SELECT ... FOR UPDATE SKIP LOCKED",
+      "The second relay's SELECT blocks behind the row locks the first relay is holding and eventually times out, so effective throughput halves and you gain no availability, but correctness is never at risk",
+      "Rows distribute between the instances automatically: because the first relay marks rows published as it goes, each subsequent SELECT ... ORDER BY id LIMIT returns a different page, so the two naturally partition the work"
+    ],
+    "correct": 1,
+    "explanation": "The read and the mark are separate steps, so two relays polling concurrently both see the full pending set and both publish it -- the measured result was 96 events for 48 rows, a 100% duplication rate. The atomic UPDATE argument misses the point: the duplication happens at publish time, long before either UPDATE runs. Nothing blocks, because a plain SELECT takes no locks, and nothing paginates the work automatically. The two correct answers are leader election (one active relay, which also preserves ordering) or atomic claiming, which measured 48 events and 0 duplicates."
+  },
+  {
+    "stage": "post",
+    "question": "A team replaces log-based CDC with query-based capture (SELECT ... WHERE updated_at > watermark) because it needs no replication privileges. In the measured comparison, what did it silently lose?",
+    "options": [
+      "Nothing of substance: it captured all 7 changes, and the only difference was that they arrived ordered by updated_at rather than by commit order -- a distinction that matters solely to consumers requiring strict serialisability",
+      "Only the DELETE, which is why adding a deleted_at soft-delete column and filtering on it downstream is the standard mitigation that makes query-based capture functionally equivalent to log-based capture at a fraction of the operational cost",
+      "It captured 3 of 7 changes: it saw order 901 only as 'shipped' and never learned it passed through 'paid', and it never saw order 902 at all -- neither its creation nor its deletion -- because a SELECT cannot return a row that no longer exists",
+      "It captured 6 of 7, missing only the initial INSERT of the first order, because a freshly inserted row's updated_at is equal to rather than greater than the starting watermark and is therefore excluded by the strict inequality in the predicate"
+    ],
+    "correct": 2,
+    "explanation": "Query-based polling sees only the current state of surviving rows at poll time, so it loses two whole categories. Intermediate states collapse: 901 went pending to paid to shipped inside one window and the consumer only ever learns 'shipped'. And deletes are structurally invisible: 902 was created and deleted between polls, so it never appears in either direction. Soft deletes recover the delete case but do nothing for lost intermediate states, and they force the pattern on every table forever. Log-based capture got all 7 in exact commit order, at 93x lower mean latency and zero queries against the primary."
+  },
+  {
+    "stage": "post",
+    "question": "You are designing an event feed of order lifecycle changes for three other teams. Should you point CDC at the orders table directly, or write events to an outbox table and capture that?",
+    "options": [
+      "CDC on the orders table, because it needs no application change at all, and the row images already carry every column a consumer could want -- anything a hand-written event would contain is by definition already stored somewhere in that row",
+      "The outbox, because the row you insert is a deliberate, versioned, self-contained event -- whereas tailing the table makes your schema a public API where any column rename breaks consumers, gives row diffs instead of business facts, and shreds multi-table operations across streams",
+      "CDC on the orders table, provided you commit to never renaming or dropping a column and publish a schema-registry entry describing the current table layout, which gives consumers the same contract guarantees an outbox event would have offered",
+      "Either works identically once Debezium's outbox event router transformation is enabled, because the router normalises raw table change records and outbox rows into the same envelope shape before they reach the topic"
+    ],
+    "correct": 1,
+    "explanation": "Tailing business tables couples three separate teams to your storage layout: a migration becomes a breaking change with no review and no deprecation window (Lesson 12), consumers receive 'status: paid to cancelled' when they need 'OrderCancelled(reason=payment_failed)' -- the reason was never a column -- and one logical operation touching orders, order_lines and payments arrives as three streams every consumer must reassemble. Promising never to rename a column is a promise about your codebase you cannot keep for three years. The event router transformation reads outbox rows specifically; it does not turn arbitrary table changes into domain events. Use CDC on tables for replication, analytics and search-index sync, where you want raw row changes and control the consumer."
+  }
+]

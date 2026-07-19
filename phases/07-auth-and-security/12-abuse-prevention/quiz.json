@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your login uses Argon2 with a high work factor, yet credential stuffing still takes over thousands of accounts. Why doesn't strong password hashing help here?",
+    "options": [
+      "Argon2 must be misconfigured; a higher work factor would stop it",
+      "In credential stuffing the attacker isn't guessing — they replay CORRECT passwords leaked from other sites' breaches, betting on password reuse. Since each attempt is a valid login with the right password, the cost of hashing is irrelevant; the attacker never brute-forces anything. The effective defenses make a correct password insufficient (MFA) or unavailable (breach screening), and make the volume/pattern detectable (rate limiting, bot detection)",
+      "The passwords are being decrypted from your database",
+      "It does help; the attack described is impossible"
+    ],
+    "correct": 1,
+    "explanation": "Slow hashing defends against guessing a stolen hash. Credential stuffing skips guessing entirely — the attacker already has correct plaintext credentials from elsewhere and simply tries them. So hash strength barely matters. What matters is MFA (a correct password alone can't log in), breach-password screening (the reused password was never allowed), and detecting the automated volume. This is why MFA is cited as blocking the vast majority of automated account attacks."
+  },
+  {
+    "stage": "check",
+    "question": "You add a per-IP rate limit of 10 login attempts per minute, and credential stuffing continues. What's happening, and what catches it?",
+    "options": [
+      "The rate limit is broken; a lower limit would fix it",
+      "The attacker is spreading the attack across thousands of IPs (botnets, residential proxies), so each IP makes only a few attempts and never trips the per-IP limit. Per-IP rate limiting stops lazy single-source attacks but not distributed stuffing. Catching it needs layers the per-IP limit misses: per-ACCOUNT limits, and pattern/bot detection (one IP touching many accounts, headless clients, velocity, IP/ASN reputation)",
+      "Nothing catches distributed stuffing; it's undefendable",
+      "You should switch to a per-user rate limit only and drop per-IP"
+    ],
+    "correct": 1,
+    "explanation": "Rate limiting is the floor, not the ceiling. A serious attacker distributes across a huge IP pool so no single address looks abusive. Defense requires multiple keys (per-account catches many-IPs-one-account; per-endpoint protects login specifically) plus behavioral/bot signals and account-level controls (MFA, breach screening). No single layer suffices, which is why they're stacked into a funnel."
+  },
+  {
+    "stage": "check",
+    "question": "A teammate proposes locking an account for 30 minutes after 5 failed logins. What's the problem?",
+    "options": [
+      "Nothing — hard lockout is the industry best practice",
+      "It creates a denial-of-service: an attacker who wants to lock out a specific victim just fails that victim's login 5 times on purpose, and now the legitimate user can't get in. Under credential stuffing across millions of accounts, this becomes a mass lockout. The better tool is progressive throttling — increasing delay (backoff) plus a CAPTCHA after repeated failures — which slows an attacker without ever fully locking a real user out",
+      "Lockout is fine but 30 minutes is too short",
+      "The problem is only that it doesn't apply to password resets"
+    ],
+    "correct": 1,
+    "explanation": "Hard lockout hands the attacker a weapon: causing failures is trivial, so lockout-on-failure lets anyone deny a victim access, and at scale it can lock out an entire user base. Progressive backoff and adaptive challenges impose escalating cost on the attacker while leaving a path for the genuine user (who eventually authenticates), avoiding the self-inflicted DoS."
+  },
+  {
+    "stage": "check",
+    "question": "Your login returns 'no account with that email' quickly, and 'incorrect password' slowly after hashing. How does this help an attacker, and what's the fix?",
+    "options": [
+      "It doesn't help attackers; different messages are just good UX",
+      "It enables user enumeration two ways: the different MESSAGE tells the attacker which emails have accounts, and even with identical messages the different TIMING (fast when the user is absent because the hash is skipped, slow when present) leaks the same fact. A refined account list improves the stuffing hit rate and enables targeted phishing. Fix: a single uniform message and status for both cases, and run the password hash even when the user doesn't exist so timing matches",
+      "The fix is to make both responses fast by skipping the hash",
+      "The only issue is the status code, not the message or timing"
+    ],
+    "correct": 1,
+    "explanation": "Enumeration lets an attacker separate real accounts from noise, sharpening every downstream attack. Both the message and the response time are side channels — skipping the expensive hash for absent users makes 'no such user' measurably faster. The fix is uniform responses (same text, same status) plus constant work (hash regardless), and the same discipline on signup ('email already registered') and password reset (always 'we sent an email if it exists')."
+  },
+  {
+    "stage": "post",
+    "question": "Against account takeover specifically, which two controls give the most leverage, and why?",
+    "options": [
+      "A longer password minimum and forced 30-day rotation",
+      "MFA and breach-password screening. MFA means a correct (even stolen) password isn't enough to log in — the single most effective ATO defense — and breach screening (via HIBP k-anonymity) refuses passwords already in known leaks, so the reused credential a stuffing attacker relies on was never allowed in the first place. Both attack the exact mechanism of credential stuffing rather than trying to out-hash an attacker who already has the password",
+      "A universal CAPTCHA plus IP allowlisting",
+      "Encrypting the password column and rotating the DB password"
+    ],
+    "correct": 1,
+    "explanation": "ATO overwhelmingly comes from reused/leaked passwords. MFA breaks it by requiring a second factor the attacker doesn't have; breach screening breaks it by preventing the reused password from existing on your site. Both target the stuffing mechanism directly. Password length/rotation rules and DB encryption don't address an attacker who logs in with the correct password from another breach."
+  },
+  {
+    "stage": "post",
+    "question": "A PM wants a CAPTCHA on every login to stop bots. Why is a universal CAPTCHA a poor choice, and what's better?",
+    "options": [
+      "Universal CAPTCHA is ideal; show it to everyone always",
+      "A CAPTCHA everyone must solve is a tax on your legitimate users — it hurts accessibility, conversion, and satisfaction — while sophisticated attackers defeat CAPTCHAs with solving farms anyway, so you pay a large user cost for partial protection. The better approach is adaptive friction: score each request's risk (IP/ASN reputation, device recognition, velocity, prior failures) and show a challenge ONLY to suspicious traffic, so ~99% of users see nothing and the friction lands on the attacker",
+      "CAPTCHAs don't stop any bots, so remove them entirely",
+      "Replace the CAPTCHA with a hard account lockout instead"
+    ],
+    "correct": 1,
+    "explanation": "Friction should fall on attackers, not users. A blanket CAPTCHA degrades the experience for everyone and still doesn't fully stop determined attackers (human solving services, ML solvers). Risk-scoring lets you reserve challenges for anomalous requests, keeping the happy path frictionless while making automated abuse expensive — the same adaptive principle behind step-up authentication and device-based challenges."
+  }
+]

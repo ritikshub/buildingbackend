@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "A team renames its `SendEmail` message to `SendEmailRequested`, moves it from a queue onto a topic, and records the migration as 'event-driven'. What have they actually changed?",
+    "options": ["They have converted a command into an event, because past-tense naming and a topic are what define an event", "Almost nothing architecturally. The message still has exactly one intended handler chosen by the producer, so it is still a command: the broker breaks temporal and load coupling but leaves spatial coupling fully intact, and the dependency graph is identical to the one they started with, now with a broker to operate", "They have made the system less decoupled, because topics deliver to every subscriber and the email service will now receive duplicates", "Nothing at all - a topic with one subscriber is functionally identical to a queue in every broker"],
+    "correct": 1,
+    "explanation": "Intent, not naming or transport, decides whether a message is an event or a command. The test: could the producer have written this message without knowing the consumer exists? 'SendEmailRequested' fails it - the producer decided what should happen and to whom. Commands over a broker are legitimate and buy durability, buffering and retries, but they never break spatial coupling. Mislabelling a command as an event is the mechanism that produces a distributed monolith."
+  },
+  {
+    "stage": "check",
+    "question": "Why does publishing an event invert the dependency arrow, and what concretely follows from that?",
+    "options": ["It does not invert anything; the producer still depends on the broker, which is the same coupling with an extra hop", "Because the producer declares a fact and names no consumer, each consumer independently depends on the published event contract rather than the producer depending on them - so a fourth interested service subscribes with zero changes to the producer's code or deploy", "Because topics deliver asynchronously, the consumer no longer needs the producer to be running, which is the only coupling that ever mattered", "Because the broker owns the schema, neither side depends on the other and the contract can change freely"],
+    "correct": 1,
+    "explanation": "With commands the producer holds the consumer's address and schema, so adding a fifth side effect means editing, testing and redeploying the producer. With events the arrow points from each consumer to a shared contract the producer happens to own - the same inversion as depending on an abstraction in object-oriented design. Note the broker does not own the schema: exactly one bounded context does, and an unowned shared schema is its own anti-pattern."
+  },
+  {
+    "stage": "check",
+    "question": "A five-service business transaction must unwind if any step fails, support asks 'where is order 4471?' several times a day, and a step is added or reordered every quarter. Choreography or orchestration?",
+    "options": ["Choreography, because it maximises team autonomy and avoids a single point of failure, which matters more than visibility", "Choreography, because with only five participants the reaction chain is short enough that a distributed trace answers every question", "Orchestration. Compensation needs a global view of what has already happened, five participants exceeds the choreography sweet spot, the flow changes often, and 'where is order 4471' should be a database query against one saga row rather than a trace reconstruction across five repositories", "Neither - a process with compensation requirements should use two-phase commit so no compensation logic is needed"],
+    "correct": 2,
+    "explanation": "Every signal here points to orchestration: compensation required, four or more participants, frequent change, and a daily need to answer where a given instance is. Two-phase commit is not available - it holds locks across services, does not survive partitions, and does not work across services you do not own, which is why the saga exists. The pragmatic hybrid remains: orchestrate the transaction that must unwind as a unit, and let analytics, recommendations and the warehouse choreograph off the resulting events."
+  },
+  {
+    "stage": "check",
+    "question": "Your saga captures a payment at T2 and fails to reserve stock at T3. What does the compensation C2 do, and why is the distinction important?",
+    "options": ["It rolls back the payment transaction using the database's undo log, restoring the state as if the capture never happened", "It deletes the capture record so the ledger shows no charge ever occurred, which is what keeps the books consistent", "It issues a refund - a new forward transaction creating a new ledger record, settling in days and possibly minus a non-refundable processor fee. The capture is not undone because the world already saw it, so the compensation is a business decision encoded in code, not a technical undo", "It marks the payment as invalid and lets a nightly reconciliation job decide what to do, since only finance can authorise a refund"],
+    "correct": 2,
+    "explanation": "A rollback is physical: the write-ahead log holds the before-image and nothing outside the transaction ever saw the change. A compensation is semantic and forward-moving, because the step already committed. You cannot un-charge a card, un-send an email or un-ship a parcel - you refund, apologise, or issue a return label. Who eats the processor fee, and whether a backorder is offered instead of a refund, have no engineering answer, which is why compensations must be designed with the people who own the money."
+  },
+  {
+    "stage": "post",
+    "question": "A support tool cancels an order while the saga is mid-flight, between the payment capture and the stock reservation. Which property of sagas explains this bug, and what is the standard countermeasure?",
+    "options": ["Durability. The saga state was not persisted before the support tool read it, so a write-ahead log for the coordinator fixes it", "Atomicity. The saga is not atomic, so the fix is to wrap all five steps in a distributed transaction", "Isolation - a saga is ACD, not ACID. Each step commits locally and releases its locks, so other actors observe half-completed sagas. The countermeasure is a semantic lock: an explicit application-level marker such as PAYMENT_PENDING that other actors must check, with a timeout and a sweeper so an abandoned saga cannot leak the lock forever", "Consistency. The order row was left in an invalid state, so a database CHECK constraint on status transitions is the fix"],
+    "correct": 2,
+    "explanation": "Garcia-Molina and Salem traded isolation for concurrency in 1987, and the trade is unchanged when the steps live in different services: a saga is atomic, consistent and durable, but never isolated. Making the intermediate state first-class and legible - PAYMENT_PENDING, RESERVED, an authorisation hold - lets a second actor refuse, queue, or proceed deliberately rather than silently corrupt a half-finished saga. Every such lock needs a timeout, or a saga that dies between a step and its compensation leaks stock forever."
+  },
+  {
+    "stage": "post",
+    "question": "Five consumers of `OrderPlaced` each call the orders service back for the line items, address and total immediately on receiving the event. Which event style is in use, what has it cost, and what is the fix?",
+    "options": ["Event notification. The callbacks rebuild the synchronous fan-in the broker was meant to remove - with an extra hop, so latency is worse, and with the producer as a hard runtime dependency of every consumer, so availability multiplies again. Move to event-carried state transfer, accepting larger events, duplicated data, staleness and a payload that is now a versioned contract", "Event-carried state transfer, and the callbacks are a caching bug; adding a read-through cache in front of the orders service resolves it", "Event sourcing, and the fix is to build a projection per consumer so each folds the log itself rather than calling the producer", "The style is correct and the problem is capacity; scaling the orders service horizontally removes the coupling"],
+    "correct": 0,
+    "explanation": "An event carrying only an id is a notification, and its cost is exactly this: consumers must call back for details, reintroducing synchronous, spatial and temporal coupling pointed from every consumer at the producer, all firing at once. Event-carried state transfer buys the property people actually mean by 'decoupled' - the consumer can do its work while the producer is switched off. It is not free: the payload becomes a contract with an unknown number of consumers, which is why schema evolution is the next lesson. Notification is still right when consumers need only the identity, or when the payload is too large or too sensitive to broadcast."
+  }
+]

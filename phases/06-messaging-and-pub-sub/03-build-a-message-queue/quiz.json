@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A worker calls jobs.pop(), receives a refund job, and the process is SIGKILLed a millisecond later, before the refund is issued. What has happened to that job?",
+    "options": [
+      "It stays in the queue until a worker acknowledges it, so another worker will pick it up",
+      "It is moved to a dead-letter queue automatically, because the process exited non-zero",
+      "It is gone. pop() removed it at delivery time and the worker's memory died with the worker, so no record of it exists anywhere. This is at-most-once delivery, and its defining property is that the loss is silent: no error is raised, no counter moves, and a lost job is indistinguishable from a completed one",
+      "It is recovered on the next restart, because Python flushes list state to disk on exit"
+    ],
+    "correct": 2,
+    "explanation": "Deleting a message when you deliver it is a choice of delivery semantics, and the choice is at-most-once. The measured run in this lesson lost exactly 1 refund out of 60 this way, with zero errors logged. The fix is to make the broker keep the message after delivery and delete it only when the consumer acknowledges that the work is finished."
+  },
+  {
+    "stage": "check",
+    "question": "Your consumers process a job in 200 ms at p50 but 45 seconds at p99.9. The visibility timeout is set to 30 seconds. Consumers never crash. What do you observe in production?",
+    "options": [
+      "Nothing unusual, because 30 seconds is 150x the median processing time",
+      "Throughput drops, because consumers must wait 30 seconds between jobs",
+      "Jobs are lost, because a lease expiring deletes the message",
+      "Roughly 1 job in 1,000 is processed twice. The lease expires while a legitimately-slow job is still running, so the broker redelivers it to a second consumer, and when the first finishes its ack is rejected. Nothing crashed -- the duplicates come purely from sizing the timeout against p50 instead of the tail"
+    ],
+    "correct": 3,
+    "explanation": "This is the most common source of duplicates in a healthy at-least-once system, and it has nothing to do with failures. Size the visibility timeout against p99.9 processing time, not p50 -- or better, use a short lease plus heartbeats, which lets a live consumer extend its own claim. In the lesson's measured run, a 13-second job under a 5-second lease was processed twice; adding heartbeats took duplicates from 1 to 0 while still recovering the genuinely crashed worker's message."
+  },
+  {
+    "stage": "check",
+    "question": "In the measured crash test, a worker died at t=3.50s holding a message whose 5-second lease expired at t=8.50s. The message became visible at t=9.25s but was not actually redelivered until t=24.50s. Why?",
+    "options": [
+      "A message returned by an expired lease goes to the BACK of the queue, so it waited behind the 40 messages still queued ahead of it. Redelivery latency is the lease duration plus the time to drain the backlog in front of the message -- the lease is a floor on retry latency, not the value of it",
+      "The broker retries redelivery with exponential backoff, which added 15 seconds",
+      "The heartbeat thread kept extending the lease until t=24.50",
+      "Clock skew between the broker and the consumer delayed the expiry check"
+    ],
+    "correct": 0,
+    "explanation": "This surprises people writing SLAs around retry latency. The lease governs when a message becomes eligible for redelivery, not when it is redelivered. With a deep queue the gap can be enormous, and it grows as the backlog grows -- precisely when you least want retries to be slow. Note also that RabbitMQ's basic_nack(requeue=True) does the opposite and requeues at the front, which is why a deterministically-failing message there spins in a tight CPU-burning loop."
+  },
+  {
+    "stage": "check",
+    "question": "A queue's write-ahead log stores records as [u32 length][u32 crc32][payload]. A colleague proposes dropping the CRC to save 4 bytes per record, arguing that the length prefix already tells you whether a record is complete. What is wrong with that?",
+    "options": [
+      "Nothing -- the length prefix is sufficient, and 4 bytes per record is real overhead at scale",
+      "The CRC is needed to compute the record's offset in the file",
+      "The length catches a truncated record but cannot catch a corrupted one. If a disk flips a bit inside a record whose length field is still valid, the length check passes and you replay garbage into your queue state. In the lesson's measurement, one flipped byte inside an otherwise well-formed record was detected only by the CRC",
+      "Removing it would break compaction, because os.replace needs a checksum to verify the swap"
+    ],
+    "correct": 2,
+    "explanation": "Length and checksum answer different questions: 'where does this record end?' and 'are these the bytes that were written?'. Because the log is append-only, the only damage a crash can cause is a torn record at the tail -- but bit rot can strike anywhere, and silent corruption replayed into broker state is far worse than a detected failure. Recovery keeps the longest valid prefix and truncates the rest, which is safe precisely because earlier records are never modified."
+  },
+  {
+    "stage": "post",
+    "question": "The same 120 jobs across 4 consumers (one of them 6x slower) finished at t=21.25s with prefetch=1 and t=48.25s with prefetch=16. Nothing failed in either run. What caused the 2.3x slowdown, and when would a large prefetch still be right?",
+    "options": [
+      "The larger batch caused lease expiries and redelivered work; a large prefetch is right when the lease is long",
+      "The broker serialized claims, so larger batches held the lock longer; a large prefetch is right on single-consumer queues",
+      "Memory pressure from buffering 16 messages slowed the consumer; a large prefetch is right when messages are small",
+      "Prefetching converts a pull-based load balancer into a push-based one. The slow consumer claimed 16 jobs up front, making them invisible to the three fast consumers, which then sat idle at the end waiting for it. A large prefetch is right when tasks are fast and uniform, so the round-trip cost dominates and hoarding costs little"
+    ],
+    "correct": 3,
+    "explanation": "A queue load-balances for free because consumers pull work when they are ready, so a slow consumer naturally takes less. A big prefetch assigns work at claim time, before anyone knows how long anything will take, which destroys that property. The rule: small prefetch for slow or highly variable tasks (a 5-second transcode wants prefetch=1), large for fast uniform ones (a 200-microsecond aggregation wants hundreds). Note also that a crash with prefetch=100 strands 100 messages for a lease duration, not one."
+  },
+  {
+    "stage": "post",
+    "question": "A queue sits flat at 5,000 messages. CPU on the consumers is low, the ack rate is a steady 400/s, and the redelivery rate is 380/s. What is most likely happening?",
+    "options": [
+      "A poison message or a group of them is looping. Almost every ack is for a message that has been delivered before, so the consumers are busy redoing work that keeps failing rather than draining new messages. The confirming metric is the delivery-count distribution -- a cluster of messages at 20+ deliveries names the culprit immediately",
+      "Consumers are down; the queue is flat because nothing is being processed at all",
+      "Producers have stopped, and the flat depth simply reflects no new arrivals",
+      "The visibility timeout is too long, so messages are stuck in flight and the depth cannot fall"
+    ],
+    "correct": 0,
+    "explanation": "Read the metrics together, not individually. A high ack rate alone looks healthy; what condemns it is that the redelivery rate is nearly as high, meaning throughput is being spent on retries rather than progress. Consumers being down would show a near-zero ack rate and a rising oldest-message age with no redeliveries; a too-long visibility timeout would show a large in-flight count and a low redelivery rate. This is exactly why the delivery counter must be persisted and queryable -- it turns 'something is wrong' into 'these 12 messages are wrong', and it is the hook dead-letter queues hang on."
+  }
+]

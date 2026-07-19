@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your fleet is 10 replicas running at 85% utilisation. The Deployment uses the Kubernetes defaults, maxSurge: 25% and maxUnavailable: 25%. Deploys have always looked fine. What is actually happening during every rollout?",
+    "options": [
+      "Nothing — maxSurge adds pods before any are removed, so capacity never drops below 100%",
+      "maxUnavailable: 25% rounds down to 2, so availability drops to 8 of 10 replicas and utilisation during the deploy rises to about 1.06 — the deploy itself pushes the fleet into overload for the whole rollout",
+      "Capacity drops to 8 of 10 but that is safe, because 85% of 8 replicas is still only 68% utilisation",
+      "The rollout is throttled automatically when utilisation is above 80%, so it takes longer but never overloads"
+    ],
+    "correct": 1,
+    "explanation": "maxUnavailable bounds how far below the replica count availability may fall — 25% of 10 rounds DOWN to 2, so you serve on 8 replicas during every wave. Utilisation is offered load divided by the capacity you actually have: 85% of the full fleet against 80% of the fleet is about 1.06, which is not a percentage but an accumulating deficit. maxSurge does not prevent this; the surge pods take startup time to become Ready, and the controller may terminate old pods immediately. The fix is maxUnavailable: 0, which holds capacity at 100% and costs you the surge pods for the length of the rollout."
+  },
+  {
+    "stage": "check",
+    "question": "Measured on identical fleets and an identical bad version: blue-green detected the problem at 30 seconds, the canary at 40 seconds. Yet blue-green caused 162 user-facing errors and the canary 20. Why?",
+    "options": [
+      "The canary instance was newer hardware, so it served the same bad code more reliably",
+      "Blue-green's rollback is slower, so the extra errors accumulated after detection",
+      "Blast radius is exposure multiplied by time: blue-green detected 10 seconds sooner but at 100% exposure, while the canary was multiplying every second by 0.05 — 2,880 requests reached the bad version versus 264",
+      "The canary's error-budget threshold was set lower, so it aborted at a smaller error count"
+    ],
+    "correct": 2,
+    "explanation": "Both runs used the identical detector, threshold and rollback lag; the only difference was the fraction of traffic on the new version. Blue-green cut 100% of users over at once, so every second of its shorter detection window cost twenty times more than a second of the canary's. Time-to-detect is only one factor of the product, and post-mortems that optimise it alone are optimising half the problem."
+  },
+  {
+    "stage": "check",
+    "question": "A recreate deploy takes the fleet to zero instances for 20 seconds. Your fast-burn alert is `sum(rate(errors[2m])) / sum(rate(requests[2m])) > 0.0144`. What does that alert do during the outage?",
+    "options": [
+      "It fires immediately, because 100% of users are getting errors",
+      "It fires after two minutes, once the rate window has filled with failures",
+      "It may not fire at all: with no instances there are no served requests, so the denominator is zero and the ratio is undefined — a ratio-based SLI can stay silent through a total outage",
+      "It fires and then resolves, because the rate function extrapolates over the gap"
+    ],
+    "correct": 2,
+    "explanation": "An error-ratio SLI is errors divided by requests, and a total outage removes the denominator rather than inflating the numerator. Requests that never reach a backend appear in the load balancer's own counters, not in your application's, so the alert that watches your service can be perfectly quiet. Pair every ratio alert with an absolute-volume signal — a sharp drop in request rate, or errors counted at the edge — so that 'nothing is happening' is distinguishable from 'everything is fine'."
+  },
+  {
+    "stage": "check",
+    "question": "Your service does 60 req/s with a 0.20% baseline error rate. You run a 1% canary for 5 minutes and the analysis passes. How much confidence should that give you that the release is not 4x worse (0.80%)?",
+    "options": [
+      "High — 5 minutes of real production traffic exercises far more paths than any test suite",
+      "Very little: 1% of 60 req/s for 5 minutes is 180 requests with 1.44 expected errors, giving about 42% statistical power — measured over 4,000 simulated rollouts it promoted a genuinely bad version more often than it caught it",
+      "Complete — a passing canary analysis is what the gate exists to certify",
+      "Moderate, and it can be raised to high by tightening the abort threshold from 1.44% to 0.5%"
+    ],
+    "correct": 1,
+    "explanation": "When the expected number of errors is near one, observing zero is the single most likely outcome even for a broken release — in the measured runs the 1% canary saw literally zero errors in three trials out of eight. Tightening the threshold does not fix it; it trades misses for false aborts on the same tiny sample. The required sample size is n >= (z_a*sqrt(p0*q0) + z_b*sqrt(p1*q1))^2 / (p1-p0)^2, here 613 requests — 17 minutes at 1% but only 3.4 minutes at 5%. Raise the percentage, do not shorten the bake."
+  },
+  {
+    "stage": "post",
+    "question": "You run blue-green with a shared Postgres. The new release ran a migration that renamed a column, cut over cleanly, and 90 seconds later you need to roll back. What actually happens when you flip the router back to blue?",
+    "options": [
+      "Blue serves normally — the router flip is atomic, so the rollback is complete in one step",
+      "Blue immediately starts failing on every query touching the renamed column: the router flip reverses code and nothing else, so you have instant code rollback and no schema rollback at all",
+      "Postgres detects the version mismatch and serves the old column name from its transaction log",
+      "Nothing breaks, because the migration ran inside a transaction that is rolled back with the deploy"
+    ],
+    "correct": 1,
+    "explanation": "Blue-green's near-instant rollback is a change to a pointer, and the database is not behind that pointer. Blue's code was written against the old schema and will fail against the new one, so cutting back produces a different outage rather than ending the first one. This is why schema changes are expand-then-contract: add the new column, write both, migrate readers, and only drop the old one after the old code can no longer be rolled back to. Decide whether your rollback path includes the database before the deploy, not during the incident."
+  },
+  {
+    "stage": "post",
+    "question": "Your canary analysis job runs every 5 seconds. Twelve seconds after the canary starts taking traffic it has served 12 requests, 2 of which failed — a 16.67% error rate against a 0.1% error budget, a 166.7x burn rate. What should it do?",
+    "options": [
+      "Abort immediately — a 166x burn rate is far past any reasonable threshold and delay only costs users",
+      "Abort and page a human to confirm, since the sample is small but the signal is extreme",
+      "Wait: 12 requests cannot distinguish a broken release from an unlucky start, and a job that aborts on 12 requests will abort healthy releases at a similar rate. Enforce a minimum-sample gate before any decision is allowed",
+      "Promote, because two errors is within the normal variance of any service"
+    ],
+    "correct": 2,
+    "explanation": "A ratio computed over a handful of requests is dominated by Poisson noise in both directions — it is as capable of showing 16% on a healthy release as 0% on a broken one. An analysis job needs a minimum-sample gate as much as it needs a threshold, or it becomes a random abort generator that teams learn to ignore and eventually disable. In the measured run the gate held until 252 requests were in the window, at which point the burn-rate and latency signals tripped together on evidence rather than on noise."
+  }
+]

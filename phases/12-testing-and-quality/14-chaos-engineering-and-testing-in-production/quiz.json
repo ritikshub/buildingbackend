@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "One of your dependencies is about to have a bad day. Every call to it has a timeout, an exponential-backoff retry and a circuit breaker, all reviewed and all in production. Which outcome costs your users more: the dependency dies completely, or it keeps answering correctly but 5× slower?",
+    "options": [
+      "Dying completely, by a wide margin. A dead dependency means every call to it fails, while a slow one still returns correct data — degraded latency is unpleasant but it is not an outage",
+      "Roughly the same. Either way the requests that need that dependency are affected, so the cost scales with how much of your traffic touches it rather than with the kind of fault",
+      "The 5× slowdown, and it is not close. Measured on the same dependency over the same 20-second window: the hard kill cost 0 failed requests and 0.0 minutes of error budget, while the slowdown cost 2,744 failed requests, 130.7 minutes of budget, a p50 of 2,006 ms, and 21 seconds to recover after the fault was already gone",
+      "Dying completely, because a dead dependency also fails your health checks and takes instances out of the load balancer, which amplifies the loss of capacity"
+    ],
+    "correct": 2,
+    "explanation": "The tempting answer ranks faults by how broken the dependency is, which is the right instinct applied to the wrong system — what matters is how broken YOUR service becomes. A hard failure produces an error, an error reaches an `except` block somebody wrote, and the fallback runs: measured, the hard kill produced a median user latency of 47 ms, FASTER than the 89 ms steady state, because the failing call is skipped. A slowdown produces no error at all, so no error path is entered, the circuit breaker tripped 10 times on the kill and 0 times on the slowdown, and the connection pool quietly saturates until a queue 675 deep forms on a service two hops away. Option 2 is the subtle wrong answer: the cost is not proportional to traffic touched, it is determined by whether an error path exists. On a REQUIRED dependency with no fallback the same measurement gives 66.8 versus 64.1 minutes — nearly identical."
+  },
+  {
+    "stage": "check",
+    "question": "Your `orders → inventory` connection pool has 6 slots. At the steady rate of 70 requests per second with a 40 ms hold time, Little's law says you need L = 2.80 concurrent slots. The dependency then becomes 5× slower. What happens, and what does the 6-slot pool actually buy you?",
+    "options": [
+      "The pool has 114% headroom, so it absorbs the slowdown with elevated latency but no failures; you would need roughly a 3× traffic increase before the pool became the constraint",
+      "The pool is a latency budget of 2.1×, not spare capacity, because λ is fixed by users and only W changed. A 5× slowdown needs L = 14 against 6 slots, so it saturates — and the queue forms not on that pool (peak 10) but on orders' own 16 worker threads (peak 675), because a worker blocked on a pool slot is a worker unavailable to everyone",
+      "The pool starts rejecting connections immediately once demand exceeds 6, which sheds load and protects the service — the failures are visible but bounded to the inventory feature",
+      "The 250 ms timeout on that edge bounds the damage: calls that cannot get a slot fail fast at 250 ms, so the worst case is that every inventory call adds a quarter second"
+    ],
+    "correct": 1,
+    "explanation": "The first option makes the mistake almost everyone makes: reading pool headroom as capacity headroom. L = λW, and your users fix λ, so the only variable headroom protects against is a larger W — 6 slots for a required 2.80 is 2.1× of tolerance for a SLOWER dependency, and 5× blows straight through it. Option 3 describes a pool with a bounded wait queue, which is a configuration you have to choose; the default in essentially every client library is an unbounded queue, which is why waiting rather than rejecting is what actually happened. Option 4 contains the most useful trap in the lesson: in real HTTP clients the request timeout starts AFTER a connection is obtained, and pool-acquire time is governed by a separate timeout that is usually unset. The 250 ms bounded the part of the wait that was already fine."
+  },
+  {
+    "stage": "check",
+    "question": "The same fault — payments 6× slower for 30 seconds, then FULLY restored — is run against five defence configurations, each adding one thing to the one above it. Error budget burned, averaged over three seeds: no defence 230.1 min, timeout only 230.1 min, + naive 3× retry 267.8 min, + jitter + budget 240.7 min, + breaker + bounded queue 101.8 min. What is going on in rows 2 and 3?",
+    "options": [
+      "Row 2 is measurement noise — a timeout must reduce damage, since without one requests wait indefinitely; and row 3 is the expected cost of retries, which trade a little extra load for a much higher success rate on transient faults",
+      "Rows 2 and 3 show that the fault was too severe for any single defence to matter; the only meaningful comparison in the table is row 5 against row 1, and rows 2 to 4 are within noise of each other",
+      "A timeout changes HOW you fail, not HOW MUCH — a user waiting 8 seconds and a user getting a 503 are both bad requests, so rows 1 and 2 match to a tenth of a minute. And the naive retry made things actively worse than no defence at all: under a saturation failure the cause is load, and the response is more load. It was also the only configuration of five that NEVER recovered after the trigger was removed",
+      "Row 2 is identical because the timeout was set too high to fire; with a tighter timeout it would separate cleanly from row 1, and row 3's retries would then have succeeded on the second attempt"
+    ],
+    "correct": 2,
+    "explanation": "The trap in option 1 is that retries are near-universal advice, so a row where they hurt reads as an error. It is not: a retry is a bet that the failure is independent and transient, and under a saturation failure that bet is inverted — the failure is caused by load and your response to it is more load. Wire attempts held at 110/s with goodput at exactly 0 for the rest of the run. Option 2 gives up too early: rows 1 and 2 being IDENTICAL is a precise result, not noise, and it tells you exactly what a timeout is for (converting slow into an error the breaker can count) and what it is not for (reducing user pain). Note also row 4: jitter and a budget capped amplification at 1.24× instead of 1.64× and restored recovery (43.7 s versus never), yet still burned MORE than no defence at all — 240.7 versus 230.1 — because 1.1× amplification of a load already above capacity is still above capacity. Every fix in the table that worked, worked by doing less."
+  },
+  {
+    "stage": "check",
+    "question": "You run the same grey-failure experiment at 1%, 5%, 25% and 100% injection, with a stable cohort assignment and an SLO-tied abort. Signal (Mann-Whitney z, injected versus control): 6.2, 10.3, 9.8, 22.7. Damage (failed user requests): 2, 7, 107, 637. Peak queue on orders' workers: 2, 4, 34, 180. What should you conclude about running everything at 1%?",
+    "options": [
+      "That 1% is sufficient in general: it recovered z = 6.2 for 2 failed requests against z = 22.7 for 637, which is 3.7× the signal for 318× the damage. Any experiment that needs more than 1% is badly designed",
+      "That 1% reliably finds DIRECT effects — this call got slower, this cohort's latency moved — and reliably misses EMERGENT ones. Peak queue went 2 → 4 → 34 → 180, so the cascade has a threshold between 5% and 25%, because saturation is a function of aggregate load and does not scale down. Small automated experiments plus occasional larger game days, not one or the other",
+      "That the results are inconsistent and the experiment should be rerun: 25% scored a lower z (9.8) than 5% (10.3), which means the injection was not applied uniformly and the cohort assignment is broken",
+      "That you should always run at 100%, since it is the only level that produced the failure you actually care about, and the abort at 5.0 seconds bounds the cost to something acceptable"
+    ],
+    "correct": 1,
+    "explanation": "Option 1 states the slogan the discipline is usually sold with, and the first row genuinely supports it — z = 6.2 is a separation you would see by chance about once in three billion, for two failed requests. The lower panel is what makes it incomplete: the cascade that caused the incident in the first place never appears below 25%, and it cannot, because queueing depends on total offered concurrency. At 5% injection required concurrency rises from 2.80 to about 3.4 against a pool of 6, which is fine. Option 3 misreads a real finding as a bug: 25% scored LOWER than 5% because at 25% the control cohort's own p50 rose from 90 ms to 252 ms — past some radius the uninjected group is no longer uninjected and the experiment contaminates its own baseline. Option 4 ignores that 637 failed requests is 30.3 minutes of error budget for a result you could have got most of for 0.1."
+  },
+  {
+    "stage": "post",
+    "question": "Your deploy pipeline fails a canary if its error rate exceeds the baseline's by 50%. Measured against a baseline of 0.4% errors and a canary carrying a genuine 1.0-percentage-point regression, over 4,000 trials at each volume, the rule's false-alarm rate was 33.1% at 200 requests per arm, 28.0% at 1,000, 9.5% at 5,000, 0.5% at 20,000 and 0.0% at 100,000. What is the right reading?",
+    "options": [
+      "The rule is simply too tight and should be raised to 2× baseline, which would bring the false-alarm rate at low volumes down to an acceptable level without meaningfully hurting detection",
+      "The rule works correctly above about 5,000 requests per arm, so the fix is a minimum-traffic gate: run the canary until it has seen 5,000 requests, then apply the existing threshold unchanged",
+      "A threshold is a hypothesis test whose false-alarm rate you did not choose — and here that rate is a function of traffic volume rather than of the code. A proper test holds it by construction: the two-proportion z test stayed between 1.9% and 5.5% at every volume on the same sweep. The same effect appears on latency, where a threshold calibrated to 5% alarms must be +10.2% at 200 samples and +2.4% at 3,200",
+      "The naive rule is actually the better choice at low traffic: at 200 requests per arm it missed only 24.3% of real regressions where the z test missed 68.7%, so it is more sensitive exactly where sensitivity is scarcest"
+    ],
+    "correct": 2,
+    "explanation": "Option 4 is the genuinely tempting one because both numbers in it are real and it sounds like a trade-off — but it is the same phenomenon read from two directions. The naive rule is not more sensitive at 200 samples, it is less strict: it is firing at random, which is why its 24.3% miss rate comes bundled with a 33.1% false-alarm rate. Neither rule works at that volume, and the honest output is 'not enough traffic to decide' — a verdict almost no pipeline can return. Option 1 recalibrates for one traffic level and breaks at the next, which is exactly the failure being described. Option 2 is close to correct and is a real improvement, but it still leaves a rule whose alpha you never chose; and it costs more traffic than it needs to. Detecting this regression at 80% power needs 1,200 requests per arm with a fixed sample, or a median of 305 with Wald's sequential probability ratio test at a 2.9% false-alarm and 5.1% miss rate."
+  },
+  {
+    "stage": "post",
+    "question": "A team proposes replacing several slow test suites with a continuous chaos-engineering programme, on the grounds that it tests the real system under real conditions. Your service has an SLO and good dashboards, but the documented rollback has not been executed in eight months. What is the correct response?",
+    "options": [
+      "Approve it for the classes of failure chaos actually covers, but not as a replacement. Chaos experiments find emergent, systemic failures — saturation, feedback loops, missing fallbacks, defences never executed — and are structurally incapable of finding a logic bug, a renamed field or a double-charged redelivery. And an untested rollback fails a prerequisite: a fault you cannot turn off is an incident, not an experiment",
+      "Approve it. Testing against the real system with real traffic strictly dominates testing against doubles and fixtures, which is the whole argument of this phase; the rollback can be exercised during the first experiment, which is a good way to validate it",
+      "Reject it entirely until every test suite is fast and green, because chaos engineering is the last layer and adding it to a system with weak lower layers just produces noise nobody can attribute",
+      "Approve it but only in staging, since the prerequisites for production chaos can never be fully satisfied and staging gives you the same failure modes at none of the risk"
+    ],
+    "correct": 0,
+    "explanation": "Option 2 gets the relationship backwards and then compounds it. Chaos experiments and the tests in lessons 1 to 13 find disjoint bug classes: nothing in this lesson would notice a discount boundary using `<` instead of `<=`, a provider renaming a status string, or a consumer double-charging on redelivery. And validating a rollback DURING your first fault injection means your contingency plan and your experiment fail together. Option 3 over-corrects — you do not need a perfect suite first, you need the four prerequisites — and option 4 misses the point of the lesson: staging has never been slow, which is precisely why the failure modes in `resilience/` have never been executed. The four prerequisites are an SLO to hypothesise on, observability with a known lag (measured here, a 1-second-window monitor is blind for 3.0 seconds no matter how good it is), a rollback used recently, and a bounded blast radius with an automatic abort (measured here, halting the fault 5.0 seconds in)."
+  }
+]

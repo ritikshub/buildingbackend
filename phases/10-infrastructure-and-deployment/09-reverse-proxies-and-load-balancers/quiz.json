@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You put a reverse proxy in front of your application. That afternoon your admin tool's IP allowlist starts returning 403 to your own office, even though nothing about the office network changed. What happened?",
+    "options": [
+      "The proxy is stripping the Authorization header, so the request arrives unauthenticated and the allowlist is a red herring",
+      "The proxy opened the connection to your app, so the app's socket peer address is now the proxy's address on every request — every client collapses to one address and the allowlist no longer matches anyone",
+      "TLS termination changed the request scheme to http, and the allowlist only permits https requests",
+      "The proxy is caching the 403 from an unrelated request and serving it to everyone"
+    ],
+    "correct": 1,
+    "explanation": "A reverse proxy terminates the client's connection and makes its own. Anything the application reads from its own socket — remote_addr, 'the client IP' — is now the proxy. Measured in this lesson: 3 clients from 3 distinct addresses all arrived at the backend with the same socket peer, so allowlists, rate limits and audit logs keyed on that value now see one client. The real address survives only in X-Forwarded-For, which is why the next question is how you parse it."
+  },
+  {
+    "stage": "check",
+    "question": "Your app sits behind two proxies you operate. It reads the client IP as xff.split(',')[0].strip(). A client sends its own header X-Forwarded-For: 10.0.0.1 — an address on your admin allowlist. What does your app do?",
+    "options": [
+      "Rejects the request, because a client-supplied X-Forwarded-For is discarded by any conforming proxy",
+      "Reads 10.0.0.1 and allows the request — the client forged its way past the allowlist with one header",
+      "Reads the socket peer address instead, because the header has more entries than expected",
+      "Reads 10.0.0.1 but the mismatch with the socket peer causes the framework to fail the request automatically"
+    ],
+    "correct": 1,
+    "explanation": "X-Forwarded-For is appended at each hop, so an honest proxy keeps whatever the client sent and adds its own peer. The backend receives '10.0.0.1, 127.0.0.9, 127.0.0.2' and the left-most entry is not the client — it is the first thing anybody wrote. Measured here: the naive parser returned ALLOW (200) and a parser counting back 2 trusted hops returned DENY (403), on the identical request. Count backwards from the right by the number of proxies you actually operate, and overwrite the header at your true edge."
+  },
+  {
+    "stage": "check",
+    "question": "Your proxy has proxy_read_timeout 250ms. A backend endpoint takes 2 seconds. Twenty requests hit it during a spike. What does the backend actually do, and what does it cost?",
+    "options": [
+      "The backend receives a cancellation when the proxy closes the socket and abandons the work, so only the latency is wasted",
+      "The backend never starts the work, because the proxy withdraws the request before forwarding it",
+      "The backend completes all 20 requests and writes 20 responses to sockets the proxy already closed — you pay full backend capacity for work nobody receives, and the user still gets a 504",
+      "The proxy automatically retries the 20 requests on another backend, so the work is duplicated but eventually delivered"
+    ],
+    "correct": 2,
+    "explanation": "A timeout closes a socket; it does not cancel work. The backend is executing a query, not watching for a disconnect. Measured: 20 requests timed out at the proxy, the backend accepted 20, finished 20 and delivered 0 — 40.0 seconds of work written to closed sockets. You pay twice, once in backend capacity and once in the 504. The timeout is still correct: without it, 6 slow requests held all 6 proxy worker slots and 42 of 60 requests were refused at the door with a 503."
+  },
+  {
+    "stage": "check",
+    "question": "Before stopping an instance during a deploy, your script removes it from the load balancer pool and then immediately kills the process. Requests still fail. Which ones, and why?",
+    "options": [
+      "The requests that were already inside the instance when it was killed — removing it from the pool stops new traffic but does nothing for work already in flight",
+      "None should fail; if any do, the pool removal did not propagate and the fix is a shorter health-check interval",
+      "The requests that arrive after the kill, because the pool takes several seconds to notice the address is gone",
+      "Requests on keep-alive connections only, which is fixed by disabling keep-alive on the proxy"
+    ],
+    "correct": 0,
+    "explanation": "Removing from the pool solves exactly one of the two failure populations. Measured on an identical 45-request schedule with 3 requests in flight at removal: killing outright cost 15 failures (3 severed + 12 refused by a pool that was never told); removing first cost 3 (the refusals gone, the in-flight requests still severed); removing and then waiting ~400 ms for in-flight work to finish cost 0. And the 3 that die in the middle case are the oldest requests, the most likely to have already taken a side effect."
+  },
+  {
+    "stage": "post",
+    "question": "Your backends authenticate clients by their TLS client certificate (mutual TLS). Your team now wants path-based routing at the load balancer. What is the actual constraint?",
+    "options": [
+      "None — path routing is a layer 4 feature, so an NLB can do it as long as SNI is enabled",
+      "You need a larger instance type; path routing is only a throughput cost",
+      "Routing on a path requires reading the HTTP request, which requires terminating TLS — and terminating TLS at the proxy means the backend no longer sees the client's certificate at all",
+      "Path routing works fine through TLS passthrough, because the path is sent in the clear during the handshake"
+    ],
+    "correct": 2,
+    "explanation": "Encrypted bytes are opaque bytes. A proxy that cannot decrypt can route only on what is visible during the handshake — essentially the SNI hostname — so path routing and TLS passthrough are mutually exclusive. Measured version of the same point: an L4 proxy relayed 1714 bytes, added 0 headers, and sent all requests to one backend because it never read a path. Your options are to terminate TLS and move client authentication into the proxy (forwarding the verified identity as a header on a trusted hop), or to keep passthrough and give up L7 features."
+  },
+  {
+    "stage": "post",
+    "question": "A team asks whether they need an ingress controller, an API gateway or a service mesh for 'the proxy problem'. What is the question that actually separates them?",
+    "options": [
+      "How much traffic you have — ingress for small deployments, gateway for medium, mesh at large scale",
+      "Whether you run Kubernetes: ingress inside a cluster, gateway outside it, mesh only for microservices",
+      "Which layer they operate at: ingress is L4, an API gateway is L7, and a mesh is L3",
+      "Whether the traffic is entering your system or moving inside it — ingress is north-south connectivity, an API gateway is north-south product policy (auth, quotas, aggregation), and a mesh is east-west uniform policy (mTLS, retries, telemetry) via a proxy beside every instance"
+    ],
+    "correct": 3,
+    "explanation": "All three are reverse proxies; they differ in what traffic they see and what they are for. An ingress controller is a platform-owned connectivity layer for traffic entering the cluster. An API gateway handles the same direction of traffic at a higher altitude — authentication, rate limits, request transformation, aggregation. A service mesh sees traffic the other two never do: service-to-service calls inside the system, where it provides mTLS and uniform retry and timeout policy without touching application code. Running all three is common and is not redundancy."
+  }
+]

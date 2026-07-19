@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why is running ALTER TABLE by hand on the production database a bad practice?",
+    "options": ["It's actually fine", "It's unreviewed, unrepeatable, and unversioned — environments drift, there's no record of the schema's state, and a typo goes straight to production", "ALTER TABLE doesn't work in production", "It's too slow"],
+    "correct": 1,
+    "explanation": "Hand-run DDL is unreviewed (typos go live), unrepeatable (staging and prod drift, new environments miss the change), and unversioned (nobody knows the schema state). Migrations make schema changes reviewed, repeatable, and versioned like code."
+  },
+  {
+    "stage": "check",
+    "question": "How does a migration runner know which migrations to apply?",
+    "options": ["It re-runs all of them every time", "It records applied versions in a migrations table in the database and applies only the pending (not-yet-applied) ones, in order", "It asks the developer", "It applies them randomly"],
+    "correct": 1,
+    "explanation": "The runner keeps a schema_migrations table listing applied versions. It computes which defined migrations aren't there yet and applies just those, in order, each in a transaction — making the whole run idempotent."
+  },
+  {
+    "stage": "check",
+    "question": "Why must a migration on a live database be backward-compatible with the currently-running code?",
+    "options": ["To make it faster", "During a deploy, old and new code run at the same time against the same database, so a schema state the old code can't handle breaks in-flight requests", "Backward compatibility is only about APIs", "It doesn't need to be"],
+    "correct": 1,
+    "explanation": "Deploys have a window where old and new code both hit the database. If a migration removes or renames something the still-running old code uses, those requests break immediately. Hence expand-contract."
+  },
+  {
+    "stage": "check",
+    "question": "What is the expand-contract pattern for renaming a column with zero downtime?",
+    "options": ["Rename it in one ALTER statement", "Expand (add the new column) → backfill existing rows → deploy code using the new column → contract (drop the old column once nothing uses it)", "Drop the old column first, then add the new one", "Take the database offline"],
+    "correct": 1,
+    "explanation": "Instead of one destructive rename, split it across releases: add the new column, backfill data, switch code to it (writing both during transition), then drop the old one once no code reads it. Each step is backward-compatible."
+  },
+  {
+    "stage": "post",
+    "question": "A migration adds a NOT NULL column with no default to a 50-million-row table and production locks up. What happened, and the safe fix?",
+    "options": ["The column name was invalid", "Filling every existing row can rewrite and lock the whole table; instead add the column nullable (or with a default), backfill in batches, then add the NOT NULL constraint separately", "NOT NULL columns are illegal", "The table was too small"],
+    "correct": 1,
+    "explanation": "A NOT NULL column with no default forces the database to populate every row, which can rewrite and lock a large table. Stage it: add nullable, backfill in batches to avoid long locks, then add the constraint."
+  },
+  {
+    "stage": "post",
+    "question": "A migration dropped a column that still held needed data. Why won't the down migration save you?",
+    "options": ["Down migrations always work", "The data was destroyed — a down migration can recreate the column's structure but can't restore the deleted values; the right posture is roll forward with a new fix and keep destructive steps late/separate", "You must restart the database", "Down migrations restore data automatically"],
+    "correct": 1,
+    "explanation": "A down migration reverts structure, not lost data — once dropped, the values are gone. Production practice is roll forward (write a new migration to fix it) and keep destructive 'contract' steps as late and separate as possible."
+  }
+]

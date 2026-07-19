@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "A transfer debits Alice then credits Bob as two separate writes, and the system crashes between them. What's the problem, and what fixes it?",
+    "options": ["Nothing is wrong", "$30 vanishes — the two writes needed to be one indivisible unit; a transaction makes them all-or-nothing", "The database is too slow", "Alice's account is deleted"],
+    "correct": 1,
+    "explanation": "Between the debit and credit, money has left one account and arrived nowhere — an impossible state. A transaction groups both writes so they either both commit or neither does."
+  },
+  {
+    "stage": "check",
+    "question": "What does Atomicity guarantee?",
+    "options": ["Data is stored as atoms", "All of a transaction's changes commit, or none do — a crash or rollback mid-way leaves nothing behind, as if BEGIN never happened", "Transactions run one at a time", "Committed data survives crashes"],
+    "correct": 1,
+    "explanation": "Atomicity is all-or-nothing. If any part fails or the machine crashes before commit, recovery undoes every change from that transaction. That's what prevents the debited-but-not-credited state."
+  },
+  {
+    "stage": "check",
+    "question": "What is the difference between Atomicity and Durability?",
+    "options": ["They're the same thing", "Atomicity ensures a transaction's writes are all-or-nothing; Durability ensures that once committed, those writes survive any later crash", "Atomicity is about speed; Durability is about space", "Durability applies only to reads"],
+    "correct": 1,
+    "explanation": "Atomicity handles the all-or-nothing grouping (crash mid-transaction → undo everything). Durability handles permanence after success (crash one nanosecond after COMMIT → the change is still there). Different failures, different guarantees."
+  },
+  {
+    "stage": "check",
+    "question": "A transaction makes two writes; one would violate a CHECK (balance >= 0) constraint. What happens?",
+    "options": ["Only the valid write is kept", "Consistency is engaged: the whole transaction is refused and rolled back, so even its other, valid write does not apply", "The constraint is ignored", "The database crashes"],
+    "correct": 1,
+    "explanation": "Consistency means a transaction commits only if the resulting state satisfies every constraint. Because a transaction is atomic, a single violation rolls back the entire transaction — the valid write goes too."
+  },
+  {
+    "stage": "post",
+    "question": "What is the 'commit point'?",
+    "options": ["The moment a transaction starts", "The single atomic instant where provisional changes become permanent and durable; before it, changes are undoable/invisible/safe to lose, after it they're permanent", "The point where a query is parsed", "When an index is updated"],
+    "correct": 1,
+    "explanation": "The commit point is the line the database crosses atomically. Before it, the transaction's changes are held aside — invisible, undoable, harmless on a crash. After it, they're permanent and always recoverable. There is no torn commit."
+  },
+  {
+    "stage": "post",
+    "question": "Which is a sound production practice for transactions?",
+    "options": ["Keep transactions open across user think-time to save round trips", "Keep transactions short, never hold one open across a network call or user wait, and let database constraints enforce consistency", "Avoid transactions to go faster", "Put every SELECT in its own transaction with manual locks"],
+    "correct": 1,
+    "explanation": "Long-open transactions hold resources and locks (Lesson 12), hurting concurrency. Keep them short, don't span waits, and rely on the database's constraints for consistency rather than hoping app code checks every rule."
+  }
+]

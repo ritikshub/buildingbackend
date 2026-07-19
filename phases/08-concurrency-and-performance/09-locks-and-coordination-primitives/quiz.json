@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Eight threads share one global lock around a hot in-memory index, and the service is moved from a 4-core machine to a 16-core one. Throughput barely changes and p99 latency gets worse. What is the most likely explanation?",
+    "options": [
+      "The larger machine has slower per-core clock speeds, so each critical section takes longer to execute and the total time rises proportionally.",
+      "The critical section is a serial fraction, so Amdahl's Law caps the speedup regardless of core count; the extra cores add threads that queue for the same lock, and queueing shows up as tail latency.",
+      "Locks are implemented with spinlocks, so more cores means more threads spinning, which saturates the memory bus and slows every other instruction in the process.",
+      "The operating system's scheduler distributes threads across NUMA nodes, so the lock's cache line must be transferred between sockets on every acquire, which is the entire cost."
+    ],
+    "correct": 1,
+    "explanation": "A lock's critical section is work that must run serially, so it is exactly the 'f' in Amdahl's Law: speedup = 1/(f + (1-f)/N). In the lesson's measurement a 27.1% serial fraction caps the workload at 2.76x on eight cores and 3.7x on infinitely many. Extra cores let more threads arrive at the lock, and each one that loses is parked and rewoken, which lands in the tail. Cache-line transfer between sockets is real but is a second-order effect here, not the reason adding cores stops helping."
+  },
+  {
+    "stage": "check",
+    "question": "Why must a thread waiting on a condition variable recheck its predicate in a `while` loop rather than an `if`?",
+    "options": [
+      "Because `wait()` can return before the lock has actually been reacquired, so the `while` loop gives the runtime a second chance to complete the handoff safely.",
+      "Because `if` statements are not atomic in most languages, whereas a `while` loop compiles to a single compare-and-branch instruction that cannot be interrupted.",
+      "Because `notify_all()` may wake several threads for a single item, another thread may consume the item before you reacquire the lock, and spurious wakeups are explicitly permitted — so waking is never proof that the predicate is true.",
+      "Because the condition variable's internal lock is released during `wait()`, and only a loop can guarantee that the lock is reacquired in first-in-first-out order among the waiters."
+    ],
+    "correct": 2,
+    "explanation": "Three independent reasons, any one of which is fatal: notify_all() wakes N threads for possibly one unit of work; a third thread that was never waiting can take the item between your wakeup and your reacquisition; and POSIX and the Java memory model both permit wait() to return spuriously. The lesson's Build It reproduces the first deterministically — 1 of 2 consumers popped an empty deque. Neither `if` nor `while` has anything to do with instruction atomicity; the `while` simply re-establishes the invariant the code depends on."
+  },
+  {
+    "stage": "check",
+    "question": "A routing table is read constantly and written rarely, so a team replaces its mutex with a reader-preferring reader-writer lock. Reads are a single dictionary lookup. What does the lesson's measurement predict?",
+    "options": [
+      "Throughput improves roughly in proportion to the read ratio, since 95% of operations can now proceed fully in parallel instead of serialising on the mutex.",
+      "Throughput is essentially unchanged, because the reader-writer lock and the mutex both ultimately serialise on the same underlying atomic operation.",
+      "It gets dramatically worse — around 9.6x slower than the mutex — because an RWLock performs two condition-variable transactions per acquire, which costs far more than a dictionary lookup, and 5% writes additionally let readers starve the writers.",
+      "Reads get faster but writes become unsafe, because a reader-preferring lock allows a writer to proceed while readers are still holding stale references to the table."
+    ],
+    "correct": 2,
+    "explanation": "An RWLock only pays off when reads dominate AND the critical section is long enough that parallel readers save more than the bookkeeping costs. With a one-lookup critical section the lesson measured 3,744,424 ops/s for the mutex versus 390,196 for the RWLock — 9.6x slower. Separately, adding just 5% writes dropped the reader-preferring version to 0.8x the mutex, because writers wait for the reader count to hit zero while new readers keep arriving. The lock remains correct throughout; it is the performance intuition that is wrong."
+  },
+  {
+    "stage": "check",
+    "question": "A service fans out 400 calls across 40 threads to a dependency that degrades past 8 concurrent calls. Adding a `BoundedSemaphore(8)` produced what measured result?",
+    "options": [
+      "Successful throughput fell about 5x, since only 8 of the 40 threads could work at a time, but error count dropped to zero — the expected latency-for-reliability trade.",
+      "Successful throughput rose 56.9x and errors fell from 367 to 0, while end-to-end p99 latency roughly doubled because the queue moved out of the dependency and into the caller's own process.",
+      "Both throughput and end-to-end latency improved by roughly an order of magnitude, since the semaphore eliminated the queueing that was causing the delays.",
+      "Throughput was unchanged but the dependency's CPU usage fell sharply, because the same work arrived in a smoother arrival pattern rather than in bursts."
+    ],
+    "correct": 1,
+    "explanation": "Doing less at once finished sooner: 33 successful calls/s became 1,894, and 367 failures out of 400 became zero, because the unbounded version drove peak concurrency to 40 against a dependency safe at 8 and spent its time generating load that turned into timeouts. The number that got worse is the honest part — end-to-end p99 went from 100.4 ms to 208.7 ms. A semaphore does not make work faster; it relocates the queue to where you can see, bound, and shed it."
+  },
+  {
+    "stage": "post",
+    "question": "In a compare-and-swap retry loop, a thread reads value A, and before it can swap, another thread changes the value to B and then back to A. The first thread's CAS then succeeds. What is this, and what is the standard fix?",
+    "options": [
+      "A lost update; the fix is to widen the CAS to cover both the value and an adjacent guard word so that any neighbouring write also invalidates the comparison.",
+      "A spurious wakeup; the fix is to wrap the CAS in a `while` loop that rechecks the predicate after every failed attempt, exactly as with a condition variable.",
+      "A memory-ordering violation; the fix is to insert an acquire-release memory fence around the read so that the intermediate write to B becomes visible to the reader.",
+      "The ABA problem; the fix is to CAS on a (value, version) pair and bump the version on every write, so a value of A at version 0 is distinguishable from A at version 2."
+    ],
+    "correct": 3,
+    "explanation": "CAS compares values, not histories, so a value that leaves and returns is indistinguishable from one that never changed — catastrophic for pointer-based structures where the reallocated node may be a different object entirely. Tagging with a monotonically increasing version makes the round trip visible: the lesson's Build It shows plain CAS wrongly succeeding and versioned CAS correctly failing. This is precisely optimistic concurrency control in a database: `UPDATE ... WHERE id = $1 AND version = $2`."
+  },
+  {
+    "stage": "post",
+    "question": "You have genuinely shared mutable state in a multi-threaded service. According to the lesson's ordering, which strategy should you try FIRST, and why?",
+    "options": [
+      "Immutability — if the value never changes after construction there is nothing to protect at all, so every thread can read it concurrently with zero coordination, zero wait, and no possibility of deadlock.",
+      "Lock striping with `locks[hash(key) % 16]`, since it is the standard middle ground that delivered 5.45x throughput and keeps single-key operations to a single lock.",
+      "A reader-writer lock, because most backend state is read far more often than it is written, so admitting concurrent readers is the highest-leverage change available.",
+      "An instrumented mutex, so that you have wait-time data before making any structural decision about how the state should be shared."
+    ],
+    "correct": 0,
+    "explanation": "The ladder runs immutability, confinement, message passing, and only then locking, in that order — each rung you climb down deletes an entire class of bug. Immutability means there is no shared mutable state left to coordinate. Striping and instrumentation are both genuinely valuable, but they are refinements of rung four; reaching for them first is the most common concurrency mistake in backend code. Thread-local confinement alone gave 6.88x the throughput of one global lock in the Build It, with zero wait time."
+  }
+]

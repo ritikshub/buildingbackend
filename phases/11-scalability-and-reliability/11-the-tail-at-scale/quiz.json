@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A user request fans out to 100 backend shards and must wait for all of them. Each shard has a p99 of 105 ms. Roughly what fraction of user requests will contain at least one call slower than 105 ms?",
+    "options": [
+      "About 1% — the shard p99 is 1%, and fanning out doesn't change what each shard promises.",
+      "About 10% — the probabilities add up across a few of the hundred calls.",
+      "About 63% — it is 1 − 0.99^100, because the request is fast only if ALL 100 calls are fast.",
+      "About 99% — with 100 calls you are essentially guaranteed to hit the tail every time."
+    ],
+    "correct": 2,
+    "explanation": "The request is fast only if every call is fast, so P(all fast) = 0.99^100 = 0.366 and P(at least one slow) = 63.4% (measured: 63.7%). The first option is the trap almost everyone falls into: it reads the SLO as a promise about user experience, but a per-call percentile says nothing about a composed request. The second option assumes probabilities add — they don't, they compound. The fourth is right in spirit but arrives too early; you need N ≈ 1000 for 99.996%."
+  },
+  {
+    "stage": "check",
+    "question": "Your backends have a p50 of 9.2 ms and a p99 of 105 ms. The measured p50 of the 100-way fan-out request is 129 ms. Why is the composed MEDIAN worse than any single backend's p99?",
+    "options": [
+      "The aggregator adds fixed overhead per shard, and 100 shards × ~1.2 ms of merge cost is where the time goes.",
+      "The request's latency is the maximum of 100 samples, and the median of that maximum sits at the 99.31st percentile of one call.",
+      "The shards are contending for the same network link, so their latencies are no longer what they were measured at.",
+      "Percentiles cannot be compared across services, so the two numbers are simply not measurable on the same scale."
+    ],
+    "correct": 1,
+    "explanation": "The median of max(N samples) is where F(x)^N = 0.5, i.e. F(x) = 0.5^(1/100) = 0.9931 — so the typical composed request is set by roughly the p99.3 of a single call. The first option is tempting because merge cost is real, but it would show up as a constant added to every request including the fast ones, and the measured p50 of a 1-way fan-out is 9.1 ms. The third describes a correlation effect, which is a different (and later) problem. The fourth is simply false: both are latencies in milliseconds."
+  },
+  {
+    "stage": "check",
+    "question": "You hedge at the measured p95 (22.5 ms) and get a 100-way p99 of 116.5 ms for 5% extra load. Traffic then grows until queueing shifts the whole latency distribution right, and nobody changes the 22.5 ms delay. What happens?",
+    "options": [
+      "Nothing much — the delay was set from a percentile, so it keeps catching the slowest 5% as the distribution moves.",
+      "Hedging stops firing, because requests that are slower than before will already have completed by the time the timer checks.",
+      "The hedge rate climbs far above 5% (measured: 95.2%), offered load nearly doubles, effective ρ goes past 1, and the p99 gets ~20× worse.",
+      "The p99 degrades roughly in proportion to the extra queueing, the same as it would without hedging."
+    ],
+    "correct": 2,
+    "explanation": "The delay is a constant; the distribution is not. Once queueing pushes most requests past 22.5 ms, nearly all of them get a second copy — measured at 95.2%, taking offered load to 1.95× and ρ = 0.85 to 1.66, with p99 going 466 → 9401 ms. The first option is the exact misconception that causes this outage: a value derived from a percentile once is still just a number afterwards. The second inverts the mechanism. The fourth misses the feedback loop — hedging doesn't merely suffer the overload, it manufactures it. The fix is a hedge budget capping hedges as a fraction of traffic."
+  },
+  {
+    "stage": "check",
+    "question": "Three hops (A → B → C), each with its own 1-second timeout, serving a user whose deadline is 1 second. Measured p50 was 594 ms — identical to the propagated-deadline run. What is actually wrong?",
+    "options": [
+      "Nothing measurable — identical p50s mean the two designs are equivalent in practice.",
+      "The timeouts are too long; setting each hop to 333 ms would bound the chain correctly.",
+      "The worst case is 3 × 1 s = 3 s, and 10.4% of requests finished after the caller had already gone, burning 38.3 ms/request of work nobody reads.",
+      "Hop C should retry when it is slow, so the chain has a chance to finish inside the budget."
+    ],
+    "correct": 2,
+    "explanation": "Durations restart at every hop; absolute deadlines don't. The medians match exactly, which is why this survives dashboard reviews — the damage is in the worst case (2664 ms observed vs 1000 ms bounded) and in the wasted work. The second option is the near-miss worth understanding: static sub-budgets do bound the total, but they're wrong whenever the split is uneven — a fast hop A cannot lend its unused budget to hop C, so you reject work that would have finished. Propagating the REMAINING budget adapts automatically. The fourth makes it worse: retrying past the deadline is pure amplification."
+  },
+  {
+    "stage": "post",
+    "question": "You ship hedging with a 5% budget. During an incident the hedge rate pins at 5% (budget exhausted) while the hedge WIN rate collapses toward zero. What does this tell you, and what is the right response?",
+    "options": [
+      "The hedge delay is too high; lower it so more requests get a second copy sooner.",
+      "The slowness is correlated — the hedge lands on a replica behind the same shared cause — so treat it as a capacity/blast-radius problem and fix replica placement, not the hedge config.",
+      "The budget is too small; raise it to 25% so more of the slow requests can be rescued.",
+      "The backends are failing rather than slow, so the breaker should be opening instead of hedging."
+    ],
+    "correct": 1,
+    "explanation": "A high hedge rate with a collapsing win rate is the signature of correlated slowness: second copies are being issued and are not arriving first, because they hit a replica with the same problem. Measured, hedging improved the composed median 8.86× under independent slowness and 1.02× under correlated slowness for the same 8.9% extra load. Options 1 and 3 both spend more load on a bet that is already losing — they are the instinctive moves and they deepen the overload. Option 4 is plausible but the symptom described is latency, not errors; a breaker helps when calls fail, not when replicas share a stall."
+  },
+  {
+    "stage": "post",
+    "question": "Tied requests send both copies immediately, each carrying the other's identity, and cancel the twin when one starts. Measured, they issued second copies for 100% of requests yet produced only 11.2% duplicate work — slightly less than hedging's 12.6%. What makes that possible, and when does it fail?",
+    "options": [
+      "The client cancels the loser as soon as it receives the first response, so the saving works on any backend.",
+      "Servers can drop enqueued-but-not-started work, so most second copies are cancelled while still queued; without that cancel path the same policy ran both copies of 100% of requests, wasted 53% of service time, and took p99 from 157 to 5514 ms.",
+      "The two copies are deduplicated by an idempotency key at the storage layer, so the second is a cheap no-op.",
+      "The scheduler runs the second copy at a lower priority, so it consumes spare capacity only."
+    ],
+    "correct": 1,
+    "explanation": "The whole economy of tied requests is that the cancel arrives while the twin is still queued, where dropping it is free — which also means they only pay off where a real queue exists. The measured residue (11.2%) is the race window: both replicas started inside the 1.0 ms the cancel spent on the wire. Option 1 is the common misreading — cancelling on first RESPONSE is too late, since by then the loser has usually done the work; the cancel must fire when a copy STARTS. Options 3 and 4 describe mechanisms that would help but are not what tied requests do, and neither is available on a plain HTTP backend."
+  }
+]

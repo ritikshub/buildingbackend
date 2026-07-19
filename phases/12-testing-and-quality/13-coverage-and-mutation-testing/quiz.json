@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service reports 92% line coverage and the CI gate is set at 90%. A reviewer asks what that number tells you about the quality of the test suite. What is the most accurate answer?",
+    "options": [
+      "That roughly 92% of the code's behaviour has been verified, so the remaining risk is concentrated in the 8% of lines nothing touches",
+      "Almost nothing on its own. Measured here: six tests that call every function and contain zero assertions scored 100.0% line coverage (48 of 48 lines) and 87.5% branch coverage while killing 0 of 70 seeded faults. Coverage and detection are independent quantities",
+      "That the suite is adequate for the covered code but says nothing about integration behaviour, which is what the remaining 8% represents",
+      "That the suite is probably fine — 92% is above the industry-standard 80% threshold, and pushing higher has diminishing returns because the last lines are error handlers"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer treats coverage as a proxy for verification, which is exactly the belief the metric's name encourages. Coverage records which lines the interpreter executed; it has no access to whether anything compared a result to an expectation. The proof is constructive rather than statistical: a suite wrapping every call in try/except with no assertions reaches the metric's ceiling and detects nothing at all, so a suite can sit anywhere on the range from 0% to 100% detection at the same coverage number. Option 3 is a real concern but a different one — coverage's blindness here has nothing to do with integration. Option 4's 'industry-standard 80%' has no measured basis in anything."
+  },
+  {
+    "stage": "check",
+    "question": "A six-line shipping function is exercised by exactly one test, `shipping_cents(6000, True)`. Both of its `if` statements come out true. What do line and branch coverage report?",
+    "options": [
+      "Line 100.0% and branch 100.0% — every statement ran and every decision was evaluated, which is what branch coverage measures",
+      "Line 66.7% and branch 50.0% — the two statements inside the untaken else paths did not run",
+      "Line 100.0% (6 of 6) and branch 50.0% (2 of 4). Both `if` statements have no `else`, so there is no statement on the false side to leave unexecuted — but each decision contributes two outcomes and only the true one was taken",
+      "Line 100.0% and branch 75.0% — the second `if` is nested under the first, so its false outcome is only partially reachable"
+    ],
+    "correct": 2,
+    "explanation": "The trap is thinking branch coverage counts decisions *evaluated* rather than outcomes *taken*. A decision contributes two units and you need both. The deeper point is structural: an `if` with no `else` costs you nothing in line coverage, because the false side contains no statement to miss. Backend code is overwhelmingly made of guard clauses, early returns, null checks and feature flags — all `if` with no `else` — so line coverage is systematically blindest exactly where backend code is densest. That is the argument for turning on `--branch`, which is off by default in coverage.py."
+  },
+  {
+    "stage": "check",
+    "question": "Five suites of increasing quality are measured against the same 48-line module and the same 70 seeded faults. Suites 3, 4 and 5 all report 100.0% line coverage and 100.0% branch coverage. What are their mutation scores?",
+    "options": [
+      "All three are close together — once both coverage metrics are maxed out, a suite has exercised every statement and every decision, so the remaining differences are small",
+      "78.6%, 88.6% and 95.7%. The 13 tests separating suite 3 from suite 5 are worth 17 points of detection and exactly zero points of coverage, because they add assertions and boundary cases rather than reaching new code",
+      "They fall as the suites grow, because adding more tests over the same code increases the chance that one of them is a tautology that dilutes the score",
+      "The scores cannot be compared — mutation score depends on which operators are enabled, so three suites measured against the same operator set will still produce incomparable numbers"
+    ],
+    "correct": 1,
+    "explanation": "The first option is the natural inference and it is exactly backwards: coverage saturating is the *start* of the interesting range, not the end of it. Line coverage here was already at its maximum on suite 1 — the no-assert suite — and branch coverage was finished by suite 3, while the mutation score had not stopped climbing at suite 5. Option 4 states something true in general (mutation scores are not comparable across codebases or operator sets) and then draws the wrong conclusion: comparing two suites over the *same* code with the *same* operators is precisely the comparison the metric is valid for, and it is the one that matters when you are deciding whether a test was worth writing."
+  },
+  {
+    "stage": "check",
+    "question": "After running 70 mutants against the strongest suite, 3 survive. Every one of them is indistinguishable from the original across all 302 probe calls. What should you conclude and do?",
+    "options": [
+      "They are equivalent mutants — the probe set has proved it. Record the ceiling as 95.7%, exclude those three from future runs, and move on",
+      "The probe set is too small. Increase it until each survivor is separated, since any two syntactically different programs must differ on some input",
+      "They are equivalence candidates, not proven equivalents — a probe can prove a mutant killable but never prove one equivalent. Read all three by hand; here each turned out genuinely equivalent, putting the achievable ceiling at 95.7% rather than 100%",
+      "The suite has three gaps. Write a test for each survivor, since a surviving mutant is by definition a fault the suite failed to detect"
+    ],
+    "correct": 2,
+    "explanation": "Option 1 gets the outcome right and the epistemics wrong, which matters because the same reasoning applied to a larger mutant set will mislead you. Agreement across 302 probes is evidence, not a theorem; deciding equivalence in general reduces to program equivalence and is undecidable (Jia & Harman, IEEE TSE 37(5), 2011). Option 2 is false — two programs can be syntactically different and compute the same function on every input, which is exactly what an equivalent mutant is. Option 4 is the default assumption and it is why teams abandon mutation testing: chasing an unkillable survivor is unbounded work. The correct workflow is the triage measured here — against a weaker suite, 15 survived and 12 were separated by some probe, each of those 12 arriving with a concrete failing input already attached."
+  },
+  {
+    "stage": "post",
+    "question": "The correct reading of coverage rests on an asymmetry between two conditional probabilities. Which pair is right, and what follows from it?",
+    "options": [
+      "P(fault detected | line executed) is high and P(fault detected | line never executed) is low, so coverage is a good but noisy proxy for detection and should be gated at a high threshold",
+      "P(fault detected | line never executed) = 0 exactly and universally, while P(fault detected | line executed) measured 84.6% and is never 1. So coverage is a ceiling: low coverage is hard evidence of a gap, high coverage is evidence of nothing",
+      "Both probabilities are empirical and codebase-specific, so the only sound use of coverage is tracking its trend over time rather than any absolute level",
+      "P(fault detected | line executed) = 1 by definition, since executing mutated code necessarily produces different behaviour that some assertion will catch"
+    ],
+    "correct": 1,
+    "explanation": "The asymmetry is the whole point and it is almost never stated precisely. One side is a theorem: a test cannot observe a difference in code that never runs during it, so an uncovered line is a guaranteed hole in every program, language and suite. The other side is merely empirical and well below 1 — executing a line buys the *possibility* of detection and nothing more. Option 4 conflates infection with propagation: mutated code can execute, produce a different intermediate value, and still return the same answer, or return a different answer that nothing asserts on. The asymmetry also pays practically: because unexecuted lines are guaranteed survivors, `mutmut --use-coverage` skips their mutants with no loss of information at all."
+  },
+  {
+    "stage": "post",
+    "question": "You want mutation testing in CI without an 18-hour job. The measured mutant density is 1.46 per executable line and your suite takes 30 seconds. What configuration follows?",
+    "options": [
+      "Run the full-repo mutation on every pull request but cap the mutant count with a random sample, so each PR gets an unbiased estimate of the whole repository's score",
+      "Keep the total-coverage gate at 90% for pull requests and add mutation testing quarterly, since mutation is too slow to be part of any regular process",
+      "Gate on changed-line coverage at 100% with diff-cover, run mutation on the diff in the PR — a 60-line diff is about 88 mutants and 5.5 minutes on 8 workers — and run --paths-to-mutate over the high-consequence modules nightly, where 1,167 mutants is about 1.2 hours",
+      "Gate on mutation score for the whole repository at 100%, run nightly, and quarantine the modules that fail until someone fixes them"
+    ],
+    "correct": 2,
+    "explanation": "The cost model is `mutants × suite runtime` and mutants scale with lines, so the only variable you control is how many lines you point it at — which is what makes the diff the right unit for a blocking gate. Option 1's random sample sounds statistically sensible and answers the wrong question: you do not need an estimate of your repository's overall score in a PR, you need to know whether *this change* is tested. Option 4 sets a target that is provably unreachable — the measured ceiling here was 95.7% because of equivalent mutants, and a 100% threshold will be met by deleting inconvenient mutants rather than by writing tests. Note also what the recommendation removes: the total-coverage gate is deleted rather than lowered, because any named number becomes a target."
+  }
+]

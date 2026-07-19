@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "An engineer receives 41 alerts overnight. Forty are noise; the one real alert at 04:12 is swiped away unread, and checkout stays broken for two more hours. What is the most accurate description of what failed?",
+    "options": [
+      "The engineer was not disciplined enough and should read every alert",
+      "The monitoring backend dropped the important notification",
+      "A detection failure with a human in the loop: the rule evaluated correctly and the notification arrived, but the previous forty alerts had trained the responder that alerts carry no information — and the alerts themselves are what produced that training",
+      "The alert thresholds were set slightly too low and need a small adjustment"
+    ],
+    "correct": 2,
+    "explanation": "Every mechanical part of the pipeline worked — evaluation, routing, delivery. The system failed at the last hop, the human, and it failed because the signal-to-noise ratio had taught that human a correct inference: alerts here don't mean anything. That makes alert fatigue a property of your alert set, not a character flaw in the person carrying the pager, and it means the fix is deleting alerts rather than exhorting people to read them."
+  },
+  {
+    "stage": "check",
+    "question": "Why is 'page on symptoms, not causes' the standard rule, rather than a stylistic preference?",
+    "options": [
+      "Because cause alerts are technically harder to write in PromQL",
+      "Because a cause alert is a proxy for user pain and is therefore wrong in both directions — it pages when the machine is busy but users are fine (a batch service happily running at 85% CPU), and it stays completely silent when users are broken but no machine is unhappy (a payment API returning HTTP 200 with an error body) — while a symptom alert also covers failure modes nobody enumerated in advance",
+      "Because cause metrics are more expensive to store than symptom metrics",
+      "Because symptom alerts fire less often, so the pager is quieter"
+    ],
+    "correct": 1,
+    "explanation": "The correlation between 'CPU is high' and 'users are suffering' is real but weak, and the cells where it breaks are exactly the ones that cost you: false pages and silent outages. A symptom alert measures the thing you actually care about, so it fires for causes you never imagined — which is the only defence against unknown unknowns. Cause metrics remain valuable as diagnostics you consult after a symptom alert wakes you, which is why they belong on dashboards and in tickets."
+  },
+  {
+    "stage": "check",
+    "question": "A rule uses `expr: error_ratio > 0.01` with `for: 5m`. A colleague claims this is equivalent to `avg_over_time(error_ratio[5m]) > 0.01`. What is the actual difference?",
+    "options": [
+      "There is no difference; `for` is just shorthand for the average",
+      "`for` uses more memory in Prometheus but behaves identically",
+      "The average is evaluated once per scrape while `for` is evaluated once per minute",
+      "`for` requires the condition to be true at every single evaluation in the window — one sample below the threshold resets the clock to zero — whereas the average lets a single 30-second spike at 30% errors drag a five-minute mean over the line and fire a page about damage that is already over"
+    ],
+    "correct": 3,
+    "explanation": "When an expression starts returning a series the alert becomes 'pending' and Prometheus records activeAt; it fires only once now - activeAt >= for, and any evaluation where the series disappears drops it straight back to inactive. That makes `for` a transient suppressor: it demands sustained badness. An average is the opposite — it smooths, so a brief extreme spike survives as an elevated mean. The mirror-image problem, flapping on the way out, is what `keep_firing_for` addresses."
+  },
+  {
+    "stage": "check",
+    "question": "A Kafka broker loses its network for ninety seconds and fourteen separate alerts fire across consumers, publishers and readiness probes. Which Alertmanager mechanisms exist to turn that into one notification, and what does the `equal` field do?",
+    "options": [
+      "Only silences can help, and `equal` sets the silence duration",
+      "`group_by` with `group_wait` batches alerts sharing the chosen labels into a single message, and `inhibit_rules` suppress downstream alerts while an upstream cause alert is firing — with `equal` naming the labels that must match on both sides, so a ClusterUnreachable in eu-west doesn't suppress alerts in us-east",
+      "`repeat_interval` merges duplicate alerts, and `equal` compares alert severities",
+      "Prometheus deduplicates identical alerts before they reach Alertmanager; `equal` is a routing hint"
+    ],
+    "correct": 1,
+    "explanation": "Grouping and inhibition are separate tools for separate shapes of noise. Grouping collapses many instances of the same kind of alert into one message; group_wait holds the first notification so the rest of the burst joins it. Inhibition is causal — it drops the symptom alerts while the known upstream cause is already firing. The `equal` field is the guard that keeps inhibition scoped: without it an inhibition rule silences matching alerts everywhere, including regions and clusters that are perfectly healthy."
+  },
+  {
+    "stage": "post",
+    "question": "Your team's on-call rotation averages six pages per shift and people are burning out. A manager proposes expanding the rotation from four engineers to six. What does the SRE guidance actually recommend, and why?",
+    "options": [
+      "Expand the rotation — more people means each person is on-call less often, which solves the problem",
+      "Fix the alerts. A widely used guideline is a ceiling of about two incidents per 12-hour shift, and exceeding it is a signal about the alert set, not the staffing level: adding humans to absorb noise scales your costs with your noise, while deleting the noise removes it permanently. Run the alert set through the triage questions and delete anything that fired repeatedly without producing action",
+      "Move to a follow-the-sun rotation immediately, regardless of team geography",
+      "Increase repeat_interval so unacknowledged pages nag less often"
+    ],
+    "correct": 1,
+    "explanation": "The two-pages-per-shift ceiling is what converts alerting from an opinion into an engineering constraint: consistently exceeding it means the alerts are wrong, because a well-tuned symptom-based alert set simply does not produce six real incidents a shift. Expanding the rotation treats the symptom and permanently prices the noise into headcount. It also removes the feedback signal — spreading pain across more people makes it less likely anyone pushes to delete the noisy alerts."
+  },
+  {
+    "stage": "post",
+    "question": "Why must a postmortem be blameless, and why is 'contributing factors' preferred over 'root cause'?",
+    "options": [
+      "Blamelessness is a legal requirement in most jurisdictions, and 'contributing factors' is the term auditors prefer",
+      "Blameless postmortems are kinder, and 'contributing factors' sounds more thorough in a document",
+      "Blame is fine as long as it stays internal; the real issue is that 'root cause' is too vague for tracking",
+      "The reason is mechanical rather than moral: the postmortem's only asset is honest information from the people closest to the failure, and if naming someone has consequences for them, the next person omits the embarrassing step — so blame destroys exactly the data you are collecting. And real failures in complex systems come from a combination of factors none of which was individually sufficient, so naming one 'root cause' yields one fix where the honest account yields four"
+    ],
+    "correct": 3,
+    "explanation": "Humans under threat of punishment withhold information, and withheld information is precisely what the postmortem exists to surface — so blame is self-defeating regardless of how anyone feels about it. The blameless version asks how the system made the mistake easy, available and unnoticed. Similarly, 'the deploy caused it' hides the short canary window, the eleven-minute manual rollback, and the alert silenced three months earlier — each of which is separately fixable. And none of it matters unless the action items ship with a named owner and a date."
+  }
+]

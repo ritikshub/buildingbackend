@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "How should API keys be stored in your database, and why is the answer different from how you store passwords?",
+    "options": [
+      "In plaintext, so you can show them to the user again later",
+      "With bcrypt/Argon2, exactly like passwords",
+      "As a fast hash (e.g. SHA-256) plus a searchable prefix and metadata — never the raw key. Unlike a human password, an API key is already high-entropy random from a CSPRNG, so there's nothing to brute-force and no slow, memory-hard KDF is needed; a fast hash is both sufficient and fast to verify on every request. A DB leak then exposes hashes, not usable keys",
+      "Encrypted with a key stored in the same database"
+    ],
+    "correct": 2,
+    "explanation": "Passwords need slow hashes because they're low-entropy and guessable; API keys are long random secrets, so the guessing attack that motivates bcrypt/Argon2 doesn't apply. Store a fast SHA-256 hash (so a breach yields no usable keys) with a prefix for identification, show the full key exactly once, and verify by hashing the presented key and comparing in constant time. Plaintext or reversible encryption reintroduces the very leak you're guarding against."
+  },
+  {
+    "stage": "check",
+    "question": "Even a well-managed API key has a ceiling. What does a bare bearer key NOT give you?",
+    "options": [
+      "Nothing is missing — a bearer key is fully sufficient for any API",
+      "It provides only weak authenticity (whoever sends it holds the key) but no integrity — an attacker or buggy proxy could alter the request body and the key wouldn't notice — and no freshness — a captured request replays verbatim. It also rides on every request, so every log and intermediary is a chance to leak it. HMAC request signing adds integrity and freshness and keeps the secret off the wire",
+      "It can't be sent over HTTPS",
+      "It doesn't work for GET requests, only POST"
+    ],
+    "correct": 1,
+    "explanation": "A bearer key answers 'do you hold the secret?' and stops there. It says nothing about whether the request was tampered with (integrity) or whether it's a replay of an earlier valid call (freshness), and the secret itself is transmitted every time. Signing fixes all three: the client sends a per-request signature instead of the secret, and the signature covers the request contents."
+  },
+  {
+    "stage": "check",
+    "question": "In HMAC request signing, what is the 'canonical string' and why does it matter what goes into it?",
+    "options": [
+      "A random nonce that identifies the request",
+      "A deterministic serialization of the request's meaningful parts — method, path, a timestamp, and a hash of the body — that both client and server build identically. The client HMACs it with the shared secret and sends only the signature; the server rebuilds it and recomputes. It matters because anything you leave OUT of the canonical string is unprotected: an attacker can change it without breaking the signature",
+      "The encrypted form of the request body",
+      "The list of HTTP headers, sorted alphabetically, with no other content"
+    ],
+    "correct": 1,
+    "explanation": "The signature only protects what it covers. If the body hash is in the canonical string, tampering with the body invalidates the signature; if the method or path is included, they can't be swapped. Whatever you omit (a query param, a header) an attacker can alter freely. This is why AWS SigV4 carefully signs the method, URI, query, selected headers, and a body hash — the canonical request is the contract."
+  },
+  {
+    "stage": "check",
+    "question": "A partner correctly HMAC-signs every request, but includes no timestamp or nonce. What attack remains?",
+    "options": [
+      "Signature forgery, because HMAC is weak without a timestamp",
+      "Replay: an attacker who captures one valid signed request can resend it verbatim any number of times, and it will verify perfectly every time — because a correctly signed request stays correctly signed. Adding a timestamp (reject requests outside a short window) and a nonce (reject any nonce seen before) makes each request usable only once and only briefly",
+      "None — signing alone fully protects the request",
+      "The body could be read in transit, since signing isn't encryption"
+    ],
+    "correct": 1,
+    "explanation": "Authenticity and integrity come from the HMAC; freshness does not. A captured signed request is a valid signed request forever, so it can be replayed — re-triggering a charge, a transfer, an action. The timestamp bounds how long a captured request is usable; the nonce cache ensures a given request is accepted at most once. Signing without replay protection is a common, real vulnerability."
+  },
+  {
+    "stage": "post",
+    "question": "A webhook handler parses the JSON body, re-serializes it, and verifies the signature over the re-serialized string. It passes tests but rejects some real webhooks. Why, and what's the rule?",
+    "options": [
+      "The provider's signature algorithm is broken",
+      "Re-serializing JSON changes whitespace, key order, and number formatting, so the bytes no longer match what the provider signed, and the HMAC fails. You must compute and verify the signature over the EXACT raw request body bytes as received, before any parsing or re-encoding. Parse only after the signature verifies",
+      "The handler must use a faster hash than the provider",
+      "JSON webhooks can't be signed; only form-encoded ones can"
+    ],
+    "correct": 1,
+    "explanation": "The provider signed specific bytes; any transformation (pretty-printing, reordering keys, re-encoding numbers) produces different bytes and a different HMAC. Verify over the raw body exactly as received, then parse. This is why webhook SDKs take the raw payload, not a parsed object, and why frameworks that auto-parse the body can quietly break verification."
+  },
+  {
+    "stage": "post",
+    "question": "An attacker POSTs a forged `payment_succeeded` event to your public webhook URL and your handler ships goods. What was missing — and why should even a verified high-value webhook not be fully trusted?",
+    "options": [
+      "Nothing was missing; public webhook URLs are inherently unsafe",
+      "The missing control is signature verification: the endpoint is a public URL anyone can POST to, and the HMAC signature (computed with the secret shared only with the real provider) is the only thing distinguishing a genuine event from a forgery — the forged POST has no valid signature. Separately, for high-value actions you should treat even a verified webhook as a notification and re-fetch the authoritative object from the provider's API, since a webhook body can be stale, reordered, or spoofed upstream",
+      "The handler should have required the webhook over HTTP instead of HTTPS",
+      "The only fix is to hide the webhook URL so attackers can't find it"
+    ],
+    "correct": 1,
+    "explanation": "A public endpoint accepts anyone's POST, so verification is mandatory: recompute the HMAC over the raw body with your webhook secret and compare constant-time — a forgery fails because the attacker lacks the secret. Hiding the URL is security through obscurity and doesn't help. And because webhooks can arrive out of order, be replayed, or reflect a state that changed, high-value handlers re-fetch the source of truth rather than trusting amounts in the payload."
+  }
+]

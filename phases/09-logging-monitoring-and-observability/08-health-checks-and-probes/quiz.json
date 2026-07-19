@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service's health endpoint queries the database and returns 503 when the query fails. All 40 replicas share that database, and you have wired the endpoint to the liveness probe. The database has a 30-second failover. What happens?",
+    "options": [
+      "Nothing — the replicas keep serving from cache until the database returns, because liveness failures are advisory",
+      "The 40 replicas are removed from the load balancer one at a time and return automatically when the database recovers",
+      "All 40 replicas fail liveness at the same instant and are killed and restarted together, so the 30-second blip becomes a full outage with 40 simultaneous cold starts",
+      "Only the replica whose connection happened to be in use is restarted; the rest keep their connections"
+    ],
+    "correct": 2,
+    "explanation": "A liveness failure means 'kill and restart this container'. Because the dependency is shared, every replica fails at the same moment, so the orchestrator restarts the entire fleet at once — losing every warm cache and connection pool and stampeding the database that just recovered. This is why liveness must never check a dependency; the check belongs in readiness, whose consequence (removal from the load balancer) is cheap and reversible."
+  },
+  {
+    "stage": "check",
+    "question": "What is the defining difference between a liveness probe and a readiness probe?",
+    "options": [
+      "The action taken on failure: liveness failure kills and restarts the container, readiness failure only removes the instance from the load balancer and is reversible",
+      "The HTTP status code they return — liveness uses 500 and readiness uses 503",
+      "Liveness is polled by the load balancer and readiness by the orchestrator",
+      "Readiness runs only during startup, while liveness runs for the life of the process"
+    ],
+    "correct": 0,
+    "explanation": "Both endpoints look identical from the outside — an HTTP GET returning 200 or 503. What separates them is entirely the consequence: liveness failure is a destructive, irreversible restart, readiness failure is a reversible routing decision. That asymmetry is why dependency checks are safe in readiness and catastrophic in liveness."
+  },
+  {
+    "stage": "check",
+    "question": "A liveness probe is configured with periodSeconds=5, failureThreshold=3 and timeoutSeconds=2. Roughly how long after a process hangs will it be restarted, and how long a transient hiccup will it tolerate without acting?",
+    "options": [
+      "5 seconds to detect; it tolerates nothing, since one failure is enough",
+      "3 seconds to detect; it tolerates hiccups up to 5 seconds",
+      "15 seconds to detect; it tolerates any hiccup shorter than 15 seconds",
+      "About 17 seconds to detect (5 x 3 + 2), and it absorbs any transient shorter than about 10 seconds (5 x 2)"
+    ],
+    "correct": 3,
+    "explanation": "Detection time is periodSeconds x failureThreshold + timeoutSeconds, and the worst case adds one more period because the failure can begin just after a probe that succeeded. A blip shorter than periodSeconds x (failureThreshold - 1) never produces enough consecutive failures to act. Fast detection and flap tolerance are the same dial pulled in opposite directions, which is why liveness is tuned slow and readiness fast."
+  },
+  {
+    "stage": "check",
+    "question": "On SIGTERM your process immediately fails readiness, closes its listening socket, and exits once in-flight requests finish. Requests still get killed during every deploy. Why?",
+    "options": [
+      "The readiness endpoint should have returned 200 during shutdown so the load balancer would not panic",
+      "The load balancer learns you are unready by polling, and that change takes seconds to propagate — so requests it had already routed arrive after you stopped accepting, and are refused or reset",
+      "terminationGracePeriodSeconds is too long, so the orchestrator kills the pod before the socket closes",
+      "SIGTERM cannot be caught, so the handler never runs"
+    ],
+    "correct": 1,
+    "explanation": "Failing readiness is instantaneous inside your process but takes seconds to reach every load balancer and kube-proxy. The missing step is the wait: keep serving for a few seconds after failing readiness, before you stop accepting. That is exactly what a preStop sleep hook buys, and why an AWS target group has a deregistration delay."
+  },
+  {
+    "stage": "post",
+    "question": "Your checkout service cannot function without Postgres, but can serve fine without the recommendation service (it just hides a carousel). The recommendation service goes down. What should /readyz return?",
+    "options": [
+      "503, because a dependency is down and honesty about failures is the point of a health check",
+      "503, but only on half the replicas, so some capacity is preserved",
+      "200 with a body reporting status 'degraded', because you can still serve the traffic — pulling yourself from rotation over a soft dependency removes capacity for a partial problem",
+      "200, and remove the recommendation check entirely since it can never influence the status code"
+    ],
+    "correct": 2,
+    "explanation": "Only hard dependencies — the ones without which you cannot serve a meaningful response — belong in the readiness status code. A soft dependency's failure should degrade the response and show up in logs and metrics, not shed your own capacity. Classify every dependency as hard or soft in writing before an incident forces the decision at 03:00."
+  },
+  {
+    "stage": "post",
+    "question": "A thread-pool deadlock leaves your service unable to complete any request, yet its tcpSocket probe stays green for hours. Why, and what fixes it?",
+    "options": [
+      "The kernel completes the TCP handshake regardless of whether the application ever reads or answers, so a tcpSocket probe proves only that something is listening; an httpGet probe against a liveness endpoint that checks in-process progress catches it",
+      "The probe is cached by the orchestrator; setting Cache-Control: no-store on the socket fixes it",
+      "tcpSocket probes only run during startup, so switching to initialDelaySeconds=0 fixes it",
+      "The deadlock is in the readiness path only; moving the check into readiness resolves it"
+    ],
+    "correct": 0,
+    "explanation": "A TCP connect exercises the kernel's accept queue, not your code, so a completely wedged application still passes. An httpGet liveness probe that reflects real in-process progress — a worker loop heartbeat, an event-loop tick — actually exercises the request path. This is one of the rare cases where a restart is genuinely the right action, which is exactly what liveness is for."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "An API returns any user's note for `GET /notes/{id}` as long as the caller sends a valid login token — change the id and you read someone else's data. The team already requires a token on every endpoint. What is still broken?",
+    "options": [
+      "Authentication — the token must not be getting verified correctly",
+      "Nothing security-related; this is a caching bug",
+      "Authorization — the token proves who the caller is, but nothing checks whether this caller may read this specific note. Requiring a login (authentication) cannot fix it, because it was never an authentication problem. The correct response for a valid-but-unpermitted caller is 403 Forbidden",
+      "The token should be encrypted so users can't read the id inside it"
+    ],
+    "correct": 2,
+    "explanation": "This is IDOR (Insecure Direct Object Reference), the textbook authorization bug. Authentication succeeded — the server knows exactly who is calling. What is missing is the per-resource check: does this identity own, or have permission on, note {id}? Adding more authentication does nothing, which is the whole point of separating the two questions. A valid caller asking for a forbidden resource gets 403, not 401."
+  },
+  {
+    "stage": "check",
+    "question": "Why do HTTP 401 and 403 point you at different halves of the system when debugging?",
+    "options": [
+      "They are interchangeable; both mean 'access denied' and the distinction is cosmetic",
+      "401 (confusingly named 'Unauthorized') means un-authenticated — you did not prove who you are, so re-sending with a valid credential may work; it sends you to the authentication layer. 403 Forbidden means authenticated but not permitted — the server knows who you are and the answer is still no, so re-sending the credential won't help; it sends you to the authorization policy",
+      "401 is for missing tokens and 403 is for expired tokens; both are authentication failures",
+      "403 means the server is down and 401 means the client sent a malformed request"
+    ],
+    "correct": 1,
+    "explanation": "The names are historically backwards: 401 'Unauthorized' is really 'unauthenticated'. The practical value is diagnostic routing. A 401 tells you the identity was never established — look at credentials, tokens, sessions. A 403 tells you the identity is fine but policy denied the action — look at roles, ownership, permissions. Getting them backwards sends every debugging session to the wrong subsystem."
+  },
+  {
+    "stage": "check",
+    "question": "A service token is a Base64 string that decodes to `{\"user\":\"alice\"}`, and the server trusts whatever it decodes to. An attacker sends Base64 of `{\"user\":\"admin\"}`. Why does this work, and what property was missing?",
+    "options": [
+      "It works because Base64 is weak encryption that the attacker cracked; the fix is stronger encryption",
+      "It works because Base64 is an encoding, not a signature — it is fully reversible and carries no proof of who created it, so anyone can craft a valid-looking token. The missing property is integrity (and authenticity): a signed token would let the server verify the claims came from its own auth server unmodified",
+      "It works because the token wasn't sent over TLS; HTTPS would have prevented it",
+      "It doesn't actually work, because Base64 of a different string produces an invalid token the server rejects"
+    ],
+    "correct": 1,
+    "explanation": "Base64 is a transport encoding — it makes bytes safe to put in a header, and it is trivially reversible by anyone. It provides zero integrity: it does not prevent tampering and carries no evidence of an issuer. Encryption would hide the contents but still wouldn't stop forgery on its own. The property you need is integrity via a signature or MAC (Lessons 2 and 6): the server signs the token, and verifies that signature, so an edited token fails verification."
+  },
+  {
+    "stage": "check",
+    "question": "Your app sits behind a load balancer that terminates TLS and forwards an `X-User-Id` header, which the app trusts as the caller's identity. Why is this a spoofing vulnerability?",
+    "options": [
+      "It isn't — the load balancer is inside your network, so the header is trustworthy",
+      "Because TLS termination is insecure and should never be done at the load balancer",
+      "Because the trust boundary is where untrusted input enters your app, and nothing on that boundary verifies the header. If any client, or any pod that can reach the app directly, can set `X-User-Id`, then identity is being asserted by the caller rather than proven — the app must authenticate the request itself (or cryptographically trust only the proxy), not believe a plaintext header",
+      "Because `X-` headers are deprecated and modern proxies strip them"
+    ],
+    "correct": 2,
+    "explanation": "Trusting a plaintext identity header means the client, in effect, tells you who they are and you believe it — the definition of spoofing (the S in STRIDE). The header crosses a trust boundary with nothing standing on it. Safe designs either authenticate at the app itself, or establish a verified channel from the proxy (mTLS, a signed header, a network path no untrusted party can reach) so that only the proxy's assertion is trusted. 'It's on our network' is not a control if anything untrusted can reach the port."
+  },
+  {
+    "stage": "post",
+    "question": "Your authorization service occasionally times out under load. On timeout, should the request be allowed or denied, and why?",
+    "options": [
+      "Allowed — availability matters most, and denying real users during a blip is worse than the rare unauthorized access",
+      "Denied — the principle is fail closed (secure by default): when a security decision cannot be made, the safe default is to refuse. An allow-on-error path means any way to make the authz service slow or crash becomes a way to bypass authorization entirely. The fix for the user-facing pain is to make the check fast and resilient, not to open the gate on failure",
+      "It doesn't matter, because timeouts are rare enough to ignore",
+      "Allowed, but only for read operations; writes should be denied"
+    ],
+    "correct": 1,
+    "explanation": "Fail closed. An authorization check that grants access when it errors turns every availability problem into an access-control bypass — an attacker who can induce load or a timeout gets in. Denying on failure can hurt legitimate users during an outage, and the correct response to that is resilience (caching recent decisions, timeouts with safe defaults, redundancy), never flipping the default to allow. The business pressure to 'keep the site up' is exactly what pushes teams toward the dangerous choice."
+  },
+  {
+    "stage": "post",
+    "question": "A teammate says the internal admin API is safe because its endpoint paths are undocumented and unlinked. Which principle does this violate, and why does the reasoning fail?",
+    "options": [
+      "It violates least privilege, and it fails because admins have too many permissions",
+      "It violates no security through obscurity (assume the attacker knows your system — Kerckhoffs's principle). Obscurity is not a control: attackers enumerate paths with wordlists, read your shipped/minified JavaScript and mobile-app strings, scrape crash logs and referer headers, and diff your public API. The only thing that may safely be secret is the keys, never the design or the location. The admin API needs real authentication, authorization, and network isolation",
+      "It violates defense in depth, and it fails because there is no web application firewall",
+      "It violates fail-closed, and it fails because the endpoint returns 200 by default"
+    ],
+    "correct": 1,
+    "explanation": "Hiding an endpoint is security through obscurity, and Kerckhoffs's principle tells you to assume the attacker already knows how the system is built. Undocumented paths are found constantly — directory brute-forcing, reading client-side code, leaked logs, search-engine indexing. Obscurity can raise the effort slightly as one thin layer, but it is never the control. Protect the admin API with authentication, least-privilege authorization, and by not exposing it to the public network at all."
+  }
+]

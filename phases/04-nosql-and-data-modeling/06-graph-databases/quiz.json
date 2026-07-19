@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What does a graph database store, and how is that different from a relational schema?",
+    "options": ["The same tables, just drawn differently", "Nodes (entities with a label and properties) and edges (typed, directed relationships that themselves carry properties) — the relationship is a first-class object, a direct connection, not a foreign key or join table to be re-joined", "Only numeric adjacency matrices", "JSON documents with no relationships"],
+    "correct": 1,
+    "explanation": "A graph database stores exactly what you'd whiteboard: nodes (a user, an account) with labels and properties, and edges (Ada—FOLLOWS→Bob) that are typed, directed, and carry their own properties. The relationship is a first-class thing — a physical connection between nodes — rather than a value spread across a join table that must be re-derived by joining on every query."
+  },
+  {
+    "stage": "check",
+    "question": "What is 'index-free adjacency' and why is it the defining property of a graph database?",
+    "options": ["It means the database has no indexes at all", "Each node stores direct pointers to its adjacent edges, so following a relationship is an O(1) dereference independent of total graph size — versus a relational index lookup whose cost grows with all the edges in the table and is repaid at every hop", "It means adjacency is computed by scanning the whole table each time", "It's a caching layer in front of a relational database"],
+    "correct": 1,
+    "explanation": "In a relational database, 'Ada's friends' is an index lookup over the whole friendships table — O(log n), and re-paid at each hop. In a graph database, Ada's node physically points to her edges, which point to her friends' nodes, so following a relationship is a pointer dereference — O(1), independent of how large the total graph is. The adjacency IS the index, attached to each node. That's what makes deep traversal cheap."
+  },
+  {
+    "stage": "check",
+    "question": "Why does a k-hop query blow up in a relational database but stay cheap in a graph database?",
+    "options": ["It doesn't — both cost the same", "A relational k-way self-join re-derives relationships each hop and materializes ~d^k intermediate path-rows (average degree d), while a graph traversal visits each node once and follows each edge once, costing O(nodes+edges actually visited) — bounded by the graph size, not multiplied per hop", "Graph databases secretly precompute every possible path", "Relational databases can't do more than two hops at all"],
+    "correct": 1,
+    "explanation": "Each relational hop is another self-join, and the intermediate result multiplies: hop 1 touches ~d rows, hop 2 ~d², hop k ~d^k, all re-derived from scratch. A graph BFS discovers each node once and follows each edge at most once, so its work is bounded by the part of the graph the answer touches. The Build-It measured it: six hops in a 5,000-node graph followed exactly |E| edges vs 1.4 million self-join rows — and the gap widens with every extra hop."
+  },
+  {
+    "stage": "check",
+    "question": "Which of these is the RIGHT reason to reach for a graph database?",
+    "options": ["Any time two records are related in any way", "A deep or variable-length traversal that a relational self-join blows up on — recommendations, fraud rings (accounts within N hops), pathfinding, dependency graphs — where the number of hops is 3+ or unknown", "Storing 'a user has many posts', which is a single foreign-key relationship", "Because everything is technically connected, so everything is a graph"],
+    "correct": 1,
+    "explanation": "The graph model is seductive because everything looks connected, but a foreign key is already a one-hop edge and 'users have posts' is a single join a relational database does superbly. The threshold is deep or variable-length traversal (3+ hops or an unknown count) — recommendations, fraud-ring detection, shortest path, dependency graphs — where the relational self-join's d^k blow-up actually bites. Below that bar, stay relational."
+  },
+  {
+    "stage": "post",
+    "question": "In Cypher, `MATCH (a:User {name:'Ada'})-[:FRIEND*1..4]->(x) RETURN DISTINCT x` corresponds to what you built. What is it, and what makes it efficient?",
+    "options": ["A four-way JOIN that scans the friendships table four times", "A bounded variable-length traversal (BFS 1 to 4 hops) — the engine walks the direct edge pointers via index-free adjacency, visiting each reachable node once, instead of re-joining a table per hop", "A full-table scan filtered to users named Ada", "A recursive query that never terminates"],
+    "correct": 1,
+    "explanation": "`[:FRIEND*1..4]` is a variable-length pattern — the bounded BFS you wrote (bfs_levels(start, 4)). Because of index-free adjacency, the engine follows each node's edge pointers directly and visits each reachable node once, so the cost is the size of the neighborhood, not a self-join materializing d^k rows per hop. `shortestPath(...)` is likewise your BFS shortest-path as a built-in primitive."
+  },
+  {
+    "stage": "post",
+    "question": "You add a graph database for recommendations. What are two senior cautions?",
+    "options": ["Move ALL your data into it and delete Postgres", "(1) Use it alongside the relational store — keep the transactional source of truth (orders, payments) in Postgres and put only the deep-traversal slice in the graph (polyglot persistence, Lesson 8); and (2) beware supernodes — a celebrity with millions of edges is the graph's hot partition and traversals through it explode", "Index every property and never worry about node degree", "Graph databases have no failure modes to design around"],
+    "correct": 1,
+    "explanation": "A graph database is for traversal, not for holding everything — keep ACID-critical data relational and use the graph for the relationship-heavy queries (that mix is polyglot persistence, Lesson 8). And the supernode — a node with an enormous degree — is the graph's version of the wide-column hot partition: a traversal passing through it fans out into millions of edges and blows up, so you design traversals to avoid routing everything through hubs."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A release goes out at 23:00 that ships a new container image, a new config value, and a migration that adds orders.total_cents and drops orders.total. At 03:14 the error rate is 2% and climbing. The on-call engineer redeploys the previous image digest — a clean, thirty-second rollback. What happens to the error rate?",
+    "options": [
+      "It drops to roughly zero, because the previous image is a known-good artifact that ran in production for weeks",
+      "It stays near 2%, because the artifact was never the cause and the config value still points at the new catalogue",
+      "It goes to 100%, because the old code queries orders.total and that column no longer exists — the rollback made a partial outage total",
+      "It halves, because only the requests that read the dropped column fail while the rest are served normally"
+    ],
+    "correct": 2,
+    "explanation": "Rolling back the artifact puts old code in front of the CURRENT database. The old build issues its first query against orders.total, which the migration dropped, so every request fails at the first statement — there is no code path that avoids it and no cache to hide behind. A release is three things (artifact, config, schema) and each rolls back separately; reverting one of the three is why a 2% incident becomes a 100% outage. The measured run served 200 of 200 requests as 5xx under exactly this attempt."
+  },
+  {
+    "stage": "check",
+    "question": "After the artifact-only rollback fails, the engineer also reverts the config value — two of the three layers now rolled back. What does the error rate do?",
+    "options": [
+      "Nothing at all: the errors are identical, because the schema stops every request at the first query so the config value is never read",
+      "It drops to zero, since artifact and config together define the release and both now match the known-good state",
+      "It roughly halves, because the config revert fixes the price path while the schema still breaks the read path",
+      "It rises further, because reverting config while the schema is new introduces a second, independent fault"
+    ],
+    "correct": 0,
+    "explanation": "The failure is at the first statement of every request, so execution never reaches the code that reads the config. Two of three layers reverted and the outage is 100% unchanged — measured as an identical 200 errors out of 200. This is the moment teams conclude 'rollback doesn't work' and start improvising something far more dangerous. Verify after each layer, and remember that the schema layer is the one that gates the other two."
+  },
+  {
+    "stage": "check",
+    "question": "The engineer now re-adds the dropped column but leaves the config pointing at the new catalogue. Errors go to zero and every dashboard turns green. Is the incident over?",
+    "options": [
+      "Yes — zero errors on every endpoint is the definition of a healthy service, and the config can be reconciled during business hours",
+      "Yes, provided the error rate stays at zero for a full monitoring period",
+      "No, but only because the schema change should be reviewed before it is considered permanent",
+      "No — this is the worst state so far: 200 of 200 orders were charged 100x the correct amount, $2,286,655.00 against $22,866.55 owed, and nothing alerts because there is no error"
+    ],
+    "correct": 3,
+    "explanation": "Old code reading whole currency units from a catalogue that now returns cents produces silently wrong numbers, not failures. A 5xx stops the moment you fix it; a wrong number is written to a table and read as truth by every downstream system for months. The green dashboard IS the failure mode — an error-rate alert structurally cannot detect this, which is why the correct sequence reverts schema, then config, then artifact, verifying data correctness after each step."
+  },
+  {
+    "stage": "check",
+    "question": "Your backup policy is a full backup on the first night of each quarter plus nightly incrementals — about 90 parts by the end. Per-part probability of an unreadable object (bit rot, truncated upload, expired key) is a modest 0.20%. What is the practical consequence?",
+    "options": [
+      "Negligible risk: 0.20% per part is well inside any reasonable durability budget, and object storage advertises eleven nines",
+      "Roughly a one-in-six chance the restore does not complete, because every part must be read in order — 0.998^90 is 83.51%",
+      "You lose at most one night of data, since only the corrupt part is skipped and the rest of the chain still applies",
+      "Risk is bounded by the two most recent parts, because incrementals only depend on the night immediately before them"
+    ],
+    "correct": 1,
+    "explanation": "An incremental chain is a serial dependency: a bad part costs you everything after it, not just itself. At 90 links the whole-chain success probability is 83.51%. The measured run corrupted one byte in one incremental and lost 840 of 2,520 orders plus 215 stale ones — 168 hours of writes. Chain length is a reliability number, not a storage detail; adding a weekly full moved the same corruption off the restore path entirely, giving 0 missing and 0 stale."
+  },
+  {
+    "stage": "post",
+    "question": "Your DR document states an RPO of 4 hours and an RTO of 4 hours. You run one nightly logical backup at 02:00, your database is 2 TB, and a timed restore measured 28.4 MB/s. Which statement is accurate?",
+    "options": [
+      "Both objectives are met, since the nightly job runs reliably and pg_restore parallelism will cover the restore window",
+      "The RPO is met but the RTO is not, because backup frequency bounds RPO and a nightly job satisfies a 4-hour target",
+      "Neither is met: a nightly backup means an RPO of up to 24 hours, and 2 TB at 28.4 MB/s is about 19h 32m — a 4.9x RTO miss",
+      "The RTO is met but the RPO is not, because restore throughput scales with parallel jobs while backup frequency does not"
+    ],
+    "correct": 2,
+    "explanation": "RPO is bounded by how often you capture state: a disaster at 23:50 loses everything since 02:00, so a nightly job means an RPO of up to 24 hours regardless of what the document claims. RTO is bounded by restore throughput, and the measured 28.4 MB/s turns 2 TB into 19h 32m — and that extrapolation is optimistic, assuming one warm local stream with no network transfer, constraint validation or index rebuild. Continuous WAL archiving fixes the RPO; only a faster restore path fixes the RTO."
+  },
+  {
+    "stage": "post",
+    "question": "Your nightly backup job has exited 0 for 31 consecutive nights and backup size has grown a steady 0.4% a night, so neither the exit-code alert nor the size-anomaly alert has ever fired. What is the strongest evidence you can gather that these backups are usable, and why?",
+    "options": [
+      "Verify the checksum of each backup file, which proves the bytes on disk are exactly what the backup job wrote",
+      "Restore into a scratch namespace on a schedule and diff the restored table set against the LIVE catalogue, then compare row counts and run smoke queries",
+      "Increase retention and add a second copy in another region, so a single corrupt backup can never be the only one available",
+      "Alert on any night where the backup size changes by more than 0.4%, which would catch a table silently dropping out"
+    ],
+    "correct": 1,
+    "explanation": "Exit code 0 proves a program ran without crashing; it says nothing about whether the output is complete, readable, decryptable or loadable by the engine you run today. In the measured run a migration added a payments table that the job's static include-list never picked up: 31 green nights, plausible size growth, and 9,120 unrecoverable rows discovered during an incident. Diffing against the live catalogue — not against a list of expected tables, which has the same staleness bug — caught it on the first run. Checksums verify the wrong claim, and extra copies faithfully copy the omission."
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "In plain HTTP, why can't a server notify a client the instant something happens (e.g. a new chat message)?",
+    "options": [
+      "Because HTTP has no way to encode text messages",
+      "Because HTTP is request/response — the server only ever speaks when the client asks, so it cannot start an exchange on its own",
+      "Because the server and client are on different IP addresses",
+      "Because HTTP responses are limited to 200 OK"
+    ],
+    "correct": 1,
+    "explanation": "HTTP is strictly request/response: the client asks and the server answers, then the exchange ends. The server has no channel to initiate a message. WebSockets and SSE both exist to give the server a way to push."
+  },
+  {
+    "stage": "pre",
+    "question": "Both WebSockets and Server-Sent Events start out as what?",
+    "options": [
+      "A raw TCP connection with no HTTP involved",
+      "An ordinary HTTP request that then negotiates something longer-lived",
+      "A UDP datagram stream",
+      "A DNS lookup"
+    ],
+    "correct": 1,
+    "explanation": "Both reuse the very first HTTP request. A WebSocket sends an HTTP GET asking to Upgrade; SSE sends an HTTP GET and the server replies with a normal 200 response it simply never closes. Starting as HTTP is what lets them pass through existing infrastructure."
+  },
+  {
+    "stage": "check",
+    "question": "How does a server compute the Sec-WebSocket-Accept value during the WebSocket handshake?",
+    "options": [
+      "It echoes the client's Sec-WebSocket-Key back unchanged",
+      "It encrypts the key with the server's private TLS key",
+      "It appends the fixed RFC 6455 magic GUID to the client's key, takes the SHA-1 hash, and base64-encodes the result",
+      "It generates a new random value unrelated to the key"
+    ],
+    "correct": 2,
+    "explanation": "Sec-WebSocket-Accept = base64(SHA1(Sec-WebSocket-Key + \"258EAFA5-E914-47DA-95CA-C5AB0DC85B11\")). The fixed magic GUID and SHA-1 make the answer deterministic, proving the server understood the WebSocket upgrade rather than blindly replaying a cached response."
+  },
+  {
+    "stage": "check",
+    "question": "RFC 6455 requires every client→server WebSocket frame to be masked (XOR-ed with a 4-byte key carried in the frame). What is masking for?",
+    "options": [
+      "To encrypt the payload so intermediaries cannot read it",
+      "To compress the payload and save bytes on the wire",
+      "To scramble the bytes so a confused proxy or cache can't mistake the payload for a real HTTP request (a cache-poisoning defense) — it is not encryption",
+      "To authenticate the client to the server"
+    ],
+    "correct": 2,
+    "explanation": "The masking key travels in the clear inside the same frame, so masking provides no confidentiality. Its purpose is to prevent an intermediary from interpreting attacker-chosen payload bytes as a valid HTTP request. Because that attack only runs client→server, server→client frames are not masked."
+  },
+  {
+    "stage": "check",
+    "question": "What tells a client that one complete Server-Sent Event has ended?",
+    "options": [
+      "A special binary FIN bit",
+      "A blank line (an empty line separates one event from the next)",
+      "A Content-Length header sent before each event",
+      "The TCP connection closing after every event"
+    ],
+    "correct": 1,
+    "explanation": "SSE is line-oriented UTF-8 text: fields like `data:` and `id:` appear one per line, and a blank line terminates the event. The connection stays open across many events; only a blank line — not a close — marks a boundary."
+  },
+  {
+    "stage": "post",
+    "question": "You are adding a live stock-price ticker: the server pushes prices, the client only reads. Which transport is the simplest good fit, and why?",
+    "options": [
+      "WebSockets, because a ticker requires bidirectional communication",
+      "SSE, because the flow is one-way server→client text and SSE adds automatic reconnection with no extra client code",
+      "UDP, because prices can be dropped",
+      "Polling every 100ms, because it is the only way to get fresh data"
+    ],
+    "correct": 1,
+    "explanation": "The client never sends, the data is text, and dropped connections should recover on their own — exactly SSE's strengths. Its built-in EventSource auto-reconnect and plain-HTTP nature make it simpler and more proxy-friendly than a WebSocket here. Reserve WebSockets for when the client must also push."
+  },
+  {
+    "stage": "post",
+    "question": "A WebSocket app works locally but in production the client's upgrade request comes back as a normal 200 page instead of 101 Switching Protocols. What is the most likely cause?",
+    "options": [
+      "The magic GUID changed between environments",
+      "The client forgot to mask its frames",
+      "A proxy or load balancer between client and server stripped the Upgrade/Connection headers, so the server never saw an upgrade request",
+      "SSE is interfering with the WebSocket"
+    ],
+    "correct": 2,
+    "explanation": "The 101 handshake depends on the Upgrade and Connection headers surviving every hop. Proxies and load balancers that aren't configured to pass them through will forward a plain HTTP request, and the server responds with an ordinary 200. This proxy-transparency gap is the classic WebSocket production failure."
+  }
+]

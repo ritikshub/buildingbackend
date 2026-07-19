@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service emits perfectly structured JSON logs and handles 200 concurrent requests. Why can't you follow one request through the log stream?",
+    "options": [
+      "JSON logs are written out of order, so the stream needs re-sorting before it can be read",
+      "Structured logs drop fields under load, so some lines are incomplete",
+      "All 200 requests write into one stream interleaved, and no field identifies which lines belong together — user_id fails because one user can have several requests in flight, and timestamps fail because events collide at millisecond resolution and time-order is not causal grouping",
+      "Log levels are set too low, so the interesting lines are filtered out"
+    ],
+    "correct": 2,
+    "explanation": "Structure makes each line queryable; it does not make lines belong to each other. At ~1,200 events per second, several requests share the same millisecond, and sorting by time groups events that are adjacent in time rather than related by cause. A user with three tabs open produces three concurrent requests under one user_id. The fix is a dedicated identifier minted once per request-journey and stamped on every line."
+  },
+  {
+    "stage": "check",
+    "question": "Why is `threading.local()` the wrong place to store a trace ID in an `asyncio` service, and what does `contextvars.ContextVar` do differently?",
+    "options": [
+      "One thread runs thousands of coroutines, so they all share a single thread-local slot: request A sets the ID, awaits, the loop switches to B which overwrites the slot, and A resumes logging B's ID. A ContextVar reads from the current Context, and asyncio gives each Task a snapshot copy of that Context at creation (copy-on-task), so concurrent tasks never see each other's writes",
+      "`threading.local()` is deprecated in modern Python and raises a warning under asyncio",
+      "ContextVars are faster because they avoid a lock on every read, which matters on a hot logging path",
+      "`threading.local()` cannot store objects, only strings, so it cannot hold a full span context"
+    ],
+    "correct": 0,
+    "explanation": "The failure is silent, which is what makes it dangerous: no exception is raised, you simply get log lines attributed to the wrong request. Thread-locals are keyed by OS thread, and an event loop multiplexes many logical requests onto one thread. ContextVars are keyed by Context, and `asyncio.Task` creation copies the current Context, so a write inside a task is invisible to its parent and siblings. Threads also each start with their own empty Context, so one mechanism covers both concurrency models."
+  },
+  {
+    "stage": "check",
+    "question": "In `traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01`, what is the third field and what should the receiver do with it?",
+    "options": [
+      "It is the receiver's own span-id, pre-allocated by the caller so both sides agree on it",
+      "It is a checksum over the trace-id, used to detect a corrupted header",
+      "It is a secondary trace-id used only when the primary trace-id collides",
+      "It is the parent-id: the CALLER's own 8-byte span-id. The receiver mints a fresh span-id for itself and records this value as its parent, which is exactly how the flat list of spans assembles into a tree"
+    ],
+    "correct": 3,
+    "explanation": "The field is named from the receiver's point of view: what the caller sends is its own span-id, which becomes the parent of the span the receiver creates. That single pointer is what turns a pile of spans sharing a trace-id into a waterfall. The widths are fixed by the spec — 2 hex version, 32 hex (16-byte) trace-id, 16 hex (8-byte) parent-id, 2 hex flags — all lowercase, and an all-zero trace-id or parent-id is invalid and must be rejected."
+  },
+  {
+    "stage": "check",
+    "question": "A message is published during a web request and consumed by a worker four hours later. How should the consumer's span relate to the producer's?",
+    "options": [
+      "As a child span, since the producer caused the work and a trace is defined by causality",
+      "As a linked span sharing the same trace-id: a child span is contained by its parent in time, but the producing request finished four hours earlier, so parenting it would produce a trace whose root span appears to last four hours",
+      "As a completely new trace, because too much time has passed for the two to be related",
+      "As a child span, but with the parent's duration recorded as zero so the waterfall stays readable"
+    ],
+    "correct": 1,
+    "explanation": "Parent-child in tracing means containment, not just causation — the parent is still open, waiting on the child. Asynchronous work breaks that: the HTTP request returned 202 long ago. A span link records 'this work was caused by that span' without claiming the parent was still running, so the trace stays truthful. The context itself must ride in the message headers (Kafka record headers, AMQP properties), never in the body, which belongs to the application's own versioned schema."
+  },
+  {
+    "stage": "post",
+    "question": "Your gateway samples 1% of traces and sets `traceparent` flags accordingly, but the payment-service ignores the incoming flag and runs its own independent 1% sample. What happens?",
+    "options": [
+      "Nothing meaningful — you get roughly twice the sampling coverage, which is a bonus",
+      "The payment-service overrides the gateway, so effectively 1% of traces are still complete",
+      "About 1% of the gateway's sampled traces also have their payment span, so roughly 99% of your recorded traces are missing that hop — and a half-trace is more misleading than none, because an absent span looks like an operation that never ran rather than one that was dropped",
+      "The trace-id changes at the payment-service, splitting each journey into two separate traces"
+    ],
+    "correct": 2,
+    "explanation": "Sampling is a decision made once, at the head of the trace, and propagated in bit 0 of the trace-flags byte. Two independent 1% decisions agree on only about 1% of the traces the first one kept. The result is not merely less data — it is actively misleading, because you cannot distinguish 'the payment service was never called' from 'the payment span was sampled away.' Downstream services must honour the flag they receive rather than re-rolling it."
+  },
+  {
+    "stage": "post",
+    "question": "A request reaches your service already carrying `traceparent` from the load balancer, plus `baggage: tenant=acme,session_token=abc123`. What is the correct handling?",
+    "options": [
+      "Reuse the inbound traceparent — extract its trace-id, take its parent-id as your parent, and mint a fresh span-id, because minting a new trace-id here would sever the journey at your own front door. Drop `session_token` from baggage: baggage crosses trust boundaries as a plain header that anything downstream can read and anything upstream can forge, so secrets never belong in it",
+      "Generate a fresh trace-id so your service controls its own identifiers, and forward the baggage unchanged",
+      "Reuse the traceparent and forward all baggage unchanged, since baggage is encrypted in transit by TLS",
+      "Drop the traceparent because it came from infrastructure rather than application code, but keep the baggage"
+    ],
+    "correct": 0,
+    "explanation": "The single most common way teams silently break correlation is overwriting an ID that already arrived, which makes the load balancer's access logs unjoinable to the application's. Accept and reuse. Baggage is a different matter: it is an ordinary HTTP header propagated to every downstream hop, readable by anything on the path and forgeable by anything upstream, and it costs bytes on every call in the journey. Strip inbound baggage at the public edge and keep your own to a few small, low-risk fields."
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why is opening a new database connection for every request a performance problem?",
+    "options": ["Connections are free but slow to close", "Each open is a costly handshake (TCP + TLS + auth + a server-side process/thread), and databases cap how many connections can exist", "Connections use no resources", "The query planner reopens them anyway"],
+    "correct": 1,
+    "explanation": "Establishing a connection takes multiple round trips plus server-side setup — milliseconds next to a microsecond query. And every connection consumes DB memory/processes, so databases enforce a hard maximum you can exhaust."
+  },
+  {
+    "stage": "check",
+    "question": "How does a connection pool help?",
+    "options": ["It makes queries run in parallel automatically", "It opens a fixed set of connections once and lends them to requests, so the expensive handshake happens a few times at startup instead of per request", "It removes the database's connection limit", "It caches query results"],
+    "correct": 1,
+    "explanation": "A pool keeps a set of live connections and hands them out; a request borrows one, uses it, and returns it. The handshake cost is amortized across many requests instead of paid every time."
+  },
+  {
+    "stage": "check",
+    "question": "Why is a bigger connection pool not always better?",
+    "options": ["Bigger pools use less memory", "Too many connections overwhelm the database's CPU and memory, so past a point more connections make everything slower; you also must stay under the DB's cap across all app instances", "Big pools are illegal", "Pools can only hold 10 connections"],
+    "correct": 1,
+    "explanation": "Too small a pool throttles throughput; too large overwhelms the database with more concurrent work than it can handle, slowing everything. The pool size across all app instances must stay under the database's connection cap."
+  },
+  {
+    "stage": "check",
+    "question": "What is the N+1 query problem?",
+    "options": ["Running a query N+1 times for redundancy", "Fetching a list with 1 query, then running 1 more query per item for its related data — 1 + N round trips where 1 or 2 would do", "Having N+1 tables in a join", "A query that returns N+1 rows"],
+    "correct": 1,
+    "explanation": "N+1 is one query for the list plus one per item for details — 101 round trips for 100 items. Each is fast, but the round-trip latency multiplies, and ORMs cause it by default via lazy property access."
+  },
+  {
+    "stage": "post",
+    "question": "What's the fix for an N+1 query loading each author's books?",
+    "options": ["Add more connections to the pool", "Replace N round trips with a constant number: a single JOIN (1 query), or a batched IN query (2 queries) — in ORMs, eager loading", "Cache every author separately", "Run the loop in parallel threads"],
+    "correct": 1,
+    "explanation": "Collapse the N per-item queries into one JOIN or a batched WHERE author_id IN (...). ORMs call this eager loading (select_related/prefetch, joinedload, includes). The shape is always: constant round trips instead of N."
+  },
+  {
+    "stage": "post",
+    "question": "Your DB allows 100 connections. You run 10 app instances each with a pool max of 20. What happens?",
+    "options": ["Everything is fine — 20 is under 100", "Combined you can demand up to 200 connections against a 100 cap, so instances get 'too many connections' errors; pools must be sized so all instances together stay under the cap", "The database automatically scales to 200", "Only the first instance connects"],
+    "correct": 1,
+    "explanation": "The database's cap is global. 10 instances x 20 = 200 potential connections against a 100 limit. Pool sizes must be planned across the whole fleet (or fronted by a server-side pooler like PgBouncer) to stay under the cap."
+  }
+]

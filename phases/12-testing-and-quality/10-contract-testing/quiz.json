@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Eleven services, and you want to be sure a change to one of them does not break the other ten. Your CI already deploys all eleven into a shared integration environment and runs an end-to-end suite there. How much confidence should that gate carry?",
+    "options": [
+      "A great deal — running the real services together is the only way to test a real integration, and any other approach is testing a simulation of your system rather than your system",
+      "Very little, and the arithmetic says why: 'the system works' is a claim about a combination of versions, so 11 services with 3 live versions each is 177,147 combinations against 19 contracts (9,324x), and because the environment is only usable when every member is green, a per-service health of 92.6% made it answerable on just 42.4% of days with a 52-day longest red streak",
+      "It is the right gate but it needs investment: with better test data, faster deploys into the environment and an owner for each red build, a shared environment scales fine to a few dozen services",
+      "It is reliable for catching breakage but too slow to gate on, so the correct use is to run it nightly and treat failures as a next-morning triage queue rather than a merge blocker"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer is right about realism and wrong about arithmetic, and this lesson's whole argument is arithmetic. Two independent things scale badly. First, combinations multiply while contracts add: the environment holds exactly one of 177,147 possible version combinations at any moment, so 'it passed' is a statement about that one combination. Second, a shared environment is an AND over its members, so its availability is a product: services that are individually healthy 92.6% of the time produce an environment that is green on 42.4% of days, measured over 20,000 simulated days and matching the closed form 0.926^11 = 42.9% exactly. Investment (option 3) does not change the exponent. Nightly triage (option 4) does not help either, because the environment was red for 52 consecutive days for reasons unrelated to any one team's change — which is exactly why nobody read it."
+  },
+  {
+    "stage": "check",
+    "question": "A consumer records a contract by running its real code against a mock. The provider's response has 11 top-level fields; the consumer reads 4 of them. The provider then ships a build that adds 3 brand-new fields. What happens when the provider verifies the contract, and why?",
+    "options": [
+      "Verification fails, because the response no longer matches the recorded example: the contract captured an 11-field body and the provider now returns 14",
+      "Verification passes but emits a warning, because unrecognised fields are a common sign that the consumer's contract is stale and needs re-recording",
+      "Verification passes, 3/3 interactions, because the matcher iterates the keys of the EXPECTED body and never the actual one — extra fields are not merely tolerated, they are unobservable. The same contract failed 2 of 3 against a build that renamed one of the 4 fields the consumer does read, reporting `$.total_cents: MISSING from the provider response`",
+      "Verification passes only if the new fields are marked optional in the provider's OpenAPI document; otherwise the contract's implicit closed-world assumption rejects them"
+    ],
+    "correct": 2,
+    "explanation": "The trap is thinking of a contract as a schema. A schema describes what the API is; a contract describes what one consumer needs, and those are different documents with different failure modes. The matching loop iterates `expected`, so a field the consumer never recorded cannot fail — which is what makes the technique adoptable, because a provider that could not add a field without renegotiating with every consumer would simply stop improving its API. The measured pair makes the asymmetry concrete: 11 fields to 14 verified 3/3 unchanged, while renaming one used field failed 2 of 3 with the exact JSON path. A contract is a floor, not a schema: it says what must not disappear and nothing about what may appear."
+  },
+  {
+    "stage": "check",
+    "question": "A provider makes three changes it considers safe because each one only makes the interface more permissive: it adds a new value to a response enum, it removes a value it has already stopped emitting, and it relaxes a required response field to optional. Which of these breaks consumers?",
+    "options": [
+      "None of them. All three are relaxations of the provider's own output contract, and relaxing what you promise can only ever give consumers more room, not less",
+      "Only the removal, because consumers may have code paths keyed to the removed value; the addition and the relaxation are both purely additive from the reader's point of view",
+      "All three, measured: the enum addition is backward-compatible but only 318/400 forward (an old consumer with an exhaustive match meets an unknown symbol), the removal is only 296/400 backward (old providers are still emitting the symbol during the rollout), and the relaxation is only 296/400 forward (the old reader still demands the field and still dereferences it)",
+      "Only the relaxation, and only if consumers use a strict schema validator; with a tolerant reader that treats absence as a default, none of the three has any observable effect"
+    ],
+    "correct": 2,
+    "explanation": "Permissive-versus-restrictive is the wrong axis, and it is why all three of these ship as 'minor' changes. The right question is whether the change invalidates an assumption the OTHER side was entitled to make, and that is decided by which side reads. Adding to your output restricts your reader's assumptions: every consumer that enumerated your values is now wrong, and none of them changed. Removing a value is only safe once no instance and no stored row can still produce it, which is later than the deploy. And relaxing required-to-optional is safe on a REQUEST, where the provider is the reader, and unsafe on a RESPONSE, where the consumer is. Option 4 is the tolerant-reader trap in miniature: tolerance does not make these changes safe, it converts the exception into a wrong number."
+  },
+  {
+    "stage": "check",
+    "question": "Two frozen consumers are run against twelve provider releases, 200 orders each. One validates strictly and raises; the other ignores unknown fields, coerces types and lower-cases enums. What does the measurement show?",
+    "options": [
+      "The tolerant consumer strictly dominates: it survived releases the strict one rejected, and in every case where it survived it also produced the correct answer, which is the practical argument for Postel's law inside a service mesh",
+      "The strict consumer raised on 6 of 12 releases — each an outage — while the tolerant consumer raised 0 exceptions in 12 of 12 and issued 226 wrong receipts, understating the bill by 101,132,788 minor units. Of the 6 changes strictness would have rejected, tolerance handled 4 correctly and turned 2 into silent corruption",
+      "Both consumers failed on the same 6 releases; the only difference was the error message quality, since a coercion that cannot produce a sensible value ends up raising anyway",
+      "The tolerant consumer produced wrong answers on all 6 of the releases the strict consumer rejected, which is the straightforward argument that tolerance is always the wrong choice at an internal boundary"
+    ],
+    "correct": 1,
+    "explanation": "Both extreme readings are wrong, and the measured middle is the interesting part. Tolerance genuinely worked 4 times out of 6 — a string-encoded total, a null currency, an upper-cased status and a paginated array were all absorbed with the correct amount computed. That is a real availability win, and each corresponding strict rejection is a real outage. But the other 2 became money errors with no exception: an unknown status fell through to the not-billable branch and billed 0 for 29 orders that owed money, and `.get('total_cents', 0)` after a rename made 98 receipts read exactly zero. RFC 9413 (2023) names the mechanism that connects them: the 4 successful absorptions are the evidence that persuaded the provider changes of this kind were safe. The synthesis is to be strict about the fields you read and tolerant about everything else."
+  },
+  {
+    "stage": "post",
+    "question": "A provider keeps the field name `total_cents`, keeps its type as integer, keeps it always present — and starts putting a number of dollars in it. Which gate catches this?",
+    "options": [
+      "The contract test, because its type matcher pins the field to an integer and 1299 dollars will not satisfy the recorded example of 129900",
+      "A spec diff, because the OpenAPI document's description or `format` for the field changes and `oasdiff breaking` reports a semantic modification on the property",
+      "None of the structural gates: the change round-tripped 400/400 in both directions for a verdict of FULL, produced 0 errors in either deploy order, and left the consumer computing 1,857,277 where the provider meant 185,747,545. Only a value assertion — a golden end-to-end check or a reconciliation — ever sees it",
+      "The rolling-deploy simulation, because during the window some requests are served by the old build and some by the new one, so the consumer sees two different magnitudes for the same order and the inconsistency is detectable"
+    ],
+    "correct": 2,
+    "explanation": "This is the technique's boundary and it is worth stating plainly rather than discovering during an incident. A contract's job is to permit any integer, so `like(129900)` asserts 'an integer' and 1299 is an integer; an exact-value matcher would fail on every legitimate order instead. A spec diff sees an unchanged property. Option 4 is the most sophisticated wrong answer: the inconsistency is real during the rollout, but nothing is comparing two responses for the same order, and after the rollout completes every response is uniformly wrong. Contract testing moves the STRUCTURAL class of integration failure from runtime to build time and does nothing at all for the SEMANTIC class. The controls that work are: never redefine a field (add `total_amount_minor` and expand-contract), put the unit in the name, and keep one value assertion somewhere."
+  },
+  {
+    "stage": "post",
+    "question": "You must ship two changes: adding a required field to a request body, and making a previously-required field in that same request body optional. Which side deploys first for each, and what is the underlying rule?",
+    "options": [
+      "The provider first in both cases: the provider must be able to handle whatever the consumer might send before the consumer starts sending it, which is why provider-first is the standard order for API changes",
+      "The consumer first for both, since the consumer is the party whose code changes shape and the provider's tolerant parsing absorbs either version of the request body",
+      "Adding a required request field is FORWARD-only, so the consumer (the writer) ships first — 0 errors consumer-first against 1,505 provider-first. Relaxing a required request field is BACKWARD-only, so the provider (the reader) ships first — 451 errors consumer-first against 0. The rule: whoever READS the changed data ships first when the change is backward-compatible, and for a REQUEST the reader is the provider",
+      "It does not matter provided both ship inside the same deploy window, because a rolling deploy that flips both fleets together never exposes a mismatched pair for long enough to matter"
+    ],
+    "correct": 2,
+    "explanation": "The rule is one sentence — backward compatibility lets the READER ship first, forward lets the WRITER — but applying it requires noticing that an HTTP interaction carries data in both directions. For a response the consumer reads; for a request the provider reads. That flip is why these two changes, which sound like mirror images of each other, need opposite deploy orders, and it is the part engineers reliably get wrong. Option 4 is the most dangerous answer: deploying both together is not an ordering at all, it is all four version pairings at once, which is why the rename in this lesson failed in every arrangement (1,521 and 1,546 requests). The prediction here came from compatibility verdicts alone and a 3,000-request rolling-deploy simulation confirmed it on 12 of 12 changes."
+  }
+]

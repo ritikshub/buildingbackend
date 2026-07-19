@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "What does the data link layer (layer 2) move, and how far?",
+    "options": [
+      "Packets across the entire internet to any machine",
+      "Frames between two nodes on the same physical network (one hop)",
+      "Bits directly onto the physical wire with no addressing",
+      "Files between two applications after a connection is set up"
+    ],
+    "correct": 1,
+    "explanation": "Layer 2 handles the next hop only: it groups bits into frames and moves each frame between two directly-connected nodes on the same local network. Getting a packet across the whole internet is the network layer's job, one layer up."
+  },
+  {
+    "stage": "pre",
+    "question": "A MAC address is written as 00:1a:2b:3c:4d:5e. What are the first three octets (00:1a:2b)?",
+    "options": [
+      "The IP address of the machine",
+      "The OUI — an identifier the IEEE assigns to the hardware vendor",
+      "A checksum of the rest of the address",
+      "The port number the frame will use"
+    ],
+    "correct": 1,
+    "explanation": "A MAC address is 48 bits (6 bytes). The first 3 bytes are the OUI (Organizationally Unique Identifier), a block the IEEE hands to a vendor, so they identify who made the card. The last 3 bytes are the vendor's per-device value."
+  },
+  {
+    "stage": "check",
+    "question": "A frame arrives at a switch whose destination MAC is not in the switch's MAC table. What does the switch do?",
+    "options": [
+      "Drops the frame, since it doesn't know where to send it",
+      "Sends it back out the port it came in on",
+      "Floods it out every port except the one it arrived on",
+      "Waits and asks the destination for its port number"
+    ],
+    "correct": 2,
+    "explanation": "When a switch hasn't yet learned where a destination lives, it floods the frame to all other ports so it reaches the destination wherever it is. The eventual reply teaches the switch that MAC's port, so future frames get forwarded to just one port."
+  },
+  {
+    "stage": "check",
+    "question": "How does a host find the MAC address that owns the IP 10.0.0.5 on its local network?",
+    "options": [
+      "It reads the MAC out of the IP address directly",
+      "It broadcasts an ARP request 'who has 10.0.0.5?'; the owner replies with its MAC",
+      "It queries a central DNS server for the MAC",
+      "It floods the frame and hopes the right host keeps it"
+    ],
+    "correct": 1,
+    "explanation": "ARP (Address Resolution Protocol, RFC 826) broadcasts the question to ff:ff:ff:ff:ff:ff. Every host on the link hears it, but only the one owning 10.0.0.5 replies with its MAC, which the asker then caches in its ARP table."
+  },
+  {
+    "stage": "check",
+    "question": "The receiver recomputes the FCS (a CRC) over an incoming frame and it does not match the FCS the sender stored. What happens?",
+    "options": [
+      "The receiver fixes the corrupted bits using the FCS",
+      "The receiver asks the sender to retransmit the frame",
+      "The receiver silently drops the frame",
+      "The receiver forwards it anyway and lets the app decide"
+    ],
+    "correct": 2,
+    "explanation": "The FCS (Frame Check Sequence) only detects corruption, it doesn't correct it. A mismatch means at least one bit flipped in transit, so layer 2 drops the frame silently. Recovering the data (retransmitting) is left to a higher layer such as TCP."
+  },
+  {
+    "stage": "post",
+    "question": "An Ethernet II frame carries an EtherType of 0x0800 and a 40-byte block of data. What is true about this frame?",
+    "options": [
+      "The payload is sent as 40 bytes and the frame is below the legal minimum",
+      "The payload is padded to 46 bytes, and 0x0800 means the receiver hands it to the IPv4 code",
+      "0x0800 means the payload is ARP, and no padding is needed",
+      "The frame is rejected because 40 bytes exceeds the MTU"
+    ],
+    "correct": 1,
+    "explanation": "The Ethernet payload minimum is 46 bytes, so a 40-byte payload is zero-padded up to 46 (making the frame the 64-byte minimum). The EtherType 0x0800 identifies the payload as IPv4, so the receiver dispatches it to its IPv4 handler."
+  },
+  {
+    "stage": "post",
+    "question": "Why does replacing a hub with a switch reduce collisions on a busy network?",
+    "options": [
+      "A switch makes the wire physically faster",
+      "A switch encrypts frames so they can't interfere",
+      "A switch learns each MAC's port and forwards to just that port, so unrelated conversations don't share one collision domain",
+      "A switch drops broadcast frames entirely"
+    ],
+    "correct": 2,
+    "explanation": "A hub copies every bit to every port, so all machines share one collision domain and must take turns. A switch learns which MAC lives on which port and forwards a frame out only that port, so separate pairs of hosts can talk simultaneously without colliding."
+  }
+]

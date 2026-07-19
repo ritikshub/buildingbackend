@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What most fundamentally distinguishes one type of database from another?",
+    "options": ["The programming language it's written in", "Its data model (the shape it stores data in) and its consistency model", "The company that sells it", "How much it costs"],
+    "correct": 1,
+    "explanation": "Databases are shaped by two choices: the data model (tables, key-value, document, graph, …) which decides what's easy to ask, and the consistency model (strong vs eventual). Almost every 'which database' debate is about these two axes."
+  },
+  {
+    "stage": "check",
+    "question": "A pure key-value store is extremely fast. What is the fundamental thing you give up for that speed?",
+    "options": ["Durability", "The ability to find data by anything other than its key", "Storing large values", "Running on multiple machines"],
+    "correct": 1,
+    "explanation": "Key-value stores only let you get/put/delete by key and treat the value as an opaque blob. Asking 'all users in Berlin' requires scanning everything, because the store can't see inside the value."
+  },
+  {
+    "stage": "check",
+    "question": "What is the relational model's signature strength that most NoSQL models trade away?",
+    "options": ["Being written in C", "Ad-hoc queries plus strong integrity and ACID transactions", "Storing images", "Running in the browser"],
+    "correct": 1,
+    "explanation": "Relational databases let you ask questions nobody planned for (including joins across tables), enforce correctness with constraints, and give all-or-nothing crash-safe transactions. NoSQL models drop parts of this bundle for a specific superpower like scale."
+  },
+  {
+    "stage": "check",
+    "question": "Which problem is a natural fit for a graph database over a relational one?",
+    "options": ["Storing a single config value", "'Friends of friends of friends who like jazz' — many-hop relationship traversal", "Appending log lines", "Caching a rendered page"],
+    "correct": 1,
+    "explanation": "Graph databases store relationships as first-class edges, so many-hop traversals are cheap walks. In a relational database the same query becomes a pile of expensive self-joins."
+  },
+  {
+    "stage": "post",
+    "question": "Why is 'we might need web-scale someday' a weak reason to abandon relational on day one?",
+    "options": ["Relational databases can't scale at all", "Most systems never reach the scale where a well-run relational database stops being enough, and dropping ACID/queries costs developer time on every feature", "NoSQL is always slower", "Scaling is illegal"],
+    "correct": 1,
+    "explanation": "Giving up integrity, transactions, and ad-hoc queries imposes a tax on every future feature. Most systems never hit the scale that justifies it, and relational databases scale much further than the NoSQL wave assumed."
+  },
+  {
+    "stage": "post",
+    "question": "What does 'polyglot persistence' mean in a real production system?",
+    "options": ["Writing the app in many languages", "Using several databases together — e.g. Postgres as source of truth, Redis for caching, Elasticsearch for search — each doing what it's best at", "Translating SQL to many languages", "Storing data in many countries"],
+    "correct": 1,
+    "explanation": "Mature systems commonly combine stores: a relational source of truth plus specialized ones alongside it. Adding a complementary store is normal; replacing the primary one rarely is."
+  }
+]

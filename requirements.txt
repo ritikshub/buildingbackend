@@ -1,0 +1,33 @@
+# Python dependencies for the sandbox (see Dockerfile) — not your global system.
+#
+# Nothing in phases/**/code/ imports any of these: every lesson file is
+# stdlib-only and runs on a bare `python3`. These exist so the "Use It" half of
+# each lesson — the production tool the lesson compares against — is runnable
+# in the sandbox too. Floors are minimums, not pins; pip installs the newest
+# compatible release. Verified resolving on Python 3.12 as of 2026-07-19.
+fastapi>=0.139
+uvicorn[standard]>=0.51
+pydantic>=2.13
+httpx>=0.28
+redis>=8.0
+SQLAlchemy>=2.0
+asyncpg>=0.31
+strawberry-graphql[fastapi]>=0.321
+pytest>=9.0
+
+# Phase 9 (Logging, Monitoring and Observability). Every `code/` file in the
+# phase is stdlib-only and runs without these — they exist so the "Use It" half
+# of each lesson (the production tool) is runnable in the sandbox too.
+prometheus-client>=0.25
+opentelemetry-api>=1.44
+opentelemetry-sdk>=1.44
+opentelemetry-exporter-otlp>=1.44
+opentelemetry-instrumentation-fastapi>=0.65b0
+
+# Phase 7 (Auth and Security). Every `code/` file in the phase is stdlib-only
+# and runs without these — they exist so the "Use It" half of each lesson (the
+# production tool) is runnable in the sandbox too.
+cryptography>=49.0
+argon2-cffi>=25.1
+PyJWT[crypto]>=2.13
+pyotp>=2.10

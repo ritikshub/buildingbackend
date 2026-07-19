@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "SQL is declarative — you describe the result, not the steps. So who decides HOW a query actually runs?",
+    "options": ["The application code", "The query planner (optimizer), which compiles the query into a concrete execution plan", "The person who wrote the SQL", "The operating system"],
+    "correct": 1,
+    "explanation": "Because SQL says what, not how, a dedicated component — the query planner — chooses the execution plan: which scans, indexes, and join algorithms to use. The same query can run thousands of times faster or slower depending on that choice."
+  },
+  {
+    "stage": "check",
+    "question": "How does the planner decide between a sequential scan and an index scan?",
+    "options": ["It always uses the index if one exists", "It estimates selectivity from table statistics: few matching rows favors an index scan; many matching rows favors a seq scan because random index-driven fetches would cost more", "It picks randomly", "It runs both and keeps the faster"],
+    "correct": 1,
+    "explanation": "The planner estimates what fraction of rows a condition matches. High selectivity (few rows) → index scan. Low selectivity (many rows) → sequential scan, because thousands of random heap fetches cost more than one sequential sweep."
+  },
+  {
+    "stage": "check",
+    "question": "The planner estimates cost from statistics rather than examining the data. Why, and what gathers those statistics?",
+    "options": ["Because it's lazy; nothing gathers stats", "Examining the data would be as slow as running the query; ANALYZE gathers row counts, distinct values, and histograms for the planner to consult", "It reads every row on every query", "Statistics come from the application"],
+    "correct": 1,
+    "explanation": "Inspecting the actual data to plan would defeat the purpose. Instead ANALYZE (run automatically) collects statistics — table size, distinct values, value distribution — and the planner estimates from those."
+  },
+  {
+    "stage": "check",
+    "question": "In EXPLAIN ANALYZE, a node shows estimated rows=5 but actual rows=200000. What does that gap most likely mean?",
+    "options": ["The query is correct and fast", "The table's statistics are stale/wrong, so the planner mis-estimated and may have chosen a bad plan; running ANALYZE can fix it", "The index is corrupted", "The database is out of memory"],
+    "correct": 1,
+    "explanation": "A large estimate-vs-actual gap signals bad statistics. The planner built its plan for a table it misunderstood. Refreshing stats with ANALYZE often makes it pick a better plan with no query change."
+  },
+  {
+    "stage": "post",
+    "question": "You add an index on a filtered column, but EXPLAIN still shows a Seq Scan. Which is a LEGITIMATE reason the planner refuses the index?",
+    "options": ["The planner is broken", "The filter matches a large fraction of the table, so the index's random heap fetches would cost more than a sequential scan", "Indexes never work with WHERE", "The table is too small to ever scan"],
+    "correct": 1,
+    "explanation": "If a condition matches, say, 40% of rows, using the index means huge numbers of random reads — more expensive than one sequential pass. The planner correctly prefers the scan; the index simply isn't selective enough here."
+  },
+  {
+    "stage": "post",
+    "question": "What is the correct mental model of your relationship with the query planner?",
+    "options": ["You command it exactly how to run each query", "You shape its choices (provide indexes, keep statistics fresh, write optimizable queries) and read its plan with EXPLAIN to understand what it decided", "You should bypass it and write raw file reads", "You ignore it entirely"],
+    "correct": 1,
+    "explanation": "You don't dictate the how. You influence the planner's options — indexes, fresh stats, query form — and use EXPLAIN/EXPLAIN ANALYZE to see and understand its decisions, then adjust."
+  }
+]

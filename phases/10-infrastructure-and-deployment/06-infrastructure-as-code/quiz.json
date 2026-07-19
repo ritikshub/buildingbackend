@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A one-line change to your infrastructure configuration — widening the network's address range — produces `Plan: 6 to add, 1 to change, 6 to destroy` against a seven-resource stack. You edited one attribute on one resource. How should you read that summary?",
+    "options": [
+      "Six new resources are being added and six unrelated leftovers cleaned up; the counts are independent and a high destroy count usually means stale resources",
+      "It is a full rebuild. A replace counts once in 'to add' and once in 'to destroy', so 6 of 7 resources are being destroyed and recreated — and 5 of them were edited by nobody: each has an immutable attribute referencing something being replaced, so its value becomes `(known after apply)`, which is a change, and a forcing one",
+      "Six resources will be updated in place with new configuration and six old configurations discarded; identifiers and data are preserved throughout",
+      "The tool is proposing a safe zero-downtime rebuild: it creates the six replacements first, cuts over, then destroys the originals"
+    ],
+    "correct": 1,
+    "explanation": "This is the misconception that deletes production databases. The four verbs are not equally dangerous: create and update-in-place keep or create data, while replace is `-/+` — destroy the old object, create a new one — and it is a data-loss operation dressed up as an edit. What propagates it is that a replaced resource's id is unknown until apply time, so every immutable attribute pointing at it changes, and an immutable attribute that changes forces another replacement. In this lesson's run the cascade started at `network.core` and dragged in both subnets, both servers and `database.main` with its 100 GB — only `lb.public` escaped, because its target list is a *mutable* attribute that can absorb new ids as a single update. Mutable attributes are firebreaks; immutable ones are fuses. Option 4 describes `create_before_destroy`, which is not the default: the default order destroys first, and here `prevent_destroy` on the database refused the whole plan before anything ran."
+  },
+  {
+    "stage": "check",
+    "question": "A colleague argues that the state file is an unnecessary liability — it can be lost, it holds secrets, it needs locking — and that the tool should simply query the cloud on every run to discover what exists. What is the fatal objection?",
+    "options": [
+      "Cloud APIs are rate-limited, so listing every resource on every plan would be too slow for a large account",
+      "Providers do not expose read APIs for every resource type, so some resources could never be discovered",
+      "Identity has no answer in the cloud's own data. Your code says `subnet.app_a`; the cloud says `sub-4d3c1a` and has never heard the string 'app_a'. This lesson produced two subnets identical in every attribute — same network, same range, same zone — differing only in id, so 'which of these is mine?' is unanswerable without the mapping that was written down once at creation time",
+      "Without a state file the tool could not detect drift, since drift is defined as the difference between two consecutive cloud reads"
+    ],
+    "correct": 2,
+    "explanation": "There are three states, not two: desired (your declaration), recorded (the state file), and actual (the cloud). The state file is the mapping from your names to the cloud's opaque ids, plus every attribute as last applied — and it is a *cache of reality*, which is why every piece of folklore in this field decodes once you see it that way (a console click makes the cache stale; a lost state file means the cloud is still running but nothing you own is managed; two concurrent applies mean two writers and one cache). Options 1 and 2 are real operational annoyances, and completeness is a genuine third reason — 'everything in the account' is not 'everything this configuration manages', and a tool that guesses is one that offers to delete another team's network. But ambiguity is the fatal one, because it is not a limitation you can engineer around. Option 4 inverts the definition: drift is the divergence between recorded and actual, which requires the record to exist."
+  },
+  {
+    "stage": "check",
+    "question": "Your CI runs `plan` and `apply` on every merge to main, including merges that touch no infrastructure files. A colleague calls this wasteful and risky, and proposes gating the job on a path filter so it only runs when the infrastructure directory changes. What is wrong with that reasoning?",
+    "options": [
+      "Nothing is wrong — running an apply with no configuration change is a pure no-op, so the path filter saves CI minutes at zero cost",
+      "The path filter is correct but insufficient; it should also require a manual approval, since any unattended apply is unsafe",
+      "It treats re-running as a risk when re-running is the entire point. A declaration re-evaluates to `0 to add, 0 to change, 0 to destroy` — this lesson's second run made 7 read calls and 0 write calls — which is exactly what makes it safe unattended. The filter also blinds you: a run that touches no config is the run that would have caught drift someone introduced in the console",
+      "It is wrong because Terraform's state serial increments on every run, so skipping runs leaves gaps that make lock conflicts more likely"
+    ],
+    "correct": 2,
+    "explanation": "Idempotence sounds like a small mathematical nicety and is in fact the whole operational argument. An imperative script is correct exactly once, against an empty account; run it twice and it either fails or duplicates everything, which is why a script must be supervised by a human and a declaration can run in a pipeline nobody is watching. Option 1 gets the mechanism right and the conclusion wrong: the run is indeed a no-op *when reality matches*, and the value of the run is discovering the times it does not. Note the honest limit here — the plan is a no-op only against the *refreshed* actual state, so an empty plan is a positive statement that the cloud still matches your code. That is the statement the path filter throws away. Option 4 is invented: the serial counts state writes, not runs."
+  },
+  {
+    "stage": "check",
+    "question": "A seven-resource apply takes 245 seconds and the team wants it faster. Someone proposes raising the tool's parallelism setting; someone else proposes switching the two API servers to a faster-provisioning machine type, since servers are the bulk of the stack. What will actually help?",
+    "options": [
+      "Raising parallelism, since the tool defaults to a conservative concurrency limit and the graph has three resources in one wave",
+      "Neither. The runtime is set by the critical path `network.core → subnet.app_a → database.main` at 245 s; the load balancer finishes at t=75 s and the run still waits 170 more seconds for the database. Only shortening the database provisioning — or removing it from that path — changes the total. Parallelism is already free: the graph-ordered run is 245 s against 342 s serial, a 1.40x speed-up nobody configured",
+      "Switching the servers, because they are the largest wave and shortening a wave shortens every wave that follows it",
+      "Splitting the configuration into two state files so the network and the database can be applied concurrently"
+    ],
+    "correct": 1,
+    "explanation": "The tool derives a DAG from the references in your configuration — nobody writes the order down — and everything with no path between it and another node runs concurrently. That means the parallelism win is already banked, and what remains is the longest chain. This is the generally useful lesson about optimising an apply: measure the critical path first, because work off it is free and work on it is the only work that counts. Option 4 is worth thinking about because splitting state is a real and often good idea for blast radius, but here it would not help — the database depends on the subnet, which depends on the network, so the chain survives the split and you have added a hand-managed hand-off between two configurations. Related trap in the same mechanism: every edge came from a *reference*. Hard-code `subnet_id = \"sub-4d3c1a\"` instead of referencing the resource and the edge vanishes along with the ordering guarantee, and the tool will cheerfully try to create the server before the subnet exists."
+  },
+  {
+    "stage": "post",
+    "question": "At 02:40 during an incident, someone deleted a subnet in the console believing it was unused. Your nightly drift check reports it. The next plan proposes to recreate that subnet, correct two other drifted attributes in place — and to replace `server.api_2`, which is healthy, serving traffic, and was touched by nobody. Why, and what does it tell you about drift?",
+    "options": [
+      "The plan is wrong; the drift refresh has confused two resources and the state file should be repaired with `terraform state rm` before re-planning",
+      "`server.api_2` is being replaced because the tool cannot verify a server's health and conservatively rebuilds anything adjacent to a change",
+      "The recreated subnet comes back with a *new* id, and the server's `subnet_id` is immutable — so re-asserting the declaration drags a healthy resource into a replacement. Drift's real cost is not the drifted attribute; it is what correcting it pulls along, which is why you detect and resolve drift within a day rather than letting it compound",
+      "It is collateral from the drift on `database.main`, which shares the same subnet; correcting the database's backup window forces both dependents to be rebuilt"
+    ],
+    "correct": 2,
+    "explanation": "In this run four console edits left 3 of 7 managed resources drifted — 2 attributes changed, 1 vanished — and the correcting plan came out as `2 to add, 3 to change, 1 to destroy`. The two changed attributes were corrected in place, exactly as you want; the deleted subnet was recreated, also as you want; and `server.api_2` was queued for destruction because the thing underneath it is coming back with a different identifier. Option 2 states something the tool never does — it has no notion of health at all, only of attribute diffs. The operational conclusion is the reason drift detection is a scheduled job routed to the owning team: drift found within a day is a conversation, drift found after six months is inherited all at once by whoever next runs an apply for an unrelated reason, which is how a routine tag change becomes a plan with six replacements in it. Note also that the resolution is a real judgement — re-assert the declaration, or adopt reality in a pull request with the reason in the commit message — and only the second is available if you never detected it."
+  },
+  {
+    "stage": "post",
+    "question": "Two engineers merge infrastructure changes within seconds of each other. Both pipelines read state at serial 41, both applies succeed and report no errors, and both write state at serial 42. A week later the finance team asks about resources nobody can account for. What happened, and which control would have prevented it?",
+    "options": [
+      "The second write overwrote the first's records, so the resources the first apply created are real, running, billed — and referenced by no state file anywhere. No plan will ever mention them and no destroy will ever clean them up. State locking is the control: the second apply waits instead of racing",
+      "The two applies raced on the cloud API and one set of create calls was rejected, so the resources exist in state but not in the cloud; a refresh will reconcile them",
+      "The serial numbers collided, corrupting the state file; bucket versioning would have let you restore it, which is the control that matters",
+      "Nothing was lost — the second apply's refresh would have picked up the first's resources and merged them into state, so this is an unrelated billing question"
+    ],
+    "correct": 0,
+    "explanation": "This is the state-file-as-cache model applied to concurrency: two readers, one cache, last write wins, and the loser's records are silently discarded. The orphans are the worst possible kind of resource — alive, costing money, referenced by nothing, invisible to every command you can run. A remote backend *without* locking is more dangerous than a local state file, because it invites exactly the concurrency it cannot survive; with locking the second run gets `Error: Error acquiring the state lock` and a short wait. Option 4 is the tempting one and rests on a real misunderstanding of refresh: refresh reads the resources state already knows about, so it cannot discover something it has no mapping for — which is the same reason the hand-made subnet in this lesson appeared in no plan at all. Unmanaged means invisible, not safe, and `import` (writing the mapping in) is the only way back. Option 3 names a control you should also have — versioning on the backend bucket — but it addresses a corrupted write, not a lost race."
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "A MAC address already identifies a machine on the local link. Why does the network layer add IP addresses on top?",
+    "options": [
+      "IP addresses are shorter and faster to compare",
+      "MAC addresses are hierarchical and routable across networks; IP addresses are not",
+      "IP addresses are hierarchical and routable, so a router can reach machines on networks it has never directly touched",
+      "IP addresses encrypt the packet, MAC addresses do not"
+    ],
+    "correct": 2,
+    "explanation": "A MAC (Media Access Control) address only has meaning on the local link and is not routable. An IP address is logical and hierarchical: its leading bits name a network, so routers can forward toward a whole network prefix without knowing individual hosts far away."
+  },
+  {
+    "stage": "pre",
+    "question": "How many bits is an IPv4 address, and how is it written?",
+    "options": [
+      "128 bits, as eight hexadecimal groups",
+      "32 bits, as four dotted decimals each 0–255",
+      "48 bits, as six hex pairs",
+      "64 bits, as two decimal halves"
+    ],
+    "correct": 1,
+    "explanation": "IPv4 (RFC 791) is 32 bits, written in dotted-decimal such as 192.168.1.10 — four bytes, each 0–255. IPv6 (RFC 4291) is the 128-bit, eight-hex-group form."
+  },
+  {
+    "stage": "check",
+    "question": "For the block 192.168.1.128/26, what are the network address, broadcast address, and usable host count?",
+    "options": [
+      "Network 192.168.1.128, broadcast 192.168.1.255, 126 hosts",
+      "Network 192.168.1.0, broadcast 192.168.1.191, 64 hosts",
+      "Network 192.168.1.128, broadcast 192.168.1.191, 62 hosts",
+      "Network 192.168.1.128, broadcast 192.168.1.192, 62 hosts"
+    ],
+    "correct": 2,
+    "explanation": "A /26 mask (255.255.255.192) leaves 6 host bits. Host bits all-zero gives the network 192.168.1.128; all-one gives the broadcast 192.168.1.191. Usable hosts = 2^(32−26) − 2 = 64 − 2 = 62, excluding the network and broadcast addresses."
+  },
+  {
+    "stage": "check",
+    "question": "A router's table holds 10.0.0.0/8, 10.1.0.0/16, and 10.1.2.0/24. A packet is destined for 10.1.2.55. Which route is chosen and why?",
+    "options": [
+      "10.0.0.0/8, because it was listed first",
+      "10.1.2.0/24, because longest-prefix match picks the most specific containing route",
+      "All three, the packet is duplicated to each",
+      "0.0.0.0/0, because specific routes are only used for local traffic"
+    ],
+    "correct": 1,
+    "explanation": "All three networks contain 10.1.2.55, but the router forwards to the most specific match — the longest prefix. /24 is longer (more specific) than /16 or /8, so 10.1.2.0/24 wins. Table order is irrelevant."
+  },
+  {
+    "stage": "check",
+    "question": "Why is the IPv4 header checksum recomputed at every router hop rather than once by the sender?",
+    "options": [
+      "Because the checksum is encrypted and must be renewed",
+      "Because each hop decrements the TTL, changing the header, so the checksum must be recomputed",
+      "Because routers use a different checksum algorithm than hosts",
+      "It is not — the sender computes it once and it never changes"
+    ],
+    "correct": 1,
+    "explanation": "The header checksum (one's-complement, RFC 1071) covers the header only. Every hop decrements the TTL by 1 to prevent loops, which alters the header bytes, so each router must recompute the checksum before forwarding."
+  },
+  {
+    "stage": "post",
+    "question": "Your home laptop has address 192.168.1.10, which RFC 1918 marks as private and non-routable on the internet. How does it still load a public web page?",
+    "options": [
+      "The ISP routes 192.168.0.0/16 globally for home users",
+      "NAT on the router rewrites the private source address to the router's single public address and reverses the mapping on the reply",
+      "Private addresses become public automatically after the TTL expires",
+      "The browser switches the packet to IPv6, which needs no translation"
+    ],
+    "correct": 1,
+    "explanation": "NAT (Network Address Translation) lets one public address front an entire private network: the router rewrites the private source (192.168.1.10) to its own public address on the way out, remembers the mapping, and rewrites the reply back on the way in. It is the workaround that let IPv4 survive address exhaustion."
+  },
+  {
+    "stage": "post",
+    "question": "How does traceroute use the TTL field to reveal each router along the path?",
+    "options": [
+      "It reads the routing table of every router directly over ICMP",
+      "It sends packets with TTL 1, then 2, then 3…; each router that decrements the TTL to 0 drops the packet and returns an ICMP time-exceeded message, exposing its address",
+      "It broadcasts to 255.255.255.255 and collects every reply",
+      "It measures the header checksum change at each hop"
+    ],
+    "correct": 1,
+    "explanation": "Traceroute exploits TTL expiry. A packet whose TTL reaches 0 is dropped, and the dropping router sends back an ICMP (RFC 792) time-exceeded message identifying itself. Increasing the TTL one step at a time makes each successive hop announce itself, mapping the whole route."
+  }
+]

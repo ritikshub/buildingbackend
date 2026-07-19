@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A web service runs flawlessly on one instance, with user sessions stored in a Python dict. You scale it to six instances behind a round-robin load balancer and change no code. Of the authenticated requests that follow a login, roughly what share now fail with a 401?",
+    "options": [
+      "None — the sessions are still in memory and the code is unchanged",
+      "About 1 in 6, since one instance out of six holds the session",
+      "About 85%, because only 1 request in 6 returns to the instance holding the session",
+      "100% — no request can ever find its session again"
+    ],
+    "correct": 2,
+    "explanation": "Measured: 85.0% at six instances, and the rule is exact rather than statistical — 1 − floor(20/N)/20 for a 20-request session. 'About 1 in 6' is the tempting answer because it inverts the ratio: round-robin returns only 1 request in 6 to the instance that holds the session, so 5 in 6 fail, not 1 in 6. 'None' is what your test suite reports, because it runs a single replica, where the measured logout rate really is 0.0%. And it is not 100%, which is why the bug looks like flakiness instead of an outage."
+  },
+  {
+    "stage": "check",
+    "question": "Each instance enforces a 100-requests-per-minute policy using its own in-memory counter. The autoscaler grows the fleet from 6 instances to 16. What limit does a client actually experience?",
+    "options": [
+      "Still 100/min — the policy did not change",
+      "600/min, the value measured at the original fleet size",
+      "1,600/min — the fleet enforces limit × N, and N is chosen by the autoscaler",
+      "About 6/min, since each instance only sees a fraction of the traffic"
+    ],
+    "correct": 2,
+    "explanation": "Measured: 100 admitted at 1 instance, 600 at 6, 1,600 at 16. Option 2 is tempting because it was the correct answer one scaling event ago — that is exactly the hazard. The enforced limit is not a constant in a config file, it is a function of your instance count, so a capacity decision silently rewrites a security control. Option 1 is what the policy document says and what nothing actually enforces. Note that dividing by N is not the fix either: routing is never uniform, so a 100/N per-instance limit over-throttles whichever keys happen to concentrate on one instance."
+  },
+  {
+    "stage": "check",
+    "question": "A fleet using session affinity scales in from 6 instances to 4. Sessions are pinned to instances with consistent hashing. What happens to the 4,000 live sessions?",
+    "options": [
+      "Nothing — consistent hashing keeps every session on its instance",
+      "About 34% are destroyed: the share that was pinned to the two departing instances",
+      "About 67% are destroyed, because changing N rehashes every key",
+      "They are automatically re-pinned to surviving instances and keep working"
+    ],
+    "correct": 1,
+    "explanation": "Measured: 1,361 of 4,000 sessions destroyed — 34.0%, carrying 33.2% of the requests. Option 3 is the seductive one because 66.6% is also a real measured number in this lesson: it is what naive hash(cookie) % N produces, since changing N rehashes everything. It is the right figure for the wrong mechanism. Consistent hashing halves the damage and does not eliminate it, because sessions living on the departing instances existed only there. Option 4 describes what a shared session store gives you, not what affinity gives you — and note this was a successful autoscaler action, not a failure."
+  },
+  {
+    "stage": "check",
+    "question": "An instance holding a 15-second lease renews it at t=50, passes its \"am I the leader?\" check, and is then descheduled for 30 seconds by a garbage-collection pause. The run produced 4 duplicate job executions. What went wrong?",
+    "options": [
+      "The lease TTL was too short — 60 seconds would have prevented it",
+      "Nothing in the lease: a TTL bounds how long the lock is held, not how long the holder believes it holds it",
+      "The second instance acquired the lease before it had actually expired",
+      "The two instances' clocks had drifted out of sync"
+    ],
+    "correct": 1,
+    "explanation": "The lease implementation was entirely correct and still produced two simultaneous leaders from t=65 to t=80. Option 1 is the fix everyone reaches for first, and it makes things worse: a longer TTL does not close the gap between the check and the act — the pause can always be longer — while it delays every legitimate failover by the same amount, so a genuinely dead leader stops the job for a minute instead of fifteen seconds. Option 3 is wrong on the timeline: B waited correctly for expiry at t=65. The gap is unfixable by tuning; it is closed by a fencing token that the resource itself checks, which took duplicates from 4 to 0 in the measured run."
+  },
+  {
+    "stage": "post",
+    "question": "Your service uses 15-minute signed tokens, measured at 177.9 store lookups per 1,000 requests with a worst-case revocation window of 880 seconds. Security requires that a compromised account lose access within 60 seconds. Which change meets that at the lowest cost to the store?",
+    "options": [
+      "Shorten the token TTL to 60 seconds — measured 434.8 lookups per 1,000 requests, 54-second window",
+      "Have each instance pull a revocation denylist every 30 seconds — measured 202.7 lookups per 1,000, 29-second window",
+      "Move to a server-side session store — measured 1,000 lookups per 1,000 requests, 0-second window",
+      "Keep the 15-minute token and rotate the signing key whenever an account is compromised"
+    ],
+    "correct": 1,
+    "explanation": "The first three all meet the 60-second deadline; only the denylist does it at close to the token's original store cost. Option 1 is the intuitive knob and costs 2.1x the hybrid's traffic, because at a 60-second TTL most requests arrive to find an expired token and go to the store anyway — you give back most of the savings to buy back most of the security. Option 3 revokes instantly and pays 1,000 lookups per 1,000 requests, which surrenders the entire reason you chose tokens. Option 4 is a real technique and the wrong tool here: rotating the signing key invalidates every token at once, logging out your whole user base to cut off one account. Note the denylist's cost is fixed at instances × (3600/30) = 720 reads per hour — proportional to fleet size, not traffic."
+  },
+  {
+    "stage": "post",
+    "question": "A service keeps four things in process memory. Applying the test \"if this instance dies right now, does the system lose correctness or only warmth?\", which one is legitimately instance-local?",
+    "options": [
+      "A pool of open database connections",
+      "The set of idempotency keys already processed",
+      "The per-API-key counter of requests seen this minute",
+      "The map of which user is connected on which WebSocket"
+    ],
+    "correct": 0,
+    "explanation": "Sockets to your database are inherently per-process — they cannot be shared, and losing them costs a reconnect, which is warmth, not correctness. The other three are the trap, because all of them feel local and each loses correctness in a way this lesson measured or derived: an in-memory dedupe set is checked on an instance that never saw the original request, so the retry charges the card twice; the in-memory counter turned a 100/min policy into 600/min at six instances; and a connection map means a publish on instance 3 never reaches a subscriber on instance 5, silently, returning 200 OK. Note the WebSocket map is the subtle case — the file descriptors must stay local, but the routing knowledge has to move to pub/sub, leaving the map as a local index of a global topic."
+  }
+]

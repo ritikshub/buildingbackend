@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why is the database the right place to enforce a rule like 'order total can't be negative', rather than only the application?",
+    "options": ["The database is faster", "It's the one chokepoint every write passes through, so the rule can't be bypassed by any app, script, or manual query", "Applications can't do validation", "The database has more memory"],
+    "correct": 1,
+    "explanation": "Many doors write to your data (web, mobile, batch jobs, manual SQL). App checks protect only the doors that remember them. A database constraint is the final gate every write must pass, so the invalid state becomes impossible."
+  },
+  {
+    "stage": "check",
+    "question": "Two signup requests race to register the same email at the same millisecond. Why can't application-level 'is this email taken?' checking prevent a duplicate, and what can?",
+    "options": ["It can prevent it if written carefully", "Between the app's check and its insert, another request can slip in; only a UNIQUE constraint, held atomically by the database, closes the gap", "You need a faster server", "Emails can't be duplicated anyway"],
+    "correct": 1,
+    "explanation": "There's a window between the app's read ('taken?') and write (insert) where a concurrent request inserts the same email. Only the database, which holds the write, can enforce uniqueness atomically via a UNIQUE constraint."
+  },
+  {
+    "stage": "check",
+    "question": "What does a CHECK constraint do?",
+    "options": ["Verifies the table exists", "Enforces an arbitrary boolean condition on each row, e.g. quantity > 0 or status IN ('pending','shipped')", "Checks for typos in column names", "Runs a backup"],
+    "correct": 1,
+    "explanation": "CHECK enforces any boolean condition per row, turning business rules (positive quantity, valid status, non-negative price) into invariants the data can never violate. The write is rejected if the condition is false."
+  },
+  {
+    "stage": "check",
+    "question": "You delete an order that still has order_line rows referencing it. With ON DELETE CASCADE on the line's foreign key, what happens?",
+    "options": ["The delete is refused", "The order's line items are automatically deleted along with it", "The line items' foreign keys are set to NULL", "Nothing happens"],
+    "correct": 1,
+    "explanation": "CASCADE deletes the referencing children when the parent is deleted — appropriate when the children are part of the parent (line items belong to an order). RESTRICT would refuse the delete; SET NULL would orphan the children."
+  },
+  {
+    "stage": "post",
+    "question": "For a foreign key from order_line to product, why is ON DELETE RESTRICT usually better than CASCADE?",
+    "options": ["RESTRICT is faster", "A product is referenced by orders as historical record; RESTRICT prevents deleting a product still on real orders, protecting that history", "CASCADE isn't allowed on products", "They behave identically"],
+    "correct": 1,
+    "explanation": "Line items are part of an order (cascade with it), but a product is shared, historical data. RESTRICT stops you from deleting a product out from under existing orders, which would corrupt the order records that reference it."
+  },
+  {
+    "stage": "post",
+    "question": "What does it mean that constraints are 'declarative'?",
+    "options": ["You must re-run them manually", "You declare the invariant once in the schema, and the database enforces it on every write from then on — no procedural code or per-caller discipline", "They only work in SELECT statements", "They must be checked by the application"],
+    "correct": 1,
+    "explanation": "Like SQL itself, constraints state what must be true rather than how to check it. Declared once, they're enforced on every write forever, they document the data's meaning, and the query planner can trust them."
+  }
+]

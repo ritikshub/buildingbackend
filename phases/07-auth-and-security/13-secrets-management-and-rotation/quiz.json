@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A developer commits `SIGNING_KEY = \"prod-secret\"`, realizes the mistake, and pushes a follow-up commit deleting the line. Is the key safe now?",
+    "options": [
+      "Yes — the deletion commit removed it",
+      "No. Git never forgets: the secret is in the repository history forever, and automated scanners crawl public commits within seconds, so it may already be harvested. The deletion doesn't remove it from history or undo any exposure. The only real fix is to ROTATE the key (issue a new one and revoke the old). Short-lived credentials would have limited the damage to a small window",
+      "Yes, as long as the repository is private",
+      "Yes, if you also force-push to rewrite the branch"
+    ],
+    "correct": 1,
+    "explanation": "Committing a secret compromises it the moment it's pushed — history retains it, and scanners and attackers find exposed keys almost instantly. Deleting the line (even rewriting history) can't guarantee no copy was taken, so you must assume compromise and rotate. This is why secrets belong outside source control entirely, and why short-lived, auto-rotated credentials are the strongest posture — a leaked one expires quickly."
+  },
+  {
+    "stage": "check",
+    "question": "Environment variables are a big improvement over hardcoding secrets. Why are they still 'how a secret is injected, not where it's managed'?",
+    "options": [
+      "Env vars are actually worse than hardcoding",
+      "Env vars get the secret out of source control (the biggest single win), but they don't provide access control, rotation, or audit, and they leak in their own ways — visible to child processes, dumped into crash reports and error pages, readable via a debug endpoint or printenv. A secrets manager adds encrypted storage, per-identity access control (IAM), audit logging, versioning, and rotation; the env var's value should come FROM the manager at boot, not from a committed file",
+      "Env vars can only hold short strings",
+      "There is no difference; they're equivalent to a secrets manager"
+    ],
+    "correct": 1,
+    "explanation": "Removing secrets from code is essential, and env vars (twelve-factor config) do that. But they're just a transport into the process — they can't answer who may read a secret, when it was last accessed, which version is current, or rotate it. A secrets manager owns those, and injects the value into the env/file at runtime. Env-injection plus a manager, not env-in-a-committed-file."
+  },
+  {
+    "stage": "check",
+    "question": "In envelope encryption, why encrypt data with a DEK and only wrap the DEK with the KEK, instead of encrypting the data directly with the KEK?",
+    "options": [
+      "Because DEKs are faster to type than KEKs",
+      "Because the KEK lives inside the KMS and never leaves it, while bulk data must be encrypted where the data is. So you generate a per-data DEK, encrypt the data locally with it, and have the KMS wrap (encrypt) the small DEK with the KEK; you store ciphertext + wrapped DEK together. A stolen database then holds only wrapped DEKs (useless without KMS access), and you can rotate the KEK by re-wrapping the small DEKs instead of re-encrypting terabytes of data",
+      "Because the KEK can only encrypt data smaller than itself",
+      "Because DEKs don't need to be kept secret"
+    ],
+    "correct": 1,
+    "explanation": "Envelope encryption separates the key that must stay locked away (the KEK, inside the KMS) from the keys that do the bulk work (DEKs, used locally). This keeps the master key in one audited, access-controlled place, makes a database dump worthless (only wrapped DEKs are present), and makes KEK rotation cheap — re-wrap the tiny DEKs rather than re-encrypt all the data. It's the one-key-one-purpose rule at architecture scale."
+  },
+  {
+    "stage": "check",
+    "question": "Zero-downtime key rotation uses an overlap window. What is it, and why sign with only the new key during it?",
+    "options": [
+      "You swap the key instantly at midnight; there is no overlap",
+      "During the overlap, both the old and new key versions are ACTIVE for verification, so tokens signed with the old key still validate while you roll out the new one — that's what avoids downtime. You sign new tokens with only the new version so that no fresh material depends on the old key; then, once all old tokens have expired, you retire the old version and verification of it stops. Skipping the overlap and hot-swapping the key instantly invalidates every outstanding token/session at once",
+      "The overlap means using both keys to sign every token twice",
+      "You verify with the old key and sign with the old key throughout"
+    ],
+    "correct": 1,
+    "explanation": "Rotation is safe when keys are versioned: sign with the current version, verify against all active versions. The overlap keeps old signatures valid until they naturally expire, so nobody is logged out; signing only with the new key ensures the old one is being phased out, not perpetuated. Retiring the old version ends the overlap. For JWTs this is the `kid` header plus a JWKS of active keys."
+  },
+  {
+    "stage": "post",
+    "question": "You discover a production API key has leaked. What's the correct order of response, and why?",
+    "options": [
+      "Investigate first, then decide whether to rotate",
+      "Revoke first, then rotate, then investigate. The leaked key is live RIGHT NOW, so immediately disabling it stops ongoing abuse — every minute it stays valid is exposure. Then issue and deploy a fresh secret (rotate), and finally investigate how it leaked, what it touched, and who accessed it (using the audit log). Waiting to investigate before revoking leaves the attacker a working key the whole time",
+      "Rotate first but leave the old key valid for a week for compatibility",
+      "Change the logging config so the key stops appearing, then move on"
+    ],
+    "correct": 1,
+    "explanation": "A leaked live credential is an active incident, so the priority is to kill its usefulness: revoke immediately. Rotation restores service with a new secret, and investigation (root cause, blast radius, audit trail) follows. Leaving the old key valid 'for compatibility' hands the attacker continued access. Short-lived credentials make this far less painful, since a leaked one expires on its own within the lease."
+  },
+  {
+    "stage": "post",
+    "question": "How do dynamic secrets and workload identity move toward eliminating long-lived secrets, and how does workload identity solve the bootstrapping problem?",
+    "options": [
+      "They don't; every system needs a permanent secret somewhere",
+      "Dynamic secrets are generated on demand with a short lease (e.g. Vault creates a one-hour database user and deletes it after), so there's no static password to leak and a stolen credential is worthless within the hour. Workload identity has the platform (IAM roles, K8s service accounts, cloud workload identity) attest to WHAT the running workload is and hand it short-lived, auto-rotated credentials — so no API key sits in an env var. That attestation also bootstraps access to the secrets manager: the platform vouches for the workload's identity, so the app doesn't need a pre-existing secret to authenticate",
+      "They store the long-lived secret in two places for redundancy",
+      "They make secrets longer so they're harder to guess"
+    ],
+    "correct": 1,
+    "explanation": "The endgame is to not have long-lived secrets at all. Dynamic secrets replace a static credential with per-use, expiring ones; workload identity replaces a stored key with credentials derived from the platform's attestation of the workload. That attestation is also the answer to 'how does the app authenticate to the secrets manager without a secret?' — the platform's proof of identity is the initial trust, and short-lived credentials flow from it."
+  }
+]

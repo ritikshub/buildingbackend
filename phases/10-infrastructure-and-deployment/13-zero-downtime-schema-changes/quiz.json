@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your migration is one line: ALTER TABLE orders RENAME COLUMN ship_to TO shipping_address. It runs in microseconds. The deploy is a rolling update across 6 instances and completes in 90 seconds. What is the total damage?",
+    "options": [
+      "None — the rename is atomic and the rollout is short, so at worst a handful of requests see a transient error",
+      "Some 5xx errors during the 90-second window, which stop as soon as the last instance is on the new version and leave nothing behind",
+      "5xx errors from old code writing the old column, AND silently wrong data from old code reading it: a missing column raises on the write path but returns None on the read path, so anything that persists a read result becomes permanent corruption",
+      "Only read errors — writes are fine because the database maps the old column name to the new one for backward compatibility"
+    ],
+    "correct": 2,
+    "explanation": "Measured over 1,700 requests through the mixed fleet: 202 requests raised OperationalError (loud, self-healing) and 90 of 363 exported rows persisted a NULL address (silent, permanent). The read path in every ORM is SELECT * followed by a dictionary lookup, and a missing key yields None rather than an exception. The 5xxs stop when the rollout finishes; the 90 corrupt rows are found by reconciliation the next morning."
+  },
+  {
+    "stage": "check",
+    "question": "An ALTER TABLE whose own work takes 1 ms is queued behind a 3-second analytics SELECT. Ordinary SELECTs keep arriving. What happens to those ordinary SELECTs, which do not conflict with the analytics query at all?",
+    "options": [
+      "They run normally — ACCESS SHARE does not conflict with ACCESS SHARE, and the ALTER is not holding any lock yet",
+      "They queue behind the waiting ALTER, because a lock is granted only if it conflicts with nothing HELD and nothing already WAITING ahead of it — so a DDL that holds nothing still blocks the table",
+      "They are cancelled immediately with a lock-not-available error and must be retried by the client",
+      "They run, but at reduced priority, because PostgreSQL de-prioritises readers while a DDL is pending"
+    ],
+    "correct": 1,
+    "explanation": "This is the lock-queue cascade. The waiting ALTER is ahead of them in the queue and conflicts with them, so they wait — 42 of them in the measured run, worst wait 2,461 ms, 51.7 query-seconds of stalled traffic, all caused by a statement whose own work was 1 ms and which held no lock at all. Setting lock_timeout to 50 ms with a jittered retry cut it to 4 blocked queries and 0.08 query-seconds; each abort drains the queue that formed behind you."
+  },
+  {
+    "stage": "check",
+    "question": "You need to backfill a new column across 1,000,000 rows. One UPDATE finishes in 2.43 s; 50 bounded batches take 4.28 s. Which do you ship to production, and why?",
+    "options": [
+      "The single UPDATE — it is 76% faster and holds the lock for less total time, so the disruption window is shorter",
+      "The batched version — the extra wall time buys a 21x shorter worst-case lock hold (2,427 ms to 114 ms), and it avoids pinning one MVCC snapshot open for the whole run, which would stop vacuum reclaiming dead rows database-wide",
+      "The single UPDATE, wrapped in a SERIALIZABLE transaction so concurrent readers see a consistent snapshot throughout",
+      "Either one — the total row-locking work is identical, so the choice is a matter of style"
+    ],
+    "correct": 1,
+    "explanation": "Batching is genuinely slower on wall time, and that is the trade you are choosing. In the measured run a concurrent reader issuing one small indexed SELECT every 2 ms completed exactly 1 query during the 2.43-second single transaction (that query took 2,426 ms) versus 165 queries during the 4.28-second batched run, p50 0.1 ms. A single long transaction also holds a snapshot open, so vacuum cannot reclaim any dead row version anywhere while it runs, and the resulting bloat outlives the migration."
+  },
+  {
+    "stage": "check",
+    "question": "You have deployed the expand migration (new nullable column added) and the dual-writing code. The backfill is still running. A teammate wants to ship the deploy that switches readers to the new column now, to save a release cycle. What happens?",
+    "options": [
+      "Nothing bad — new writes populate both columns, so any row a reader touches will have the new column filled in",
+      "Reads of rows the backfill has not reached yet return NULL with no exception raised, which is the same silent corruption as the naive rename, just on a schedule you chose",
+      "The reads fail loudly with a not-null violation, so the problem is caught immediately by the error rate",
+      "The database transparently falls back to the old column until the backfill completes"
+    ],
+    "correct": 1,
+    "explanation": "In the rollback matrix, state S1 (expanded but not backfilled) scores SILENT for both v2r and v2 — no exception, wrong answer. Only rows written since the dual-write deploy have the new column populated; every legacy row the backfill has not reached still holds NULL. Gate the reader deploy on a reconciliation query that counts rows where the two shapes disagree and requires zero. If you cannot write that query, you do not know the backfill finished."
+  },
+  {
+    "stage": "post",
+    "question": "Which step in an expand / migrate / contract sequence actually forfeits your ability to roll back, and what does the failure look like if you roll back past it?",
+    "options": [
+      "The expand migration, because adding a column changes the table's physical layout and old code cannot parse the new rows",
+      "The backfill, because once historical rows are rewritten the original values are gone",
+      "The contract (the DROP), because afterwards only the newest code version works — the older versions raise on every single request rather than degrading, and re-adding the column does not bring the data back",
+      "The reader switch, because once traffic reads the new column the old one goes stale and can no longer be trusted"
+    ],
+    "correct": 2,
+    "explanation": "Running every code version against every schema state gives the answer directly: 1 of 4 versions work before expand, 2 of 4 after expand, all 4 after the backfill — the safest moment in the whole sequence — and only 1 of 4 after the contract. The DROP is the one irreversible step, which is why it ships last, alone, after a real soak, and why the deploy that stops writing the old shape must be separate from the migration that removes it."
+  },
+  {
+    "stage": "post",
+    "question": "A migration must run before its code deploy, and it is not backward compatible with the version currently running in production. What is the correct response?",
+    "options": [
+      "Run the migration during the deploy and keep the rollout window as short as possible, so the incompatibility lasts only seconds",
+      "Run the migration inside the same transaction as the deploy so that both apply atomically across the fleet",
+      "Deploy the new code first and run the migration immediately afterwards, so the new code is already in place when the schema changes",
+      "Recognise that it is a migration requiring downtime, and either split it into steps that are each backward compatible or schedule an announced maintenance window — no ordering trick removes the incompatibility"
+    ],
+    "correct": 3,
+    "explanation": "There is no ordering that makes an incompatible change safe, because there is no moment at which only one version of your code is running: rollouts are gradual, rollbacks reintroduce the old version, and cron boxes, batch workers and mobile clients are not in the rollout at all. Either restage it as expand/migrate/contract steps that are each compatible in both directions, or take the outage deliberately. A planned two-minute window at 04:00 with the fleet drained is a far better outcome than an unplanned four-minute one at 15:40, and the option only exists if someone named it in review."
+  }
+]

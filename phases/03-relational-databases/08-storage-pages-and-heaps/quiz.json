@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why does a database read and write data in fixed-size pages rather than one row at a time?",
+    "options": ["Rows are always the same size", "Disks and the OS transfer data in fixed-size blocks, so reading one 40-byte row costs the same as reading the whole block — pack many rows per page and amortize the cost", "Pages are required by SQL", "It saves memory"],
+    "correct": 1,
+    "explanation": "Storage hardware moves fixed-size blocks (typically 4-8 KB). A single-row read still pulls the whole block, so a fast database packs many rows into each page and gets many rows' worth of work from one disk operation."
+  },
+  {
+    "stage": "check",
+    "question": "In a slotted page, why is a row's identity stored as (page, slot) rather than a raw byte offset?",
+    "options": ["Byte offsets are too large", "So a row can move within its page (e.g. after compaction) without breaking references — only the slot's internal offset changes, while the external (page, slot) id stays stable", "Slots are faster to compute", "Raw offsets aren't allowed in Python"],
+    "correct": 1,
+    "explanation": "The slot is an indirection: it holds the row's (offset, length) inside the page. If the row shifts, the slot updates but the (page, slot) identity an index relies on stays the same. Raw offsets would break on any move."
+  },
+  {
+    "stage": "check",
+    "question": "What is a heap file, and what is its performance trade-off?",
+    "options": ["A sorted file; fast lookups, slow inserts", "An unordered collection of pages; inserts are fast (drop the row anywhere with room) but finding a specific row requires a full scan", "A file stored entirely in RAM", "A backup of the table"],
+    "correct": 1,
+    "explanation": "A heap keeps rows in no particular order, so inserts just append. The cost is that locating a specific row means scanning pages until you find it — the O(n) full scan. Indexes are the separate sorted structure that avoids it."
+  },
+  {
+    "stage": "check",
+    "question": "What is the buffer pool?",
+    "options": ["A pool of database connections", "A RAM cache of disk pages (Postgres shared_buffers) that all reads and writes go through, with a hit ratio, eviction, and dirty pages", "A queue of pending queries", "The write-ahead log"],
+    "correct": 1,
+    "explanation": "The buffer pool caches pages in memory because disk is ~1000x slower than RAM. Reads and writes operate on cached pages; modified ('dirty') pages are flushed to disk later. It's the caching phase's ideas applied inside the database."
+  },
+  {
+    "stage": "post",
+    "question": "A page is modified in the buffer pool (marked dirty) but the power dies before it's flushed to disk. What's the consequence, and which mechanism prevents data loss here?",
+    "options": ["Nothing is lost; RAM is durable", "The in-memory change is lost because durability requires the page to reach disk — write-ahead logging (Lesson 13) records the change first so it can be recovered", "The whole database is corrupted beyond repair", "The buffer pool automatically survives power loss"],
+    "correct": 1,
+    "explanation": "A write first changes a page in volatile RAM; it's durable only once that page reaches disk. A crash before the flush loses the change — unless a write-ahead log recorded the intent first, which is exactly why WAL exists."
+  },
+  {
+    "stage": "post",
+    "question": "In Postgres, what does the ctid of a row represent?",
+    "options": ["The row's primary key", "Its physical identity — (page, slot) — where it currently lives; it changes when the row is updated to a new version", "The transaction that created it", "A hash of the row's contents"],
+    "correct": 1,
+    "explanation": "ctid is the physical (page, slot) address of a row version. Because an update writes a new version elsewhere (MVCC, Lesson 12), the ctid changes on update — which is why you never use it as a stable key; that's what the primary key is for."
+  }
+]

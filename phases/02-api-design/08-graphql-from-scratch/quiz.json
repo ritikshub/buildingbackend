@@ -1,0 +1,30 @@
+[
+  {
+    "question": "What single mechanism lets GraphQL fix both over-fetching and the N-round-trip waterfall?",
+    "options": ["HTTP/2 multiplexing", "Client-specified selection sets against one endpoint", "Binary encoding", "Server-side rendering"],
+    "correct": 1,
+    "explanation": "The client declares exactly the fields and nested relations it wants against a single endpoint, and gets them in one round trip — so it neither over-fetches unused fields nor makes N sequential calls to stitch resources together.",
+    "stage": "pre"
+  },
+  {
+    "question": "Explain the N+1 problem in resolver terms and DataLoader's cardinal lifetime rule.",
+    "options": ["It's a caching bug; share one loader globally", "Each list item resolves its child field with an independent query (1 + N); DataLoader batches same-tick loads and must be instantiated per request", "It only happens with mutations; use a singleton loader", "It's a network issue fixed by HTTP/2"],
+    "correct": 1,
+    "explanation": "A list resolver plus a naive child resolver produces 1 query for the list and N for the children. DataLoader batches all .load(key) calls in one event-loop tick into one fetch and caches per request — but the loader must be created fresh per request, or its cache leaks across users and goes stale.",
+    "stage": "post"
+  },
+  {
+    "question": "A GraphQL service shows a 100% HTTP-200 rate but users report failures everywhere. How?",
+    "options": ["The load balancer is lying", "GraphQL returns 200 even when the errors array is populated (with partial data); monitor the errors array, not just 5xx", "TLS is misconfigured", "The schema is invalid"],
+    "correct": 1,
+    "explanation": "GraphQL conventionally returns HTTP 200 whenever it can produce a well-formed response, including ones whose errors array is populated alongside partial data. You must monitor the errors array (counts, extensions.code, path) as first-class metrics.",
+    "stage": "post"
+  },
+  {
+    "question": "Why is hiding a field from the schema (or disabling introspection) NOT an authorization strategy?",
+    "options": ["It is a valid strategy", "The same entity is reachable via many paths (customer(id:), order.customer, node(id:)); authz must be enforced per-object in resolvers/business logic", "Introspection can't be disabled", "Fields are always public"],
+    "correct": 1,
+    "explanation": "Schema secrecy does nothing against a valid query, and the same object is reachable through many paths (including the Relay node(id:) IDOR vector). Authorization must be enforced per object/field in the resolver or business layer using the authenticated principal from context.",
+    "stage": "post"
+  }
+]

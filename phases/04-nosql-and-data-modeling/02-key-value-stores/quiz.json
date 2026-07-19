@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is the defining constraint of a key-value store?",
+    "options": ["Values must be JSON", "The value is opaque — the store returns it by key but cannot index or query anything inside it", "Keys must be integers", "It can only hold one value at a time"],
+    "correct": 1,
+    "explanation": "A KV store maps a key to an opaque value (a sealed blob of bytes). The only way to reach data is by its key — there is no querying by the value's contents, no joins, no secondary lookup on fields inside the value. That single restriction is the source of all its speed and scale."
+  },
+  {
+    "stage": "check",
+    "question": "Why can a key-value store scale horizontally so much more easily than a relational database?",
+    "options": ["It uses less memory", "It has no joins or cross-key transactions to protect, so the keyspace can be split across machines and each node's owner is computed by hashing the key", "It stores data in RAM only", "Relational databases can't be replicated"],
+    "correct": 1,
+    "explanation": "Relational scale-out is hard because joins and transactions want all the data in one place. A KV store relates no keys to each other, so nothing prevents splitting the keyspace across nodes. Given a key, any client can compute which node owns it by hashing — no coordinator needed."
+  },
+  {
+    "stage": "check",
+    "question": "In the log-structured hash (Bitcask) design, how is a PUT stored and where does the current value live?",
+    "options": ["The old record is overwritten in place on disk", "A new record is appended to the end of the log, and an in-memory index is updated to point at that record's byte offset — the latest append wins", "The value is stored only in the in-memory index", "Each PUT rewrites the entire file"],
+    "correct": 1,
+    "explanation": "Writes never update in place; every PUT appends a new record to the log (a fast sequential write), and the in-memory hash index maps the key to the byte offset of its newest record. Reads are one dict lookup plus one seek. Old versions linger until compaction removes them."
+  },
+  {
+    "stage": "check",
+    "question": "Why is naïve sharding with `node = hash(key) % N` a problem, and what fixes it?",
+    "options": ["Hashing is too slow; use a lookup table instead", "Changing N (adding/removing a node) shifts the modulus so almost every key remaps and the whole dataset must move; consistent hashing places nodes and keys on a ring so only ~1/N of keys move", "Modulo can return negative numbers", "It isn't a problem; modulo sharding is ideal"],
+    "correct": 1,
+    "explanation": "With modulo sharding, changing the node count N changes where nearly every key maps, forcing a full data reshuffle on every scaling event. Consistent hashing puts nodes and keys on a hash ring (a key goes to the next node clockwise), so adding a node only steals its neighbor's slice — about 1/N of the keys move."
+  },
+  {
+    "stage": "post",
+    "question": "In the log-structured design, what problem does compaction solve and how?",
+    "options": ["It encrypts the data", "The append-only log grows forever (superseded versions and tombstones pile up); compaction rewrites only the live records into a fresh file and atomically swaps it in, reclaiming the dead space", "It builds a B-tree index", "It compresses each value with zlib"],
+    "correct": 1,
+    "explanation": "Because writes only append and deletes are tombstones, the log accumulates dead records — every overwrite leaves the old version behind. Compaction periodically rewrites just the current value per key into a new file and swaps it in atomically, dropping superseded versions and tombstones to reclaim space."
+  },
+  {
+    "stage": "post",
+    "question": "You're using a KV store and keep wishing you could \"find all users where tier == gold.\" What does that signal?",
+    "options": ["You should scan every key on every query", "You've outgrown the pure key-value model — either move to a document store (queryable values) or design a second key that acts as an index for that access pattern", "The KV store is broken", "You should store all users under a single key"],
+    "correct": 1,
+    "explanation": "Wanting to query inside the value is the exact boundary of the KV model. Two honest options: switch to a document store whose values are queryable (Lesson 3), or explicitly maintain a second key (e.g. a set keyed by tier) that serves that access pattern — the discipline of modeling by access pattern (Lesson 7). Scanning all keys defeats the model."
+  }
+]

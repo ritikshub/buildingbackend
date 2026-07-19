@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is the core structural difference between a CPU and a GPU?",
+    "options": ["A GPU is just a faster CPU", "A CPU has a few powerful general cores; a GPU has thousands of small simple cores working at once", "A GPU has no cores", "They are identical"],
+    "correct": 1,
+    "explanation": "A CPU packs a few large, flexible cores for fast complex work; a GPU packs thousands of small, simple cores that run in parallel on many similar tasks. Same building blocks, opposite arrangement."
+  },
+  {
+    "stage": "check",
+    "question": "A CPU optimizes for latency; what does a GPU optimize for?",
+    "options": ["Lower power only", "Throughput — finishing a huge pile of similar tasks per second", "Smaller size", "Persistence"],
+    "correct": 1,
+    "explanation": "The CPU aims to finish one complex task quickly (low latency). The GPU aims to finish an enormous number of similar tasks per second (high throughput) by running thousands of cores in parallel."
+  },
+  {
+    "stage": "check",
+    "question": "Why are GPUs so well suited to running AI models?",
+    "options": ["AI needs a lot of storage", "Neural networks are mostly matrix multiplication — millions of identical, independent multiply-add operations, which map perfectly onto thousands of parallel cores", "AI is sequential and branchy", "GPUs have more RAM than any CPU"],
+    "correct": 1,
+    "explanation": "A neural network is dominated by matrix multiplication: huge numbers of the same small operation, all independent. That is exactly the highly-parallel, same-operation-over-much-data pattern a GPU is built for."
+  },
+  {
+    "stage": "check",
+    "question": "Which kind of work is a GPU BAD at?",
+    "options": ["Parallel math over large arrays", "Branchy, sequential, decision-heavy logic like handling a single web request", "Graphics", "Matrix multiplication"],
+    "correct": 1,
+    "explanation": "GPUs shine on parallel, uniform math but are poor at branchy, one-thing-after-another logic with lots of decisions — that's the CPU's strength. There's also overhead moving data to/from the GPU."
+  },
+  {
+    "stage": "post",
+    "question": "You're building a normal REST API that reads and writes a database. CPU or GPU?",
+    "options": ["GPU — it's always faster", "CPU — request handling is branchy, sequential work, not parallel math", "Both equally", "Neither"],
+    "correct": 1,
+    "explanation": "Serving requests is decision-heavy, sequential work with little uniform parallel math, so it belongs on the CPU. A GPU would sit idle and waste money. GPUs are for ML inference, video, and big parallel data crunching."
+  },
+  {
+    "stage": "post",
+    "question": "Why are high-end GPUs so expensive?",
+    "options": ["They are made of gold", "Physically huge dies (lower yield), large amounts of fast on-board memory, plus heavy AI demand", "They include a monitor", "They are cheap, actually"],
+    "correct": 1,
+    "explanation": "A top GPU is a very large chip (more silicon, lower yield per lesson 4), carries lots of fast VRAM, and faces intense demand from AI — so big-chip economics and market demand both push the price up."
+  }
+]

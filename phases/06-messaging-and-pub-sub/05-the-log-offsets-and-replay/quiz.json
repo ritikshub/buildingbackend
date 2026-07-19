@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A queue and a topic both delete a message once it has been acknowledged. What single design change turns that broker into a log, and what does the change actually buy?",
+    "options": [
+      "Storing messages on disk instead of in memory, which buys durability across a broker restart",
+      "Decoupling retention from acknowledgement: the broker stops deleting on ack and instead expires records by a policy (age, size, or key), while each consumer tracks its own position. Because the record survives being read, a consumer can move its position backwards and read it again, and many consumers can read one copy at different speeds",
+      "Allowing more than one consumer to subscribe to the same destination, which buys fan-out to multiple services",
+      "Guaranteeing strict FIFO ordering of messages, which buys deterministic processing order for consumers"
+    ],
+    "correct": 1,
+    "explanation": "Durability, fan-out and ordering are all real properties, but none of them is the defining change - a durable, ordered, multi-subscriber queue is still a queue if reading destroys. The log's move is separating 'this reader has finished with this record' from 'nobody will ever need this record again'. Once retention is a policy rather than a consequence of consumption, replay, backfill, audit and independent read speeds all follow for free."
+  },
+  {
+    "stage": "check",
+    "question": "The lesson's program ran three consumer groups over one 2,000-record log holding 215,042 bytes. What would the same workload cost in the fan-out model of Lesson 4, and what is the marginal cost of adding a fourth consumer to each?",
+    "options": [
+      "Both models store 215,042 bytes; the fourth consumer costs nothing in either, since the message data is identical",
+      "Fan-out stores 645,126 bytes (3 x 215,042, one queue copy per subscriber) versus the log's single 215,042. A fourth subscriber costs the fan-out model another 215,042 bytes and costs the log 0 bytes, because a new group is a new integer rather than a new copy - the log is O(data) and fan-out is O(data x subscribers)",
+      "Fan-out stores 645,126 bytes but the fourth subscriber is free in both, because brokers deduplicate identical payloads across queues",
+      "The log stores more, since it must additionally retain records that all three groups have already acknowledged"
+    ],
+    "correct": 1,
+    "explanation": "This was the measured punchline: 215,042 bytes once versus 645,126, a 3.00x storage amplification for an identical outcome - all three groups consumed all 2,000 records and produced the identical digest cd0974f3, proving they saw the same stream in the same order. The marginal number matters more than the total: the log's cost does not scale with subscriber count, which is why adding a reader to a log is a configuration change and adding one to a fan-out topology is a capacity decision."
+  },
+  {
+    "stage": "check",
+    "question": "The program's sparse index held 253 entries (one per 8 records) costing 4,048 bytes, and reduced the average seek from touching 999.5 records to 3.48. Why is a sparse index preferable to a dense one that maps every offset to a byte position?",
+    "options": [
+      "A dense index would be slower to search, since binary search over more entries costs more comparisons",
+      "A dense index cannot be rebuilt after a crash, whereas a sparse one can be reconstructed by scanning the segment files",
+      "A dense index costs memory proportional to record count, which defeats the point of a broker that keeps almost no per-record state. Sparseness trades a small, hard-bounded amount of forward scanning - never more than N-1 records past an index entry - for an index that here cost only 1.88% of the log while still cutting records touched by 287x",
+      "A sparse index is required because compaction leaves gaps in the offset sequence, and a dense index would contain entries pointing at deleted records"
+    ],
+    "correct": 2,
+    "explanation": "The binary-search cost difference is negligible and both index types can be rebuilt from the bytes (the program rebuilt all 253 entries after a crash). The real issue is that the log's whole advantage is holding almost no per-record state - one integer per consumer group rather than per-message tracking - and a dense index would reintroduce exactly the per-record memory cost the design exists to avoid. The scanning price is bounded by the index interval, so you are choosing a constant, not gambling."
+  },
+  {
+    "stage": "check",
+    "question": "A consumer group committed at offset 300 restarts and polls, but retention has already moved the log's earliest available offset to 1,224. What has happened and what are the real options?",
+    "options": [
+      "The broker redelivers from offset 1,224 automatically, so nothing is lost and no action is needed",
+      "The consumer receives an offset-out-of-range error. There are only two options and both are bad: reset to earliest and reprocess a backlog (duplicates, load, possibly re-sent side effects), or reset to latest and accept a permanent hole. In the measured run reset-to-earliest recovered 776 of 2,000 records and the other 1,224 were gone for good",
+      "The broker rejects the retention deletion while any group still has a committed offset inside the deleted range, so this situation cannot arise",
+      "The consumer should re-request the messages from the original producers, which is why producers must buffer their output until every consumer has acknowledged"
+    ],
+    "correct": 1,
+    "explanation": "This is the 'consumer fell off the log' incident. Retention operates on whole segments by policy and does not consult consumer positions - that independence is precisely what makes the broker simple, and it is also what makes this failure possible. The real fix is upstream: alert on consumer lag as a fraction of the retention window rather than against zero, because a consumer 6 days behind on a 7-day log is 24 hours from permanent data loss and looks fine on a raw lag chart."
+  },
+  {
+    "stage": "post",
+    "question": "The run folded three versions of the same log into key-value tables: the full 2,000-record log gave 387 keys, the 387-record compacted log gave 387 keys, and the 776-record age-and-size-retained log gave only 335. What does that three-way comparison establish?",
+    "options": [
+      "That compaction is lossy and time retention is lossless, so compaction should be avoided wherever state matters",
+      "That all three logs are interchangeable, since folding any of them reconstructs the same downstream state",
+      "That compaction is lossless for STATE and lossy for HISTORY, while age or size retention is lossy for both - it merely bounds the loss by age. Deleting old segments deletes whole keys (52 of them here), so replaying a time-retained log from its earliest offset rebuilds an incomplete table, whereas only compaction guarantees every key still has a surviving record",
+      "That the 52 missing keys indicate a bug in the retention implementation, since retention should never remove a key's most recent value"
+    ],
+    "correct": 2,
+    "explanation": "This is the practical form of stream-table duality. A compacted log converges to one record per key and folds to a complete snapshot - identical to folding the full history, which is what makes it safe as a source of truth for state. A time-retained log preserves ordered history inside its window but silently drops any key whose last update fell outside it. The consequence for design: if one consumer asks 'what happened?' and another asks 'what is it now?', that is two topics with two policies, not one topic with a compromise."
+  },
+  {
+    "stage": "post",
+    "question": "A consumer reads record 42, processes it, then commits offset 43. A colleague argues that moving the commit before the processing step would make the consumer safer. What is the actual trade, and what did the log change?",
+    "options": [
+      "Committing first is safer, because the committed offset is then durable before any processing work can fail",
+      "Committing first gives at-most-once (a crash between commit and processing loses the record permanently, with no redelivery); committing after gives at-least-once (a crash before the commit reprocesses the record). This is exactly the ack-timing fork from Lesson 3, and the log did not change it - it only widened the duplicate window, since consumers commit every N records rather than per message",
+      "Neither ordering matters, because the broker tracks per-message delivery state and will redeliver anything that was not acknowledged",
+      "Committing after processing gives exactly-once semantics, which is why log-based systems do not need idempotent consumers"
+    ],
+    "correct": 1,
+    "explanation": "There is no third option a single non-transactional commit can give you - a commit is just an ack, batched. Committing first trades duplicates for loss, which is almost never the trade you want. The log actually makes the duplicate window worse rather than better: because commits are batched every N records or few seconds, a crash replays the whole uncommitted batch instead of one message. That is why idempotent consumers are the entry fee for log-based processing, which is Lesson 6's subject."
+  }
+]

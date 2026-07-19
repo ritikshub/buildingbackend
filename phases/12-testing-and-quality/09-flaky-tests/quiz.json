@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your team adds `--reruns 2` to pytest because the build is red too often. A colleague objects that this could hide bugs. You reply that a real bug fails deterministically, so retries cannot hide it — they only suppress noise. How good is that reasoning?",
+    "options": [
+      "Sound. A deterministic regression fails on every attempt, so no number of retries can turn it green; retries only remove genuine noise.",
+      "Sound for the common case, and the residual risk is small because intermittent product bugs are rare compared to environmental flakes.",
+      "Unsound. Intermittent product bugs exist and retries suppress them at rate p^(R+1) — a race manifesting 3% of runs is reported on 0.0027% of builds under --reruns 2, one build in 37,037.",
+      "Unsound, but only because retries cost extra CI minutes that would be better spent fixing the underlying tests."
+    ],
+    "correct": 2,
+    "explanation": "The first option is the near-universal belief and it is true as far as it goes — a deterministic regression does fail every attempt — which is exactly why retries feel harmless. The trap is that it silently assumes every real bug is deterministic. Intermittent product bugs (races, ordering, resource contention) are precisely the ones a suite is least likely to catch by other means, and retries suppress them super-linearly: reporting drops from p to p^(R+1), so 3% becomes 0.0027%. Measured over 100 simulated days, blanket --reruns 2 left 2 of 6 genuine races completely undiscovered. The second option underrates how skewed the damage is toward the bugs you can least afford to miss. The fourth is measurably wrong in the other direction: per-test retries cost only 0.4% more executions, which is why the argument against them cannot be made on money at all."
+  },
+  {
+    "stage": "check",
+    "question": "A suite of 3,000 tests has a measured per-test flake rate of 0.2% — one spurious failure per test per 500 runs. What fraction of commits containing no real bug will produce a green build?",
+    "options": [
+      "About 99.8%, because each test is 99.8% reliable and the build inherits that reliability.",
+      "About 99.4%, because roughly six tests flake per build and the rest compensate.",
+      "About 0.25%, because the build is green only if all 3,000 tests behave: 0.998^3000.",
+      "About 40%, because flakes cluster in a few known tests rather than spreading across the suite."
+    ],
+    "correct": 2,
+    "explanation": "The build passes only if every test passes, so the per-build probability is (1 - f)^n = 0.998^3000 = 0.25% — confirmed at 0.237% over 500,000 simulated builds. The first option is the intuition that makes 0.2% sound acceptable in a meeting: it treats a per-test rate as if it survived unchanged to the build level, when in fact it compounds like interest. The second gets the expected number of flakes right (about six) but then assumes they somehow cancel, when one failure is enough to redden a build. The fourth describes a real phenomenon — flakes do cluster — but clustering would make things better, not neutral, and it does not rescue the arithmetic: the same 0.2% at only 100 tests still gives 81.86%, so it is suite size that drives the collapse."
+  },
+  {
+    "stage": "check",
+    "question": "In the same 3,000-test suite at f = 0.2%, with 5% of commits carrying a regression the suite could catch and 90% intrinsic detection power, the measured P(bug | red build) is 5.01%. What does that number mean operationally?",
+    "options": [
+      "The suite has become 5% effective, so roughly 19 in 20 regressions now reach production regardless of what anyone does about the reds.",
+      "A red build moves your belief essentially not at all — the prior was 5% — so red has stopped carrying information, though a green build is still 99.5% trustworthy.",
+      "Red builds are now 95% false alarms, so the correct response is to raise the alerting threshold and only page on two consecutive reds.",
+      "The suite's assertions have become too weak, and the fix is to strengthen them until P(bug | red) rises above 50%."
+    ],
+    "correct": 1,
+    "explanation": "P(bug|red) of 5.01% against a prior of 5% is the point: the evidence moved your belief by one part in a thousand, which is 0.003 bits against 4.322 bits for a deterministic suite. The first option conflates the signal's information content with the suite's detection power — the suite's intrinsic power is unchanged at 90%; what collapsed is what its output tells you. The third sounds sophisticated but two consecutive reds is just a retry with more steps, and it suppresses intermittent real bugs the same way. The fourth points at the wrong half of the system: the assertions are fine. The measured giveaway is that P(clean | green) stays at 99.4764% at every flake rate, because a flake can turn green red but never red green — the signal was never destroyed, only the channel."
+  },
+  {
+    "stage": "check",
+    "question": "A CI job of 200 tests fails only when three specific tests run together; no test fails alone. You plan to bisect: split the job in half, keep the half that stays red, repeat. What happens?",
+    "options": [
+      "It works but is slow, needing about log2(200) ≈ 8 CI runs to isolate the three tests.",
+      "It works only if the three tests are adjacent in the file order; otherwise it takes roughly 200 runs.",
+      "It fails on the very first step about 75% of the time, because the three culprits straddle the split and neither half is red.",
+      "It converges on one of the three tests, which is enough — fixing any one of them breaks the interaction."
+    ],
+    "correct": 2,
+    "explanation": "Bisection assumes the failure is carried by a subset you keep, but an interaction is destroyed by splitting. P(all three land in the same half) = 2 x C(100,3)/C(200,3) = 24.6%, so 75.4% of the time neither half fails and the search halts immediately with nowhere to go — measured at 75.4% over 40,000 random placements. This is exactly what ddmin's complement step is for: removing a chunk and testing the rest preserves interactions. The first option is the standard bisection intuition and it is correct only for a single-element cause. The fourth is tempting and sometimes even practically true, but bisection does not reach one of the three — it reaches nothing, because it stops on step one."
+  },
+  {
+    "stage": "post",
+    "question": "You replace blanket `--reruns 2` with `--reruns 2 --only-rerun ConnectionError --only-rerun TimeoutError`. Measured over 600 builds, all six genuine races are now found (worst latency 3.0 days, versus 2 never found under blanket retry), but the clean-commit green rate falls from 98.4% to 90.9%. How should you read this trade?",
+    "options": [
+      "It is a wash: you traded a 7.5-point drop in green rate for a detection improvement that a nightly flake-finder job would also have provided.",
+      "Strongly favourable, and the residual matters: about 15% of races still surface as timeouts and get retried, but for the hardest 3% race the policy is still 945x more visible than blanket retry, for 6x more red builds.",
+      "Unfavourable, because P(investigate) is lower under --only-rerun (26.5%) than under blanket retry (46.7%), so engineers trust each red build less.",
+      "Favourable only for suites without environmental flakes, since --only-rerun cannot suppress infrastructure noise the way blanket retry does."
+    ],
+    "correct": 1,
+    "explanation": "The measured trade is 6/6 races found within 3 days against 4/6 with two buried forever, paid for with 6x more red builds on clean commits — and the residual is real and worth stating: an error-signature allowlist is imperfect, so roughly 15% of races leak through as timeouts. Even so, the 3% race is reported on 2.55% of builds instead of 0.0027%. The third option cites a real measurement and draws the wrong conclusion from it, which is the subtlest error available here: blanket retry does produce the highest per-red-build trust precisely because it narrows the channel, and high confidence in a signal that almost never arrives is worth less than moderate confidence in one that arrives in three days. The fourth is backwards — suppressing infrastructure noise is exactly what --only-rerun does; it just declines to suppress assertion failures."
+  },
+  {
+    "stage": "post",
+    "question": "Over 100 simulated sprints on a shared seed, a no-expiry quarantine policy and a 2-sprint-expiry policy with the *same* fix budget of 0.5 tests/sprint both shipped exactly 2.08% of regressions — one ending with 210 tests quarantined, the other with 200 deleted. What is the right conclusion?",
+    "options": [
+      "The expiry date is what fixed the problem; the two policies only tie because 100 sprints is too short a horizon for the difference to appear.",
+      "Quarantine is strictly worse than deletion, since both lose the same coverage but quarantine also pays to keep running tests that gate nothing.",
+      "The fix budget is the variable that moves the escape rate — funding 2 fixes/sprint gave 0.33% with or without an expiry — and what the expiry buys is recoverability and a visible due date, not coverage.",
+      "The simulation is mis-specified, because a deleted test and a quarantined test cannot possibly have the same effect on the escape rate."
+    ],
+    "correct": 2,
+    "explanation": "The tie is exact rather than approximate because the policies share a seed, and it follows from the model's one honest premise: a quarantined test and a deleted test gate the same amount, namely none. So on the escape metric an expiry date alone changes nothing, and 'quarantine without an expiry is deletion with extra steps' turns out to be a true description that is not an argument about coverage. Both funded rows reached 0.33%. What the expiry genuinely buys is that 210 quarantined tests remain a debt you can pay down later while 200 deletions are written off permanently, plus a due date that lands in a diff someone must approve. The second option ignores that recoverability, and the running cost of a quarantined test is trivial next to its option value. The fourth mistakes a correct and slightly uncomfortable result for a bug — which is worth resisting, because tuning a model until it agrees with the slogan is how measurements stop being useful."
+  }
+]

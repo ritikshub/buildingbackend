@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A service with 4 workers and 50 ms of service time (80 req/s of capacity) receives 160 req/s for two minutes. One copy has an unbounded work queue; the other bounds it at 40 items and returns 503 when full. What is the difference in what they achieve?",
+    "options": [
+      "The unbounded queue completes roughly twice as many requests, because it never turns work away — that is the whole point of buffering a burst",
+      "The bounded queue completes fewer requests but with lower latency; it is a straight throughput-for-latency trade you make deliberately",
+      "They complete exactly the same number of requests — 9,462 out of 19,423 arrivals — because capacity is capacity and no queueing policy changes it. The difference is that the unbounded run had a p99 of 61 s against a 1 s deadline, peaked at 9,957 queued requests (~82 MB), and 98% of its completed work was already past its deadline: goodput 1.3/s versus 78.8/s, a 61x gap",
+      "The unbounded queue is strictly better until memory runs out, at which point the process restarts and the queue is cleared anyway"
+    ],
+    "correct": 2,
+    "explanation": "The tempting answer treats a queue as storage that buys you capacity. It does not: throughput is set by workers times service rate, and both runs proved it by completing the identical 9,462 requests. What an unbounded queue actually buys is queueing time, which becomes latency, which crosses the caller's deadline — turning correct responses into work nobody reads. A bound does not create capacity; it stops you spending the capacity you have on requests that have already been abandoned."
+  },
+  {
+    "stage": "check",
+    "question": "Under 2x overload you add a deadline check at dequeue: any request whose deadline has already passed is dropped instead of executed. Goodput goes from 1.2/s to 16.5/s and the queue stops growing — but 79% of completions are still late. Why, and what fixes it?",
+    "options": [
+      "Because FIFO always hands the worker the OLDEST live request, which has by definition already spent nearly its entire budget waiting, so adding service time pushes it past the deadline anyway. Switching the dequeue from popleft() to pop() — LIFO — serves the newest request instead and takes goodput to 80.1/s, the pool's full capacity, with 0% waste and a 258 ms p99",
+      "Because the deadline check is racing with the arrival path and needs a lock around the whole dequeue-and-check sequence",
+      "Because 1 second is too short a deadline for a 50 ms service time; raising the deadline to 5 seconds would let most of the queue drain successfully",
+      "Because dropping expired items still consumes a worker slot, so the effective capacity is lower than it looks; batching the drops amortises the cost"
+    ],
+    "correct": 0,
+    "explanation": "Dropping expired work at dequeue is genuinely valuable — it capped the queue at 213 items instead of 9,603, which is the difference between 1.7 MB and 78.7 MB and between running and being OOM-killed. But it does not fix goodput under FIFO, because the survivor at the head is always the item with the least budget left. LIFO inverts that: the newest request has its whole budget, finishes comfortably, and the stale tail ages out. Raising the deadline just moves the same failure later while making every caller wait longer for it."
+  },
+  {
+    "stage": "check",
+    "question": "A service at 80% utilization takes a 15-second, 30% capacity dip with a standard 3-attempt retry policy. Fifty-five seconds AFTER capacity is fully restored, the queue is 8,399 items deep, the oldest item is 35 seconds old, and goodput is zero. What is happening?",
+    "options": [
+      "The queue is draining but slowly; with 20 req/s of headroom against an 8,399-item backlog it needs about seven more minutes, which is the expected recovery time",
+      "The capacity restoration did not take effect on all instances; a rolling restart will synchronise them and the backlog will clear",
+      "Memory pressure from the deep queue is slowing the garbage collector, so effective capacity is still below normal and will recover once the queue is trimmed",
+      "It is a metastable failure. Queue time crossed the 1 s timeout, every caller retried, and retries are new arrivals — offered load went from 80 req/s to 187 req/s (2.3x, heading for the 3.0x ceiling). rho is still above 1 with capacity fully restored, so the loop now sustains itself and the queue grows in a straight line. Only dropping load exits it"
+    ],
+    "correct": 3,
+    "explanation": "The seductive answer is that it is draining, because a backlog draining slowly and a backlog growing slowly look similar on a five-minute graph. Check the derivative: the queue is going UP with the trigger gone, which is only possible if arrivals exceed capacity — and the extra arrivals are your own callers' retries. This is Bronson et al.'s definition of a metastable failure: a sustaining feedback loop that no longer needs the trigger that started it. Adding capacity chases a load that grows with it; the only exits are shedding load or a restart, which is shedding all of it."
+  },
+  {
+    "stage": "check",
+    "question": "Your team's capacity model says the safe operating point is rho = 0.90, where W = S/(1-rho) predicts 10x service time. Then a caching change makes 5% of requests take about 6x the mean while the mean itself is unchanged. What happens?",
+    "options": [
+      "Nothing measurable: W = S/(1-rho) depends only on the mean service time, and the mean did not move",
+      "The squared coefficient of variation of service time rises to about 4, and Pollaczek-Khinchine says W/S = 1 + rho(1+CV^2)/(2(1-rho)). Measured, rho = 0.80 now costs 11.2x service time instead of 4.8x, and the point where latency reaches 10x moves from rho = 0.90 to rho = 0.78. Your 'safe' operating point is now past the knee",
+      "Latency improves on average, because 95% of requests are now faster than they were before the change",
+      "p99 rises by roughly 6x for the affected 5% of requests, and the other 95% are unaffected because they do not share a queue with them"
+    ],
+    "correct": 1,
+    "explanation": "W = S/(1-rho) is the special case of Pollaczek-Khinchine where CV^2 = 1, which almost no real endpoint satisfies. Variability hurts because a long request blocks everything behind it in the queue, so the slow 5% impose waiting on the fast 95% — which is exactly why the last distractor is wrong: they do share a queue. The practical consequence is that a mean-based capacity model systematically overestimates how hard you can safely run, and every cache, slow path or variable result-set size pushes your real knee further left."
+  },
+  {
+    "stage": "post",
+    "question": "You size an in-flight concurrency limit with Little's Law: 400 req/s at 20 ms means 8 concurrent, so you set 64 for headroom. The dependency's capacity then drops to 40% mid-incident. What does the fixed limit do, and what would an adaptive one do differently?",
+    "options": [
+      "The fixed limit protects you correctly — 64 is still far above the 8 you need, so it never binds and latency is unaffected",
+      "The fixed limit should be raised during the incident so more work can be in flight and the backlog drains faster",
+      "The fixed limit fills all 64 slots, RTT rises to 320 ms against a 100 ms deadline, and throughput stays at a healthy-looking 200 req/s while goodput collapses to 4 req/s — 98% waste. A latency-gradient limiter treats rising RTT as congestion (rtt_min/rtt), shrinks to 6.6 in flight in about a second, holds RTT at 33 ms, delivers 181 req/s of goodput, and sheds the surplus in ~0 ms",
+      "Both limiters behave identically, because the dependency's capacity, not the limit, is what caps throughput"
+    ],
+    "correct": 2,
+    "explanation": "The last distractor is half right and that is what makes it dangerous: throughput really is capped by the dependency at 200 req/s in both cases. The limiter does not change throughput — it changes how much of that throughput is *useful*. A fixed limit sized for a healthy dependency becomes an instruction to keep 64 doomed requests in flight the moment the dependency degrades. Measuring congestion instead of configuring a constant is the same move TCP makes, and it is why the adaptive run recovered within a second of capacity returning."
+  },
+  {
+    "stage": "post",
+    "question": "One dependency dies completely. Every call to it times out after 80 ms. Your /profile endpoint takes 4 ms and never touches that dependency. Why does /profile's p99 go to 905 ms, and what are the two independent fixes?",
+    "options": [
+      "Because every thread in the shared pool is parked in an 80 ms timeout on the dead dependency — /checkout consumed 95% of all thread-time, so /profile requests sit in the work queue behind them. A circuit breaker fails those calls in ~0 ms and brought /profile's p99 to 54 ms; a bulkhead (separate 4+4 pools) makes it structurally impossible and reached 5 ms",
+      "Because the dead dependency's TCP connections are held open and exhaust the file descriptor limit, which slows accept() for every endpoint",
+      "Because a failing dependency causes retry traffic that saturates the network interface, adding latency to all requests regardless of which pool serves them",
+      "Because timeouts are recorded as errors and the resulting error-rate spike triggers logging on the hot path, which is what actually costs the 900 ms"
+    ],
+    "correct": 0,
+    "explanation": "The mechanism is resource contention, not network or logging: a thread waiting on a socket is fully allocated and doing nothing, and enough of them means you have no threads left for anything. The two fixes fail differently and you want both. A breaker is a reaction — it must observe failures before it trips, so some damage always gets through (the 54 ms residue is probe cost plus pre-trip failures) and a badly tuned threshold flaps. A bulkhead is a static guarantee that needs no tuning, but it also caps how much of your pool the healthy dependency can borrow."
+  }
+]

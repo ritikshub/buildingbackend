@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why is 'on commit, write every modified data page to its final location on disk' a bad way to achieve durability?",
+    "options": ["It uses too much RAM", "It's slow (scattered random writes on the commit path) and unsafe (a crash mid-write leaves a torn, corrupt data file)", "It's actually the best way", "Pages can't be written to disk"],
+    "correct": 1,
+    "explanation": "Modified pages are scattered, so committing means many slow random writes. Worse, a crash partway through leaves the data file partially updated — a torn write — with no record of the correct state. WAL fixes both."
+  },
+  {
+    "stage": "check",
+    "question": "What is the write-ahead rule?",
+    "options": ["Write data pages before logging", "Before a change is written to the data pages on disk, a record describing it must first be appended and flushed to the log", "Always write to two disks at once", "Log only after the transaction commits"],
+    "correct": 1,
+    "explanation": "Log the intent before doing the deed. The change is recorded in the sequential log (and fsync'd) before the data pages are modified on disk, so recovery can always reconstruct the correct state."
+  },
+  {
+    "stage": "check",
+    "question": "When is a transaction considered durably committed under WAL?",
+    "options": ["When its data pages are all written to their final disk locations", "The instant its commit record is flushed (fsync'd) to the log — the data pages can be written lazily afterward", "When the buffer pool is full", "When a checkpoint runs"],
+    "correct": 1,
+    "explanation": "The commit point is the fsync of the commit record to the log. Once that's on disk, the transaction is durable; the actual data pages are flushed to their homes later, off the commit path."
+  },
+  {
+    "stage": "check",
+    "question": "After a crash, what do the REDO and UNDO phases of recovery do?",
+    "options": ["REDO deletes data; UNDO restores backups", "REDO replays committed transactions' changes (durability); UNDO discards changes from transactions with no commit record (crash-safe atomicity)", "They both replay everything in the log", "REDO and UNDO are the same operation"],
+    "correct": 1,
+    "explanation": "Recovery replays the log: transactions with a commit record are re-applied (REDO — committed work survives), and interrupted transactions without one are rolled back (UNDO — partial work vanishes). That restores exactly the ACID state."
+  },
+  {
+    "stage": "post",
+    "question": "Why is WAL faster than writing data pages on commit, despite adding a log write?",
+    "options": ["The log is stored in RAM only", "The log is written sequentially with one fsync (and commits can be batched), moving the expensive scattered random data-page writes off the commit path", "It skips fsync entirely", "It compresses the data"],
+    "correct": 1,
+    "explanation": "Appending to a sequential log and issuing one fsync is far cheaper than many random writes across the data file. Group commit batches concurrent commits into a single fsync. The random data-page writes happen later, in the background."
+  },
+  {
+    "stage": "post",
+    "question": "What problem do checkpoints solve, and how?",
+    "options": ["They compress the database", "They bound crash-recovery time: by flushing dirty pages and marking a safe point, recovery only needs to replay the log from the last checkpoint forward, not from the beginning", "They delete committed data", "They replace the need for a WAL"],
+    "correct": 1,
+    "explanation": "Without checkpoints, recovery would replay an ever-growing log from the start. A checkpoint flushes dirty pages to the data file and records that everything up to that point is safe, so recovery replays only from there — and old log segments can be recycled."
+  }
+]

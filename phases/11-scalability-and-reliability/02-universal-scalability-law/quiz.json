@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your fleet is at 24 instances doing 19,000 req/s. You double it to 48. Throughput falls to 17,400 req/s, p99 rises, CPU per instance drops from 61% to 34%, and nothing errors. What is the most likely explanation?",
+    "options": [
+      "A bad deploy shipped alongside the scale-up; the new instances are running different code.",
+      "The load balancer has not finished redistributing connections, and throughput will recover once it does.",
+      "Throughput as a function of fleet size has a peak, and you have crossed it — the coordination cost between instances now grows faster than the capacity they add.",
+      "The database has become the bottleneck; you need read replicas before adding more application instances."
+    ],
+    "correct": 2,
+    "explanation": "The falling per-instance CPU is the clue that rules out the other three. A bad deploy or a saturated database would show something pinned at 100% and something erroring; instead every instance is healthier than before and the system is slower. That combination — more machines, less throughput, lower per-node utilization, no errors — has one cause: you are past the peak of the scalability curve, in the retrograde region. A load-balancer rebalance settles in seconds, not minutes, and would not depress total throughput below its starting value."
+  },
+  {
+    "stage": "check",
+    "question": "A service has a serial fraction σ = 0.05. According to Amdahl's Law, what does a 100-machine fleet deliver, and what is the ceiling?",
+    "options": [
+      "100x, and the ceiling is set by hardware rather than by σ.",
+      "16.81x, and the ceiling is 1/σ = 20x no matter how many machines you buy.",
+      "95x, because only 5% of the work is lost to serialization.",
+      "50x, and the ceiling is 2/σ = 40x."
+    ],
+    "correct": 1,
+    "explanation": "Work it longhand: the job costs σ + (1−σ)/N = 0.05 + 0.95/100 = 0.0595, so C = 1/0.0595 = 16.81. The tempting answer is 95x, because '5% serialized' sounds like '5% lost'. It is not a 5% tax — it is a hard floor on the time the job takes, so as N grows the parallel part vanishes and the total time bottoms out at σ itself. That gives a ceiling of 1/0.05 = 20x. Five percent serialization means 83 of your 100 machines produce nothing."
+  },
+  {
+    "stage": "check",
+    "question": "Why is the coherency term in the Universal Scalability Law written as κN(N−1) rather than κN?",
+    "options": [
+      "It is an empirical curve-fitting choice; the quadratic simply fits measured data better than a linear term.",
+      "Because coordination cost is counted per PAIR of nodes, and N nodes have N(N−1)/2 pairs — the count of relationships grows as the square of the count of nodes.",
+      "Because each node must be checked twice, once when it joins the cluster and once when it leaves.",
+      "Because latency between any two nodes doubles each time the fleet doubles."
+    ],
+    "correct": 1,
+    "explanation": "The quadratic is not a fitting convenience, it is a count. Four nodes have 6 pairs; eight nodes have 28 — doubling the nodes multiplied the pairs by 4.7. N(N−1) is the number of directed exchanges, once in each direction. That is why a cache-invalidation broadcast, a full service mesh, or N app instances each connected to M database replicas gets disproportionately expensive: you are not adding nodes, you are adding relationships between nodes, and relationships grow as N squared while capacity grows as N."
+  },
+  {
+    "stage": "check",
+    "question": "You sweep your service at N = 1, 2, 4, 8, 12 and 16 instances — every level you have ever run in production — and the USL fits all six points with under 2% error. What is wrong with using the resulting N* to plan capacity?",
+    "options": [
+      "Nothing; a fit with under 2% error across six points is exactly what a trustworthy fit looks like.",
+      "Six points is too few for any two-parameter fit; you need at least twenty.",
+      "Every point is on the rising side of the curve, so many different (σ, κ) pairs fit them equally well while disagreeing wildly about where the peak is — the data contains no information about the knee.",
+      "The fit is fine, but you must convert throughput to latency before computing N*."
+    ],
+    "correct": 2,
+    "explanation": "This is the failure mode that matters, and a good residual is exactly what makes it dangerous. The lesson's code demonstrates it: fitting only the points at N <= 16 produced sigma = 0.0163 and kappa = 0.001599, fitted all seven points, and then predicted 70.2 req/s at N = 64 where the truth was 83.7 — 16% wrong, in the direction that buys hardware. Six points is plenty if they straddle the knee. The requirement is not more points, it is points on both sides, which means deliberately load-testing fleet sizes you would never run."
+  },
+  {
+    "stage": "post",
+    "question": "Two services both stop gaining throughput as you scale out. Service A's shared database sits at 99% busy and total throughput is flat. Service B's shared database is 67% busy — less busy than it was at half the fleet size — and total throughput is falling. Which is which, and what do you do?",
+    "options": [
+      "Both are σ-limited; shard the database in both cases and both curves will improve.",
+      "A is σ-limited (shard it, add replicas, take the shared step off the hot path); B is κ-limited (subset the coordination, cell the fleet, put a pooler in front) — and B can be improved immediately by REMOVING machines.",
+      "A is κ-limited and B is σ-limited; the busier resource is always the coordination cost.",
+      "Both need more instances; the flat and falling curves are just measurement noise at high concurrency."
+    ],
+    "correct": 1,
+    "explanation": "The discriminator is what the shared resource's utilization does as you add machines. Under a dominant σ term it climbs toward 100% and pins there, throughput plateaus, and removing machines changes nothing. Under a dominant κ term the shared resource gets LESS busy while throughput falls, because the time is going into coordination spread thinly across every node rather than piling up at one visible bottleneck — measured in this lesson at 80.5% busy at the peak versus 67.4% at twice the fleet, with 17.8% less throughput. Only B has a fix available in one deploy: scale in, which recovered +21.7%."
+  },
+  {
+    "stage": "post",
+    "question": "Sharding a serial resource in two halved σ (0.0249 to 0.0098) and raised peak throughput 13.7% — but the peak stayed at N = 32. Subsetting the coordination graph moved N* from 29 to 52. Why the difference?",
+    "options": [
+      "Sharding was implemented incorrectly; a correct shard always moves the peak proportionally to the number of shards.",
+      "N* = sqrt((1−σ)/κ) is dominated by κ: halving σ changes the numerator by about 1%, while cutting κ by 69% moves N* by a factor of roughly 1/sqrt(0.31). σ sets the ceiling; κ sets where the peak is.",
+      "Subsetting also reduces σ, which is what actually moved the peak.",
+      "The peak position depends only on fleet size and instance type, not on the fitted coefficients."
+    ],
+    "correct": 1,
+    "explanation": "Put the numbers in the formula. With σ around 0.02, the numerator (1−σ) is about 0.98 whichever way you move σ — halving it shifts N* by well under one percent. κ is under a square root in the denominator, so cutting it by 69% multiplies N* by about 1.8, which is exactly the 29-to-52 move measured. This is the practical content of 'σ caps you, κ kills you': sharding buys real throughput at the fleet size you already run, but it leaves the cliff exactly where it was. Note also that subsetting raised the fitted σ from 0.0249 to 0.0343 — it converted a quadratic cost into a linear one rather than deleting it, which is a trade you want but should not mistake for a free lunch."
+  }
+]

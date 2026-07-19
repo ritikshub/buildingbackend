@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "A single-threaded event-loop server is handling 24 concurrent connections at a p99 of about 11 ms. One request hits a handler that calls `time.sleep(0.5)`. What happens to the other 23 connections, which never touch that route?",
+    "options": ["Nothing — each connection has its own state in the loop, so a slow handler only delays its own request", "They slow down slightly, roughly in proportion to the extra load one blocked request adds to the server", "They freeze completely for the full 500 ms: there is one thread, and it is inside the sleeping handler, so the loop cannot reach select() to notice anyone else. Measured, p99 for those connections went from 11.36 ms to 485.00 ms — 43x — with 23 requests crossing 100 ms where none had before", "The kernel migrates the blocked handler to another core, so throughput drops but latency is unaffected"],
+    "correct": 2,
+    "explanation": "An event loop has exactly one thread of execution, and every callback runs to completion on it. A blocking call in any handler is not 'that request being slow' — it is the entire server being stopped, including connections on completely unrelated endpoints. The tempting answer is the first: per-connection state in the loop makes it feel like connections are isolated, but the state is isolated while the *execution* is not."
+  },
+  {
+    "stage": "check",
+    "question": "Step 5 of the iteration takes `n = len(ready)` and runs exactly `n` callbacks, rather than looping `while ready: run(ready.popleft())`. Why does this matter?",
+    "options": ["Because a callback that schedules another callback via call_soon would otherwise append into the queue being drained, so the drain never ends. The loop would never reach select() again: sockets stay unread, the accept backlog overflows, and the server hangs at 100% CPU while looking perfectly busy in every profiler", "Because deques are not safe to pop from while another thread appends to them, and the length snapshot acts as a lock", "Because the callbacks must run in deadline order, and taking the length first is what sorts them", "Because len() on a deque is O(1) while checking emptiness in a loop condition is O(n), so the snapshot is a performance optimization"],
+    "correct": 0,
+    "explanation": "The snapshot is a starvation guarantee, not an optimization. It bounds the work of a single iteration to what was already queued when the iteration began, so the loop is guaranteed to return to the demultiplexer no matter what the callbacks schedule. It is also why call_soon() must append rather than invoke inline — inlining turns a scheduling primitive into unbounded recursion and reintroduces exactly the starvation the snapshot prevents."
+  },
+  {
+    "stage": "check",
+    "question": "Why must an event loop compute timer deadlines from `time.monotonic()` rather than `time.time()`?",
+    "options": ["Because time.time() returns a float with insufficient resolution for sub-millisecond timers", "Because time.monotonic() is significantly faster to call, and the loop calls it on every iteration", "Because time.time() is not thread-safe and the timer heap can be touched from a worker thread", "Because time.time() is the wall clock and can be stepped forwards or backwards by NTP, a DST transition or an operator. A backwards step of one hour makes every pending timer hang for an hour; a forwards step fires all of them at once in a thundering herd. The monotonic clock only counts forward at a steady rate and cannot be adjusted"],
+    "correct": 3,
+    "explanation": "Durations and deadlines are relative quantities and must come from a clock that cannot be adjusted; wall-clock time exists for timestamps you show to humans. This is the leap-second and DST class of outage, and it is entirely silent until the moment the clock moves. The resolution answer is tempting because both clocks are floats — but resolution was never the problem, adjustability is."
+  },
+  {
+    "stage": "check",
+    "question": "`call_soon_threadsafe` appends the callback to a queue under a lock and *then* writes one byte to a socketpair whose read end is registered with the selector. Why both steps, and why in that order?",
+    "options": ["The byte carries the callback's arguments across the thread boundary, so the queue is only a fallback if the pipe buffer is full", "The queue transfers the work and the byte forces select() to return, since a loop blocked in a syscall cannot notice a queue mutation. Queueing first is what closes the race: if the worker queues between the loop computing its timeout and entering select(), the byte is already in the pipe, so select() returns immediately instead of sleeping on stale state", "The lock is what wakes the loop; the byte is a debugging aid that lets you count wakeups", "The order is arbitrary — as long as both happen before the worker thread exits, the loop will pick the callback up on its next timer expiry"],
+    "correct": 1,
+    "explanation": "The loop already knows how to wake for exactly one thing: a file descriptor becoming readable. The self-pipe manufactures one on demand, which is why no new mechanism is needed. Ordering matters because the pipe *holds* the wakeup: a byte written before the loop enters select() makes select() return instantly, whereas a condition variable checked at the wrong instant would be missed. This is also the return path for every thread-pool result."
+  },
+  {
+    "stage": "post",
+    "question": "Your async service's p50 latency and throughput are flat and healthy, but p99 and max have spiked and no individual endpoint looks slow in your traces. Which measurement identifies the cause, and what is it telling you?",
+    "options": ["Requests per second per endpoint — the endpoint with the highest rate is starving the others", "Average latency across all endpoints, which will reveal the slow code once you widen the time window", "Loop lag — schedule a callback every 100 ms and record actual minus expected delay. In the lesson's run, the longest ready-queue drain went from 9.45 ms to 500.21 ms when a single handler blocked, while p50 went 0.44 to 0.33 ms and throughput was unchanged. Blocking damage lands entirely in the tail and is spread across whichever unlucky requests were in flight, so no endpoint owns it", "Resident memory of the process, since a stalled loop accumulates unprocessed events until it catches up"],
+    "correct": 2,
+    "explanation": "This latency shape — flat p50, flat throughput, blown p99 and max, no slow endpoint — is the signature of a blocked event loop, and it is hard to find precisely because the victims are unrelated to the culprit. Loop lag measures the mechanism directly rather than its symptoms: how long the loop went without reaching select(). It is a leading indicator that moves before user-visible latency does, and it points at the loop rather than at whichever request happened to be queued behind the stall."
+  },
+  {
+    "stage": "post",
+    "question": "In the lesson's callback-style request flow, all four steps ran at a Python stack depth of exactly 8 frames, and an exception raised in step 3 was caught by the loop's handler rather than by the caller's `try/except`. What does that prove about callback style?",
+    "options": ["That the loop's exception handler was misconfigured and should re-raise so the caller can see the error", "That the nesting is textual only — each callback is invoked directly by the dispatcher, so there is no caller-callee relationship between the steps. Step 1's frame was gone 50 ms before step 3 ran, so there is no stack for an exception to travel up: no request-scoped `finally` fires, no transaction rolls back, no 500 is sent, and the connection is left open with the client waiting", "That Python's traceback machinery cannot cross an I/O boundary, which is a limitation of CPython rather than of the pattern", "That the exception should have been passed as an explicit error argument to every callback, which fully solves the problem at the cost of some boilerplate"],
+    "correct": 1,
+    "explanation": "Deeply indented callbacks look like nested scopes, but the indentation is a property of the source text, not of the runtime: the loop is the only caller any of them ever has. That is why error handling has no natural home in callback style and why the error-first-argument convention is a workaround rather than a fix — it propagates errors by hand at every level and still gives you no `finally`, no `with`, and no plain loop over an I/O operation. What is actually missing is the ability for a function to suspend mid-body and resume later, which is what coroutines add."
+  }
+]

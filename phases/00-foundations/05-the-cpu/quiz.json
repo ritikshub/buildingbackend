@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is the CPU's role in a computer?",
+    "options": ["It stores files permanently", "It is the worker that executes a program's instructions", "It connects to the internet", "It displays the screen"],
+    "correct": 1,
+    "explanation": "The CPU is the part that actually does the work — executing the program's instructions step by step. It's built from the logic gates of the previous lesson."
+  },
+  {
+    "stage": "check",
+    "question": "What three steps does a CPU repeat over and over?",
+    "options": ["Open, read, close", "Fetch, decode, execute", "Connect, send, receive", "Compress, store, delete"],
+    "correct": 1,
+    "explanation": "The CPU runs the fetch-decode-execute cycle: fetch the next instruction from memory, decode what it means, execute it, then repeat — billions of times a second."
+  },
+  {
+    "stage": "check",
+    "question": "What does a clock speed of 3.5 GHz mean?",
+    "options": ["The CPU has 3.5 billion cores", "The CPU's clock ticks 3.5 billion times per second, driving the cycle forward", "The CPU can store 3.5 GB", "The CPU uses 3.5 watts"],
+    "correct": 1,
+    "explanation": "Hertz means ticks per second, so 3.5 GHz is 3.5 billion clock ticks per second. Each tick pushes the fetch-decode-execute cycle forward, so more GHz means (roughly) more steps per second."
+  },
+  {
+    "stage": "check",
+    "question": "How is a CPU 'core' different from the OS running many programs at once?",
+    "options": ["They are the same", "A core is a complete CPU with its own execution loop, so N cores run N instruction streams truly simultaneously; the OS instead time-shares one core to fake simultaneity", "A core is slower than time-sharing", "Cores only exist in servers"],
+    "correct": 1,
+    "explanation": "Each core is a full CPU running its own fetch-decode-execute. An 8-core chip genuinely does 8 things at the same instant (real parallelism). The OS time-slicing a single core only creates the illusion of simultaneity."
+  },
+  {
+    "stage": "post",
+    "question": "Why can a 3 GHz CPU sometimes beat a 4 GHz one?",
+    "options": ["It can't — more GHz always wins", "Because a CPU can do more work per tick (higher IPC), so fewer-but-more-productive ticks can win", "Because it has less RAM", "Because it is newer"],
+    "correct": 1,
+    "explanation": "Clock speed is only one dimension. A CPU that completes more instructions per cycle (IPC) does more work each tick, so a well-designed 3 GHz chip can outrun a less efficient 4 GHz one."
+  },
+  {
+    "stage": "post",
+    "question": "Your server does heavy work but uses only 1 of its 8 cores. What should you change?",
+    "options": ["Buy more RAM", "Run the work across multiple processes/threads so it uses all the cores instead of leaving 7 idle", "Lower the clock speed", "Delete some files"],
+    "correct": 1,
+    "explanation": "Seven cores sitting idle means you're using an eighth of the CPU. Backends run multiple worker processes or threads specifically to spread work across all cores and actually use the hardware."
+  }
+]

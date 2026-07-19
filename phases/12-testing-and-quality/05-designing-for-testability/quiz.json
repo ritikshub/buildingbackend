@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A 60-line process_order() reads the clock, opens its own database connection and calls a payment gateway whose sandbox returns one fixed exchange rate. You want to test its currency-rounding rule. In Python you can patch any name you like. Given unlimited patching effort, how much of the function's behaviour can a test actually reach?",
+    "options": [
+      "All of it — Python lets you patch any module attribute, so any behaviour is reachable with enough doubles",
+      "All of it except timing and performance characteristics, which no unit test can observe",
+      "Most of it, but not all: patching recovered 20 of 24 branches, and 4 remained unreachable at any effort",
+      "Almost none of it — a test with four doubles is only testing the doubles, so it proves nothing"
+    ],
+    "correct": 2,
+    "explanation": "Measured: 15 of 24 decision branches with no patching, 20 of 24 once the clock is frozen and the gateway faked (4 doubles), and 24 of 24 against the refactored core with none. Option 1 is the tempting answer because it is true about Python and wrong about the consequence: patching a *name* does not let you choose a *value* the collaborator will never produce. The sandbox rate is 1.08 = 27/25, and an integer amount times a fraction with an odd denominator can never land on exactly one half — 0 of 2,000,000 amounts scanned reach the rounding tie. Option 4 overstates the case in the other direction: that same heavily-doubled suite still killed 57.8% of seeded mutants, so it was not worthless, just capped."
+  },
+  {
+    "stage": "check",
+    "question": "You fix a function's clock through four different seams, then apply three refactors that change no observable behaviour: hoisting a repeated clock read into a variable, adding a default argument, and aliasing the clock to a module-level name at import. Which seam still controls the clock after all three?",
+    "options": [
+      "Rebinding the module global, since the module is the unit of patching in Python",
+      "Passing the value as a parameter — it survived 3 of 3, where the module global survived 1 of 3",
+      "A side_effect list of instants, since it controls every call the function makes",
+      "All four, because none of the refactors changed what the function computes"
+    ],
+    "correct": 1,
+    "explanation": "Measured across the matrix: parameter 4/4 columns, module global 2/4, default argument 1/4, side_effect list 1/4 — that is 3, 1, 0 and 0 of the three refactors respectively. Option 1 is the seam most suites actually use and it fails twice: a default argument captures the old value at def time, and `from mod import now` copies the name so the copy you patch is not the copy that runs. Option 3 is the seductive one because a call list is the *only* seam that can reach an elapsed-time branch without editing the code — and it survived 0 of 3, because it encodes how many times you call a collaborator, which is not a behaviour. Option 4 confuses the code being unchanged in behaviour with the tests being unchanged in coupling; that gap is exactly what the matrix measures."
+  },
+  {
+    "stage": "check",
+    "question": "The legacy function's dates come from datetime.now(), so a date-boundary branch is only reachable on 7 of 365 days. You freeze the clock, which recovers those branches. What does freezing cost you?",
+    "options": [
+      "Nothing measurable — a frozen clock is strictly more controllable than a real one",
+      "Only realism: the tests no longer prove the code works on a real clock",
+      "The elapsed-time branch: the function reads the clock 5 times, so frozen, finished minus started is always 0 and the timeout can never be taken",
+      "Test isolation, because the frozen clock leaks into other tests in the same module"
+    ],
+    "correct": 2,
+    "explanation": "Measured: window.timeout is reachable at neither tier 0 (real clock, uncontrollable) nor tier 1 (frozen clock, uniform) — only against the core, where settle(priced, outcome, started, finished) takes both instants as parameters. Option 1 is the natural assumption and it is exactly backwards: freezing is the degenerate case of controlling, and it trades one blind spot for another. Option 4 names a real hazard of global patching, but it is not what the measurement showed here, and it is fixable with teardown; the dead timeout branch is not. The general form of this is that a frozen clock cannot test a timeout — you need a clock you can advance, not merely one you can pin."
+  },
+  {
+    "stage": "check",
+    "question": "Fourteen tests through the legacy function kill 57.8% of seeded mutants. The same fourteen tests — same names, same assertions on the same finished invoice — kill 73.4% against the refactored core. Where do the extra 15.6 points come from?",
+    "options": [
+      "The core suite is finer-grained, so each failure implicates fewer lines",
+      "The core suite runs 112 fewer I/O operations, so it can afford more assertions",
+      "The core suite is allowed to choose the FX rate and the instant, so 4 previously unreachable round_money mutants become killable",
+      "Mutation scores are noisy at 64 mutants; a 15-point gap is within run-to-run variance"
+    ],
+    "correct": 2,
+    "explanation": "All four extra kills are in round_money — the branch that fig. 4 proved was arithmetically out of reach at the sandbox's fixed 1.08. The suites are generated from one table of 14 behaviours, so the count, the names and the assertions are identical by construction; the only difference is which inputs each harness may choose. Option 1 describes a real property of the third suite, and that suite scored *worse*, at 68.8% — failure localisation and detection are a trade, not the same axis. Option 2 confuses cost with power: the I/O saving is real and is why the suite is faster, but a faster test does not kill more mutants. Option 4 is ruled out by construction: the program seeds every RNG and produces byte-identical output on repeated runs."
+  },
+  {
+    "stage": "post",
+    "question": "You have a pure function format_receipt_line(name, qty, minor) with no clock, no I/O and no globals. A reviewer asks you to extract a CurrencyPolicy collaborator behind a Protocol port \"so it can be tested in isolation\". Applying that refactor, what did the measurement show you get?",
+    "options": [
+      "Better failure localisation, since a test can now fail on the policy rather than the formatter",
+      "+11 lines, +2 names and +2 call hops, for 0 behaviours unblocked — because none were blocked",
+      "The same testability gain as the process_order refactor, since it is the same technique",
+      "A necessary seam for the day the currency's minor-unit count changes"
+    ],
+    "correct": 1,
+    "explanation": "Both designs return `widget x2 123.45`, and the branch tracer records 0 newly reachable behaviours because the function had zero hidden inputs to begin with. This is the honest core of the 'test-induced design damage' critique and it deserves to be conceded: an abstraction whose only justification is a test is a permanent tax — a name every reader learns and a hop every debugger follows. Option 3 is the trap the lesson is built to defuse: it is indeed the same technique, and technique is not the variable. process_order_legacy() had 10 hidden inputs and the refactor unblocked 9 behaviours; this one has 0 and unblocks 0. Option 4 is a real future requirement and still not a reason today — minor units are already a parameter's worth of data, and you can pass one when you need it. The rule the measurements support: inject hidden inputs, never arithmetic or formatting."
+  },
+  {
+    "stage": "post",
+    "question": "You are about to refactor a legacy function nobody fully understands. You record 20 generated cases as a characterization suite, refactor, and replay: all 20 identical. How much confidence should that give you?",
+    "options": [
+      "High — 20 independent cases agreeing is strong evidence the behaviour is preserved",
+      "High for the common path, and the rare paths do not matter because they are rare",
+      "Low: at 20 cases the harness caught 0 of the seeded regressions, which only 40 or more cases detected",
+      "None — characterization tests assert on current behaviour, so they can never detect a change"
+    ],
+    "correct": 2,
+    "explanation": "Measured: an accidental off-by-one in the date clamp was flagged by 4 of 120 recorded cases (3.3%), and the corpus-size sweep found 0 at 10 cases, 0 at 20, 1 at 40, 3 at 80 and 4 at 120. A corpus of 20 ships this regression while reporting all-green. Option 1 is the intuition the numbers contradict: what matters is not how many cases you recorded but whether any of them contains the rare input, and the clamp only fires on the 7 days of the year the calendar blocker counted. Option 2 inverts the risk — rare paths are precisely where unexamined behaviour hides, which is why the bug survived to production in the first place. Option 4 misstates the mechanism: recording current behaviour is exactly what makes a change detectable; the limit is coverage of inputs, not of intent. And note the recursion — a characterization suite can only record inputs the legacy design permits, so the rounding tie is invisible to it too."
+  }
+]

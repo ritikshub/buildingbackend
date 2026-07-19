@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What is 'polyglot persistence'?",
+    "options": ["Storing everything in one database that supports many query languages", "Using several different data-storage technologies within one system, each chosen to fit the shape and access pattern of one slice of the data (a relational core, a cache, a search index, maybe a graph)", "Translating your database between SQL dialects", "A rule that every system must use at least five databases"],
+    "correct": 1,
+    "explanation": "Polyglot persistence means deliberately using multiple storage technologies in one system, each placed where its strengths fit — orders in a relational database, sessions in a key-value store, catalog in a document store, metrics in a time-series store, and so on (the Lesson 1 pressure map). The idea is to stop forcing one database to be good at everything, not to collect databases for their own sake."
+  },
+  {
+    "stage": "check",
+    "question": "What single rule makes a polyglot architecture tractable rather than a debugging nightmare?",
+    "options": ["Use exactly three databases", "Designate one source of truth per fact and treat every other store as a derived, rebuildable projection of it — never let two stores both claim to own the same fact", "Keep every store perfectly consistent at all times with distributed transactions", "Store all data in every database so there's always a backup"],
+    "correct": 1,
+    "explanation": "The failure that sinks polyglot systems is two stores both believing they own the same fact, so when they disagree there's no authority to break the tie. Avoid it by construction: one system of record per fact (usually the relational database), and every other copy — the search index, the cache, the graph — is a derived projection that can be rebuilt from the source of truth. It's normalization's 'one fact in one place' lifted from columns to whole databases."
+  },
+  {
+    "stage": "check",
+    "question": "What is the 'dual-write problem'?",
+    "options": ["Writing the same value twice to one database by mistake", "Writing the same logical change to two separate stores (e.g. Postgres and a search index) with no transaction spanning both, so if one write fails after the other succeeds the stores disagree permanently — and ordering the writes can't fix it", "A database that requires two disks", "Writing data in two different programming languages"],
+    "correct": 1,
+    "explanation": "The moment you write the same change to two systems, there is no shared transaction: the DB can commit while the search-index update fails (crash, timeout), leaving them permanently inconsistent. You can't fix it by 'write DB then update search' — the gap between the two writes is exactly where the failure lives. The reliable fixes all work by removing that second synchronous write."
+  },
+  {
+    "stage": "check",
+    "question": "How do the outbox pattern and CDC keep stores in sync without a distributed transaction?",
+    "options": ["They wrap both writes in a distributed two-phase commit", "The outbox writes the data change AND an event row in the SAME database transaction (atomic), then a relay publishes the event with retries; CDC tails the database's write-ahead log and streams every committed change to derived stores — both turn a dual write into one atomic write plus reliable async propagation", "They keep all stores in memory so nothing can fail", "They forbid writing to more than one store ever"],
+    "correct": 1,
+    "explanation": "The outbox pattern commits the data change and the intent-to-publish together in one DB transaction (no dual write), and a separate relay reads the outbox and publishes with retries — a crash just retries from the outbox. CDC generalizes this: the WAL you built in Phase 3 already records every committed change, so a tool like Debezium tails it and streams changes to the derived stores with no application code change. The database's own change log becomes the integration backbone."
+  },
+  {
+    "stage": "post",
+    "question": "Outbox relays and CDC streams deliver at-least-once, so a consumer may see the same event twice. Why must consumers be idempotent?",
+    "options": ["They don't need to be — events are never duplicated", "Because at-least-once delivery means a crash mid-publish can redeliver an event, so applying it twice must equal applying it once (dedupe on an event id, or make the update set-to-a-value rather than an increment) — otherwise a redelivered 'increase price by $5' would apply twice", "Because idempotency makes the database faster", "Because consumers must reject all duplicate-looking events and stop"],
+    "correct": 1,
+    "explanation": "Exactly-once delivery is largely a myth (Phase 6); real pipelines are at-least-once, so a crash between publishing and acknowledging redelivers the event. An idempotent consumer makes reprocessing safe: 'set price to $40' applied twice is still $40, but 'increase price by $5' applied twice double-charges. Dedupe on an event id, or design updates to be naturally idempotent — the same discipline as idempotency keys in Phase 2."
+  },
+  {
+    "stage": "post",
+    "question": "A team wants to add Elasticsearch, a graph DB, and a time-series DB to their Postgres app 'to use the best tool for each job'. What's the senior response?",
+    "options": ["Great — more specialized stores always means better performance", "Minimize stores: name the specific pressure for each, check whether Postgres already relieves it (full-text search + pgvector, Apache AGE / recursive CTE, partitioning + TimescaleDB), and add a separate store only when Postgres genuinely can't and the scale justifies the permanent operational cost — every store you don't add is a distributed-systems problem you don't have", "Add all three immediately; you can always remove them later", "Never use anything but Postgres under any circumstances"],
+    "correct": 1,
+    "explanation": "'Best tool for each job' taken literally gives you seven systems to run, back up, monitor, secure, and keep in sync — a permanent tax. The senior move is to minimize stores: name the pressure, check whether the relational database already solves it (Postgres has absorbed JSONB, FTS, pgvector, partitioning/TimescaleDB, and graph traversal via AGE/CTEs), and add a specialized store only for a named, unrelievable pressure at justifying scale — as a derived projection synced via outbox/CDC. Not five databases by reflex, not one tortured into five jobs."
+  }
+]

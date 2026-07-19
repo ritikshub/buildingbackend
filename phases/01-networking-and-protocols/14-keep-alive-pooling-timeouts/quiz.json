@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "Before a TCP client can send its first request byte, what must happen?",
+    "options": [
+      "Nothing — data flows immediately",
+      "A three-way handshake (SYN, SYN-ACK, ACK), which costs a network round-trip",
+      "The server must send the client a password",
+      "The client must open at least ten connections"
+    ],
+    "correct": 1,
+    "explanation": "TCP is connection-oriented: the SYN / SYN-ACK / ACK handshake establishes shared state before any request data moves. That is one full round-trip of pure setup, and for HTTPS a TLS handshake adds one or two more — the cost keep-alive and pooling exist to avoid paying per request."
+  },
+  {
+    "stage": "pre",
+    "question": "What does 'keep-alive' (a persistent connection) mean?",
+    "options": [
+      "The server pings the client to keep it awake",
+      "After a request/response completes, the connection stays open so the next request reuses the same socket",
+      "The connection is encrypted end to end",
+      "The client keeps retrying until the server answers"
+    ],
+    "correct": 1,
+    "explanation": "Keep-alive means not closing the connection after one exchange. HTTP/1.1 makes this the default (RFC 9112 §9): one handshake is amortized over many requests instead of paying a new handshake for each one."
+  },
+  {
+    "stage": "check",
+    "question": "A connection pool's acquire() finds no idle connection and the pool is already at max_size with all connections checked out. What should it do?",
+    "options": [
+      "Open a new connection anyway, ignoring max_size",
+      "Return None and let the caller crash",
+      "Block (up to a timeout) until another caller releases a connection",
+      "Close the whole pool and start over"
+    ],
+    "correct": 2,
+    "explanation": "The max size is a hard cap that protects against resource exhaustion. When every connection is in use, acquire() waits for a release rather than opening more — that back-pressure is the point of a bounded pool. A pool timeout bounds that wait so a caller cannot block forever."
+  },
+  {
+    "stage": "check",
+    "question": "Why must a connection pool shared by many threads be thread-safe?",
+    "options": [
+      "So it can encrypt connections",
+      "So two threads cannot be handed the same connection at once or corrupt the open-count",
+      "Thread-safety makes the network faster",
+      "It is not required; pools are always single-threaded"
+    ],
+    "correct": 1,
+    "explanation": "Multiple threads call acquire() and release() concurrently. Without a lock or thread-safe queue guarding the idle set and the open-count, two threads could grab the same socket or the count could race past max_size. The Build-It pool uses a queue.LifoQueue plus a threading.Lock for exactly this."
+  },
+  {
+    "stage": "check",
+    "question": "A client calls recv() on a peer that accepted the connection but then went completely silent. With no read timeout set, what happens?",
+    "options": [
+      "recv() returns an empty string immediately",
+      "recv() blocks forever (or until the OS eventually resets the connection), hanging the request",
+      "Python automatically retries on another connection",
+      "The pool detects it and raises an error"
+    ],
+    "correct": 1,
+    "explanation": "A blocking recv() waits until bytes arrive. If the peer never sends any, the call never returns — the request and its connection hang indefinitely. settimeout() bounds the wait so recv() raises socket.timeout and the client can recover instead of hanging."
+  },
+  {
+    "stage": "post",
+    "question": "A service under load starts failing new outbound connections with 'cannot assign requested address'. What is the most likely cause and fix?",
+    "options": [
+      "The DNS server is down; switch DNS providers",
+      "Too many short-lived connections have exhausted ephemeral ports (many stuck in TIME_WAIT); reuse connections via a pool",
+      "The CPU is overloaded; add more cores",
+      "The firewall is blocking the port; open it"
+    ],
+    "correct": 1,
+    "explanation": "Each outgoing connection uses an ephemeral source port, and a closed connection lingers in TIME_WAIT for ~60s before its port can be reused. Churning thousands of short-lived connections exhausts the port range. Pooling reuses a small set of long-lived connections, so almost nothing enters TIME_WAIT."
+  },
+  {
+    "stage": "post",
+    "question": "You configure an HTTP client library with a connection pool but leave all timeouts at their default of 'none'. What is the risk?",
+    "options": [
+      "None — pooling already handles slow peers",
+      "The first peer that goes silent hangs that request forever, and a pooled connection stuck in a call is never returned, so the pool can drain and stall the whole client",
+      "The pool will automatically shrink to zero connections",
+      "Requests will be sent twice"
+    ],
+    "correct": 1,
+    "explanation": "Pooling and timeouts solve different problems: pooling reuses connections; timeouts bound waits. With no timeout, one silent peer hangs a request indefinitely and holds its pooled connection hostage. Enough of those and every connection is stuck, so the client stalls. Always set connect, read, and write timeouts explicitly."
+  }
+]

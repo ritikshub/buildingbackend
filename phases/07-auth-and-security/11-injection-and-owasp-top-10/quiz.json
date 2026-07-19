@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A search endpoint runs `execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")` and a user searches for `' OR '1'='1`. What happens, and what's the fix?",
+    "options": [
+      "It returns an error; fix it by validating the input length",
+      "The input becomes part of the SQL, so the database runs `WHERE name = '' OR '1'='1'`, which is always true and returns every row (variants can DROP tables or exfiltrate other columns). The fix is a parameterized query: `execute(\"... WHERE name = ?\", (name,))`, where the template is compiled first and the input is bound as a data value that can never change the query's structure",
+      "Nothing happens because SQL ignores quotes",
+      "The fix is to escape the single quotes in the input before concatenating"
+    ],
+    "correct": 1,
+    "explanation": "This is SQL injection: concatenation mixes attacker data into the query string, so the interpreter parses the injected `OR '1'='1'` as code. Parameterized queries send the query template and the data on separate channels — the database fixes the query's structure before the input arrives, so the input is looked up as a literal value (matching no one) rather than executed. That structural separation, not escaping, is the fix."
+  },
+  {
+    "stage": "check",
+    "question": "Why is escaping user input the wrong primary defense against SQL injection, compared to parameterized queries?",
+    "options": [
+      "Escaping is slower than parameterization",
+      "Escaping is a blocklist you maintain and will get wrong — it fails in numeric contexts (no quotes to escape), across different quoting/charset rules, and on second-order injection where already-escaped data is concatenated into a new query later. Parameterization has none of these problems because the query structure is fixed before the data is bound, so data can never become syntax regardless of its content",
+      "Escaping doesn't work on modern databases",
+      "There's no difference; they're equally safe"
+    ],
+    "correct": 1,
+    "explanation": "Escaping tries to enumerate and neutralize every dangerous character in every context — a losing game (numeric fields, alternate quotes, Unicode, and stored-then-reused data all defeat it). Parameterization sidesteps the whole problem: the driver compiles the template with placeholders and binds values into slots, so the input is never parsed as SQL. Use parameters everywhere; for identifiers that can't be parameters (table/column names), use a strict allowlist."
+  },
+  {
+    "stage": "check",
+    "question": "A 'ping this host' feature runs `os.system(\"ping \" + host)`. How do you fix the command injection?",
+    "options": [
+      "Escape the semicolons and pipes in `host`",
+      "Don't invoke a shell at all: pass an argument list with `shell=False`, e.g. `subprocess.run([\"ping\", \"-c\", \"1\", host])`. The OS then treats `host` as a single argument to ping, so shell metacharacters like `;`, `|`, and `$()` in it are just literal characters, never parsed as shell syntax. Removing the interpreter (the shell) removes the injection",
+      "Run the command as root so it can't be tampered with",
+      "Use `os.popen` instead of `os.system`"
+    ],
+    "correct": 1,
+    "explanation": "Command injection is SQL injection against the shell: building a command line lets `;`, `&&`, `$(...)`, and backticks inject extra commands. The parameterization-equivalent fix is to skip the shell — an argument list passes each element straight to exec() as one argument, so metacharacters lose their meaning. Escaping shell input is as fragile as escaping SQL; dropping the shell is the structural fix."
+  },
+  {
+    "stage": "check",
+    "question": "What makes SSRF dangerous, and why isn't blocklisting `169.254.169.254` a sufficient defense?",
+    "options": [
+      "SSRF lets attackers read the client's browser cookies",
+      "Your server sits inside the network trust boundary, so when it fetches a user-supplied URL, the attacker can aim it at resources they can't reach directly — the cloud metadata endpoint (169.254.169.254) to steal the server's credentials, internal services, or local files. Blocklisting one address is insufficient because there are many internal ranges (loopback, all private ranges, other link-local addresses, IPv6 equivalents) and because DNS rebinding can make an allowed hostname resolve to an internal IP; you need an allowlist plus blocking whole internal ranges after resolving, and disabling redirects",
+      "SSRF only affects the attacker's own machine",
+      "It's not dangerous; servers can't reach internal resources"
+    ],
+    "correct": 1,
+    "explanation": "SSRF weaponizes the server's privileged network position — the 'confused deputy.' Cloud metadata turned it critical because a single fetch can yield IAM credentials. A single-address blocklist misses the loopback range, all RFC 1918 private ranges, other link-local addresses, IPv6, and hostnames that resolve to internal IPs (including via rebinding). Deny by default with an allowlist, resolve-then-check against all internal ranges, disable redirects, restrict schemes, and enforce IMDSv2."
+  },
+  {
+    "stage": "post",
+    "question": "SQL injection, command injection, path traversal, and SSRF are called 'the same bug.' What's the single sentence that describes all four?",
+    "options": [
+      "The attacker guessed a weak password",
+      "User-controlled data was placed into a string that an interpreter (SQL engine, shell, filesystem, URL fetcher) then parsed, so the interpreter executed the attacker's data as instructions — a failure to keep code and data separate. The general fix is to restore that separation: parameterized queries, argument lists, path confinement, destination allowlists — so data can never be interpreted as syntax",
+      "The server ran out of memory under load",
+      "A dependency had a known CVE"
+    ],
+    "correct": 1,
+    "explanation": "Each is data crossing into an interpreter that can't distinguish the app's instructions from the attacker's input. Naming the interpreter names the fix: SQL → parameterize; shell → argument list (no shell); filesystem → confine the resolved path to a base; URL fetcher → allowlist destinations and block internal ranges. Input validation (allowlists) and least privilege on the interpreter are defense in depth on top."
+  },
+  {
+    "stage": "post",
+    "question": "The OWASP Top 10 ranks Broken Access Control as #1. What kind of problem is it, and how is defending it different from fixing injection?",
+    "options": [
+      "It's an injection problem fixed by parameterized queries",
+      "Broken Access Control (which includes IDOR) is an authorization problem: users acting outside their intended permissions, usually because the code checks the route but not the specific object, or defaults to allow. Unlike injection — a coding/interpreter fix (parameterize, drop the shell) — defending it is about design and enforcement: deny by default, authorize the object on every access, decide from server-side state, and centralize the policy (Lesson 9). It's the #1 risk precisely because it's easy to forget on one endpoint",
+      "It's a cryptography problem fixed by using AES",
+      "It's a network problem fixed by a firewall"
+    ],
+    "correct": 1,
+    "explanation": "The Top 10 is a map of how backends actually break, and its #1 entry is authorization, not injection. Injection is neutralized by structural coding fixes; broken access control is neutralized by enforcement discipline — object-level checks, deny-by-default, server-side decisions, and a centralized, auditable policy. The Top 10 is worth using as a review checklist because each entry points to a different class of control across this phase."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You ship a new checkout flow behind a 10% rollout. The guard is `if random.random() < 0.10:` evaluated wherever the flag is read. Your dashboard confirms 10% of requests take the new path. What is your actual blast radius?",
+    "options": [
+      "10% of users — the request percentage and the user percentage are the same thing at scale",
+      "Close to 100% of users, because each user re-rolls the dice on every request and almost all of them land on the new path at least once",
+      "Under 10% of users, because a user has to be unlucky repeatedly to stay on the new path",
+      "Exactly 10% of users, but they change every hour, which is fine for a short rollout"
+    ],
+    "correct": 1,
+    "explanation": "The request percentage and the user percentage are completely different numbers when bucketing is not sticky. Measured over 200,000 evaluations of a 10% rollout, a fresh random draw per request hit 9.97% of requests — a perfect-looking rollout — while 98.52% of users touched the new path at least once, across 35,073 variant switches. The dashboard shows the number you asked for while the blast radius is effectively everyone. The fix is to make the bucket a pure function of a stable identifier: sha256(flag_salt + ':' + user_id) % 10000 < 1000."
+  },
+  {
+    "stage": "check",
+    "question": "Your flag service becomes unreachable. Two flags are affected: `recommendations_enabled`, a kill switch that is normally ON, and `new_pricing_engine`, a risky new path currently at 10%. Your SDK is configured to fail open for everything. What happens?",
+    "options": [
+      "Both are handled correctly — fail open is the safe default because it never removes functionality from users",
+      "Both are handled incorrectly — fail closed is the safe default because it never exposes unfinished code",
+      "The kill switch is correct (its known-good value is ON) but the new pricing engine is now released to 100% of users at the exact moment you cannot observe or reverse it",
+      "Neither matters, because a flag service outage causes 5xx responses before any fallback runs"
+    ],
+    "correct": 2,
+    "explanation": "There is no globally safe fallback direction — safety is per flag, and the coded default must be that flag's known-good value. Fail open is right for a kill switch (0 wrong decisions in the measurement) and catastrophic for a new path: it wrongly turned the new pricing engine ON for 2,261 users during a 2,500-request outage window. Fail closed is the exact mirror image. Better than either: a cached ruleset with local in-process evaluation, which was wrong zero times in both cases because it still knows the rules rather than guessing the answer."
+  },
+  {
+    "stage": "check",
+    "question": "Two independent teams each launch a flag at 10%, both bucketing with `sha256(user_id) % 10000 < 1000`. Bucketing is deterministic, so users never flicker. What is wrong with this setup?",
+    "options": [
+      "Nothing — deterministic hashing is exactly the requirement, and both rollouts will correctly reach 10% of users",
+      "SHA-256 is too slow to run on every request; a faster non-cryptographic hash is required",
+      "Both flags select the identical 10% of users, so the same people are the first cohort for every rollout and every experiment result is confounded by the others",
+      "The modulo introduces bias, so each cohort will be noticeably larger or smaller than 10%"
+    ],
+    "correct": 2,
+    "explanation": "Determinism is necessary but not sufficient — the salt decides WHICH 10%. Hashing the user id alone makes every flag pick the same cohort: measured over 50,000 users, two flags at 10% overlapped 100.00%, the identical 4,972 people. Mixing the flag key into the hash input (sha256(flag_key + ':' + user_id)) makes the samples independent: the same two flags then overlapped 9.74%, which is precisely what independence predicts (10% of 10%). Those unsalted 4,972 users would otherwise meet every new bug first, forever."
+  },
+  {
+    "stage": "check",
+    "question": "You are on call. The new code path is erroring at 50% exposure. Your flag SDK evaluates locally but refreshes its ruleset by polling every 30 seconds. Compared with a streaming SDK, how much does that configuration line cost you, and why?",
+    "options": [
+      "Nothing measurable — the poll interval only affects how quickly new flags appear, not how quickly a flip takes effect",
+      "About 33.4 s to mitigate instead of 4.3 s, because the poll interval sits directly in the critical path between the flip and the process acting on it — 28,390 bad requests instead of 3,655 at 850 req/s",
+      "Roughly double, because polling has to complete two cycles before the value is considered stable",
+      "It is faster than streaming, because polling avoids the reconnect delay a streaming connection needs after a control-plane write"
+    ],
+    "correct": 1,
+    "explanation": "The SDK's update mechanism is part of your incident response time. The measured flip is 2.0 s of human decision + 0.4 s of control-plane write + 0.9 s of streaming fan-out + 1.0 s of in-process cache TTL = 4.3 s. Swap the streaming push for a 30-second poll and the worst case becomes 33.4 s — the poll interval sits directly in the critical path, and at 850 req/s that is the difference between 3,655 and 28,390 requests served by the broken path. When evaluating a flag vendor, 'how does a ruleset update reach a running process, and what is the worst case' is the question that matters most."
+  },
+  {
+    "stage": "post",
+    "question": "A cleanup sprint targets your 40 live flags. The list includes release toggles at 100%, an experiment that concluded in March, a kill switch nobody has flipped in a year, and `enterprise_sso_enabled`, which gates a feature enterprise customers pay for. Which is most dangerous to delete, and what would you check first?",
+    "options": [
+      "The kill switch, because deleting it removes your only incident lever — check when it was last exercised",
+      "`enterprise_sso_enabled`, because it is a permission/entitlement flag: it is permanent business logic wearing a release toggle's clothes, and deleting it removes a paid feature. Check the billing/entitlement system, not the flag console",
+      "The concluded experiment, because users may still be enrolled in a variant and removing it moves them mid-session",
+      "The release toggles at 100%, because a flag at 100% may still be serving the old path to cached clients"
+    ],
+    "correct": 1,
+    "explanation": "The four kinds of flag have different owners and lifetimes, and conflating them is why flag systems rot. A permission/entitlement flag is not release machinery at all — it is permanent business logic, it belongs under test, and it should never be swept up in a debt cleanup. The evidence that tells you it is permanent lives outside the flag system entirely, in what customers are billed for. The kill switch is also permanent but for a different reason (and should be exercised on a schedule rather than deleted), while release toggles at 100% and concluded experiments are exactly the 13-of-40 that were pure debt in the measured inventory — deleting them shrank the reachable state space 8,192x."
+  },
+  {
+    "stage": "post",
+    "question": "You put a flag on a change where the new code path reads a new `price_cents` column and the old path reads the legacy `price` column. The flag is at 25% and errors appear. You flip it back to 0%. What have you actually got?",
+    "options": [
+      "A clean reversal — the flag is a pure exposure change, so no user is affected once the ruleset propagates",
+      "A reversal that only works if the old column still exists and is still being maintained; if writes went only to `price_cents`, flipping back is a data error, and the flag was a one-way door all along",
+      "A reversal that requires a deploy anyway, because column selection is compiled into the query",
+      "A reversal that is safe as long as the flag was never above 50% exposure"
+    ],
+    "correct": 1,
+    "explanation": "A flag is only reversible inside the expand/contract window: both data shapes must work for the whole time the flag can be flipped. If the new path wrote values the old path cannot read — a new column, a new event schema, a new cache key format — then flipping back is not a mitigation, it is a second incident. Before shipping any flag, answer in writing: if I flip this back after an hour of traffic, is every row and message the new path produced still readable by the old path? If not, you have rebuilt the all-or-nothing rollback you were trying to escape."
+  }
+]

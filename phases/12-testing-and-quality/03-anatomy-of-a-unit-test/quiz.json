@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Two engineers each write 59 lines of tests over the same 77-line pricing module. Alice's 10 tests contain 31 assertions; Bob's 14 tests contain 17. Both suites are green and both execute every line of the module. Which suite is more likely to catch a one-line bug introduced next week?",
+    "options": [
+      "Alice's — 31 assertions check nearly twice as many facts as 17",
+      "Neither reliably; at equal size and equal coverage the two are close to equivalent",
+      "Bob's — but only marginally, and mostly by luck of which lines he happened to check",
+      "Bob's, and by a wide margin: measured on 25 seeded bugs, 23 killed against 11"
+    ],
+    "correct": 3,
+    "explanation": "Measured in this lesson: the 31-assertion suite killed 11 of 24 killable bugs, the 17-assertion suite killed 23 — 2.09x, at identical line count and identical line coverage. Answer 1 is the intuition almost everyone has, and it is exactly backwards: assertion count correlated negatively here, because 14 of Alice's 31 assertions sit in one test where Python stops at the first failure and never evaluates the rest. What separated the suites was not how many facts they checked but which inputs they chose — the gap is almost entirely boundary bugs (1/7 vs 7/7) and rounding bugs (0/3 vs 3/3)."
+  },
+  {
+    "stage": "check",
+    "question": "A pricing module applies a 5% discount when `subtotal >= 5000` cents. Someone changes `>=` to `>`. Measured on 8,000 randomly generated realistic orders, on what share of them does that bug produce a different answer — and what follows?",
+    "options": [
+      "About 50% — half of all orders are above the threshold and half below, so any comparison bug shows up constantly",
+      "About 2.138%, so 139 random orders give you a 95% chance of one hit — while a 3-case table (4999 / 5000 / 5001) catches it every time",
+      "About 12%, matching the share of orders that land in the 5% tier",
+      "0% — the two programs are behaviourally identical, so this is an equivalent mutant"
+    ],
+    "correct": 1,
+    "explanation": "The two programs differ only on inputs where subtotal is EXACTLY 5000; everywhere else they agree. Measured: 2.138% of realistic orders, needing 139 of them for 95% confidence — and the tier-threshold-constant variant of the same bug came in at 0.338% and 887 orders. Answer 0 confuses 'how often the branch is taken' with 'how often the mutation changes the answer', which is the single most common error in reasoning about test data: a branch that runs on half your traffic can still hide a bug that only manifests on one exact value. That is why boundary values are chosen deliberately rather than sampled."
+  },
+  {
+    "stage": "check",
+    "question": "One test makes three calls into the module and then asserts 14 facts about the results. Across 24 seeded bugs it breaks 35 of those assertions in total. How many does it report, and what happens to the rest?",
+    "options": [
+      "35 — pytest collects every assertion result and prints them all in the failure report",
+      "9 — one per failing run, because `assert` raises and ends the function; the other 26 (74%) are never evaluated",
+      "14 — the maximum, since each run reports the full list of assertions in the test",
+      "9, and the remaining 26 are reported on the next run automatically once the first is fixed"
+    ],
+    "correct": 1,
+    "explanation": "`assert` raises AssertionError, which ends the function immediately — there is no collection step. Measured here: 35 assertions broken, 9 reported, 26 masked, and only 6 of the 14 assertions were EVER the failure shown, while 8 broke a total of 26 times and reported nothing once. Answer 3 is tempting because it describes what eventually happens, but it hides the cost: each round trip is a full suite run, and the measured mean was 3.89 broken facts per failing run. Answer 0 describes pytest's assertion rewriting, which prints operand values for the ONE assertion that failed — it does not resume execution."
+  },
+  {
+    "stage": "check",
+    "question": "A test replaces `_tier_bps` and `_coupon_bps` with stubs returning fixed values, then asserts the resulting discount. It is green and it runs the pricing code. What is the precise problem?",
+    "options": [
+      "It is slower than a test that uses the real helpers, because patching has overhead",
+      "It will break whenever the helpers' signatures change, making it high-maintenance",
+      "The 9 seeded bugs living inside those two helpers cannot reach it at any input — it asserts that a stub returned what the test configured the stub to return",
+      "Nothing in principle; stubbing collaborators is the standard way to isolate a unit"
+    ],
+    "correct": 2,
+    "explanation": "The word for this is structural, not stylistic: measured, that test killed 4 of 24 bugs and was blind by construction to the 9 (B01-B05, C02, C03, E02, E03) that live in the code it replaced. No input, no assertion and no amount of care can make it detect them. Answer 3 is the received wisdom and is where the damage comes from — 'isolate the unit' is good advice only when the thing you stub is genuinely outside the behaviour under test. Here the tier lookup IS the behaviour. Lesson 04 measures what the same habit costs against a real external provider."
+  },
+  {
+    "stage": "post",
+    "question": "A refactor renames an internal field, rewords one error message, reformats a receipt string, splits a private helper in two and batches two audit calls into one. It is verified behaviour-identical across 8,808 cases — every amount and every exception type unchanged. What happens to the two suites?",
+    "options": [
+      "Both stay green; the tests assert on behaviour and behaviour did not change",
+      "6 of the 10 weak tests go red and 0 of the 14 strong ones, and none of the 6 found a bug",
+      "Both go substantially red; any refactor of this size breaks tests, which is the price of having them",
+      "The strong suite goes red more often, because it makes more assertions about specific values"
+    ],
+    "correct": 1,
+    "explanation": "Measured: 6 of 10 against 0 of 14. Each red test names one flavour of brittle assertion — an internal field name, a formatted string, a private function's name, an error MESSAGE rather than its type, and which calls were made. Answer 2 is the belief that quietly kills refactoring: it treats churn as unavoidable, when the strong suite over the same module took the identical refactor with zero red tests. The rule the data supports is narrow and cheap: assert the amount and the exception type; never the message, the label, the format or the call list."
+  },
+  {
+    "stage": "post",
+    "question": "Of 25 seeded bugs, 4 change nothing on any input the pricing module accepts, and 3 of those never appeared once in 8,000 generated orders. What does that tell you about test-data generation?",
+    "options": [
+      "The generator was badly written; a correct one would produce those inputs by chance",
+      "Those bugs are unreachable in production too, so they are not worth testing for",
+      "They live only in the branches that reject input, and a generator written by someone thinking about pricing produces prices — valid data, at any volume, never reaches them",
+      "Property-based testing solves this automatically, since it generates inputs uniformly at random"
+    ],
+    "correct": 2,
+    "explanation": "The error branches are unreachable by construction from valid data, and the generator's distribution is a picture of its author's assumptions: it produced valid quantities and real coupon codes because those are what pricing is about. Answer 0 misreads the result — no volume fixes it, since the probability is exactly zero, not merely small. Answer 1 is the dangerous one: that code runs on your worst day, when a client sends garbage or a partner's schema drifts. Measured, the weak suite had 1 rejection test in 10 and the strong suite 3 in 14. Answer 3 is half-right at best; a property-based generator finds these only if its strategy is told that invalid input exists, which is Lesson 12's actual subject."
+  }
+]

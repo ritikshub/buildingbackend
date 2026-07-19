@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "What raw material are computer chips made from?",
+    "options": ["Copper", "Silicon, which comes from sand", "Plastic", "Aluminum"],
+    "correct": 1,
+    "explanation": "Chips are built on silicon, refined from ordinary sand (silicon dioxide). Silicon is a semiconductor, which is what makes it useful for building switches."
+  },
+  {
+    "stage": "check",
+    "question": "Why is silicon (a semiconductor) the right material for building transistors?",
+    "options": ["It is the cheapest metal", "It conducts electricity only sometimes, depending on how it's treated — exactly what a controllable switch needs", "It never conducts electricity", "It always conducts electricity"],
+    "correct": 1,
+    "explanation": "A switch must be able to conduct or not conduct on command. A semiconductor sits between conductors (always conduct) and insulators (never conduct), and doping tunes it — perfect for a controllable switch."
+  },
+  {
+    "stage": "check",
+    "question": "How are billions of transistors placed onto a chip?",
+    "options": ["One at a time by a robot arm", "Printed all at once with light through a mask (photolithography), layer by layer", "Grown randomly", "Glued on by hand"],
+    "correct": 1,
+    "explanation": "Photolithography shines light through a patterned mask onto a light-sensitive wafer to etch transistor patterns, repeated layer by layer. Cutting-edge fabs use extreme ultraviolet (EUV) light because features are only nanometers wide."
+  },
+  {
+    "stage": "check",
+    "question": "What does 'yield' mean in chip manufacturing, and why does it matter?",
+    "options": ["How fast the chip runs; it sets the clock speed", "The fraction of chips on a wafer that come out working; low yield drives up cost", "The color of the silicon", "The number of layers"],
+    "correct": 1,
+    "explanation": "A tiny defect ruins a die, so only a fraction of chips per wafer work — that's the yield. Lower yield means more wasted silicon per good chip, which raises the cost of each working chip."
+  },
+  {
+    "stage": "post",
+    "question": "The raw sand is nearly free. So what are you mostly paying for in an expensive processor?",
+    "options": ["The sand", "The fabs ($10-20B), EUV machines ($150M+), design costs, and low yield behind each working die", "Shipping", "The plastic case"],
+    "correct": 1,
+    "explanation": "The cost is the extraordinary precision infrastructure: multi-billion-dollar fabs, $150M+ lithography machines, hundreds of millions in design, and the silicon lost to imperfect yield — not the raw materials."
+  },
+  {
+    "stage": "post",
+    "question": "What does Moore's Law describe, and why does it matter?",
+    "options": ["Chips get slower over time", "Transistor counts roughly doubled every ~2 years, which drove decades of faster, cheaper computing (and is now slowing)", "The price of sand doubles yearly", "Computers use twice the power each year"],
+    "correct": 1,
+    "explanation": "Moore's Law is the observation that transistors per chip doubled about every two years, giving more computing per dollar each generation. It's slowing now as features approach atomic scale, so gains increasingly come from design (more cores, GPUs)."
+  }
+]

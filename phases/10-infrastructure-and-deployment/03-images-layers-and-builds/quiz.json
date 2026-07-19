@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your service image is 1.2 GB. An earlier RUN downloads a 400 MB dataset and installs build tools; you add `RUN rm -rf /root/.cache/pip /var/lib/apt/lists /tmp/dataset` as the final instruction and rebuild. What happens to the image size?",
+    "options": [
+      "It drops by roughly the size of what you deleted, since the files are no longer in the filesystem",
+      "It is unchanged — very slightly larger, in fact — because the deleted bytes stay in the layers below and the rm only adds a layer of whiteout markers",
+      "It stays the same locally but shrinks on push, because the registry recompacts layers it has already seen",
+      "It drops only after `docker image prune`, which garbage-collects the orphaned bytes"
+    ],
+    "correct": 1,
+    "explanation": "Lower layers are read-only. A delete in a later layer is a whiteout marker that hides the name from the merged view; the bytes below are untouched and still travel with the image. Measured here: the rm removed 30.38 MB from the merged filesystem (73 files down to 70) and the image went from 271.92 MB to 271.92 MB, up by 64 bytes for three whiteouts. Cleanup only works chained with `&&` inside the same RUN that created the mess, so the bytes are never committed — or structurally, with a multi-stage build."
+  },
+  {
+    "stage": "check",
+    "question": "You move `COPY . /app` from the top of your Dockerfile to just above CMD, so dependencies install first. Your CI does 100 builds a week and 25 of them change requirements.txt. What should you expect?",
+    "options": [
+      "About 171x faster overall, since that is the measured speed-up from the reordering",
+      "No change, because a cold build takes exactly as long either way",
+      "A large win on the 75 code-only builds and almost none on the 25 dependency builds — about 4.6x overall, and a BuildKit cache mount is what addresses the remainder",
+      "Slower builds overall, because the extra COPY of requirements.txt adds a layer and therefore adds work"
+    ],
+    "correct": 2,
+    "explanation": "Reordering only helps when the miss lands *below* the expensive step. Measured: on a one-line source edit the good ordering rebuilt 410.4 KB in 3.21 s versus 215.16 MB in 551.21 s — 171.6x. But bump the lockfile and the advantage collapses to 1.16x (473.22 s vs 551.21 s), because pip consumes the file that changed. Weighted at a 25% dependency-change rate the real figure is 4.6x. The extra layer is real but costs 0.010 s on a cold build, which is why reordering is free to adopt."
+  },
+  {
+    "stage": "check",
+    "question": "Your Dockerfile contains `RUN pip install flask` with no version pin. The same commit builds green on your laptop and red on a fresh CI runner, then green again when you retry on a warm runner. What is happening?",
+    "options": [
+      "The CI runner has a slower network, so pip timed out and fell back to an older wheel",
+      "A RUN's cache key is its command string, not its result — your laptop and the warm runner reuse a cached layer, while the cold runner actually resolves the index and gets a newer Flask",
+      "Docker layer caches are not portable between machines, so the CI runner rebuilt the base image differently",
+      "The build context differed between the two machines, invalidating the layer"
+    ],
+    "correct": 1,
+    "explanation": "The builder has no model of what a RUN reads or produces; it keys the step on the literal command string plus the parent chain. `RUN pip install flask` is therefore a cache HIT on any machine that has seen that string before, and a fresh resolution against a moving index on any machine that has not. This is why caching and non-determinism hide each other: the drift is invisible exactly where the cache is warm. Pin the version and the hash, and the command's result becomes a function of your source."
+  },
+  {
+    "stage": "check",
+    "question": "A build does `COPY deploy_key /tmp/deploy_key`, uses it, then `RUN rm -rf /tmp/deploy_key` in the next instruction. A scanner that execs into the running container finds no credentials, and `ls /tmp` inside the container shows nothing. Is the key exposed?",
+    "options": [
+      "No — the file is genuinely gone; the scanner is checking the same filesystem an attacker would see",
+      "Only if the registry is public; a private registry means only your own team can read it",
+      "Yes — it is absent from the merged view and still sitting in its own layer blob, extractable with tar by anyone who can pull the image. The image has already been published, so the key must be rotated",
+      "Yes, but `docker build --squash` on the next build removes it from the published image retroactively"
+    ],
+    "correct": 2,
+    "explanation": "The merged view and the layer blobs are different things, and the scanner only inspected the first. Measured: `/tmp/deploy_key` reported False for presence in the merged filesystem and was read straight back out of layer 2 (9d74698ed8d1), 84 bytes, contents intact. Anyone who pulls the image can do the same. There is no fix after the fact — publishing the image was the disclosure, so rotation is the only response. The correct build-time mechanism is `RUN --mount=type=secret`, which makes the credential available during one RUN and puts it in no layer at all."
+  },
+  {
+    "stage": "post",
+    "question": "Two CI runners build the identical commit and produce two different image digests. You have already set SOURCE_DATE_EPOCH and confirmed the build sorts its archive entries. Comparing the two manifests, layers 0, 1 and 2 are identical and only layer 3 — the dependency install — differs. What does that narrow it to?",
+    "options": [
+      "A timestamp problem that SOURCE_DATE_EPOCH failed to apply to that one layer",
+      "The base image tag was reassigned between the two builds",
+      "An unpinned dependency: a timestamp or entry-order problem is a property of how bytes are written, so it would corrupt every layer the build produces — not one",
+      "The two runners have different CPU architectures, which changes the compiled artifacts in that layer"
+    ],
+    "correct": 2,
+    "explanation": "The blast radius identifies the cause. Measured, wall-clock mtimes and unsorted entries each corrupted layers 1 through 5 — everything the build produced — because they affect how every file header is written. An unpinned version corrupted layer 3 alone. A single differing layer that happens to be the dependency install points at the package index moving, not at the clock. (Note also that layer 0 never differs in any variant: FROM references a blob someone else already built.) A reassigned base tag would change layer 0, and an architecture difference would change the base too."
+  },
+  {
+    "stage": "post",
+    "question": "Your build needs a token for a private package index. Which approach leaves nothing recoverable in the published image?",
+    "options": [
+      "`COPY token /tmp/token`, use it, then `RUN rm /tmp/token` as the very next instruction",
+      "Pass it as `ARG PIP_TOKEN` and reference it in the RUN, so it is never written to a file",
+      "`RUN --mount=type=secret,id=pip_token`, reading it from /run/secrets/pip_token during that one RUN",
+      "Set it with ENV in the builder stage and unset it with `ENV PIP_TOKEN=` before the final instruction"
+    ],
+    "correct": 2,
+    "explanation": "A secret mount attaches the value for the duration of a single RUN and it appears in no layer afterwards — this is the mechanism, not a mitigation. Option 1 is the measured failure: the file stays in its own layer blob and the rm is a whiteout. Option 2 leaks too: build arguments are recorded in the image's build history, so `docker history` shows the token. Option 4 leaks the same way — every ENV value lands in the config blob, and a later ENV only overwrites the final value while the history still carries the original. Whenever a credential has to exist at build time, use a secret mount or a discarded build stage."
+  }
+]

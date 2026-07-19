@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Two general ideas run through every hardware speed unit. What are they?",
+    "options": ["Size and color", "Throughput (how much per second) and latency (how long each operation takes)", "Price and weight", "Bits and pixels"],
+    "correct": 1,
+    "explanation": "Whether it's GB/s, FLOPS, or milliseconds, hardware speed comes down to throughput (how much work per second) and latency (how long a single operation takes). You care about both, for different reasons."
+  },
+  {
+    "stage": "check",
+    "question": "Your internet is advertised as 100 Mbps. How many megaBYTES per second is that?",
+    "options": ["100 MB/s", "12.5 MB/s", "800 MB/s", "1 MB/s"],
+    "correct": 1,
+    "explanation": "Network speed is in bits (100 megabits/s). Since 8 bits = 1 byte, 100 Mbps = 100 / 8 = 12.5 MB/s. Mixing up bits (small b) and bytes (big B) is the classic unit mistake."
+  },
+  {
+    "stage": "check",
+    "question": "Reading 1 GB from RAM takes ~0.05 s; over a 100 Mbps network it takes ~80 s. What does that ~1600x gap reinforce?",
+    "options": ["Networks are broken", "The memory hierarchy — data high up (RAM) is vastly faster than data far away (network), so keep hot data close and send less over the wire", "Bytes are bigger than bits", "RAM is cheaper than network"],
+    "correct": 1,
+    "explanation": "It's the memory hierarchy made concrete in seconds: the closer/higher a resource sits, the faster it is. That's why 'keep hot data in RAM' and 'reduce what you send over the network' are 1000x-scale decisions."
+  },
+  {
+    "stage": "check",
+    "question": "Why does a terabyte of disk cost less than 32 GB of RAM, despite holding far more?",
+    "options": ["Disks are newer", "You pay for speed and parallelism, not raw capacity — RAM is fast and volatile (costly to build), disk is slow but dense and cheap", "RAM is made of gold", "It's a pricing error"],
+    "correct": 1,
+    "explanation": "Cost tracks the scarce property: speed. RAM buys fast, volatile access with constant power and refresh, so it's pricey per byte. Disk trades speed for density and persistence, making it cheap per byte."
+  },
+  {
+    "stage": "post",
+    "question": "Your API is stuck at 100% CPU with plenty of free RAM. Would adding RAM help?",
+    "options": ["Yes, always add RAM", "No — it's CPU-bound; you need faster or more cores (or less work per request), not more memory", "Yes, RAM fixes everything", "No, only a GPU helps"],
+    "correct": 1,
+    "explanation": "The bottleneck is the CPU, not memory, so more RAM sits unused. Match the fix to the bottleneck: CPU-bound needs faster/more cores or less compute per request; adding RAM only helps a memory-bound workload."
+  },
+  {
+    "stage": "post",
+    "question": "A workload is I/O-bound (mostly waiting on disk and network). What actually helps?",
+    "options": ["A faster CPU clock", "Faster storage, a cache, or fewer/smaller round trips", "More FLOPS", "A bigger monitor"],
+    "correct": 1,
+    "explanation": "If the machine is waiting on I/O, faster compute doesn't help. You reduce the waiting: faster storage, caching hot data in memory, and cutting the number and size of network round trips."
+  }
+]

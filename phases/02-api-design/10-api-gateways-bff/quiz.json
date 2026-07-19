@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You split a monolith into ten services. What problem is an API gateway primarily there to solve?",
+    "options": [
+      "It makes each service's database queries faster",
+      "It centralizes cross-cutting edge concerns (TLS, auth, rate limiting, routing) so every service doesn't reimplement them",
+      "It removes the need to write the services at all",
+      "It stores each user's session in memory so services can be stateless"
+    ],
+    "correct": 1,
+    "explanation": "A gateway is one front door for concerns that belong to no single service — TLS termination, authentication, rate limiting, routing, observability. Doing them once at the edge stops ten services from drifting into ten slightly-different copies, and hides the topology from clients."
+  },
+  {
+    "stage": "check",
+    "question": "A gateway and a service mesh both operate at L7. What's the difference in what they govern?",
+    "options": [
+      "They are two names for the same thing",
+      "The gateway governs north–south traffic (client ↔ system); the mesh governs east–west traffic (service ↔ service)",
+      "The gateway is for databases; the mesh is for caches",
+      "The mesh replaces the gateway in modern systems"
+    ],
+    "correct": 1,
+    "explanation": "A gateway sits at the north–south edge between clients and your system. A service mesh (via per-pod sidecars) handles east–west calls between services inside the cluster — mTLS, retries, tracing. Most systems run both; they complement rather than replace each other."
+  },
+  {
+    "stage": "check",
+    "question": "What is a Backend for Frontend (BFF)?",
+    "options": [
+      "A load balancer placed in front of the database",
+      "A thin, frontend-team-owned backend that aggregates shared services and shapes the payload for one specific client",
+      "A caching layer shared by all clients",
+      "The single general-purpose API every client must use"
+    ],
+    "correct": 1,
+    "explanation": "A BFF is a thin backend tailored to one frontend (web, iOS, partner). It aggregates the shared services and returns exactly the shape that client needs — lean for mobile, wide for a dashboard — so a frontend team can iterate on its own contract. Keep it thin: aggregation and shaping, never business logic."
+  },
+  {
+    "stage": "check",
+    "question": "A BFF endpoint must combine data from three downstream services into one response. What's the right way to call them?",
+    "options": [
+      "In series, one after another, so failures are easy to trace",
+      "In parallel, with a timeout on each call and a deliberate partial-failure policy",
+      "In a single database JOIN across all three services",
+      "Only the first one; skip the rest to stay fast"
+    ],
+    "correct": 1,
+    "explanation": "Fan out in parallel so the response is as slow as the slowest downstream, not the sum of all three. Put a timeout on each call and decide per field what happens on failure — fail the screen, or degrade gracefully (e.g. render the order with product names omitted) rather than hang on the slowest dependency."
+  },
+  {
+    "stage": "post",
+    "question": "Your team keeps moving pricing and order-validation logic into the API gateway because 'it's already in the request path.' What's the risk?",
+    "options": [
+      "None — centralizing logic in the gateway is the goal",
+      "The gateway becomes a God-object / distributed monolith (the ESB anti-pattern) that every team must coordinate on to deploy",
+      "The gateway will run out of disk space",
+      "Clients will need to send more headers"
+    ],
+    "correct": 1,
+    "explanation": "Business logic in the gateway recreates the Enterprise Service Bus mistake: a central component every team must coordinate on, coupling all their deploys. Keep the gateway to policy and routing; domain logic belongs in the services it fronts."
+  },
+  {
+    "stage": "post",
+    "question": "\"The gateway already authenticates every request, so my orders-service can trust any caller it receives.\" Why is this wrong?",
+    "options": [
+      "It's correct — once the gateway checks auth, downstream services need no checks",
+      "Defense in depth: an attacker inside the network or a misrouted internal call must still be rejected, so services still authorize access to their own data",
+      "Because the gateway can't actually verify tokens",
+      "Because services should re-terminate TLS on every call"
+    ],
+    "correct": 1,
+    "explanation": "The gateway removes the duplication of the edge check — it doesn't remove each service's duty to guard its own data. An internal attacker, a bug, or a misrouted call can reach a service without passing the gateway, so services still enforce authorization. The gateway injects a trusted identity; the service still decides what that identity may do."
+  }
+]

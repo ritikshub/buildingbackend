@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "Why move the cache out of your app process and onto a shared server like Redis?",
+    "options": ["Redis is faster than local RAM", "So all instances share one consistent copy that survives restarts and isn't capped at one machine's RAM", "To reduce the number of servers", "Because in-process caches can't store strings"],
+    "correct": 1,
+    "explanation": "Per-instance caches disagree across the fleet, start cold on every deploy, and can't exceed one machine's RAM. A shared cache server gives one copy everyone reads and writes."
+  },
+  {
+    "stage": "check",
+    "question": "What makes Redis a 'data-structure server' rather than just a key-value store?",
+    "options": ["It stores keys on disk", "Values can be rich types (hashes, lists, sets, sorted sets) the server understands and mutates in place, so operations run server-side", "It uses SQL", "It only stores integers"],
+    "correct": 1,
+    "explanation": "Because the server understands the value's type, commands like INCR or ZADD mutate the structure in place in one atomic round trip, instead of shipping the whole value back and forth."
+  },
+  {
+    "stage": "check",
+    "question": "Redis runs commands on a single thread. What does that buy you, and what's the danger?",
+    "options": ["Nothing useful; it's just old code", "Every command is atomic for free (no locks), but one slow O(n) command blocks every other client", "It makes Redis use less memory", "It lets Redis skip the network"],
+    "correct": 1,
+    "explanation": "One command runs to completion before the next starts, so there are no races and no lock contention. The cost: a heavy command like KEYS * or a huge SORT stalls the single thread and everyone queues behind it."
+  },
+  {
+    "stage": "check",
+    "question": "In RESP, a GET on a missing key returns $-1\\r\\n. What is that?",
+    "options": ["An error", "The null bulk string — RESP's way of signaling 'no such key' (a cache miss)", "An empty array", "The integer negative one"],
+    "correct": 1,
+    "explanation": "$ marks a bulk string with a byte length; a length of -1 is the null bulk string, meaning the key doesn't exist. That's a cache miss represented directly on the wire."
+  },
+  {
+    "stage": "post",
+    "question": "What's the difference between Redis RDB and AOF persistence?",
+    "options": ["RDB is for reads, AOF is for writes", "RDB takes periodic point-in-time snapshots (fast restart, may lose recent writes); AOF logs every write command (more durable, larger, slower restart)", "They are the same feature", "AOF stores data in RAM, RDB on disk"],
+    "correct": 1,
+    "explanation": "RDB snapshots the whole dataset occasionally; you lose whatever changed since the last snapshot. AOF appends each write and replays it on restart, trading larger files and slower restarts for far less data loss."
+  },
+  {
+    "stage": "post",
+    "question": "Why should every cache key have a TTL, and why avoid KEYS * in production?",
+    "options": ["TTLs save disk; KEYS is deprecated", "Without TTLs the cache fills with cold keys until it evicts hot data; KEYS * scans the whole keyspace and blocks the single thread — use SCAN instead", "TTLs make Redis faster; KEYS returns wrong data", "Neither matters in practice"],
+    "correct": 1,
+    "explanation": "A TTL bounds each entry's lifetime so cold data expires instead of squeezing out hot data. KEYS * is O(n) and stalls the one command thread; SCAN walks the keyspace incrementally without blocking."
+  }
+]

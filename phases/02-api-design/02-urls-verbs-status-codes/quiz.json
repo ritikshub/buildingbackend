@@ -1,0 +1,30 @@
+[
+  {
+    "question": "What does it mean for an HTTP method to be 'idempotent'?",
+    "options": ["It never changes server state", "N identical requests have the same effect as one", "It always returns the same status code", "It can be cached"],
+    "correct": 1,
+    "explanation": "Idempotent means sending the same request N times leaves the same server state as sending it once. PUT and DELETE are idempotent; POST is not. 'Safe' is the separate property of not changing state at all (GET).",
+    "stage": "pre"
+  },
+  {
+    "question": "A client sends PATCH with Content-Type: application/merge-patch+json and body {\"coupon_code\": null}. What must the server do?",
+    "options": ["Store the literal value null in coupon_code", "Remove/unset coupon_code", "Reject the request as invalid", "Replace the whole resource"],
+    "correct": 1,
+    "explanation": "In JSON Merge Patch (RFC 7396), null means 'delete this member.' The format cannot express 'store the value null' — that requires JSON Patch (RFC 6902) with a replace op.",
+    "stage": "post"
+  },
+  {
+    "question": "Which status code and header should a successful resource creation return?",
+    "options": ["200 OK with no headers", "201 Created with a Location header", "204 No Content", "202 Accepted with Retry-After"],
+    "correct": 1,
+    "explanation": "Creation returns 201 Created with a Location header pointing at the new resource, and typically the full created representation in the body so the client needs no follow-up GET.",
+    "stage": "post"
+  },
+  {
+    "question": "Why must 5xx status codes be reserved strictly for server faults?",
+    "options": ["They are cached differently", "Alerting and client retry logic key off the 4xx/5xx boundary", "Browsers block 5xx", "They are required by TLS"],
+    "correct": 1,
+    "explanation": "The 4xx/5xx split is a contract: 4xx says 'your request is wrong, don't blindly retry,' 5xx says 'the server failed, retrying may help.' Monitoring alerts and automatic retries branch on that boundary, so misusing 5xx for client errors corrupts both.",
+    "stage": "post"
+  }
+]

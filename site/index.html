@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>BE</text></svg>">
+  <meta name="description" content="Building Backend is a free, open-source curriculum that builds every core backend primitive by hand. 164 lessons across 13 phases. Sockets, an HTTP server, a B-tree, a message queue, a cache, a container, an orchestrator. Once, by hand.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/">
+  <meta property="og:title" content="Building Backend">
+  <meta property="og:description" content="164 lessons across 13 phases. Build every backend primitive by hand: sockets, an HTTP server, a B-tree, a message queue, a cache, a container, an orchestrator. All before any framework gets imported. Python, standard library only.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <meta property="og:url" content="https://buildingbackend.vercel.app">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Building Backend">
+  <meta name="twitter:description" content="164 lessons across 13 phases. Build every backend primitive by hand, from a raw socket to a deployed fleet.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260719l">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://buildingbackend.vercel.app/#org",
+        "name": "Building Backend",
+        "url": "https://buildingbackend.vercel.app",
+        "logo": "https://buildingbackend.vercel.app/og-image.png",
+        "sameAs": ["https://github.com/ritikshub/buildingbackend", "https://github.com/ritikshub", "https://x.com/ritikshub"],
+        "founder": { "@type": "Person", "name": "@ritikshub", "url": "https://x.com/ritikshub" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://buildingbackend.vercel.app/#website",
+        "url": "https://buildingbackend.vercel.app",
+        "name": "Building Backend",
+        "description": "A free, open-source curriculum that builds every core backend primitive by hand.",
+        "publisher": { "@id": "https://buildingbackend.vercel.app/#org" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": { "@type": "EntryPoint", "urlTemplate": "https://buildingbackend.vercel.app/catalog.html?q={search_term_string}" },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Course",
+        "@id": "https://buildingbackend.vercel.app/#course",
+        "name": "Building Backend",
+        "description": "164 lessons across 13 phases. Build the HTTP server, the B-tree, the message queue, the cache, the container, and the orchestrator by hand before any framework gets imported.",
+        "provider": { "@id": "https://buildingbackend.vercel.app/#org" },
+        "url": "https://buildingbackend.vercel.app",
+        "isAccessibleForFree": true,
+        "inLanguage": "en",
+        "teaches": ["HTTP & networking", "API design", "Relational databases", "NoSQL & data modeling", "Caching", "Message queues & pub/sub", "Authentication & security", "Concurrency", "Distributed systems", "Observability", "Deployment & scaling"],
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": "online",
+          "instructor": { "@type": "Person", "name": "@ritikshub" }
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    .manual-masthead {
+      padding: 96px 0 24px;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .manual-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    .manual-meta-row .right {
+      color: var(--blueprint);
+    }
+
+    .manual-title {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 11vw, 8rem);
+      line-height: 0.86;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+    }
+
+    .manual-tagline {
+      max-width: 720px;
+      margin: 28px 0 8px;
+      font-family: var(--font-body);
+      font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+      line-height: 1.55;
+      color: var(--ink);
+    }
+
+    .manual-attribution {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      font-style: italic;
+      line-height: 1.7;
+    }
+
+    /* The second line is a statement of intent, not attribution. Given a
+       little more weight so it does not read as a footnote to the first. */
+    .manual-creed {
+      color: var(--blueprint);
+      font-style: normal;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+    }
+
+    .masthead-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .masthead-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border: 1px solid var(--ink);
+      background: var(--bg);
+      color: var(--ink);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .masthead-btn:hover,
+    .masthead-btn:focus-visible {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .masthead-btn--primary {
+      border-color: var(--blueprint);
+      color: var(--blueprint);
+    }
+
+    .masthead-btn--primary:hover,
+    .masthead-btn--primary:focus-visible {
+      background: var(--blueprint);
+      color: var(--bg);
+    }
+
+    .masthead-btn-count {
+      padding-left: 8px;
+      margin-left: 4px;
+      border-left: 1px solid currentColor;
+      opacity: 0.85;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 480px) {
+      .masthead-btn { font-size: 0.78rem; padding: 8px 12px; }
+    }
+
+
+    .preface {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .preface-grid {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr) 260px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .preface-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+    }
+
+    /* Field note: the proverb that sets the tone for the manual. */
+    .note {
+      margin: 0;
+      max-width: 62ch;
+    }
+
+    .note-quote {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: clamp(1.4rem, 3vw, 2.05rem);
+      font-weight: 600;
+      line-height: 1.28;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+
+    /* Oversized opening mark, echoing the blueprint drop cap used elsewhere. */
+    .note-mark {
+      color: var(--blueprint);
+      font-size: 1.5em;
+      line-height: 0;
+      vertical-align: -0.2em;
+    }
+
+    .note-prose {
+      margin-top: 22px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--ink-soft);
+    }
+
+    .note-close {
+      margin-top: 26px;
+      padding-left: 18px;
+      border-left: 2px solid var(--blueprint);
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    /* Figure plate: the mend, drawn as a schematic rather than an illustration. */
+    .note-figure {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .note-figure svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .note-fig-ink    { stroke: var(--ink); }
+    .note-fig-net    { stroke: var(--blueprint); }
+    .note-fig-mesh-line { stroke: var(--blueprint); opacity: 0.5; }
+    /* The tear and the hull both punch out what sits behind them, so they carry the page background. */
+    .note-fig-hole   { stroke: var(--blueprint); fill: var(--bg); }
+    .note-fig-hull   { fill: var(--bg); }
+    .note-fig-sand   { stroke: var(--ink-mute); }
+    .note-fig-motion { stroke: var(--blueprint); opacity: 0.38; }
+    /* Hatching for the pool of shade the palm throws on the sand. */
+    .note-fig-shade-line { stroke: var(--ink-mute); opacity: 0.28; }
+
+    .note-figure-cap {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      border-top: 1px solid var(--rule-soft);
+      padding-top: 8px;
+    }
+
+    .figure-demo {
+      padding: 24px 0 0;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .figure-demo-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+      margin-bottom: 6px;
+    }
+
+    .figure-demo-caption {
+      max-width: 640px;
+      font-family: var(--font-body);
+      font-size: 0.96rem;
+      line-height: 1.5;
+      color: var(--ink-soft);
+      margin-bottom: 0;
+    }
+
+    .figure-demo-svg {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .figure-demo-svg svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .figure-demo { padding: 16px 0 0; }
+    }
+
+    .stat-block {
+      padding: 32px 0 40px;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .stat-block-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+      margin-bottom: 24px;
+    }
+
+    .stat-rows {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      max-width: 760px;
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 360px) 110px;
+      align-items: center;
+      gap: 16px;
+      padding: 4px 0;
+    }
+
+    .stat-row-label {
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .stat-row-bar {
+      position: relative;
+      height: 14px;
+      background: var(--rule-soft);
+      overflow: hidden;
+      font-size: 0;
+      line-height: 0;
+      text-indent: -9999px;
+    }
+
+    .stat-row-bar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: var(--bar-pct, 0%);
+      background: var(--blueprint);
+      transition: width 0.6s ease;
+    }
+
+    .stat-row-value {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .toc {
+      padding: 56px 0 80px;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .toc-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+      margin-bottom: 8px;
+    }
+
+    .toc-subtitle {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      margin-bottom: 32px;
+    }
+
+    .toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--rule-soft);
+    }
+
+    .toc-row {
+      display: grid;
+      grid-template-columns: 56px 1fr auto auto;
+      align-items: baseline;
+      padding: 14px 0;
+      gap: 16px;
+      border-bottom: 1px solid var(--rule-soft);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .toc-row:hover {
+      background: var(--blueprint-tint);
+    }
+
+    .toc-num {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      color: var(--blueprint);
+    }
+
+    .toc-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      line-height: 1.05;
+    }
+
+    .toc-leader {
+      flex: 1;
+      border-bottom: 1px dotted var(--rule-soft);
+      margin: 0 12px;
+      transform: translateY(-4px);
+    }
+
+    .toc-meta {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      color: var(--ink-mute);
+      font-variant-numeric: tabular-nums;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .toc-status {
+      width: 12px;
+      height: 12px;
+      border: 1px solid var(--ink);
+      flex-shrink: 0;
+      margin-right: 6px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .toc-status.complete {
+      background: var(--blueprint);
+      border-color: var(--blueprint);
+    }
+
+    .toc-status.in-progress {
+      background: linear-gradient(135deg, var(--blueprint) 0%, var(--blueprint) 50%, transparent 50%, transparent 100%);
+      border-color: var(--blueprint);
+    }
+
+    .toc-status.planned {
+      background: transparent;
+      border-style: dashed;
+      border-color: var(--ink-mute);
+    }
+
+    .legend {
+      padding: 32px 0 72px;
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .colophon {
+      padding: 48px 0;
+      border-top: 1px solid var(--rule-soft);
+    }
+
+    .colophon-grid {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      gap: 48px;
+      font-family: var(--font-body);
+      font-size: 0.96rem;
+      color: var(--ink-soft);
+    }
+
+    .colophon-grid > div {
+      min-width: 0;
+    }
+
+    .colophon-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+    }
+
+    .colophon-cmd {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 10px 16px;
+      background: var(--code-bg);
+      border: 1px solid var(--rule-soft);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--blueprint);
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .colophon-cmd code {
+      white-space: nowrap;
+    }
+
+    .colophon-cmd .copy-btn {
+      flex-shrink: 0;
+      position: sticky;
+      right: 0;
+      background: var(--code-bg);
+      padding-left: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .manual-masthead { padding: 80px 0 16px; }
+      .preface { padding: 32px 0; }
+      .stat-block { padding: 32px 0; }
+      .toc { padding: 32px 0 40px; }
+      .colophon { padding: 32px 0; }
+
+      .manual-meta-row { margin-bottom: 20px; }
+      .manual-tagline { margin: 20px 0 6px; font-size: 1rem; }
+      .manual-attribution { font-size: 0.9rem; }
+
+      .preface-grid,
+      .colophon-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .note-quote {
+        font-size: clamp(1.3rem, 5vw, 1.7rem);
+      }
+
+      /* Stacked below the note once the columns collapse. */
+      .note-figure {
+        max-width: 240px;
+        margin-top: 12px;
+      }
+
+      .note-prose {
+        font-size: 0.98rem;
+        line-height: 1.65;
+      }
+
+      .stat-rows { gap: 8px; }
+      .stat-row {
+        grid-template-columns: 160px minmax(0, 1fr) 92px;
+        gap: 12px;
+        font-size: 0.82rem;
+      }
+      .stat-block-title,
+      .toc-title { margin-bottom: 16px; }
+      .toc-subtitle { margin-bottom: 20px; }
+
+      .toc-row {
+        grid-template-columns: 36px 1fr auto;
+        padding: 11px 0;
+      }
+
+      .toc-row .toc-meta + .toc-meta {
+        display: none;
+      }
+
+      .toc-leader {
+        display: none;
+      }
+
+      .toc-name {
+        font-size: 1.1rem;
+      }
+
+      .colophon-cmd {
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .manual-masthead { padding: 72px 0 12px; }
+      .preface { padding: 24px 0; }
+      .stat-block { padding: 24px 0; }
+      .toc { padding: 24px 0 32px; }
+      .colophon { padding: 24px 0; }
+
+      .manual-title {
+        font-size: clamp(2.4rem, 14vw, 3.6rem);
+        line-height: 0.92;
+      }
+
+      .manual-meta-row {
+        font-size: 0.6rem;
+        letter-spacing: 0.12em;
+        margin-bottom: 16px;
+        gap: 8px;
+      }
+
+      .manual-tagline {
+        font-size: 0.96rem;
+        margin: 16px 0 4px;
+      }
+
+      .ascii-rule {
+        margin: 16px 0;
+      }
+
+      .preface-eyebrow,
+      .stat-block-title,
+      .toc-title,
+      .colophon-eyebrow { font-size: 0.7rem; }
+
+      .note-prose {
+        font-size: 0.94rem;
+        line-height: 1.6;
+      }
+
+      .note-close {
+        margin-top: 20px;
+        padding-left: 14px;
+        font-size: 1rem;
+      }
+
+      .stat-row {
+        grid-template-columns: 1fr;
+        gap: 2px;
+        padding: 6px 0;
+      }
+
+      .stat-row-bar {
+        order: 3;
+      }
+
+      .stat-row-value {
+        order: 2;
+        text-align: left;
+      }
+
+      .toc-row {
+        grid-template-columns: 30px 1fr auto;
+        gap: 8px;
+        padding: 10px 0;
+      }
+
+      .toc-name {
+        font-size: 0.96rem;
+        white-space: normal;
+      }
+
+      .toc-num {
+        font-size: 0.7rem;
+      }
+    }
+
+
+    /* Figure card (makingsoftware aesthetic) */
+    .figure-card {
+      border: 1px solid var(--rule-soft);
+      background: var(--bg);
+      padding: 0;
+      margin: 24px 0 36px;
+      background-image: radial-gradient(circle at 4px 4px, rgba(0,0,0,0.05) 1px, transparent 1.5px);
+      background-size: 16px 16px;
+    }
+    .figure-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--rule-soft);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .figure-head .left { color: var(--blueprint); }
+    .figure-head .right { color: var(--ink-mute); }
+    .figure-body {
+      padding: 32px 24px;
+      overflow-x: auto;
+    }
+    .figure-body svg { display: block; width: 100%; height: auto; max-width: 1100px; margin: 0 auto; color: var(--blueprint); }
+    .figure-foot {
+      padding: 14px 24px;
+      border-top: 1px solid var(--rule-soft);
+      font-family: var(--font-body);
+      font-size: 0.96rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> BUILDING BACKEND
+      </a>
+      <nav class="header-nav">
+        <a href="#contents" aria-current="page">Contents</a>
+        <a href="catalog.html">Catalog</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="jargon.html">Jargon</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="search-toggle" type="button" data-cmd-palette
+        aria-label="Search (⌘K)" title="Search (⌘K)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="manual-masthead container">
+      <div class="manual-meta-row">
+        <span>FIG_000 &middot; curriculum v1.0 · 2026</span>
+        <span class="right">open source · MIT</span>
+      </div>
+      <h1 class="manual-title">Backend Engineering<br>from 0 to 1</h1>
+      <p class="manual-tagline reveal">164 lessons across 13 phases. Every backend primitive built by hand: socket, HTTP server, B-tree, queue, cache, container. All before a single framework gets imported.</p>
+      <p class="manual-attribution reveal" style="--stagger-delay: 80ms;">Maintained by @ritikshub. Free forever.<br><span class="manual-creed">Free education for all. Long live the revolution.</span></p>
+      <div class="masthead-cta reveal" style="--stagger-delay: 140ms;">
+        <a class="masthead-btn masthead-btn--primary" href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener" aria-label="Star buildingbackend on GitHub">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.896l-7.416 3.517 1.48-8.279L0 9.306l8.332-1.151z"/></svg>
+          <span>Star on GitHub</span>
+          <span class="masthead-btn-count" data-gh-stars="ritikshub/buildingbackend" data-loading="true">…</span>
+        </a>
+        <a class="masthead-btn" href="https://x.com/ritikshub" target="_blank" rel="me noopener" aria-label="Follow @ritikshub on X">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <span>Follow @ritikshub</span>
+        </a>
+      </div>
+      <div class="ascii-rule" style="margin-top:48px;"></div>
+    </section>
+
+    <section class="preface container">
+      <div class="preface-grid">
+        <div class="preface-eyebrow reveal reveal--left">A note</div>
+        <figure class="note reveal" style="--stagger-delay: 120ms;">
+          <blockquote class="note-quote"><span class="note-mark" aria-hidden="true">&ldquo;</span>When fishermen cannot go to sea, they repair nets.&rdquo;</blockquote>
+          <p class="note-prose">When the sea is too rough to sail, the smart ones don&rsquo;t wait &mdash; they go to work. They mend their nets, sharpen their tools, and prepare for the moment the storm breaks. Because even in stillness, there&rsquo;s progress. It&rsquo;s not about sitting idle; it is about building what&rsquo;s next.</p>
+          <figcaption class="note-close">Embrace downtime to strengthen your tools and skill for future success.</figcaption>
+        </figure>
+        <div class="note-figure reveal" style="--stagger-delay: 220ms;" aria-hidden="true">
+          <svg viewBox="0 6 280 192" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+              <!-- Diamond lattice: the thing that actually reads as netting. -->
+              <pattern id="netMesh" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <path class="note-fig-mesh-line" d="M0,0 V7 M0,0 H7" stroke-width="0.55"/>
+              </pattern>
+              <!-- Diagonal hatch: the shade, which is the whole point of the picture. -->
+              <pattern id="shadeHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <path class="note-fig-shade-line" d="M0,0 V6" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+
+            <!-- boat, hauled up the beach and filled so it hides what sits behind the rim -->
+            <g class="note-fig-ink" stroke-width="1.5">
+              <path class="note-fig-hull" d="M264,140 H208 L214,150 Q236,152.5 256,150 Z"/>
+              <path d="M268,140 H204"/>
+            </g>
+
+            <!-- the sand, and the pool of shade the crown throws across it -->
+            <path class="note-fig-sand" d="M14,178 H268" stroke-width="1.2" opacity="0.75"/>
+            <ellipse cx="132" cy="181" rx="88" ry="11.5" fill="url(#shadeHatch)" stroke="none"/>
+            <path class="note-fig-sand" d="M208,155 H260" stroke-width="1.1" stroke-dasharray="3 7" opacity="0.55"/>
+            <path class="note-fig-sand" d="M32,189 H86 M120,191 H172 M206,187 H252"
+                  stroke-width="1.1" stroke-dasharray="3 9" opacity="0.45"/>
+
+            <!-- the coconut palm: trunk leaning out over the work -->
+            <g class="note-fig-ink" stroke-width="1.6">
+              <path d="M52,178 C58,142 80,98 120,64"/>
+              <path d="M42,178 C47,143 69,99 110,62"/>
+              <!-- growth rings, bowed so the trunk reads as a cylinder -->
+              <path d="M55.5,162.5 Q49.5,165.5 45.1,162.8" stroke-width="1"/>
+              <path d="M64.8,136.8 Q58.2,139.9 54.1,137.4" stroke-width="1"/>
+              <path d="M79,110.8 Q72,113.5 68.2,111.1" stroke-width="1"/>
+              <path d="M97.2,86.6 Q89.9,88.6 86.7,86.1" stroke-width="1"/>
+            </g>
+
+            <!-- the crown: each frond is a spine with leaflets combed off it -->
+            <g class="note-fig-ink" stroke-width="1.2">
+              <path d="M115,60 C148,52 178,58 198,84"/>
+              <path d="M129.6,57.4 L127.3,63 M129.6,57.4 L126.1,52.4 M141.9,56.7 L139.1,61.7 M141.9,56.7 L139.2,51.7 M153.6,57.6 L150.4,61.8 M153.6,57.6 L151.8,52.7 M164.7,60.2 L161.2,63.5 M164.7,60.2 L163.8,55.5 M175.2,64.6 L171.5,67 M175.2,64.6 L175.1,60.2 M184.9,70.8 L181.2,72.3 M184.9,70.8 L185.5,66.8 M192.4,77.5 L188.9,78.4 M192.4,77.5 L193.4,74" stroke-width="0.8"/>
+              <path d="M115,60 C150,38 182,36 206,50"/>
+              <path d="M130.5,51.4 L130.2,57.5 M130.5,51.4 L125.6,47.9 M143.6,46.1 L142.6,51.7 M143.6,46.1 L139.4,42.3 M156.2,42.8 L154.6,47.8 M156.2,42.8 L152.8,38.7 M168.3,41.2 L166.2,45.6 M168.3,41.2 L165.8,37.1 M179.8,41.5 L177.3,45.1 M179.8,41.5 L178.1,37.5 M190.7,43.6 L187.9,46.4 M190.7,43.6 L189.8,39.7 M199.3,46.6 L196.5,48.8 M199.3,46.6 L199,43" stroke-width="0.8"/>
+              <path d="M115,60 C140,32 166,22 190,24"/>
+              <path d="M126.3,48.6 L127.6,54.2 M126.3,48.6 L120.9,46.7 M136.2,40.6 L136.8,45.9 M136.2,40.6 L131.3,38.3 M146,34.2 L146.1,39.2 M146,34.2 L141.9,31.6 M155.9,29.4 L155.4,33.9 M155.9,29.4 L152.4,26.6 M165.7,26.2 L164.7,30.2 M165.7,26.2 L162.9,23.2 M175.4,24.3 L174,27.7 M175.4,24.3 L173.2,21.3 M183.5,23.8 L181.9,26.7 M183.5,23.8 L181.8,20.8" stroke-width="0.8"/>
+              <path d="M115,60 C116,38 114,26 108,17"/>
+              <path d="M115.2,50.8 L119.6,53.2 M115.2,50.8 L110.9,53.1 M115.1,43.7 L119.3,45.8 M115.1,43.7 L111.1,46.1 M114.6,37.5 L118.6,39.2 M114.6,37.5 L111.1,40 M113.8,32 L117.6,33.2 M113.8,32 L110.8,34.5 M112.7,27.1 L116.2,27.9 M112.7,27.1 L110.1,29.7 M111.1,22.8 L114.4,23.1 M111.1,22.8 L109.1,25.4 M109.5,19.5 L112.5,19.5 M109.5,19.5 L107.9,22" stroke-width="0.8"/>
+              <path d="M115,60 C96,34 76,28 56,32"/>
+              <path d="M106.4,49.6 L111.6,48.2 M106.4,49.6 L104.8,54.7 M98.8,42.6 L103.4,40.7 M98.8,42.6 L98,47.6 M91.2,37.4 L95.1,35 M91.2,37.4 L91.1,42 M83.5,33.8 L86.7,31 M83.5,33.8 L84.1,38 M75.8,31.7 L78.2,28.7 M75.8,31.7 L77,35.3 M68,30.9 L69.7,27.9 M68,30.9 L69.6,34 M61.4,31.2 L62.6,28.3 M61.4,31.2 L63.2,33.8" stroke-width="0.8"/>
+              <path d="M115,60 C92,42 68,46 48,60"/>
+              <path d="M104.6,53.3 L109,50.3 M104.6,53.3 L104.8,58.7 M95.6,49.8 L99.1,46.2 M95.6,49.8 L96.7,54.7 M86.6,48.1 L89.1,44.3 M86.6,48.1 L88.4,52.3 M77.7,48.2 L79.3,44.3 M77.7,48.2 L80.1,51.7 M68.9,49.8 L69.8,46.1 M68.9,49.8 L71.6,52.6 M60.4,52.9 L60.7,49.4 M60.4,52.9 L63.2,55 M53.5,56.5 L53.4,53.3 M53.5,56.5 L56.2,58.1" stroke-width="0.8"/>
+              <path d="M115,60 C96,58 74,66 58,88"/>
+              <path d="M106.3,59.8 L108.5,55.1 M106.3,59.8 L109,64.2 M98.5,60.8 L100,56.2 M98.5,60.8 L101.6,64.5 M90.7,62.9 L91.5,58.5 M90.7,62.9 L94,65.8 M83,66.1 L83.1,62.1 M83,66.1 L86.4,68.4 M75.5,70.7 L75.1,66.9 M75.5,70.7 L78.8,72.3 M68.2,76.4 L67.4,73.2 M68.2,76.4 L71.4,77.5 M62.5,82.4 L61.4,79.5 M62.5,82.4 L65.4,83" stroke-width="0.8"/>
+              <path d="M115,60 C122,80 134,92 148,106"/>
+              <path d="M118.5,68.5 L113.5,68.2 M118.5,68.5 L121.4,64.4 M122,75.1 L117.3,75.3 M122,75.1 L124.4,71.1 M125.9,81.3 L121.7,81.7 M125.9,81.3 L127.8,77.4 M130.2,87 L126.4,87.7 M130.2,87 L131.7,83.3 M134.9,92.4 L131.4,93.2 M134.9,92.4 L136.1,89 M139.9,97.8 L136.7,98.6 M139.9,97.8 L140.8,94.7 M144.3,102.3 L141.4,103.1 M144.3,102.3 L145.1,99.4" stroke-width="0.8"/>
+              <path d="M115,60 C106,80 96,92 84,104"/>
+              <path d="M110.9,68.5 L108.2,64.5 M110.9,68.5 L115.7,68.4 M107.2,75.1 L104.9,71.2 M107.2,75.1 L111.7,75.3 M103.4,81.1 L101.5,77.4 M103.4,81.1 L107.5,81.5 M99.4,86.7 L97.8,83.2 M99.4,86.7 L103.1,87.2 M95.3,91.8 L94,88.6 M95.3,91.8 L98.7,92.5 M91,96.7 L90,93.8 M91,96.7 L94,97.5 M87.2,100.8 L86.4,98 M87.2,100.8 L89.9,101.5" stroke-width="0.8"/>
+            </g>
+
+            <!-- coconuts, bunched where the fronds leave the trunk -->
+            <g class="note-fig-ink" stroke-width="1.1">
+              <circle cx="109" cy="68" r="3"/>
+              <circle cx="117" cy="69.5" r="3"/>
+              <circle cx="113" cy="74.5" r="3"/>
+              <circle cx="123" cy="67" r="3"/>
+            </g>
+
+            <!-- the net: lashed to the trunk, falling slack to pool on the sand -->
+            <path class="note-fig-ink" d="M78,108 Q75,111 73,115" stroke-width="1.3"/>
+            <path class="note-fig-net" d="M74,112 Q108,128 144,144 L152,174 Q116,180 80,170 Z"
+                  stroke-width="1.4" fill="url(#netMesh)"/>
+
+            <!-- the tear, stitched part-way shut and still open at the far end -->
+            <path class="note-fig-hole" d="M146,158 Q138,150 130,155 Q138,165 146,158 Z" stroke-width="1.2"/>
+            <path class="note-fig-net" d="M144,155 V162.5 M139,152.5 V164" stroke-width="1.1"/>
+            <!-- the working thread, needle back to the tear -->
+            <path class="note-fig-motion" d="M150,161 Q148,160 146,158" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+            <!-- fisherman, sitting cross-legged in the shade and hunched over the mend -->
+            <g class="note-fig-ink" stroke-width="1.7">
+              <circle cx="182" cy="139" r="7.5"/>
+              <path d="M182,147 Q189,157 193,173"/>
+              <!-- legs stretched out along the sand, feet flexed up -->
+              <path d="M193,174 L164,179 L158,174"/>
+              <path d="M192,177 L168,183 L162,178"/>
+              <!-- one hand holds the net taut, the other drives the needle -->
+              <path d="M182,149 L168,155 L148,151"/>
+              <path d="M182,149 L176,163 L150,161"/>
+            </g>
+          </svg>
+          <span class="note-figure-cap">Fig. 01 · the mend</span>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="stat-block container">
+      <div class="stat-block-title reveal reveal--left">Current Progress</div>
+      <div class="stat-rows reveal" style="--stagger-delay: 100ms;" id="statRows">
+        <div class="stat-row">
+          <span class="stat-row-label">Finished Lessons</span>
+          <span class="stat-row-bar" data-bar="complete" style="--bar-pct:0%;" aria-hidden="true">bar</span>
+          <span class="stat-row-value" data-stat="complete-frac">0 / 0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Phases</span>
+          <span class="stat-row-bar" data-bar="phases" style="--bar-pct:0%;" aria-hidden="true">bar</span>
+          <span class="stat-row-value" data-stat="phases-frac">0 / 0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Languages</span>
+          <span class="stat-row-bar" data-bar="languages" style="--bar-pct:100%;" aria-hidden="true">bar</span>
+          <span class="stat-row-value">4</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Glossary Terms</span>
+          <span class="stat-row-bar" data-bar="glossary" style="--bar-pct:100%;" aria-hidden="true">bar</span>
+          <span class="stat-row-value" data-stat="glossary-count">···</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="toc container" id="contents">
+      <div class="toc-title reveal reveal--left">Curriculum · 13 phases · 164 lessons</div>
+      <div class="toc-subtitle reveal" style="--stagger-delay: 80ms;">Tap a phase to expand its lessons. Each one ships when its writeup, code, and quiz are all written.</div>
+      <div class="toc-list" id="phasesGrid"></div>
+      <div class="legend">
+        <span class="legend-item"><span class="toc-status complete"></span> Complete</span>
+        <span class="legend-item"><span class="toc-status in-progress"></span> In progress</span>
+        <span class="legend-item"><span class="toc-status planned"></span> Planned</span>
+      </div>
+    </section>
+
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal" id="modal">
+        <button class="modal-close" id="modalClose" type="button">×</button>
+        <div class="modal-header">
+          <span class="modal-phase-num" id="modalPhaseNum"></span>
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <p class="modal-desc" id="modalDesc"></p>
+          <div class="modal-totals" id="modalTotals"></div>
+          <div class="modal-progress" id="modalProgress" style="display:none;"></div>
+          <div class="modal-progress-bar" id="modalProgressBar" style="display:none;"><div class="modal-progress-bar-fill" id="modalProgressBarFill"></div></div>
+        </div>
+        <div class="modal-lessons" id="modalLessons"></div>
+        <div class="modal-footer">
+          <span class="modal-footer-note">Progress saved in browser only</span>
+          <button class="modal-reset" id="modalReset" type="button">Reset progress</button>
+        </div>
+      </div>
+    </div>
+
+
+    <section class="colophon container">
+      <div class="colophon-grid">
+        <div class="colophon-eyebrow reveal reveal--left">Colophon</div>
+        <div class="reveal" style="--stagger-delay: 80ms;">
+          <p>The entire curriculum is on GitHub. Clone it, fork it, learn at your own pace. No paywall, no signup. Every lesson has runnable code in Python, standard library only — no framework, no pip install.</p>
+          <div class="colophon-cmd">
+            <code id="cloneCmd">git clone https://github.com/ritikshub/buildingbackend.git</code>
+            <button class="copy-btn" id="copyBtn" aria-label="Copy command" type="button">cp</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="catalog.html">Catalog</a>
+        <a href="jargon.html">Jargon</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js?v=20260719l"></script>
+  <script src="progress.js?v=20260719l"></script>
+  <script src="header.js?v=20260719l" defer></script>
+  <script src="cmdpalette.js?v=20260719l" defer></script>
+  <script src="app.js?v=20260719l"></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>

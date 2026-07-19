@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "How does a document database differ from a key-value store?",
+    "options": ["It's faster for lookups by key", "The value is a transparent JSON/BSON document the database can query inside (by field, including nested paths), not an opaque blob reachable only by key", "It can't store nested data", "It requires a fixed schema like a relational table"],
+    "correct": 1,
+    "explanation": "Both store a value under an id, but a key-value store's value is opaque — reachable only by key. A document store's value is a transparent JSON tree the database reads into, so you can query and index by any field, including nested ones. That transparency is the entire reason the category exists."
+  },
+  {
+    "stage": "check",
+    "question": "What does \"schema-on-read\" mean, and what's the catch?",
+    "options": ["The schema is read from a config file", "No schema is enforced on write, so documents in a collection can have different shapes; the catch is that the correctness a relational schema guaranteed (required fields, types) is now the application's responsibility", "Documents are read-only", "The schema changes every time you read"],
+    "correct": 1,
+    "explanation": "Schema-on-read accepts any document shape at write time and leaves interpretation to the reader — that's the flexibility win. But the database will also happily store a typo'd field or a missing value, so the discipline the schema used to enforce becomes the app's job (hence optional schema validation)."
+  },
+  {
+    "stage": "check",
+    "question": "When should you EMBED related data in a document rather than reference it?",
+    "options": ["Always embed — joins are forbidden", "When the related data is read together with its parent, owned by it, and bounded in size (e.g. line items in an order) — giving one fast, atomic fetch", "Only when the data is shared across thousands of parents", "When the array can grow without limit"],
+    "correct": 1,
+    "explanation": "Embed data that's read-together, owned, and bounded: it makes the common read a single fetch with no join, and a single-document write is atomic. Reference instead when the data is shared across many parents, unbounded (a celebrity's followers), or queried independently — embedding those causes duplication or document bloat."
+  },
+  {
+    "stage": "check",
+    "question": "Embedding deliberately denormalizes. What problem does that reintroduce, and how is it managed?",
+    "options": ["Nothing — denormalization has no downsides", "The update anomaly: duplicated data can go stale; manage it by embedding data that doesn't change (or a point-in-time snapshot) and referencing data that does", "It makes reads slower", "It violates JSON syntax"],
+    "correct": 1,
+    "explanation": "Normalization (Phase 3) stored each fact once to avoid update anomalies; embedding breaks that on purpose for read speed, so stale copies become possible. The document-world answer isn't 'never denormalize' — it's denormalize immutable data or an intentional snapshot (the price at order time), and reference the mutable."
+  },
+  {
+    "stage": "post",
+    "question": "Why is the single-document write being atomic such an important modeling constraint?",
+    "options": ["It isn't important", "In most document databases a single-document write is atomic but a multi-document one historically wasn't, so you should draw document boundaries around the data that must change together (the aggregate)", "It means documents can never be updated", "It forces every collection to have one document"],
+    "correct": 1,
+    "explanation": "Because one document is the unit of atomicity, the aggregate boundary is a consistency decision, not just storage. Put data that must always agree (an order and its items) in one document and every update is atomic for free; split it across documents and you've created a distributed-consistency problem for yourself."
+  },
+  {
+    "stage": "post",
+    "question": "A team wants schema flexibility and says \"let's add MongoDB.\" What's the senior counter-question?",
+    "options": ["Why not use five databases?", "Do you actually need a separate document database, or would a Postgres JSONB column give you queryable, indexable documents WITH ACID transactions in the database you already run?", "Why not store everything as opaque blobs?", "Have you considered removing all indexes?"],
+    "correct": 1,
+    "explanation": "Postgres JSONB provides the document model — flexible, nested, queryable, indexable — inside a relational database, keeping transactions and avoiding a second system to operate (Lesson 8). For many 'we need a document DB' moments, JSONB is the right answer; reach for a dedicated MongoDB only when scale or specialized needs truly justify it."
+  }
+]

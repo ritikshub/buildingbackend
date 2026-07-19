@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You run the same total workload on 1, 2, 4 and 8 threads in CPython and get 1.00x, 1.00x, 0.99x, 1.00x. You then run an identical experiment on a different workload with the same threads and get 2.01x, 3.95x, 7.91x and 14.73x. What distinguishes the two workloads?",
+    "options": [
+      "The second workload used more threads than the first, and thread pools only pay off above four workers regardless of what the work is",
+      "The first workload allocated more memory, so the garbage collector serialised it; memory pressure, not locking, is what caps threaded throughput in CPython",
+      "The first is pure CPython bytecode, which requires holding the GIL, so the threads take strict turns. The second spends its time blocked in a system call (a socket read, or time.sleep), and CPython releases the GIL for the whole duration of that wait, so the waits genuinely overlap",
+      "The second workload ran on more physical cores; the first was pinned by the scheduler to a single core because short-lived threads are never migrated"
+    ],
+    "correct": 2,
+    "explanation": "The GIL (Global Interpreter Lock) is held only while a thread executes bytecode. Anything that leaves bytecode — a blocking syscall, time.sleep, or a C extension that wraps its loop in Py_BEGIN_ALLOW_THREADS — releases it. Nothing about the interpreter, the machine or the threading API differs between the two experiments; only whether the thread was holding the lock while it waited. That single sentence predicts both results."
+  },
+  {
+    "stage": "check",
+    "question": "The Build It measured 81.9 us to create, start and join a thread, 920.2 us for a fork()ed process, and 36 ms for a spawn()ed process. Why is the spawn number 440x the thread number, and when does that bite you?",
+    "options": [
+      "spawn starts a brand-new interpreter, re-imports your module from scratch and pickles the target function and its arguments through a pipe — nothing is inherited. It bites because spawn is the default on macOS and Windows, so a ProcessPoolExecutor that starts instantly on Linux CI can take over a second to start 40 workers on a developer's laptop",
+      "spawn allocates the child's full heap eagerly instead of relying on copy-on-write, so the cost scales with how much memory the parent had allocated at the time",
+      "spawn has to wait for the operating system's process table lock, which is contended whenever more than a handful of processes exist on the machine",
+      "spawn is slower only in containers, because the container runtime must set up a new cgroup and network namespace for each child process it creates"
+    ],
+    "correct": 0,
+    "explanation": "fork() duplicates the parent using copy-on-write, so it is cheap regardless of heap size — under a millisecond here. spawn deliberately inherits nothing: fresh interpreter, module re-imported, arguments pickled across a pipe. That is predictable and portable but roughly 39x a fork. Because the default start method varies by platform (fork on Linux today, spawn on macOS and Windows, forkserver on Linux from 3.14), set it explicitly with get_context() so your startup cost and your inheritance semantics do not change under you."
+  },
+  {
+    "stage": "check",
+    "question": "The Build It measured a thread's stack as 8 MiB reserved but only 21 KB resident, and one forced context switch at 20.97 us. What do those two numbers together say about a thread-per-connection server holding 10,000 idle connections?",
+    "options": [
+      "It is fine on both counts: 10,000 blocked threads consume no CPU and their stacks are lazily faulted in, so nothing about the design needs to change",
+      "It fails on RAM: 10,000 threads x 8 MiB = 78 GiB of resident memory, which no ordinary machine has",
+      "It fails on CPU: blocked threads still receive time slices from the scheduler, so 10,000 of them saturate the run queue even when no data is arriving",
+      "It survives the RAM test — 10,000 idle threads is only about 0.20 GiB resident — but it fails on address space (78 GiB reserved for stacks alone, 322 GiB measured here once glibc's per-thread malloc arenas are counted) and on switching, because at 20.97 us each, thousands of wakeups per second burn whole cores on nothing but changing which thread runs"
+    ],
+    "correct": 3,
+    "explanation": "Both halves matter and they fail differently. Resident memory is small because an idle thread touches almost none of its stack, so the naive 'it will use 78 GiB of RAM' objection is wrong. What actually kills the design is virtual address-space reservation plus the per-switch cost — 20.97 us is roughly 210 round trips to DRAM, before the cache pollution the next thread inherits. That gap is exactly why the next lesson replaces 10,000 threads with one thread watching 10,000 sockets."
+  },
+  {
+    "stage": "check",
+    "question": "A colleague's service is pegged at 100% CPU on one core and they are about to rewrite it around multiprocessing. Profiling shows almost all the time inside hashlib and NumPy calls. What do you tell them, and why?",
+    "options": [
+      "Rewrite it with multiprocessing as planned: any workload that saturates a core is CPU-bound, and CPU-bound work in CPython can only be parallelised across processes",
+      "Try threads first. 'CPU-bound' in CPython means bytecode-bound, and hashlib and NumPy release the GIL around their C loops — the Build It measured sha256 over 960 MiB scaling 3.29x on 4 threads while pure bytecode scaled 1.00x. Threads would give them parallelism without any pickling cost or address-space split",
+      "Neither will help; a single hashlib call cannot be split across cores, so the only option is to reduce the amount of data being hashed",
+      "Switch to asyncio, since it avoids the GIL entirely by running everything on one thread and therefore never needs to acquire the lock"
+    ],
+    "correct": 1,
+    "explanation": "The GIL serialises bytecode, not CPU work in general. A C extension whose hot loop touches no Python objects can wrap it in Py_BEGIN_ALLOW_THREADS and run truly in parallel, which is what hashlib, zlib, NumPy, image codecs and most database drivers do. Measuring one unit of work before choosing the concurrency model is the whole point: processes would also work here, but they would add serialisation cost and lose shared memory for no benefit. asyncio is the wrong answer twice over — it does not add CPU parallelism, and CPU-bound work inside a coroutine blocks the entire event loop."
+  },
+  {
+    "stage": "post",
+    "question": "Your Python service runs in a Kubernetes pod with `limits.cpu: \"2\"` on a 64-core node, and sizes its ProcessPoolExecutor with `os.cpu_count()`. What happens, and how do you fix it?",
+    "options": [
+      "Nothing happens — the container runtime rewrites os.cpu_count() to report the limit, which is why cpu_count() is the recommended way to size pools in containers",
+      "The pool is capped at 2 workers automatically by the kernel scheduler, so the only cost is the wasted memory of the extra worker objects that never receive work",
+      "The pod is OOM-killed, because each of the 64 workers reserves 8 MiB of stack and the container memory limit is exceeded during pool startup",
+      "It creates 64 worker processes to share two CPUs' worth of quota: constant context switching, cgroup throttling, and worse latency than 2 workers would give. os.cpu_count() reports the host's cores, and even len(os.sched_getaffinity(0)) only sees cpuset pinning, not a CPU quota. Read /sys/fs/cgroup/cpu.max (or take the number from an env var the orchestrator sets)"
+    ],
+    "correct": 3,
+    "explanation": "This is the most common Python-in-Kubernetes performance bug, and it presents as 'the service is slow under load' rather than as a configuration error. Docker's --cpus and Kubernetes' limits.cpu set a cgroup CPU *quota*, which neither os.cpu_count() nor sched_getaffinity reflects; affinity only catches taskset and cpuset pinning. os.process_cpu_count() in Python 3.13 honours affinity and PYTHON_CPU_COUNT but is still blind to quota. Read cpu.max, or have your orchestrator inject the intended worker count."
+  },
+  {
+    "stage": "post",
+    "question": "A teammate is excited about free-threaded CPython (PEP 703, the --disable-gil build) and says it means the concurrency lessons on races and locks are now obsolete. What is wrong with that?",
+    "options": [
+      "Nothing is wrong — without a GIL the interpreter takes per-object locks automatically, so ordinary Python code becomes thread-safe by construction",
+      "Removing the GIL removes the serialisation of bytecode and nothing else. The GIL was never a correctness guarantee: `counter += 1` from two threads was always a race, because it is several bytecodes with a switch point between them — the GIL only made you lose that lottery rarely enough to get away with it. Without it the race actually fires, so atomicity, critical sections and locks matter more, not less",
+      "It is correct for CPU-bound code but not for I/O-bound code, which still runs under a GIL in the free-threaded build",
+      "It is correct in principle, but irrelevant because free-threaded builds are slower single-threaded, so nobody will ever run them in production"
+    ],
+    "correct": 1,
+    "explanation": "This is the most important thing to get right about PEP 703. The GIL guaranteed only that one thread executed bytecode at a time; it never made a multi-bytecode operation atomic, and the interpreter can switch threads between any two bytecodes. Free-threading widens every existing race window from 'rarely observed' to 'routinely observed'. It is also worth knowing the other caveats — single-threaded free-threaded builds have run a few percent slower, and C extensions must declare compatibility or the interpreter re-enables the GIL at import — but the correctness point is the one that will bite a team first."
+  }
+]

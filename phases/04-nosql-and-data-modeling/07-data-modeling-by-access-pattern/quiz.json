@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "How does data modeling for a NoSQL store differ from relational modeling?",
+    "options": ["It's the same — normalize the data into clean tables and query it however you like", "It's inverted: because there are no joins and you fetch by key, you list the access patterns FIRST and design the keys so each query is a single lookup — you model the reads, not the domain", "You always store everything as one giant JSON blob", "You never need to think about queries in advance"],
+    "correct": 1,
+    "explanation": "Relational modeling is data-first: model the domain into normalized tables and let the planner join and adapt to any query. NoSQL is query-first: there are no joins and you can only fetch efficiently by key, so you write down every access pattern first and design the keys (and often one table) so each pattern becomes a direct lookup. You model the reads, not the domain — the general form of the wide-column 'model queries, not data' rule."
+  },
+  {
+    "stage": "check",
+    "question": "What do the partition key and the sort key each do in a composite-key NoSQL store?",
+    "options": ["They're two names for the same thing", "The partition key picks which node the item lives on (by hashing) and groups items; the sort key orders items within a partition and lets you slice a range (begins_with, between, newest-first)", "The partition key sorts items and the sort key picks the node", "Both are optional and rarely used"],
+    "correct": 1,
+    "explanation": "The partition key (DynamoDB hash key / Cassandra partition key) is hashed to choose the node and co-locates all items that share it — you must supply it on every efficient read. The sort key (range/clustering key) orders items within that partition, so you can slice a range: 'SKs beginning with ORDER#', 'between two dates', ascending or descending. Encoding meaning into these keys (CUSTOMER#c-1, ORDER#<date>#<id>) is what makes hierarchies and ordering directly queryable."
+  },
+  {
+    "stage": "check",
+    "question": "In single-table design, what is an 'item collection' and why is it powerful?",
+    "options": ["A backup copy of the table", "A group of items that share a partition key — often different entity types (a customer plus their orders, or an order plus its line items) — so one query returns a parent and its children together: the join you can't do, precomputed by the key layout", "A list of all indexes on the table", "A collection of tables joined at query time"],
+    "correct": 1,
+    "explanation": "Single-table design deliberately puts multiple entity types in one table, co-located by partition key. The items sharing a partition key form an item collection, so querying PK=ORDER#o-620 returns the order header AND its line items in one request — the join a NoSQL store can't perform, pre-assembled by how you laid out the keys. It's why an order is stored twice (under the customer and under the order): duplicating on write makes each read a single-partition lookup."
+  },
+  {
+    "stage": "check",
+    "question": "You need 'all orders in status SHIPPED', but status is neither the partition key nor the sort key. What do you do?",
+    "options": ["Run a full-table Scan every time", "Create a Global Secondary Index (GSI): a store-maintained second copy of the items keyed by status, so status=SHIPPED becomes a direct lookup instead of a scan — the same duplicate-on-write trade, automated, paid for in extra write cost and storage", "Give up — the query is impossible", "Rename the table"],
+    "correct": 1,
+    "explanation": "A GSI is a second copy of the items keyed by a different attribute, maintained by the store on every write. Declaring an index on status turns 'orders where status=SHIPPED' into a direct index lookup instead of scanning the base table. In the Build-It, the GSI query examined 2 items versus 12 for the full scan it replaces — on a 100-million-row table that's the difference between a millisecond and a meltdown. You control which items are indexed via which items carry the index's key attributes."
+  },
+  {
+    "stage": "post",
+    "question": "What is the biggest downside of query-first / single-table design, and what follows from it?",
+    "options": ["It uses too little storage", "You must know your access patterns up front, and adding a new one later is a migration (backfilling a GSI or re-keying the data), not a casual CREATE INDEX — so you default to a relational database until access patterns stabilize and scale forces you out", "It makes reads slower than a relational join", "It forbids you from ever using indexes"],
+    "correct": 1,
+    "explanation": "Query-first modeling buys O(1) reads at scale by trading away flexibility: the design is a physical answer to a fixed set of questions, so a genuinely new access pattern means a migration, not a one-line SELECT. For a young product whose features change weekly that rigidity hurts, which is exactly why the phase's rule is to default to relational (whose ad-hoc query flexibility is worth more early) until the access patterns are stable and the scale truly justifies the specialized store."
+  },
+  {
+    "stage": "post",
+    "question": "The same query-first discipline shows up across the NoSQL stores you've learned. Which mapping is right?",
+    "options": ["They all forbid duplicating data", "Cassandra builds one table per access pattern (write each row into all of them); DynamoDB overloads one table with item collections and GSIs; MongoDB expresses it as the embed-vs-reference / aggregate-boundary decision — all the same idea: no joins, so design the storage around the reads", "Only DynamoDB requires modeling queries first; the others don't", "Each store has a completely unrelated modeling philosophy"],
+    "correct": 1,
+    "explanation": "It's one law with three expressions. Cassandra (Lesson 4) makes you build a separate table per query and write each row into all of them. DynamoDB (this lesson) overloads a single table with item collections and GSIs. MongoDB (Lesson 3) draws document boundaries around the data an access pattern reads together (embed vs reference). All three answer the same constraint — there are no joins — by duplicating on write and shaping the storage around the reads."
+  }
+]

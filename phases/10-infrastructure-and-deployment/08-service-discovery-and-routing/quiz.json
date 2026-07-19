@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "An instance of your service wedges — it stops answering and stops heartbeating, but its listening socket stays open. Your registry uses a 30-second lease TTL. How long until your callers stop sending it traffic?",
+    "options": [
+      "About 30 seconds — the lease TTL is the window, which is why it is the number everyone quotes",
+      "Instantly, because the caller's very next request fails and it will pick a different instance",
+      "About 47 seconds and highly variable, because the lease TTL is only one of six additive delays — heartbeat interval, lease grace, sweep granularity, propagation, the caller's cached list, and pooled connection reuse",
+      "About 60 seconds — twice the TTL, because the registry has to miss the entry on two consecutive sweeps"
+    ],
+    "correct": 2,
+    "explanation": "The lease TTL is the second of six terms, not the total. Measured over 2,000 simulated deaths: 47.25 s in the representative run, 48.96 s mean, 62.24 s at p95 against an assumed 30 s — 1.57x to 2.07x. Every layer behaved exactly as documented; nobody owns the sum. And with no maximum connection lifetime configured, the sixth term never ends at all."
+  },
+  {
+    "stage": "check",
+    "question": "You deregister a dying instance from the registry, and you also lower its DNS record's TTL and remove the A record. Your monitoring still shows requests arriving at that instance a full minute later. What is happening?",
+    "options": [
+      "The registry's deregistration did not commit, so the entry is still being served to callers",
+      "Callers hold established keep-alive connections pinned to that IP address, and nothing in the discovery path closes a socket — discovery updates lists, not connections",
+      "DNS negative caching is serving the old record because the negative TTL is longer than the positive one",
+      "The requests are health-check probes, not real traffic, and can be safely ignored"
+    ],
+    "correct": 1,
+    "explanation": "Resolution answers 'where do I open a connection to?', and that question is asked once, when the connection is opened. A reused keep-alive connection never asks again. Measured: with a 60-second maximum connection lifetime the traffic stopped after 47.25 s and 315 failures; with no maximum lifetime — the default in most HTTP clients — it never stopped at all, 1,067 failed requests across the whole 160-second run. Bound the connection lifetime, or nothing upstream of it matters."
+  },
+  {
+    "stage": "check",
+    "question": "You are choosing between active health checks (probe every instance on a schedule) and passive outlier detection (watch the outcome of real requests). Your pool is 6 instances taking 40 req/s in total. Which detects a wedged instance faster, and what does the winner cost you?",
+    "options": [
+      "Active, always — probes are a dedicated signal, and passive detection can only react after a request has already timed out",
+      "Passive was faster here (2.65 s vs 3.50 s) because each instance receives 6.7 req/s of real traffic, a higher-frequency probe than a 1 Hz check — but it must lose 5 requests to learn anything and is blind to instances receiving no traffic",
+      "They are equivalent in detection time; the only difference is which component holds the configuration",
+      "Passive, and it has no cost at all, which is why active health checking is considered obsolete"
+    ],
+    "correct": 1,
+    "explanation": "Your own traffic is usually the highest-frequency probe you have, which is why passive detection often wins on latency and adds zero probe load. Its floor is hard and structural: it learns only from failures, so those 5 sacrificial requests are the price of the signal, and an instance nobody is calling is never evaluated — exactly the freshly-scaled or newly-deployed instance you are about to send traffic to. Active checking costs 7 probes/s here, 18% of production request rate, paid forever. Run both."
+  },
+  {
+    "stage": "check",
+    "question": "Your shutdown handler catches SIGTERM, deregisters from the registry, and then exits cleanly. During a rolling replacement of six instances you still drop 228 requests. What is missing?",
+    "options": [
+      "The wait: deregistration is not synchronous, and the caller still needs the measured 2.00 s of propagation to hear about it — so you must keep serving through that gap before you stop accepting",
+      "A longer lease TTL, so the registry does not expire the entry before the deregistration is processed",
+      "SIGKILL handling — the orchestrator is killing the process before the deregistration completes",
+      "Retries on the caller, which would transparently absorb any requests sent during the gap"
+    ],
+    "correct": 0,
+    "explanation": "Deregistering deletes the entire detection term — the largest available win, taking drops from 375 to 228 — and it is still not enough, because it treats an asynchronous fact as a synchronous one. The correct ordering is deregister, wait longer than the measured propagation delay while still serving, drain in-flight work, then stop. Measured: 375 dropped for stop-immediately, 228 for deregister-then-stop, and 0 for deregister then wait 4.0 s then drain. The only new ingredient is patience."
+  },
+  {
+    "stage": "post",
+    "question": "A shared downstream dependency degrades and all 8 instances of your service begin failing 70% of requests. Your proxy has passive outlier ejection enabled with no ejection cap. What happens?",
+    "options": [
+      "The proxy detects that all instances are failing equally, concludes the fault is not an outlier, and ejects nothing",
+      "Half the pool is ejected, load shifts to the other half, and overall success rate improves",
+      "Every instance crosses the ejection threshold at roughly the same time, the pool empties, and requests start failing with 'no healthy upstream' — the protection mechanism converts a partial fault into a total one",
+      "Ejected instances are immediately re-added because the proxy requires at least one healthy upstream, so the effect is neutral"
+    ],
+    "correct": 2,
+    "explanation": "Ejection is a bet that the rest of the pool is healthy, and a shared fault invalidates that bet for every member at once. Measured: uncapped ejection removed 8 of 8 instances by t=22.50 s, 1,098 requests got 'no healthy upstream', and a 70%-failure partial fault became a 71.9%-failure outage. Capped at 50%, four instances stayed in rotation and 870 requests succeeded instead of 562 — 43.5% against 28.1%. Envoy's max_ejection_percent defaults to 10; the cap is one number and it is the difference between degraded and down."
+  },
+  {
+    "stage": "post",
+    "question": "A deploy 'succeeds' but 4% of requests fail for the first ninety seconds after each new instance starts. The instances register with the service registry in their startup code, right after binding the port. What is wrong, and what is the fix?",
+    "options": [
+      "The registry's propagation delay is too long; the fix is to shorten the caller's list cache TTL",
+      "The new instances register before they are ready — config not loaded, pools not warm, dependencies not yet reachable — so registration must be gated on the readiness signal, not on process start",
+      "The old instances deregistered too early; the fix is to overlap the rollout so more instances stay registered",
+      "The lease TTL is too short, so new instances are expiring before their first heartbeat lands"
+    ],
+    "correct": 1,
+    "explanation": "Registered, healthy and ready are three different states, and collapsing them is what sends traffic to a process that cannot serve it. Registration means a process once said so; readiness means it can serve right now. Register on readiness and deregister on drain — in Kubernetes this is literal, since the readiness probe is what adds and removes the pod's address from the EndpointSlice. Because readiness is reversible, an instance that loses a dependency leaves rotation and returns without ever being restarted."
+  }
+]

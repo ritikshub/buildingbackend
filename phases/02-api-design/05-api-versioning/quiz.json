@@ -1,0 +1,30 @@
+[
+  {
+    "question": "Which versioning strategy is most debuggable and caches with zero Vary gymnastics?",
+    "options": ["Accept media type (application/vnd.api.v3+json)", "URI path (/v1/orders)", "Custom request header", "Query parameter (?version=2)"],
+    "correct": 1,
+    "explanation": "A path version like /v1/ is visible and greppable in logs, copy-pasteable in bug reports, routes cleanly at the gateway, and produces distinct cacheable URLs with no Vary header needed. It's the pragmatic default.",
+    "stage": "pre"
+  },
+  {
+    "question": "You need to rename the response field 'amt' to 'total_amount'. What's a non-breaking rollout?",
+    "options": ["Rename it and bump to /v2 immediately", "Add total_amount alongside amt, deprecate amt with Deprecation/Sunset headers, monitor usage, remove later", "Change amt's type instead", "Return both under the same name"],
+    "correct": 1,
+    "explanation": "Renaming is breaking. Add the new field additively, keep serving the old one, mark it deprecated in docs and via Deprecation (RFC 9745) / Sunset (RFC 8594) headers, watch per-consumer usage, and remove only at a major-version boundary once usage is ~zero.",
+    "stage": "post"
+  },
+  {
+    "question": "Why is adding a new value to a response enum only 'gray-zone' compatible?",
+    "options": ["Enums can't be extended", "Clients that switch exhaustively (or deserialize into a closed enum) crash on the unknown member", "It changes the status code", "Enums aren't cacheable"],
+    "correct": 1,
+    "explanation": "A client that exhaustively matches every known enum value, or deserializes into a closed enum type, will fail on an unexpected new member. Make it safe by documenting all enums as open sets from day one and requiring a default branch.",
+    "stage": "post"
+  },
+  {
+    "question": "Why must you never repurpose an existing field's meaning (e.g. 'discount' from percent to minor units)?",
+    "options": ["It breaks JSON parsing", "Clients can't detect a semantic change — the payload still parses, so it surfaces as silently wrong values", "It requires a new media type", "Enums forbid it"],
+    "correct": 1,
+    "explanation": "A type/meaning change is invisible to a tolerant reader: the field still deserializes, so no error fires — the bug shows up as silently wrong prices. Add a new field (discount_amount), deprecate the old one, and serve both.",
+    "stage": "post"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You shard a multi-tenant database across 8 machines with a good hash function: shard = blake2b(tenant_id) % 8. You have 500 tenants, and one enterprise customer generates 40% of all writes. What does the write distribution look like?",
+    "options": [
+      "Roughly even at about 12.5% per shard — that is what a cryptographic hash function guarantees, and it is why hashing is preferred over range sharding",
+      "Measured: 47.7% of all writes land on one shard, an 18.1x imbalance, because the hash randomises which shard a tenant lands on but does nothing about how much traffic that tenant sends. Placement was uniform (each shard owned a similar number of tenants); volume was not",
+      "Even, because with 500 tenants spread over 8 shards the law of large numbers averages out any individual tenant's contribution",
+      "The hash function will need re-seeding; a good hash would place the large tenant on a shard of its own automatically"
+    ],
+    "correct": 1,
+    "explanation": "The tempting answer is right about what a hash function does and wrong about what the problem is. blake2b really does spread 500 tenant ids uniformly across 8 buckets — the measured key-placement imbalance was 1.05x, essentially perfect. But a hash operates on the key, not on the traffic behind the key, and the traffic is Zipfian: one tenant carried 40.1% of writes, so whichever shard it hashed to inherited all of it. The law-of-large-numbers answer fails for the same reason: averaging works when contributions are similar in size, and here one contribution is larger than the other 499 combined. This is why the fix is a directory (place the whale deliberately) or a composite key (split the whale), never a better hash."
+  },
+  {
+    "stage": "check",
+    "question": "You range-shard orders across 8 machines by order_id, cutting the existing 1,000,000 rows into 8 equal ranges. order_id comes from a sequence. A month later shard 7 is at 95% CPU and the other seven are nearly idle. Someone proposes splitting shard 7 in two. What happens?",
+    "options": [
+      "It works: splitting the hot range halves its write load, and repeating the split whenever a shard gets hot is the standard way range sharding scales",
+      "It works temporarily, but you must also rebalance the other seven ranges so the split does not create a gap in the keyspace",
+      "Measured: 100.0% of new writes land on shard 7 because every new order_id is larger than every existing one. Splitting produces a new top range that inherits 100% of the inserts — the hotspot follows the sequence, not the split. Hashing the key flattens it to 12.4-12.6% per shard, at the cost of turning a 1-shard range scan into an 8-shard one",
+      "The split helps because after it there are 9 shards, and 1/9 of writes will go to each"
+    ],
+    "correct": 2,
+    "explanation": "The first option is tempting because splitting hot ranges IS how range-sharded systems normally rebalance, and it works fine when the hot range is hot because of read skew or a fat tenant. It fails specifically for monotonic keys: the write pressure is not attached to a region of the keyspace, it is attached to the maximum, and the maximum keeps moving. Split as many times as you like and the newest range always takes every insert. The last option inverts the problem entirely — writes are not distributed by shard count, they are distributed by where the key lands. The honest fix is hashing, and the console output shows its price in the same breath: a contiguous BETWEEN scan went from touching 1 shard to touching all 8."
+  },
+  {
+    "stage": "check",
+    "question": "Each of your shards has a p99 of 61 ms and is 'slow' (in its heavy tail) just 1% of the time. A reporting query has no shard key, so it fans out to all 8 shards and waits for every response. What is that query's p99?",
+    "options": [
+      "About 61 ms. Each shard answers in parallel, so the fan-out inherits one shard's latency distribution",
+      "About 488 ms — 8 x 61 ms — because the eight shard responses are serialised through the coordinator",
+      "Measured 409 ms, 6.7x one shard's p99, because the fan-out's latency is the MAXIMUM of 8 samples, not the average. The chance the query touches at least one slow shard is 1 - 0.99^8 = 7.73% predicted, 7.83% measured. Meanwhile the p50 only moved from 12 ms to 23 ms",
+      "About 70 ms: parallelism means you pay one shard's latency plus a small merge cost, which is why scatter-gather is considered cheap"
+    ],
+    "correct": 2,
+    "explanation": "The first and last options are the intuition almost everyone has, and the intuition is correct about the mean and wrong about the tail. Running in parallel does mean you do not ADD the latencies — that rules out 488 ms — but you still cannot return until the slowest shard replies, so the fan-out samples the distribution 8 times and keeps the worst one. Sampling 8 times makes a 1-in-100 event a 1-in-13 event. The measured p50 is the trap inside the trap: it barely moved (12 ms to 23 ms), so every median-based dashboard, load test and local benchmark says the fan-out is fine. It is fine 92% of the time. This is Dean and Barroso's tail-at-scale argument applied to a database instead of a service mesh."
+  },
+  {
+    "stage": "check",
+    "question": "You run 8 shards with shard = hash(key) % 8 and you need roughly 15% more write capacity. You want to add ONE machine. What does that cost, and what would have made it cheap?",
+    "options": [
+      "About 1/9 of rows move, since only the keys belonging to the new shard need relocating — this is the normal cost of adding capacity and applies to any scheme",
+      "Measured: 88.9% of all rows move, because N is inside the formula and changing it changes every key's mapping. With 4096 virtual buckets — hash once into a fixed bucket, then keep an editable bucket-to-shard table — the same change moves 11.3% of rows as 456 whole buckets, and rehashes zero keys",
+      "Nothing moves until you rebalance manually; hash % N only affects newly written keys, so the old data can stay where it is",
+      "50% of rows move, the same as going from 8 shards to 16, because all resharding operations cost half the dataset"
+    ],
+    "correct": 1,
+    "explanation": "The 1/9 answer describes what a GOOD mapping does and quietly assumes you have one — it is exactly right for consistent hashing (measured 9.5%) and virtual buckets (11.3%) and exactly wrong for hash % N. The third option is a real and dangerous misconception: the mapping is used on every read too, so leaving old rows in place means you can no longer find them. The fourth is tempting because 50% IS the honest cost of doubling under every scheme, including buckets — the new shards have to be filled from somewhere, and no mapping avoids that. The point is what happens when you do not want to double: hash % N makes 8 to 9 cost 88.9%, which effectively forbids incremental growth and locks you into buying 8 machines at a time."
+  },
+  {
+    "stage": "post",
+    "question": "You are resharding live. You enable double-writes (every write goes to both the old and new topology) BEFORE the backfill starts, then run a copier that reads a batch of rows from old and writes them into new. Verification afterwards finds 35 of 20,000 rows wrong. Double-writing was on the whole time — what happened?",
+    "options": [
+      "The double-write path has a bug that drops writes; the copy logic is correct and the fix is in the application's write path",
+      "The copier ran too fast and overwhelmed the destination; adding a rate limit to the backfill would have prevented the corruption",
+      "Copying is a READ followed by a WRITE, and a live update can land in between: the copier read version 5, a double-write set both copies to version 6, then the copier wrote its stale 5 over the top. Copying is not idempotent unless it is conditional — INSERT ... IF NOT EXISTS (ON CONFLICT DO NOTHING) or a version guard — which took the same run to 0 wrong rows",
+      "35 rows out of 20,000 is 0.17%, which is inside normal replication tolerance and does not indicate a bug"
+    ],
+    "correct": 2,
+    "explanation": "The first option is the natural conclusion because double-writing is the part that sounds fragile, but the simulation used a byte-identical write stream across all three runs and the only variable was whether the copier's write was conditional. Rate limiting is genuinely required for a live backfill — it stops you starving production — but it changes how often the race fires, not whether it can. The last option is the one that ends careers: there is no acceptable rate of silent divergence during a migration, and 0.17% on a 500-million-row table is 875,000 rows that are permanently wrong with no error, no alert and no log line. The fix is one clause on the copier's INSERT."
+  },
+  {
+    "stage": "post",
+    "question": "Your 7-step reshard is at step 5: reads have been flipped to the new topology behind a feature flag, and the application is still double-writing to both. A teammate wants to close the ticket by turning off the double-write today. Why wait?",
+    "options": [
+      "Double-writing costs latency on every write, so turning it off today is the right call once reads are confirmed working — the flag flip already proved the new topology is correct",
+      "Because you should drop the old tables first, and dropping them while they are still being written to would fail",
+      "Because stopping the double-write is the point of no return: while old is still being written it stays perfectly current, so rolling back is a flag flip with zero data loss. The second you stop, old begins to drift and the gap widens every second — rollback becomes replaying writes, not flipping a flag",
+      "Because the backfill is not finished until double-writes are disabled; the two run as a single phase"
+    ],
+    "correct": 2,
+    "explanation": "The first option is the seductive one because everything it says is true — double-writing does cost write latency, and reads really are working. What it misses is that reads working today says nothing about the bug you find on Thursday under a query shape that only appears at month-end. Steps 1 through 5 are all reversible precisely because old is still authoritative and current; that property is the entire safety net and it costs a little write latency to keep. Option 2 inverts the order (you drop old last, days later, after a full backup cycle) and option 4 confuses the phases. Sit at step 5 long enough to see a full business cycle, then commit."
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "stage": "pre",
+    "question": "How do a browser and CDN know whether and how long to cache a response?",
+    "options": ["They guess based on file size", "The server attaches HTTP caching headers (Cache-Control, ETag) to the response, and compliant caches obey them", "They ask the user", "They cache everything for 24 hours by default"],
+    "correct": 1,
+    "explanation": "HTTP builds caching into the protocol (RFC 9111). The server declares the rules per response via headers, and every browser, proxy, and CDN in the chain follows them."
+  },
+  {
+    "stage": "check",
+    "question": "What's the difference between freshness and validation?",
+    "options": ["They're the same", "Freshness (max-age) lets a cache serve its copy with zero network; validation lets a stale copy be reused without re-downloading, by asking the server if it changed", "Freshness is for images, validation for text", "Validation always re-downloads the body"],
+    "correct": 1,
+    "explanation": "While fresh, the cache serves locally — no network. Once stale, instead of blindly re-downloading, it revalidates: a conditional request that returns 304 (reuse) or 200 (replace)."
+  },
+  {
+    "stage": "check",
+    "question": "What does a 304 Not Modified response contain, and why is it valuable?",
+    "options": ["The full updated body", "No body — just headers confirming the cached copy is still current, so a large unchanged resource is revalidated for a few hundred bytes instead of its full size", "An error message", "A redirect to a new URL"],
+    "correct": 1,
+    "explanation": "A 304 has no payload. When the client's ETag still matches, the server says 'reuse what you have,' turning a potential multi-megabyte re-download into a tiny header exchange."
+  },
+  {
+    "stage": "check",
+    "question": "A developer sets Cache-Control: no-cache expecting the response to never be cached. What actually happens?",
+    "options": ["It's never stored — they're right", "It IS stored, but the cache must revalidate with the server before every reuse; 'never store' is no-store", "It caches forever", "It's an invalid directive"],
+    "correct": 1,
+    "explanation": "no-cache means 'store, but always revalidate before serving' — perfect for HTML with an ETag. The directive that forbids storage entirely is no-store."
+  },
+  {
+    "stage": "post",
+    "question": "You want a CDN to cache an API response for 60s but browsers only 10s. Which directives?",
+    "options": ["max-age=60 only", "max-age=10, s-maxage=60 — s-maxage sets the TTL for shared caches (the CDN) and overrides max-age there, while browsers use max-age", "no-store, no-cache", "immutable, max-age=60"],
+    "correct": 1,
+    "explanation": "s-maxage applies only to shared caches like a CDN and overrides max-age there; browsers fall back to max-age. This is the shared/private split from the CDN lesson expressed in one header."
+  },
+  {
+    "stage": "post",
+    "question": "What's the best-practice caching policy for a fingerprinted static asset like app.9f8c2a.js?",
+    "options": ["no-store", "public, max-age=31536000, immutable — cache forever and never revalidate, because a content change produces a new URL", "no-cache with an ETag", "private, max-age=0"],
+    "correct": 1,
+    "explanation": "Since the content hash is in the URL, the file at that URL never changes. You can cache it for a year and mark it immutable so browsers don't even revalidate on reload; new content ships under a new filename."
+  }
+]

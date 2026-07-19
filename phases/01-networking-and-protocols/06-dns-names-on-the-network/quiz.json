@@ -1,0 +1,86 @@
+[
+  {
+    "stage": "pre",
+    "question": "What does DNS (the Domain Name System) fundamentally do?",
+    "options": [
+      "It encrypts traffic between two machines",
+      "It maps human-readable names like example.com to records such as IP addresses",
+      "It assigns port numbers to running programs",
+      "It compresses packets to save bandwidth"
+    ],
+    "correct": 1,
+    "explanation": "DNS is a distributed, hierarchical database that translates names into typed records — most commonly a name into an IP address. Your applications type names; the network needs numbers, and DNS bridges the two."
+  },
+  {
+    "stage": "pre",
+    "question": "Which transport and port does a normal, small DNS query use?",
+    "options": [
+      "TCP on port 80",
+      "UDP on port 443",
+      "UDP on port 53",
+      "TCP on port 25"
+    ],
+    "correct": 2,
+    "explanation": "Normal DNS queries are tiny and latency-sensitive, so they go over UDP on port 53: one datagram out, one back, no connection setup. DNS falls back to TCP on port 53 only for large (truncated) responses and zone transfers."
+  },
+  {
+    "stage": "check",
+    "question": "In recursive resolution, what does a root server return when asked for example.com's A record?",
+    "options": [
+      "The final IP address, 93.184.216.34",
+      "An error, because the root cannot help",
+      "A referral pointing the resolver to the .com TLD servers",
+      "The MX record for example.com"
+    ],
+    "correct": 2,
+    "explanation": "The root does not hold example.com's address. It knows who runs the .com TLD, so it refers the recursive resolver down to the .com servers, which in turn refer it to example.com's authoritative servers. The resolver follows referrals until it reaches the authoritative answer."
+  },
+  {
+    "stage": "check",
+    "question": "A record's TTL (Time To Live) is 3600. What does that mean?",
+    "options": [
+      "The record expires from the zone in 3600 seconds and must be recreated",
+      "Resolvers and clients may cache the answer for up to 3600 seconds before asking again",
+      "The query must complete within 3600 milliseconds or it fails",
+      "The domain registration lasts 3600 days"
+    ],
+    "correct": 1,
+    "explanation": "TTL is a caching lifetime in seconds. For 3600 seconds, resolvers and clients may serve the answer from cache without repeating the walk. This is why you lower a record's TTL before migrating a server: so old cached copies expire quickly once you change it."
+  },
+  {
+    "stage": "check",
+    "question": "On the wire, how is the name example.com encoded in a DNS question (the QNAME)?",
+    "options": [
+      "As the ASCII string \"example.com\" with the dot included",
+      "As length-prefixed labels: a byte 7, 'example', a byte 3, 'com', then a zero byte",
+      "As a 32-bit hash of the name",
+      "As two 16-bit numbers, one per label"
+    ],
+    "correct": 1,
+    "explanation": "There are no dots on the wire. Each label is one length byte followed by that many characters, and a zero-length label (0x00, the root) ends the name. So example.com becomes 07 'example' 03 'com' 00 — the lengths take the place of the dots."
+  },
+  {
+    "stage": "post",
+    "question": "A DNS message uses name compression. When the decoder reads a byte whose top two bits are set (0xC0), what should it do?",
+    "options": [
+      "Treat it as the length of a 192-character label",
+      "Stop parsing — the message is corrupt",
+      "Read the next byte too, form a 14-bit offset, and continue reading the name from that offset earlier in the message",
+      "Skip exactly one byte and keep going"
+    ],
+    "correct": 2,
+    "explanation": "A byte with its top two bits set marks a 2-byte compression pointer (RFC 1035 §4.1.4). The low 14 bits give an offset into the message where the name continues, so names aren't repeated. The decoder follows the pointer but resumes normal parsing at the bytes just after the 2-byte pointer."
+  },
+  {
+    "stage": "post",
+    "question": "Why does DNS sometimes switch from UDP to TCP on port 53?",
+    "options": [
+      "TCP is always faster for DNS",
+      "When a response is too large for one UDP datagram (the server sets the TC/truncated flag) or for zone transfers that need a reliable stream",
+      "Because UDP does not support port 53",
+      "To encrypt the query, which UDP cannot do"
+    ],
+    "correct": 1,
+    "explanation": "UDP is the default for small queries, but a response that won't fit in a datagram gets the TC (truncated) flag, telling the client to retry over TCP. Zone transfers, which copy an entire zone between servers, also use TCP for its reliable, ordered delivery."
+  }
+]

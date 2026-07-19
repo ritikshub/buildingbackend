@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "You are replacing your SSH-and-restart deploy script with something that survives a machine dying at 02:14. Sketching the design, where does the node-failure handling belong?",
+    "options": [
+      "A watcher subscribes to node-failure notifications; on receiving one it looks up which replicas were on that node and reschedules exactly those, with retries and a dead-letter queue for notifications it cannot process",
+      "There is no node-failure handling. A loop observes how many replicas exist, subtracts from how many were declared, and creates the difference — so a dead machine is not an error condition, it is a smaller number on the next pass. This lesson's reconciler restored full capacity in 2 ticks and contains no `except NodeDied:` anywhere",
+      "The scheduler owns it: it holds the placement decisions, so it detects the node's absence and re-runs placement for the affected replicas",
+      "A health-check daemon on each surviving node detects the missing peer via gossip and one of them elects itself to take over the orphaned work"
+    ],
+    "correct": 1,
+    "explanation": "This is the conceptual step the whole lesson turns on. Lesson 6 built observe -> diff -> act and ran it once, when a human remembered to; orchestration is the identical loop run continuously, forever, by a machine. Three things fall out of 'forever': idempotence stops being a nicety (act on 'ensure 12 exist', not 'create one', or you have 12,000 by lunchtime), convergence replaces correctness-at-a-moment, and **failure becomes an input rather than an exception**. Option 1 is the design almost everyone reaches for first, and it is the edge-triggered trap measured later in this lesson: it is only as correct as its least reliable message, and there is no path by which it recovers from a dropped one. Option 3 inverts the responsibilities — the scheduler decides *where*, the replica loop decides *how many*, and they coordinate only through shared state, never by calling each other. That decoupling is why deleting the scheduler leaves the cluster serving: new Pods just stay Pending."
+  },
+  {
+    "stage": "check",
+    "question": "Your reconciler consumes a reliable change stream and keeps an accurate running count, incrementing on each replica it creates and decrementing on each failure event it receives. It is well-tested and converges perfectly in every test. Under what conditions does it break, and how badly?",
+    "options": [
+      "It breaks under high event volume, degrading proportionally: at 20% event loss it would run about 20% short of the declared replica count",
+      "It breaks only if events arrive out of order, which a sequenced stream prevents; with ordering guaranteed the design is sound",
+      "It breaks whenever a single event is dropped, and the breakage is permanent — nothing later in its life re-derives the truth, so a running total with a missing term stays wrong forever. Measured against a level-triggered reconciler on identical scenarios: at 20% event loss it converged in 5 of 10 runs (avg 10.5 of 12 replicas) and at 50% loss in 2 of 10; the level-triggered one converged 10 of 10 at every loss rate, including 50%",
+      "It breaks only if the event bus loses messages, which is an infrastructure problem — the fix is exactly-once delivery on the stream rather than a change to the reconciler"
+    ],
+    "correct": 2,
+    "explanation": "Level- versus edge-triggering sounds like an efficiency trade-off — events are cheap, polling is wasteful — and it is not. It is a correctness trade-off, and the asymmetry is total: a missed event breaks an edge-triggered system permanently, while a missed observation costs a level-triggered one a single tick. Option 1 is the tempting model and the measured data refutes it: the failure is *absorbing*, not proportional. Once a run misses an event it is broken for its entire remaining lifetime, with no error, no alert, and a system that believes it is correct. Note the honest part of the table: at 0% loss both converge 10 of 10, so edge-triggering is not wrong, it is fragile — and it fails in exactly the conditions (partition, overloaded queue, restarted process) under which failures actually happen, which is why option 4's fix is the wrong direction. Real orchestrators do both: a watch event carries only a *key*, which goes on a work queue, and the handler then re-reads the full current object and reconciles from scratch. Events are an optimisation of polling, never a replacement for it."
+  },
+  {
+    "stage": "check",
+    "question": "Your 12 replicas at 500m CPU each fit comfortably on 2 of your 6 nodes, and finance has noticed the four idle machines. Someone proposes switching the scheduler to `MostAllocated` (bin-packing) and shrinking the pool. What are you actually buying, and what are you paying with?",
+    "options": [
+      "You are trading a fixed monthly saving for a variable blast radius. The same single-machine failure cost 66.7% of serving capacity bin-packed against 16.7% spread — 4.0x the blast radius and 5.0x the lost work (20 versus 4 replica-ticks) — because the bin-packed node-a held 8 of 12 replicas. Losing a whole zone cost 100% bin-packed, with 2 full ticks at literally zero capacity, versus 33.3% zone-spread",
+      "Nothing is lost: total cluster capacity is unchanged, so the loop reschedules the same number of replicas either way and recovery time is identical",
+      "You pay in scheduling latency — a packed cluster forces the scheduler to evaluate more constraints per placement — but availability is unaffected as long as replica count is unchanged",
+      "The risk is real but is fully mitigated by a hard pod anti-affinity rule, which prevents bin-packing from ever placing two replicas of the same workload together"
+    ],
+    "correct": 0,
+    "explanation": "The scheduler decides your blast radius weeks before anything breaks, and the entire difference between these two outcomes is `min` versus `max` on one scoring expression — same nodes, same workload, same failure, same seed. Bin-packing is a genuinely reasonable choice; the point is that its cost is denominated in outage rather than on an invoice, so it should be a decision rather than a default. Option 4 is the sharpest distractor because it names a real mechanism, but a hard anti-affinity that allows one replica per node caps you at 6 replicas on 6 nodes — and it produces its own failure mode, measured here as a Pending replica on a cluster with 10,250m of free CPU. The subtler lesson in the zone table: node-spread lost 50% of capacity to a zone failure because zone-1 held 3 of the 6 machines, so an even spread over nodes was an uneven spread over zones. A failure domain is whatever fails together; spreading over the wrong one buys nothing."
+  },
+  {
+    "stage": "check",
+    "question": "A service is scheduled onto a node that then becomes unstable — neighbouring workloads see unexplained p99 latency spikes and one gets OOM-killed with exit 137. The service in question sets `limits: {cpu: 500m, memory: 512Mi}` and no `requests` at all. What is the mechanism?",
+    "options": [
+      "Limits imply equal requests, so the node was over-committed by the difference between the limit and actual usage",
+      "The missing `requests` means nothing — the scheduler falls back to the limit when no request is given, so placement was correct and the instability has another cause",
+      "The CPU limit is the problem in isolation: a limit lower than the request always produces throttling regardless of node capacity",
+      "A workload with no request is scheduled as if it were free — the scheduler only ever looks at requests, so the node accepted it and every other pod there now competes with a ghost. Meanwhile its own CPU limit is enforced by the kernel as a cgroup `cpu.max`, so exceeding it throttles silently into latency with no error, and its memory limit becomes `memory.max`, where exceeding it is an uncatchable OOM kill and exit 137"
+    ],
+    "correct": 3,
+    "explanation": "Requests and limits are two different numbers with two different enforcers, and confusing them is a top cause of mystery latency. A **request** is what the scheduler reserves during the filter phase; it is a promise about room and is never enforced at runtime — a container requesting 500m can use 3 cores if 3 cores are idle. A **limit** is what the kernel enforces, written literally into cgroup v2 files on the node. The failure modes are asymmetric: CPU is compressible so exceeding `cpu.max` throttles you (pure latency, no error, no log line), while memory is not, so exceeding `memory.max` gets you SIGKILLed with exit 137 and nothing in your logs. Option 1 states a rule that does not exist in Kubernetes — some admission controllers and LimitRanges can default requests from limits, but nothing in the core scheduler does. The practical rules: always set requests; set memory requests and limits both; be sparing with CPU limits, because throttling is far harder to diagnose than the problem it prevents."
+  },
+  {
+    "stage": "post",
+    "question": "A replica has been `Pending` for twenty minutes. `kubectl top nodes` shows the cluster is 30% utilised with plenty of free CPU and memory. Someone has already added two nodes and it is still Pending. What is your next move?",
+    "options": [
+      "Add nodes with a larger instance type — a Pending pod on an under-utilised cluster means no single node has a contiguous block large enough for the request, even though the total is ample",
+      "Read the reason string in `kubectl describe pod`. Pending on a cluster with free capacity means a constraint, not a shortage — a hard anti-affinity, a topology spread with `whenUnsatisfiable: DoNotSchedule`, an untolerated taint, or a nodeSelector. This lesson produced exactly that: a replica Pending on a cluster holding 10,250m of free CPU for a 250m request, because a hard anti-affinity allowed one replica per node and there were only three nodes",
+      "Delete the pod so the controller recreates it — Pending pods that have exceeded their scheduling backoff need to be re-queued manually before the scheduler will retry them",
+      "Check whether the scheduler is running; a Pending pod with available capacity is the signature of a crashed or leader-election-stuck kube-scheduler"
+    ],
+    "correct": 1,
+    "explanation": "`Pending` is not a failure state and nothing is in a back-off loop: it means the scheduler ran, evaluated every node, found none feasible, and put the work back on the queue — and it will retry on every pass, forever, which is why adding a node schedules it with no other trigger. Option 3 is the reflex that wastes the most time and rests on a false model of retries. Option 1 is the plausible half-knowledge answer: it is the right diagnosis for a genuine shortage (a request larger than any single node's allocatable capacity) and the wrong one here, which is exactly why you read the string before you act. That string is generated by the scheduler itself and names every rejection with a count — `0/3 nodes are available: 2 Insufficient cpu, 1 node(s) had untolerated taint {gpu=true}` is three facts, not an error message. One operational trap: events are garbage-collected (one hour by default), so a pod Pending since yesterday may show no events at all — fall back to `kubectl get pod -o yaml` and read the conditions."
+  },
+  {
+    "stage": "post",
+    "question": "Your service runs 3 replicas across 3 nodes. To protect it you add a PodDisruptionBudget with `minAvailable: 3`, reasoning that all three replicas must always be up. What have you actually configured?",
+    "options": [
+      "Correct protection against both node failures and cluster maintenance, at the cost of slower rolling updates",
+      "Protection against node failure but not against rolling updates, since a Deployment's own `maxUnavailable` overrides the budget during a rollout",
+      "Nothing useful and one new outage source. A PDB constrains only **voluntary** disruptions — drains, upgrades, autoscaler scale-downs, anything calling the Eviction API — and cannot stop a power supply failing. And a budget that can never be satisfied blocks node drains forever, so cluster upgrades hang until someone deletes the PDB mid-incident. Write `maxUnavailable: 1`, or a `minAvailable` strictly below the replica count",
+      "A valid configuration that becomes dangerous only if an autoscaler later reduces the replica count below 3"
+    ],
+    "correct": 2,
+    "explanation": "The word 'voluntary' is doing all the work. A PDB exists to stop *your own automation* doing what a hurricane would — an upgrade draining six nodes in sequence will happily take your service to zero if nothing tells it not to — and it has no bearing on involuntary disruption. For that path the relevant numbers are elsewhere and worth knowing: the node controller waits roughly 40 seconds of missed kubelet heartbeats before marking a node `NotReady`, and pods then carry a default 300-second toleration for `node.kubernetes.io/unreachable` before eviction, so a stock cluster takes about five and a half minutes from power loss to rescheduling. That is deliberate — it stops a network blip evacuating a healthy machine — and if your business needs less it is a number you change and test, not a bug. Option 4 identifies a real second-order hazard (check that PDB arithmetic still works after a 03:00 scale-down) but treats the primary misconfiguration as sound. The general rule: every workload with more than one replica gets a PDB expressed as `maxUnavailable`, never a `minAvailable` equal to the replica count."
+  }
+]

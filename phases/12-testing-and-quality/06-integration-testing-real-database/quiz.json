@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Your test suite runs against SQLite because it is fast and needs no daemon. Production is PostgreSQL. Same schema file, same SQL, same ORM. How does that substitution usually bite you?",
+    "options": [
+      "Rarely — SQL is standardised, so only a handful of exotic functions and date types differ, and an ORM abstracts those away",
+      "Almost entirely at INSERT time, where SQLite is more permissive: you get loud 500s in production the first time a path runs, and you fix them",
+      "Roughly half the divergences PostgreSQL refuses outright, and the other half are answered by BOTH engines with different answers and no error raised anywhere",
+      "Only under concurrency — single-threaded queries return identical results, so a serial test suite is safe"
+    ],
+    "correct": 2,
+    "explanation": "Measured across ten schema-and-query pairs: all ten diverged, five with a PostgreSQL error (22P02, 22001, 22012, 23503, 42803) and five with no error in either engine. Option B is the tempting one because those are the divergences you have actually seen — an error has a stack trace and gets fixed, so it is the half that reaches your memory. The silent half never does: SUM over a NUMERIC(10,2) column measured 10.305000000000001 against an exact 10.31, LIKE 'ADA%' matched 1 row against 0, page 1 of an ORDER BY held ['Bob','Zoe'] against ['ada','Bob'], and the next id after a rolled-back INSERT was 2 against 3. Option A is what an ORM appears to promise; the ORM emits the same SQL and the engines disagree about what it means."
+  },
+  {
+    "stage": "check",
+    "question": "Of these four behaviours, which one is IDENTICAL in SQLite and PostgreSQL?",
+    "options": [
+      "Inserting three NULLs into a column with a UNIQUE constraint — both accept all three",
+      "Inserting 30 characters into a VARCHAR(10) column",
+      "Whether WHERE email LIKE 'ADA%' matches a row containing 'ada@example.com'",
+      "The order ORDER BY name produces over a mix of 'ada', 'Zoe', 'Bob' and 'carol'"
+    ],
+    "correct": 0,
+    "explanation": "Both engines accepted all three NULLs, because SQL:2016 specifies that NULLs are distinct in a unique index and both implement it. This is deliberately the option that feels wrong: nullable-UNIQUE is the divergence most engineers name first, which is exactly why it makes the point. The other three all diverge — SQLite stored the full 30 characters where PostgreSQL raises 22001, SQLite's LIKE is ASCII-case-insensitive so it matched 1 row where PostgreSQL matches 0, and SQLite's BINARY collation put page 1 at ['Bob','Zoe'] against ['ada','Bob'] under en_US.UTF-8. The lesson of the control row is that you cannot keep a mental list of engine differences, because the ones on your list are not the ones that bite."
+  },
+  {
+    "stage": "check",
+    "question": "Over 200 tests against a 6-table, 240-row fixture, transaction-rollback isolation was about 50x cheaper than truncate-and-reseed. What actually produces that margin?",
+    "options": [
+      "DELETE is slower than TRUNCATE, so the truncate strategy was measured with the slower statement and the gap would close with real TRUNCATE",
+      "Rollback re-seeds nothing: 5 statements, 2.1 row changes and 0 commits per test, against 251 statements, 482 row changes and 200 commits — 96,379 row changes reduced to 420",
+      "Rollback keeps one connection open for the whole suite, and connection setup is the dominant cost in an integration suite",
+      "Rollback lets the tests run in parallel, and the measurement compared four workers against one"
+    ],
+    "correct": 1,
+    "explanation": "The margin is structural, not a tuning artefact: every other strategy writes all 240 fixture rows again for every test, and rollback writes none of them, so its cost does not grow with fixture size while theirs does — a team with a 4,000-row seed still pays 5 statements per test. Option C is a real and worthwhile optimisation (session-scoped connections and containers) but it is a separate, smaller one; it was not what was being measured. Option A is a reasonable objection and it does not rescue truncate: the reseed is the expensive half, not the delete. Note the commits column too — rollback performed zero, and on a real server each commit is an fsync, which is why the projection put truncate at 2.71 s of SQL time against rollback's 0.05 s."
+  },
+  {
+    "stage": "check",
+    "question": "Your harness wraps every test in BEGIN ... ROLLBACK. Three tests in two hundred exercise a repository whose create() method calls commit(), because in production that method owns its transaction. The suite is green. What is actually happening?",
+    "options": [
+      "Nothing — the ROLLBACK is on the same connection, so it still undoes the repository's write",
+      "The COMMIT ended the harness's transaction, so 3 rows survived the rollback with 0 reported failures; file order stays green for ever and shuffling caught it in 378 of 400 runs",
+      "SQLite and PostgreSQL both detect the nested transaction and treat the inner COMMIT as a no-op, so the outer ROLLBACK wins",
+      "The repository's COMMIT raises immediately with 'no transaction is active', so the bug is loud and you would already know about it"
+    ],
+    "correct": 1,
+    "explanation": "A ROLLBACK can only undo a transaction that is still open, and COMMIT closed it — the rollback then faithfully undoes the fresh, empty transaction the repository opened for its caller. Option A is the assumption the whole strategy rests on and it is true right up until anything commits. Option C describes savepoint semantics, which is the FIX rather than the default: neither engine nests plain transactions. The measured shape matters as much as the mechanism — this bug is not rare, it is conditional. File order is one permutation and it happened to put the committing tests after the tests that would have noticed, so it is green 100% of the time, for ever. Turning on shuffling caught it in 94.50% of runs; the fix is to give the code under test a connection whose commit() is a SAVEPOINT release, which took the suite to 0 rows leaked and 400/400 green with no change to production code."
+  },
+  {
+    "stage": "post",
+    "question": "You write an integration test for a lost update: open two sessions, run transaction 1 to completion, then run transaction 2 to completion, assert the final balance. It passes. What have you established?",
+    "options": [
+      "That the read-modify-write is safe under concurrency, since you exercised two real sessions against the real engine",
+      "Nothing about concurrency — you ran one of the two serial schedules, and the serial schedules are exactly the two of six interleavings that cannot fail",
+      "That PostgreSQL's default READ COMMITTED prevented the lost update, which is what the passing assertion is evidence of",
+      "Only that the happy path works; catching the race genuinely requires threads and a sleep long enough to make the interleaving likely"
+    ],
+    "correct": 1,
+    "explanation": "There are exactly six legal interleavings of two read-modify-write transactions over one row. Measured against a real engine with a starting balance of 100, T1 adding 10 and T2 adding 5: the two serial schedules both returned the correct 115, and the four interleaved ones returned 105, 110, 105 and 110 — each silently losing an update. A test that runs one transaction and then the next is by construction exploring R1 W1 R2 W2, so it is green and always will be. Option C is a common and dangerous inference: READ COMMITTED does not prevent lost updates, and neither does REPEATABLE READ for this shape without an explicit lock — the test passed because of its schedule, not because of the isolation level. Option D is what makes people avoid concurrency tests; the deterministic alternative is to drive both connections step by step from one thread, which is how these six were measured. The fix is a version column: UPDATE ... WHERE ver = ? returns rowcount 0 on conflict, which took all six schedules to 115 and an 8-worker run from 25/200 to exactly 200/200 with 175 retries."
+  },
+  {
+    "stage": "post",
+    "question": "Your test databases are built by loading a checked-in schema.sql. CI already schema-diffs that dump against `alembic upgrade head` on every PR, and the diff is green. Which bug class does that gate still leave completely untested?",
+    "options": [
+      "None — if the schemas are provably identical, the test database and production are equivalent for testing purposes",
+      "Only index and constraint-name differences, which schema diff tools normally exclude by default",
+      "Data migrations: migration 004's partial backfill left 300 of 400 orders with a NULL currency on the migrated database, while the dump-loaded database reported 0 of 0 — it has no rows to fail the test",
+      "Only column ordering, which differs between a dump and a migration path but never affects application behaviour"
+    ],
+    "correct": 2,
+    "explanation": "A schema diff proves the columns match. It cannot prove anything about a migration that transforms rows, because the dump-loaded database is empty — and an empty table passes every data assertion you can write. Read the measured numbers carefully: the dump database is not passing that test, it is incapable of failing it, which is a different and much worse thing. Option A is the exact inference the green gate invites, and it is why this bug survives teams that are otherwise disciplined. Option B is a real gap in some diff tools but a small one. The smallest fix that works is a separate CI job that runs the real migrations forward against a database restored from a production-shaped backup that already has rows in it, then asserts the invariant each backfill was supposed to establish — here, that no order is left with a NULL currency."
+  }
+]

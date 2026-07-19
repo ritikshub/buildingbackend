@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "A load test reports p99 = 7.81 ms. An open-loop test against the same build, in the same second, with the same 200 rps target, reports p99 = 1,525 ms. The server logged no errors during either run. What happened?",
+    "options": [
+      "The open-loop tool has a bug in its percentile calculation — a 195x disagreement between two tools measuring the same thing can only be an implementation error",
+      "The closed-loop generator waits for each response before sending the next request, so during the server's 2-second stall it sent nothing. The 380 requests that were due during the stall — the only ones that would have been slow — were never issued and never recorded. Both tools reported honest percentiles over the requests they actually made; only one of them made the requests that mattered",
+      "The two runs hit different servers behind a load balancer, so they measured different machines",
+      "The closed-loop run was shorter, so it had fewer samples and its p99 is simply less precise"
+    ],
+    "correct": 1,
+    "explanation": "This is coordinated omission, named by Gil Tene. The error is not in the arithmetic and not in the tool — it is in which requests got issued. A generator that blocks on a response stops offering load exactly when the system is worst, so the samples that would have populated the tail are never created. Note that both runs had the same sample count order of magnitude (11,620 vs 12,000): only 3.2% of requests went missing, and that 3.2% was the entire tail."
+  },
+  {
+    "stage": "check",
+    "question": "Your harness benchmarks implementation A and implementation B. A's median is 340 us, B's median is 336 us, and the two implementations' per-trial medians overlap with a combined run-to-run spread of 103 us. What do you report?",
+    "options": [
+      "B is 1.2% faster — report the improvement, since the medians are computed over hundreds of samples and are therefore reliable",
+      "Re-run with 100x more iterations inside each trial until the difference becomes statistically stable",
+      "No detectable difference. The 4 us gap is 0.04x the noise and the trial ranges overlap, meaning a re-run could easily order them the other way. A harness that cannot return 'not proven' is a random number generator with good formatting",
+      "A is faster, because the minimum of A's samples is what matters and minimums are the least noisy estimate"
+    ],
+    "correct": 2,
+    "explanation": "The useful rule of thumb is two conditions: the per-trial medians must not overlap, and the gap must exceed roughly 3x the combined spread. Neither holds here. More iterations inside a trial will not help — repetition within one trial re-measures the same environmental state (same CPU frequency, same cache contents) very precisely, so it shrinks the wrong error bar. Only more independent trials re-sample the environment."
+  },
+  {
+    "stage": "check",
+    "question": "A benchmark of 'top-10 of 20,000 integers' runs on a pre-sorted list and reports that `sorted(xs)[:10]` beats `heapq.nlargest(10, xs)` by 21.7x. What is actually being measured, and what happens in production?",
+    "options": [
+      "Nothing is wrong: 20,000 elements is a realistic size, and sorted input is a valid special case that will also occur in production",
+      "The benchmark measured Python's function-call overhead, which dominates at this input size and disappears at larger sizes",
+      "The benchmark is fine but the ratio is inflated by missing warmup; with warmup the two implementations converge",
+      "It measured Timsort's O(n) fast path for already-ordered runs, not sorting. On realistic 5%-out-of-order data the result reverses and `nlargest` wins by 2.0x, so shipping the benchmark's 'winner' makes production about twice as slow — with a benchmark in the PR proving you made it faster"
+    ],
+    "correct": 3,
+    "explanation": "Unrepresentative data is the most dangerous of the microbenchmark hazards because it does not merely distort the magnitude of a result — it can reverse the decision. Timsort detects existing ordered runs and merges them in linear time, so a pre-sorted input exercises a code path production will never see. The same principle governs cache benchmarks (a 100% hit rate measures a dictionary) and query benchmarks (10 rows measures nothing). Cardinality and key skew are inputs to the benchmark, not details."
+  },
+  {
+    "stage": "check",
+    "question": "A capacity test shows a server whose achieved throughput plateaus at 204 rps. At 400 rps offered it still delivers 204 rps of responses. Why is 204 rps the wrong number to write in the capacity plan?",
+    "options": [
+      "Because throughput should always be quoted with a 20% safety margin, so the right number is 163 rps",
+      "Because at 400 rps offered, p99 is 722 ms and goodput — responses that are correct AND inside the 200 ms SLO — has collapsed to 2.6 rps. Maximum useful throughput, the highest rate that still meets the SLO, is 171.6 rps. The system at 204 rps is working harder than ever and delivering essentially nothing",
+      "Because a single measurement of peak throughput is always within noise of the true value and needs more trials",
+      "Because 204 rps was measured with an open-loop generator, and open-loop generators systematically overstate throughput"
+    ],
+    "correct": 1,
+    "explanation": "Throughput counts every response produced; goodput counts only the ones that were correct and on time. Under normal load they are identical, and under overload they diverge violently. In the lesson's run, going from the knee to 400 rps offered raised throughput 19% (171.6 to 204.0) while goodput fell 98% (171.6 to 2.6). A system that 'handles 10,000 rps' while timing out on all of them handles zero. The second tell is that achieved rate fell to 51% of offered — that divergence is the definition of saturation."
+  },
+  {
+    "stage": "post",
+    "question": "You want to fix coordinated omission in a closed-loop run you already have. HdrHistogram's `recordValueWithExpectedInterval` back-fills a 2-second sample into synthetic samples at 1.9 s, 1.8 s, and so on. Why is that legitimate rather than fabricating data?",
+    "options": [
+      "It is not legitimate — it inflates the tail artificially, which is why the correction is off by default in every tool that implements it",
+      "Because latency distributions are known to be exponential, so interpolating extra samples from a fitted distribution is statistically sound",
+      "Because the requests were genuinely owed by the schedule and genuinely would have waited. The correction re-creates the ARRIVALS the generator failed to produce and assigns each the wait it would have experienced given when it was due — it does not invent latency. In the lesson's run it recovered the open-loop p99 to 91.9% (1,401 ms vs 1,525 ms) with 12,001 samples against the open loop's 12,000",
+      "Because HdrHistogram stores values at 3 significant figures, so the synthetic samples fall inside existing buckets and cannot change the percentiles"
+    ],
+    "correct": 2,
+    "explanation": "The test declared an intended rate, which declares an intended arrival schedule. Every slot in that schedule the generator failed to fill is a request a real user would have made, and its latency is determined by when it was due and when the server recovered. The correction reconstructs those arrivals, which is why the corrected sample count lands on the intended 12,000 rather than exceeding it. The residual 8% error is honest and predictable: the closed loop can only back-fill at its own 100 ms cycle granularity, while the open loop actually sampled every 5 ms. Correcting is better than not correcting, and much worse than measuring open-loop in the first place."
+  },
+  {
+    "stage": "post",
+    "question": "Your load test at 3,000,000 rps intended shows achieved 1,791,389 rps (59.7%), median client-side scheduling lag 69 ms, and p99 latency climbing steeply. Server CPU is at 30%. What do you conclude?",
+    "options": [
+      "The server is saturated at about 1.8M rps; its p99 rises past that point, and 30% CPU means the bottleneck is I/O rather than compute",
+      "The generator is the bottleneck, not the server. It could not keep up, fell behind by a median of 69 ms, and — critically — a generator that is behind stops sending, producing coordinated omission of its own on a perfectly healthy server. The run is invalid: discard it, add generator processes or machines, and re-measure",
+      "The result is valid but should be scaled up by 1/0.597 to estimate what the server would have done at the full 3M rps",
+      "Nothing is wrong — 59.7% of a 3M rps target is still 1.8M rps achieved, which is the number to report as capacity"
+    ],
+    "correct": 1,
+    "explanation": "Verify the instrument before the subject. The three signals of a saturated generator are: achieved rate below intended, generator CPU pinned, and rising client-side scheduling lag while server-side metrics look calm. The lesson's harness achieved 100.0% of intended up to 1,000,000 rps with a 0.0001 ms median lag and only collapsed at 3,000,000 — without printing that table you would have read this as server degradation. Scaling the result is not valid either, because the omitted requests were not a random sample: they were exactly the ones due while the client was behind."
+  }
+]

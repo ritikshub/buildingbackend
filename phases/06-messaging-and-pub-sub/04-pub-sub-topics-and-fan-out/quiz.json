@@ -1,0 +1,74 @@
+[
+  {
+    "stage": "pre",
+    "question": "Five services (shipping, email, analytics, search, fraud) each need to react to every OrderPlaced event. Your existing broker gives you a queue, where each message is leased to exactly one consumer. Why is attaching all five services as consumers of that one queue wrong?",
+    "options": [
+      "It works, but throughput is limited because the five services process at different speeds and the slowest one sets the pace for the whole queue.",
+      "Each message is delivered to exactly one of the five, chosen essentially arbitrarily, so four of the five services never learn the order exists. The queue's 'exactly one consumer' guarantee is the bug, not a tuning problem.",
+      "It works only if all five services acknowledge the message; if any one of them fails to ack, the message is redelivered to all five and every service processes it twice.",
+      "The queue would deliver each message five times, once per consumer, which triples storage cost and requires every service to be idempotent."
+    ],
+    "correct": 1,
+    "explanation": "A queue is competing consumers over one message set: a message that goes to one consumer does not go to any other. With five services on one queue, each OrderPlaced reaches exactly one of them at random and the other four never see it. This is not a performance or ack problem - it is the wrong primitive. A topic delivers every message to every subscription independently, which is what 'who needs to know?' requires. Adding consumers to a queue divides work; adding subscriptions to a topic multiplies audience."
+  },
+  {
+    "stage": "check",
+    "question": "To avoid five separate queues, an engineer proposes one queue consumed by a 'dispatcher' service that forwards each message to the five real consumers. The dispatcher successfully forwards to shipping, email and analytics, then fails to reach search and fraud. What must it do with its single acknowledgement, and what does that reveal?",
+    "options": [
+      "Ack, then write the two failures to a retry table. This is correct and is exactly how a broker implements fan-out internally, so the dispatcher is a reasonable design.",
+      "Nack, because at-least-once delivery means duplicates are always safe. The three services that already received the message will deduplicate it using the message id, so nothing is lost or double-processed.",
+      "It must either ack (search and fraud permanently lose the event) or nack (shipping, email and analytics receive it twice). There is no third option, because one ack bit cannot represent five independent outcomes - which is why delivery state must be per-recipient.",
+      "Ack only after all five succeed, holding the message in memory and retrying the two failures until they recover. This is safe as long as the dispatcher's lease is long enough."
+    ],
+    "correct": 2,
+    "explanation": "The dispatcher holds a single acknowledgement for five independent outcomes, and no amount of cleverness recovers the information it collapsed. Acking loses two deliveries; nacking redelivers to three that already succeeded. Option 4 fails too: holding the message means the dispatcher is now a stateful, single-point-of-failure buffer, and a crash loses everything in flight. The lesson's conclusion is that delivery state must be tracked per recipient, which is exactly what a subscription is - the measured run shows three subscriptions each independently reaching acked 24, unique 24, dup 0."
+  },
+  {
+    "stage": "check",
+    "question": "You migrate a service from RabbitMQ to NATS, translating the binding key 'order.#' to the subject filter 'order.>'. Most traffic routes correctly, but one class of message silently stops arriving. What is the most likely cause?",
+    "options": [
+      "NATS subjects are case-insensitive while AMQP routing keys are case-sensitive, so subjects differing only in case now collide and are routed to the wrong subscription.",
+      "AMQP's '#' matches zero or more words, so 'order.#' matched the bare subject 'order'. NATS's '>' matches one or more tokens, so 'order.>' does not match 'order' - messages published to the bare root subject are no longer routed.",
+      "NATS's '>' may only appear as the final token, so the pattern is rejected at subscribe time and the subscription was never created at all.",
+      "NATS uses '/' rather than '.' as its subject separator, so the translated pattern never matches any multi-segment subject."
+    ],
+    "correct": 1,
+    "explanation": "The multi-segment wildcards look interchangeable and are not. The AMQP 0-9-1 spec defines '#' as zero or more words, so 'order.#' matches 'order' itself; NATS defines '>' as one or more tokens, so 'order.>' does not. The measured matcher shows exactly this pair of rows. Option 3 describes a real NATS rule ('>' must be terminal) but 'order.>' already satisfies it - and note that a broker validating this at subscribe time turns a silent routing hole into a loud error, which is always preferable. Option 4 describes MQTT's separator, not NATS's."
+  },
+  {
+    "stage": "check",
+    "question": "A live-dashboard subscription uses ephemeral (fire-and-forget) delivery. Its backlog graph has read a flat zero for six months and the team treats this as evidence of health. In the measured run, an ephemeral subscription lost 31 of 60 messages across a 300 ms outage. What did its backlog metric show, and what follows?",
+    "options": [
+      "The backlog spiked to 31 during the outage and then dropped to zero when the subscriber reconnected and discarded the retained messages, so backlog is a valid but lagging signal.",
+      "The backlog read zero at every sample, because an ephemeral subscription never retains anything to count. The metric is identical whether the subscription is perfectly healthy or dropping every message, so it cannot detect this failure at all.",
+      "The backlog was negative during the outage, an underflow the broker reports when messages are dropped, which is the signal to alert on.",
+      "The backlog read zero, but the subscription's redelivery counter incremented once per dropped message, so the redelivery metric is the correct alarm."
+    ],
+    "correct": 1,
+    "explanation": "This is the most dangerous property of ephemeral pub/sub. Its measured backlog column reads 0 at every single sample - not because it kept up, but because there was never anything there to count. Health and total loss look identical on the graph you would naturally build. Ephemeral subscriptions have no redelivery either (there is no lease and no retained state), so option 4 is wrong. You must alarm on delivery-side evidence instead - Redis's PUBLISH return value, which reports how many clients actually received the message, is the only signal available. If the message drives state rather than a display, make it durable."
+  },
+  {
+    "stage": "post",
+    "question": "Two subscriptions currently filter at the consumer. Subscription A matches 7.5% of what it receives; subscription B matches 99.9%. You can move exactly one to broker-side filtering. Which, and what is the reasoning?",
+    "options": [
+      "B, because a filter matching 99.9% is nearly free for the broker to evaluate, so you get the CPU savings at almost no cost on the broker's hot path.",
+      "Neither - broker-side filtering always costs more broker CPU than it saves elsewhere, which is why brokers should be treated as opaque pipes and all filtering done at consumers.",
+      "A, because 92.5% of everything it receives is waste in bandwidth, consumer CPU and per-subscription storage. B already discards almost nothing, so moving its filter adds load to the broker - the least horizontally scalable component - and saves essentially nothing.",
+      "A, because broker-side filters can read the message payload while consumer-side filters cannot, so moving A gives it access to fields it currently cannot filter on."
+    ],
+    "correct": 2,
+    "explanation": "Selectivity is the deciding number. At 7.5% selectivity, 92.5% of A's traffic is pure waste multiplied by message size and rate, every second - the measured run shows exactly this for vip-concierge. At 99.9%, B discards almost nothing, so moving its filter buys you nothing while adding evaluations to the broker's hot path. Overall the run measured broker-side filtering at 2.50x amplification versus 4.56x consumer-side, saving 45.2% of delivered bytes. Option 4 inverts reality: broker-side filters should read only the envelope, never the payload, precisely so the broker need not deserialize bodies - the run reports 0 payload bytes read across 600 filter evaluations."
+  },
+  {
+    "stage": "post",
+    "question": "A topic carries 5,000 msg/s of 1 KB messages across six durable subscriptions. One subscriber's consumer has been down since Friday evening and it is now Sunday. Which statement best captures the risk, and the control that prevents it?",
+    "options": [
+      "The stuck subscription is holding roughly 864 GB of backlog on the broker's shared disk. When that disk fills, the broker stops accepting publishes and every producer and every subscription goes down - so one team's bad deploy takes out the whole broker. The control is a per-subscription retention bound plus an alarm on age of oldest unacked message.",
+      "There is no risk: durable subscriptions are independent, so the other five continue unaffected and the stuck one simply catches up when its consumer returns. Independence is what durability guarantees.",
+      "The risk is ordering - the stuck subscription will process weekend messages after the other five have processed Monday's, so the system's global event order is now permanently inconsistent and must be repaired by replay.",
+      "The broker will automatically evict the oldest messages once the subscription exceeds its fair share of disk, so the only real risk is silent data loss in that one subscription."
+    ],
+    "correct": 0,
+    "explanation": "5,000 x 3,600 x 48 hours x 1 KB is roughly 864 GB of retained backlog. Backlogs live on the broker's shared disk, so the blast radius of a single stuck subscriber is the entire broker - every producer and every other subscription. Option 2 is the trap: subscriptions are independent in delivery state (the measured run shows warehouse at peak backlog 2 while analytics reached 34 and lost nothing), but they are not independent in shared storage. Option 3 misreads ordering - there is no global order across subscriptions to violate, only a partial order. Option 4 assumes an eviction policy that is not the default anywhere; you must configure retention explicitly, and alarm per subscription rather than in aggregate, since total backlog looks fine when five are at zero."
+  }
+]
