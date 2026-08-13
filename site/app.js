@@ -12,7 +12,6 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     initThemeToggle();
-    populateStats();
     renderPhases();
     initStaggerIndex();
     initModal();
@@ -40,67 +39,6 @@
       updateThemeIcon();
     });
     updateThemeIcon();
-  }
-
-  function computeStats() {
-    var totalLessons = 0;
-    var completeLessons = 0;
-    var hasProgress = !!window.BEProgress;
-    for (var i = 0; i < PHASES.length; i++) {
-      var lessons = PHASES[i].lessons;
-      totalLessons += lessons.length;
-      for (var j = 0; j < lessons.length; j++) {
-        var staticDone = lessons[j].status === 'complete';
-        var userDone = false;
-        if (hasProgress && lessons[j].url) {
-          var lp = window.BEProgress.extractPath(lessons[j].url);
-          if (lp) userDone = window.BEProgress.isLessonComplete(lp);
-        }
-        if (staticDone || userDone) completeLessons++;
-      }
-    }
-    var completePhases = 0;
-    for (var p = 0; p < PHASES.length; p++) {
-      if (PHASES[p].status === 'complete') completePhases++;
-    }
-    return {
-      lessons: totalLessons,
-      phases: PHASES.length,
-      complete: completeLessons,
-      completePhases: completePhases
-    };
-  }
-
-  function setBar(selector, pct) {
-    var el = document.querySelector(selector);
-    if (!el) return;
-    var clamped = Math.max(0, Math.min(100, pct));
-    el.setAttribute('data-target-pct', clamped.toFixed(1));
-    if (el.classList.contains('in-view') || !window.IntersectionObserver) {
-      el.style.setProperty('--bar-pct', clamped.toFixed(1) + '%');
-    } else {
-      el.style.setProperty('--bar-pct', '0%');
-    }
-  }
-
-  function populateStats() {
-    var stats = computeStats();
-    var pct = stats.lessons > 0 ? (stats.complete / stats.lessons) * 100 : 0;
-    var phasePct = stats.phases > 0 ? (stats.completePhases / stats.phases) * 100 : 0;
-    var glossaryCount = (typeof GLOSSARY !== 'undefined') ? GLOSSARY.length : 0;
-
-    setText('[data-stat="complete-frac"]', stats.complete + ' / ' + stats.lessons);
-    setText('[data-stat="phases-frac"]', stats.completePhases + ' / ' + stats.phases);
-    setText('[data-stat="glossary-count"]', String(glossaryCount));
-    setBar('[data-bar="complete"]', pct);
-    setBar('[data-bar="phases"]', phasePct);
-    setBar('[data-bar="languages"]', 100);
-    setBar('[data-bar="glossary"]', glossaryCount > 0 ? 100 : 0);
-  }
-
-  function setText(selector, value) {
-    var el = document.querySelector(selector);
-    if (el) el.textContent = value;
   }
 
   function renderPhases() {
@@ -195,7 +133,7 @@
     if (resetBtn) {
       resetBtn.addEventListener('click', function () {
         if (!window.BEProgress) return;
-        var ok = window.confirm('Clear all your local progress (quiz answers and completed lessons)? This cannot be undone.');
+        var ok = window.confirm('Clear all your local progress (every lesson you have marked complete)? This cannot be undone.');
         if (!ok) return;
         window.BEProgress.reset();
       });
@@ -265,7 +203,13 @@
         html += '<span class="modal-lesson-main">' + body + '</span>';
       }
       if (hasProgress && lessonPath) {
-        html += '<button type="button" class="modal-lesson-toggle' + (userComplete ? ' done' : '') + '" data-path="' + lessonPath + '" title="' + (userComplete ? 'Mark as not done' : 'Mark complete') + '" aria-label="' + (userComplete ? 'Mark as not done' : 'Mark complete') + '">' + (userComplete ? '✓' : '') + '</button>';
+        html += '<button type="button" class="modal-lesson-toggle' + (userComplete ? ' done' : '') +
+                '" data-path="' + lessonPath +
+                '" aria-pressed="' + (userComplete ? 'true' : 'false') +
+                '" title="' + (userComplete ? 'Mark as not done' : 'Mark done') + '">' +
+                '<span class="mark-box" aria-hidden="true">' + (userComplete ? '✓' : '') + '</span>' +
+                '<span class="mark-text">' + (userComplete ? 'Done' : 'Mark done') + '</span>' +
+                '</button>';
       } else {
         html += '<span class="modal-lesson-toggle-placeholder" aria-hidden="true"></span>';
       }
@@ -323,7 +267,6 @@
       if (currentPhaseIdx >= 0 && PHASES[currentPhaseIdx]) {
         renderModalLessons(PHASES[currentPhaseIdx]);
       }
-      populateStats();
       renderPhases();
     });
   }
@@ -364,28 +307,21 @@
     var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (!window.IntersectionObserver || prefersReduced) {
-      document.querySelectorAll('.reveal, .fade-in, .stat-row-bar').forEach(function (el) {
+      document.querySelectorAll('.reveal, .fade-in').forEach(function (el) {
         el.classList.add('in-view', 'visible');
-        var target = el.getAttribute('data-target-pct');
-        if (target !== null) el.style.setProperty('--bar-pct', target + '%');
       });
       return;
     }
 
     document.body.classList.add('js-anim');
 
-    var els = document.querySelectorAll('.reveal, .fade-in, .stat-row-bar, .ascii-rule, .toc-row');
+    var els = document.querySelectorAll('.reveal, .fade-in, .ascii-rule, .toc-row');
     if (!els.length) return;
     var observer = new IntersectionObserver(function (entries) {
       for (var i = 0; i < entries.length; i++) {
         if (entries[i].isIntersecting) {
-          var el = entries[i].target;
-          el.classList.add('in-view', 'visible');
-          var target = el.getAttribute('data-target-pct');
-          if (target !== null) {
-            el.style.setProperty('--bar-pct', target + '%');
-          }
-          observer.unobserve(el);
+          entries[i].target.classList.add('in-view', 'visible');
+          observer.unobserve(entries[i].target);
         }
       }
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });

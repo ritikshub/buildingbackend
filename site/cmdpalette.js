@@ -1,8 +1,8 @@
 /**
- * Command palette: global search triggered by Cmd/Ctrl+K or the search button.
+ * Command palette: global search triggered by Cmd/Ctrl+K.
  *
- * Searches lesson titles, summaries, phase names, languages, types, and
- * glossary terms entirely client-side from the data already loaded in data.js.
+ * Searches lesson titles, summaries, phase names, languages, and types
+ * entirely client-side from the data already loaded in data.js.
  * No network requests. No external dependencies.
  *
  * API (attached to window.CmdPalette):
@@ -39,7 +39,7 @@
   }
 
   /**
-   * Build the flat search index once from window.PHASES and window.GLOSSARY.
+   * Build the flat search index once from window.PHASES and window.ARTIFACTS.
    * Idempotent: subsequent calls return the cached array.
    */
   function buildIndex() {
@@ -77,19 +77,6 @@
       }
     }
 
-    if (typeof GLOSSARY !== 'undefined' && Array.isArray(GLOSSARY)) {
-      for (var k = 0; k < GLOSSARY.length; k++) {
-        var g = GLOSSARY[k];
-        _index.push({
-          kind:    'glossary',
-          id:      'g:' + k,
-          name:    g.term  || '',
-          summary: stripMd(g.means),
-          says:    stripMd(g.says),
-        });
-      }
-    }
-
     if (typeof ARTIFACTS !== 'undefined' && Array.isArray(ARTIFACTS)) {
       for (var a = 0; a < ARTIFACTS.length; a++) {
         var art = ARTIFACTS[a];
@@ -120,7 +107,6 @@
     var phase    = (item.phaseName || '').toLowerCase();
     var lang     = (item.lang  || '').toLowerCase();
     var type     = (item.type  || '').toLowerCase();
-    var says     = (item.says  || '').toLowerCase();
 
     var s = 0;
 
@@ -148,7 +134,6 @@
     // Supporting fields, ordered by expected relevance
     if (summary.indexOf(q)  !== -1) s += 25;
     if (keywords.indexOf(q) !== -1) s += 22; // H3 headings: dense vocabulary
-    if (says.indexOf(q)     !== -1) s += 22; // glossary "what people say"
     if (phase.indexOf(q)    !== -1) s += 18;
     if (lang.indexOf(q)     !== -1) s += 14;
     if (type.indexOf(q)     !== -1) s += 10;
@@ -239,15 +224,10 @@
         ? 'lesson.html?path=' + encodeURIComponent(item.lessonPath)
         : item.url;
     }
-    if (item.kind === 'artifact') {
-      // Jump to the lesson that produced this artifact
-      return item.lessonPath
-        ? 'lesson.html?path=' + encodeURIComponent(item.lessonPath)
-        : ('https://github.com/ritikshub/buildingbackend/tree/main/' + item.file);
-    }
-    // Deep-link: pre-populate glossary search with the exact term name
-    // so the user lands directly on the definition, not the full list.
-    return 'jargon.html?q=' + encodeURIComponent(item.name);
+    // Artifacts: jump to the lesson that produced this one, else to source.
+    return item.lessonPath
+      ? 'lesson.html?path=' + encodeURIComponent(item.lessonPath)
+      : ('https://github.com/ritikshub/buildingbackend/tree/main/' + item.file);
   }
 
   // ── Palette DOM (created lazily on first open) ────────────────────────
@@ -265,7 +245,7 @@
     el.id = PALETTE_ID;
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-modal', 'true');
-    el.setAttribute('aria-label', 'Search lessons and jargon');
+    el.setAttribute('aria-label', 'Search lessons and outputs');
 
     el.innerHTML =
       '<div class="cp-backdrop" id="cpBackdrop"></div>' +
@@ -278,7 +258,7 @@
             '<line x1="21" y1="21" x2="16.65" y2="16.65"/>' +
           '</svg>' +
           '<input class="cp-input" id="cpInput" type="search"' +
-          ' placeholder="Search lessons and jargon…"' +
+          ' placeholder="Search lessons and outputs…"' +
           ' autocomplete="off" autocorrect="off"' +
           ' autocapitalize="off" spellcheck="false"' +
           ' aria-label="Search" aria-autocomplete="list"' +
@@ -379,16 +359,14 @@
     if (!query) {
       // Counts come from the live index so they can never drift from data.js.
       var idx = buildIndex();
-      var nLessons = 0, nArtifacts = 0, nTerms = 0;
+      var nLessons = 0, nArtifacts = 0;
       for (var c = 0; c < idx.length; c++) {
         if (idx[c].kind === 'lesson') nLessons++;
-        else if (idx[c].kind === 'glossary') nTerms++;
         else nArtifacts++;
       }
       list.innerHTML =
         '<li class="cp-empty" role="option" aria-disabled="true">' +
-        'Type to search ' + nLessons + ' lessons, ' + nArtifacts +
-        ' outputs, and ' + nTerms + ' jargon terms' +
+        'Type to search ' + nLessons + ' lessons and ' + nArtifacts + ' outputs' +
         '</li>';
       _activeIdx = -1;
       return;

@@ -1,37 +1,52 @@
 :root {
-  --font-display: 'VT323', ui-monospace, 'JetBrains Mono', monospace;
+  --font-display: 'Playfair Display', 'Iowan Old Style', Georgia, serif;
   --font-body: 'Source Serif 4', 'Source Serif Pro', 'Iowan Old Style', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'Consolas', monospace;
   --font-heading: var(--font-display);
 
-  --bg: #fafaf5;
-  --bg-surface: #f3f1e8;
-  --bg-surface-hover: #ece9dc;
-  --ink: #1a1a1a;
-  --ink-soft: #4a4a4a;
-  --ink-mute: #7a7a78;
-  --rule: #1a1a1a;
-  --rule-soft: rgba(26, 26, 26, 0.16);
-  --paper-rule: rgba(26, 26, 26, 0.08);
+  /* ── Paper ──────────────────────────────────────────────────────────
+     Sampled off the YC Paper Club poster: #e9e4d6 is its lit newsprint,
+     and --ink is #1e1817, the warm near-black of its display type — not a
+     true black, which is why the page reads soft rather than stark. The
+     surfaces step down in the same warm hue so panels sit in the sheet
+     instead of on it. */
+  --bg: #e9e4d6;
+  --bg-surface: #e3ded0;
+  --bg-surface-hover: #dcd6c6;
+  --ink: #1e1817;
+  --ink-soft: #4a4340;
+  --ink-mute: #7d746c;
+  --rule: #1e1817;
+  --rule-soft: rgba(30, 24, 23, 0.18);
+  --paper-rule: rgba(30, 24, 23, 0.09);
 
-  /* Sunset. Two tones, because one orange cannot do both jobs on cream paper:
-     --ember is deep enough to pass 4.5:1 as body-size text and as link colour
-     on every surface; --ember-bright is the vivid sunset that only ever runs
-     at display size (the masthead), where the 3:1 large-text bar applies. */
-  --ember: #b53707;
-  --ember-bright: #e2571f;
-  --ember-tint: rgba(181, 55, 7, 0.08);
-  --ember-tint-strong: rgba(181, 55, 7, 0.18);
+  /* The poster carries two oranges, and they map exactly onto the two jobs
+     an accent has to do here.
 
-  --status-complete: #b53707;
-  --status-in-progress: #4a4a4a;
-  --status-planned: #b8b6ad;
-  --warn: #b8870f;
+     --ember-bright is #e1652c, the colour of the printed dots. It measures
+     2.71:1 on this paper, so it is decorative only: bullets, dots, rules,
+     progress fills — marks, never words. That is precisely how the poster
+     uses it.
 
-  --code-bg: #efece0;
-  --modal-bg: #fafaf5;
-  --overlay-bg: rgba(26, 26, 26, 0.55);
-  --header-bg: rgba(250, 250, 245, 0.94);
+     --ember is the text-level accent — links, inline code, labels — so it
+     needs 4.5:1. The poster's rust block (#ab481f) is the right hue but
+     lands at 4.49 on this paper and 4.01 on the code panel, just under.
+     Held at that hue and taken two steps down, it clears everywhere:
+     5.04 on --bg, 4.77 on --bg-surface, 4.50 on --code-bg. */
+  --ember: #a33f15;
+  --ember-bright: #e1652c;
+  --ember-tint: rgba(225, 101, 44, 0.12);
+  --ember-tint-strong: rgba(225, 101, 44, 0.22);
+
+  --status-complete: #a33f15;
+  --status-in-progress: #4a4340;
+  --status-planned: #b3ab9b;
+  --warn: #a07208;
+
+  --code-bg: #ded8c8;
+  --modal-bg: #e9e4d6;
+  --overlay-bg: rgba(30, 24, 23, 0.55);
+  --header-bg: rgba(233, 228, 214, 0.94);
 
   --header-offset: 92px;
 
@@ -39,7 +54,7 @@
   --text-muted: var(--ink-soft);
   --border: var(--rule-soft);
   --accent: var(--ember);
-  --accent-hover: #8f2c05;
+  --accent-hover: #86330f;
   --secondary: var(--ember);
   --complete: var(--status-complete);
   --planned: var(--status-planned);
@@ -49,37 +64,40 @@
   --dot-color: var(--paper-rule);
 }
 
-/* The dark theme used to be navy (#0a0d1a / #131830), which was the other
-   half of "blue everywhere" — the surfaces themselves were blue, not just the
-   accent. These neutrals are tinted toward the ember hue instead, so the
-   accent sits on ground that agrees with it: dusk, not midnight. */
+/* The paper photographed at night. Same warm hue family, inverted: the ink
+   becomes the ground and the sheet becomes the light. On a dark ground the
+   accent has room it does not have on paper, so the dot orange steps up to
+   carry text too — 5.9:1 here, against 2.71 in the light theme. */
 [data-theme="dark"] {
-  --bg: #14100c;
-  --bg-surface: #1e1811;
-  --bg-surface-hover: #2a2118;
-  --ink: #e8e6dc;
-  --ink-soft: #a8a29a;
-  --ink-mute: #7d766c;
-  --rule: #e8e6dc;
-  --rule-soft: rgba(232, 230, 220, 0.18);
-  --paper-rule: rgba(232, 230, 220, 0.08);
+  --bg: #1a1613;
+  --bg-surface: #241f1a;
+  --bg-surface-hover: #2f2820;
+  --ink: #ece7da;
+  --ink-soft: #b0a89a;
+  --ink-mute: #837a6e;
+  --rule: #ece7da;
+  --rule-soft: rgba(236, 231, 218, 0.18);
+  --paper-rule: rgba(236, 231, 218, 0.08);
 
-  --ember: #ff8c42;
-  --ember-bright: #ff7a35;
-  --ember-tint: rgba(255, 140, 66, 0.12);
-  --ember-tint-strong: rgba(255, 140, 66, 0.22);
+  --ember: #f0854b;
+  --ember-bright: #e1652c;
+  --ember-tint: rgba(225, 101, 44, 0.14);
+  --ember-tint-strong: rgba(225, 101, 44, 0.24);
 
-  --status-complete: #ff8c42;
-  --status-in-progress: #c8c6c0;
-  --status-planned: #4a423a;
-  --warn: #e0a93c;
+  --status-complete: #f0854b;
+  --status-in-progress: #b0a89a;
+  --status-planned: #4c453b;
+  --warn: #dfae3c;
 
-  --code-bg: #1e1811;
-  --modal-bg: #191410;
-  --overlay-bg: rgba(20, 16, 12, 0.78);
-  --header-bg: rgba(20, 16, 12, 0.94);
+  --code-bg: #241f1a;
+  --modal-bg: #201b16;
+  --overlay-bg: rgba(26, 22, 19, 0.78);
+  --header-bg: rgba(26, 22, 19, 0.94);
 
-  --accent-hover: #ffa869;
+  --accent-hover: #f7a273;
+  --shadow-color: var(--ink);
+  --shadow-hard: 3px 3px 0 var(--ink);
+  --shadow-hard-lg: 5px 5px 0 var(--ink);
 }
 
 *,
@@ -141,14 +159,26 @@ body {
   padding: 0 32px;
 }
 
+/* Playfair is a high-contrast display serif, so it wants the opposite metrics
+   to the pixel font it replaced: weight 700 (its 400 is far too fine at these
+   sizes), leading just over 1, and tracking pulled slightly negative. It is
+   set in mixed case — the uppercase-with-added-tracking treatment belongs to
+   the mono labels, and it flattens exactly the thick/thin contrast that makes
+   this face worth using. */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-transform: none;
   color: var(--ember);
 }
+
+/* Headings are set in the warm near-black, the way the poster sets its own
+   display type. The orange stays on the marks around the type rather than in
+   it — which is both the poster's logic and the only readable option, since
+   the dot orange is 2.71:1 on this paper. */
+h1, h2 { color: var(--ink); }
 
 h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); }
 h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
@@ -260,9 +290,9 @@ p.dropcap::first-letter {
 
 .logo {
   font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
   font-size: 1.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   color: var(--ink);
   border-bottom: none;
   display: flex;
@@ -279,7 +309,7 @@ p.dropcap::first-letter {
   display: inline-block;
   width: 12px;
   height: 12px;
-  background: var(--ember);
+  background: var(--ember-bright);
 }
 
 .header-nav {
@@ -442,9 +472,11 @@ p.dropcap::first-letter {
 
 .section-title {
   font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   text-align: left;
-  text-transform: uppercase;
   color: var(--ember);
   margin-bottom: 8px;
 }
@@ -530,9 +562,9 @@ p.dropcap::first-letter {
 
 .modal-title {
   font-family: var(--font-display);
+  font-weight: 700;
   font-size: 1.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.01em;
   color: var(--ink);
   margin: 0 0 8px;
 }
@@ -582,7 +614,7 @@ p.dropcap::first-letter {
 
 .modal-progress-bar-fill {
   height: 100%;
-  background: var(--ember);
+  background: var(--ember-bright);
   transition: width 0.4s ease;
   width: 0%;
 }
@@ -728,27 +760,45 @@ a.modal-lesson-main:hover .modal-lesson-name {
   font-style: italic;
 }
 
+/* A bare 22px square asked the reader to work out what it meant. Saying so
+   costs one word of space and removes the guess entirely. */
 .modal-lesson-toggle {
-  width: 22px;
-  height: 22px;
-  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 118px;
+  padding: 8px 12px;
   border: 1px solid var(--rule-soft);
   background: transparent;
-  color: var(--ember);
+  color: var(--ink-soft);
   font-family: var(--font-mono);
-  font-size: 0.86rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   line-height: 1;
+  white-space: nowrap;
   cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.modal-lesson-toggle .mark-box {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border: 1px solid currentColor;
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .modal-lesson-toggle:hover {
   border-color: var(--ember);
   background: var(--ember-tint);
+  color: var(--ember);
 }
 
 .modal-lesson-toggle.done {
@@ -757,10 +807,10 @@ a.modal-lesson-main:hover .modal-lesson-name {
   color: var(--ember);
 }
 
-/* Keeps the checkbox column aligned on rows that have no progress toggle. */
+/* Keeps the button column aligned on rows that have no progress toggle. */
 .modal-lesson-toggle-placeholder {
   display: inline-block;
-  width: 22px;
+  width: 118px;
   height: 1px;
 }
 
@@ -896,7 +946,6 @@ body.js-anim .toc-row.in-view {
   .reveal,
   .ascii-rule,
   .toc-row,
-  .stat-row-bar::before,
   .manual-title {
     transition: none !important;
     animation: none !important;
@@ -1030,28 +1079,8 @@ body.js-anim .toc-row.in-view {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   Command Palette  —  global search  (Cmd/Ctrl+K or search button)
+   Command Palette  —  global search  (Cmd/Ctrl+K)
    ═══════════════════════════════════════════════════════════════════════ */
-
-/* ── Search trigger button in the header ─────────────────────────────── */
-.search-toggle {
-  background: transparent;
-  border: 1px solid var(--rule-soft);
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink-soft);
-  transition: border-color 0.15s, color 0.15s;
-  flex-shrink: 0;
-}
-
-.search-toggle:hover {
-  border-color: var(--ember);
-  color: var(--ember);
-}
 
 /* ── Palette overlay wrapper ─────────────────────────────────────────── */
 #cmdPalette {
@@ -1364,11 +1393,6 @@ body[data-palette-open] {
     border-right: none;
     border-top: 2px solid var(--ink);
     box-shadow: none;
-  }
-
-  .search-toggle {
-    width: 32px;
-    height: 32px;
   }
 
   /* Keep only the "navigate" hint on small screens */

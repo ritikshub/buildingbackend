@@ -282,8 +282,8 @@ a region → tolerating the tail that fan-out creates → buying the right amoun
 capacity → automating that without oscillating → and a capstone that breaks all
 of it on purpose and ablates each defence to see what it was actually worth.
 
-> **Status: drafted, awaiting review.** Every lesson has prose, code that runs,
-> a quiz and an artifact, but the syllabus and content have not been reviewed yet.
+> **Status: drafted, awaiting review.** Every lesson has prose, code that runs
+> and an artifact, but the syllabus and content have not been reviewed yet.
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|

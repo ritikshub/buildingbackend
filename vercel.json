@@ -3,13 +3,7 @@
   "outputDirectory": "site",
   "framework": null,
   "installCommand": "echo skip",
-  "redirects": [
-    { "source": "/glossary", "destination": "/jargon", "permanent": true },
-    { "source": "/glossary.html", "destination": "/jargon.html", "permanent": true }
-  ],
   "rewrites": [
-    { "source": "/jargon", "destination": "/jargon.html" },
-    { "source": "/catalog", "destination": "/catalog.html" },
     { "source": "/path", "destination": "/prereqs.html" },
     { "source": "/roadmap", "destination": "/prereqs.html" },
     { "source": "/about", "destination": "/about.html" }
@@ -34,7 +28,7 @@
       ]
     },
     {
-      "source": "/(jargon|catalog|path|roadmap|about)",
+      "source": "/(path|roadmap|about)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800" }
       ]

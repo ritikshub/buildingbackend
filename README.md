@@ -14,7 +14,7 @@ Learn how backends actually work, starting from zero.<br>
 
 Free. Open source. MIT. No paywall, no signup, no gated content.
 
-[**Read it →**](https://buildingbackend.vercel.app) &nbsp;·&nbsp; [Catalog](https://buildingbackend.vercel.app/catalog) &nbsp;·&nbsp; [Roadmap](https://buildingbackend.vercel.app/roadmap) &nbsp;·&nbsp; [Jargon](https://buildingbackend.vercel.app/jargon)
+[**Read it →**](https://buildingbackend.vercel.app) &nbsp;·&nbsp; [Roadmap](https://buildingbackend.vercel.app/roadmap)
 
 </div>
 

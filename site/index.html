@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Building Backend</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23b53707' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23b53707'>BE</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
   <meta name="description" content="Building Backend is a free, open-source curriculum that builds every core backend primitive by hand. 164 lessons across 13 phases. Sockets, an HTTP server, a B-tree, a message queue, a cache, a container, an orchestrator. Once, by hand.">
   <link rel="canonical" href="https://buildingbackend.vercel.app/">
   <meta property="og:title" content="Building Backend">
@@ -18,8 +18,8 @@
   <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260813d">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260813m">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -39,12 +39,7 @@
         "url": "https://buildingbackend.vercel.app",
         "name": "Building Backend",
         "description": "A free, open-source curriculum that builds every core backend primitive by hand.",
-        "publisher": { "@id": "https://buildingbackend.vercel.app/#org" },
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": { "@type": "EntryPoint", "urlTemplate": "https://buildingbackend.vercel.app/catalog.html?q={search_term_string}" },
-          "query-input": "required name=search_term_string"
-        }
+        "publisher": { "@id": "https://buildingbackend.vercel.app/#org" }
       },
       {
         "@type": "Course",
@@ -66,9 +61,13 @@
   }
   </script>
   <style>
+    /* Title and search box only. The byline and its two buttons moved to the
+       sign-off at the foot of the page; with them went the ascii rule that
+       used to close the masthead, which had become a second line stacked on
+       top of this border. */
     .manual-masthead {
       padding-top: 96px;
-      padding-bottom: 24px;
+      padding-bottom: 44px;
       border-bottom: 1px solid var(--rule-soft);
     }
 
@@ -86,20 +85,24 @@
       color: var(--ink-mute);
     }
 
+    /* Sole occupant of the row now, so it needs pushing across itself —
+       space-between has nothing to space it against. */
     .manual-meta-row .right {
+      margin-left: auto;
       color: var(--ember);
     }
 
     .manual-title {
       display: block;
       font-family: var(--font-display);
+      font-weight: 700;
       font-size: clamp(3.2rem, 11vw, 8rem);
-      line-height: 0.86;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      /* Display size only: the vivid sunset tone clears the 3:1 large-text
-         bar here, where the deeper --ember would read as brown at this scale. */
-      color: var(--ember-bright);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      /* Black, like the poster's own "YC Paper Club" wordmark. The dot orange
+         is 2.71:1 on this paper — under even the 3:1 large-text bar — so the
+         orange stays on the marks and the type stays ink. */
+      color: var(--ink);
     }
 
     /* ── Topic finder ──────────────────────────────────────────────────
@@ -257,7 +260,16 @@
       .topicfind-input { font-size: 16px; } /* iOS zooms anything under 16px */
     }
 
-    .manual-attribution {
+    /* Sign-off, directly above the footer: byline, creed, and the two links
+       that ask something of the reader. Shares the colophon's grid so the
+       page ends on the same two-column rhythm it uses throughout. */
+    .signoff {
+      padding-top: 48px;
+      padding-bottom: 48px;
+      border-top: 1px solid var(--rule-soft);
+    }
+
+    .signoff-attribution {
       font-family: var(--font-body);
       font-size: 0.95rem;
       color: var(--ink-soft);
@@ -267,7 +279,7 @@
 
     /* The second line is a statement of intent, not attribution. Given a
        little more weight so it does not read as a footnote to the first. */
-    .manual-creed {
+    .signoff-creed {
       color: var(--ember);
       font-style: normal;
       font-family: var(--font-mono);
@@ -275,14 +287,14 @@
       letter-spacing: 0.04em;
     }
 
-    .masthead-cta {
+    .signoff-cta {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
       margin-top: 20px;
     }
 
-    .masthead-btn {
+    .signoff-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -297,24 +309,24 @@
       transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
 
-    .masthead-btn:hover,
-    .masthead-btn:focus-visible {
+    .signoff-btn:hover,
+    .signoff-btn:focus-visible {
       background: var(--ink);
       color: var(--bg);
     }
 
-    .masthead-btn--primary {
+    .signoff-btn--primary {
       border-color: var(--ember);
       color: var(--ember);
     }
 
-    .masthead-btn--primary:hover,
-    .masthead-btn--primary:focus-visible {
+    .signoff-btn--primary:hover,
+    .signoff-btn--primary:focus-visible {
       background: var(--ember);
       color: var(--bg);
     }
 
-    .masthead-btn-count {
+    .signoff-btn-count {
       padding-left: 8px;
       margin-left: 4px;
       border-left: 1px solid currentColor;
@@ -323,7 +335,7 @@
     }
 
     @media (max-width: 480px) {
-      .masthead-btn { font-size: 0.78rem; padding: 8px 12px; }
+      .signoff-btn { font-size: 0.78rem; padding: 8px 12px; }
     }
 
 
@@ -464,71 +476,6 @@
       .figure-demo { padding: 16px 0 0; }
     }
 
-    .stat-block {
-      padding-top: 32px;
-      padding-bottom: 40px;
-      border-bottom: 1px solid var(--rule-soft);
-    }
-
-    .stat-block-title {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--ember);
-      margin-bottom: 24px;
-    }
-
-    .stat-rows {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      max-width: 760px;
-      font-family: var(--font-mono);
-      font-size: 0.92rem;
-    }
-
-    .stat-row {
-      display: grid;
-      grid-template-columns: 200px minmax(0, 360px) 110px;
-      align-items: center;
-      gap: 16px;
-      padding: 4px 0;
-    }
-
-    .stat-row-label {
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ink-soft);
-    }
-
-    .stat-row-bar {
-      position: relative;
-      height: 14px;
-      background: var(--rule-soft);
-      overflow: hidden;
-      font-size: 0;
-      line-height: 0;
-      text-indent: -9999px;
-    }
-
-    .stat-row-bar::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      width: var(--bar-pct, 0%);
-      background: var(--ember);
-      transition: width 0.6s ease;
-    }
-
-    .stat-row-value {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-      color: var(--ink);
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-    }
-
     .toc {
       padding-top: 56px;
       padding-bottom: 80px;
@@ -580,13 +527,20 @@
       color: var(--ember);
     }
 
+    /* Not the display face. Playfair is a Didone — narrow, vertically stressed,
+       built to be seen at headline size in bold. Set at regular weight down
+       here it goes spindly and the letterforms read as stretched, which is
+       exactly wrong for the calmest, most-scanned list on the site. The body
+       serif has a wider set and a much larger x-height, so the same words sit
+       shorter and rounder, and using it means the page carries two families
+       instead of three: Playfair for the masthead, this for everything read. */
     .toc-name {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 1.24rem;
+      letter-spacing: 0;
       color: var(--ink);
-      line-height: 1.05;
+      line-height: 1.25;
     }
 
     .toc-leader {
@@ -607,18 +561,18 @@
     }
 
     .toc-status {
-      width: 12px;
-      height: 12px;
-      border: 1px solid var(--ink);
+      width: 9px;
+      height: 9px;
+      border: 1px solid var(--ink-mute);
       flex-shrink: 0;
-      margin-right: 6px;
+      margin-right: 8px;
       display: inline-block;
       vertical-align: middle;
     }
 
     .toc-status.complete {
-      background: var(--ember);
-      border-color: var(--ember);
+      background: var(--ember-bright);
+      border-color: var(--ember-bright);
     }
 
     .toc-status.in-progress {
@@ -707,15 +661,15 @@
     }
 
     @media (max-width: 900px) {
-      .manual-masthead { padding-top: 80px; padding-bottom: 16px; }
+      .manual-masthead { padding-top: 80px; padding-bottom: 30px; }
       .preface { padding-top: 32px; padding-bottom: 32px; }
-      .stat-block { padding-top: 32px; padding-bottom: 32px; }
       .toc { padding-top: 32px; padding-bottom: 40px; }
       .colophon { padding-top: 32px; padding-bottom: 32px; }
+      .signoff { padding-top: 32px; padding-bottom: 32px; }
 
       .manual-meta-row { margin-bottom: 20px; }
       .topicfind { margin: 20px 0 6px; }
-      .manual-attribution { font-size: 0.9rem; }
+      .signoff-attribution { font-size: 0.9rem; }
 
       .preface-grid,
       .colophon-grid {
@@ -738,13 +692,6 @@
         line-height: 1.65;
       }
 
-      .stat-rows { gap: 8px; }
-      .stat-row {
-        grid-template-columns: 160px minmax(0, 1fr) 92px;
-        gap: 12px;
-        font-size: 0.82rem;
-      }
-      .stat-block-title,
       .toc-title { margin-bottom: 16px; }
       .toc-subtitle { margin-bottom: 20px; }
 
@@ -773,18 +720,18 @@
     }
 
     @media (max-width: 480px) {
-      .manual-masthead { padding-top: 72px; padding-bottom: 12px; }
+      .manual-masthead { padding-top: 72px; padding-bottom: 24px; }
       .preface { padding-top: 24px; padding-bottom: 24px; }
-      .stat-block { padding-top: 24px; padding-bottom: 24px; }
       .toc { padding-top: 24px; padding-bottom: 32px; }
       .colophon { padding-top: 24px; padding-bottom: 24px; }
+      .signoff { padding-top: 24px; padding-bottom: 24px; }
 
       .manual-title {
-        /* "BUILDING BACKEND" is one line, ~6.7x the font size wide. A clamp()
+        /* "Building Backend" is one line, ~6.7x the font size wide. A clamp()
            floor would force it past the viewport on small phones, so scale
            purely with vw and only cap the top end. */
         font-size: min(11.5vw, 3.6rem);
-        line-height: 0.92;
+        line-height: 1.02;
       }
 
       .manual-meta-row {
@@ -803,7 +750,6 @@
       }
 
       .preface-eyebrow,
-      .stat-block-title,
       .toc-title,
       .colophon-eyebrow { font-size: 0.7rem; }
 
@@ -816,21 +762,6 @@
         margin-top: 20px;
         padding-left: 14px;
         font-size: 1rem;
-      }
-
-      .stat-row {
-        grid-template-columns: 1fr;
-        gap: 2px;
-        padding: 6px 0;
-      }
-
-      .stat-row-bar {
-        order: 3;
-      }
-
-      .stat-row-value {
-        order: 2;
-        text-align: left;
       }
 
       .toc-row {
@@ -894,19 +825,13 @@
   <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="logo">
-        <span class="logo-icon" aria-hidden="true"></span> BUILDING BACKEND
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
       </a>
       <nav class="header-nav">
         <a href="#contents" aria-current="page">Contents</a>
-        <a href="catalog.html">Catalog</a>
         <a href="prereqs.html">Roadmap</a>
-        <a href="jargon.html">Jargon</a>
         <a href="about.html">About</a>
       </nav>
-      <button class="search-toggle" type="button" data-cmd-palette
-        aria-label="Search (⌘K)" title="Search (⌘K)">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
         <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
       </button>
@@ -917,7 +842,6 @@
 
     <section class="manual-masthead container">
       <div class="manual-meta-row">
-        <span>FIG_000 &middot; curriculum v1.0 · 2026</span>
         <span class="right">open source · MIT</span>
       </div>
       <h1 class="manual-title">Building Backend</h1>
@@ -939,24 +863,11 @@
             aria-expanded="false"
             aria-controls="topicFindList"
             aria-autocomplete="list"
-            aria-label="Search lessons, outputs, and jargon">
+            aria-label="Search lessons and outputs">
           <button type="button" class="topicfind-clear" id="topicFindClear" aria-label="Clear search" hidden>&#10005;</button>
         </div>
         <ul class="topicfind-list" id="topicFindList" role="listbox" aria-label="Topics" hidden></ul>
       </div>
-      <p class="manual-attribution reveal" style="--stagger-delay: 80ms;">Maintained by @ritikshub. Free forever.<br><span class="manual-creed">Free education for all. Long live the revolution.</span></p>
-      <div class="masthead-cta reveal" style="--stagger-delay: 140ms;">
-        <a class="masthead-btn masthead-btn--primary" href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener" aria-label="Star buildingbackend on GitHub">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.896l-7.416 3.517 1.48-8.279L0 9.306l8.332-1.151z"/></svg>
-          <span>Star on GitHub</span>
-          <span class="masthead-btn-count" data-gh-stars="ritikshub/buildingbackend" data-loading="true">…</span>
-        </a>
-        <a class="masthead-btn" href="https://x.com/ritikshub" target="_blank" rel="me noopener" aria-label="Follow @ritikshub on X">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          <span>Follow @ritikshub</span>
-        </a>
-      </div>
-      <div class="ascii-rule" style="margin-top:48px;"></div>
     </section>
 
     <section class="preface container">
@@ -1063,35 +974,9 @@
     </section>
 
 
-    <section class="stat-block container">
-      <div class="stat-block-title reveal reveal--left">Current Progress</div>
-      <div class="stat-rows reveal" style="--stagger-delay: 100ms;" id="statRows">
-        <div class="stat-row">
-          <span class="stat-row-label">Finished Lessons</span>
-          <span class="stat-row-bar" data-bar="complete" style="--bar-pct:0%;" aria-hidden="true">bar</span>
-          <span class="stat-row-value" data-stat="complete-frac">0 / 0</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-row-label">Phases</span>
-          <span class="stat-row-bar" data-bar="phases" style="--bar-pct:0%;" aria-hidden="true">bar</span>
-          <span class="stat-row-value" data-stat="phases-frac">0 / 0</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-row-label">Languages</span>
-          <span class="stat-row-bar" data-bar="languages" style="--bar-pct:100%;" aria-hidden="true">bar</span>
-          <span class="stat-row-value">4</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-row-label">Glossary Terms</span>
-          <span class="stat-row-bar" data-bar="glossary" style="--bar-pct:100%;" aria-hidden="true">bar</span>
-          <span class="stat-row-value" data-stat="glossary-count">···</span>
-        </div>
-      </div>
-    </section>
-
     <section class="toc container" id="contents">
       <div class="toc-title reveal reveal--left">Curriculum · 13 phases · 164 lessons</div>
-      <div class="toc-subtitle reveal" style="--stagger-delay: 80ms;">Tap a phase to expand its lessons. Each one ships when its writeup, code, and quiz are all written.</div>
+      <div class="toc-subtitle reveal" style="--stagger-delay: 80ms;">Tap a phase to expand its lessons.</div>
       <div class="toc-list" id="phasesGrid"></div>
       <div class="legend">
         <span class="legend-item"><span class="toc-status complete"></span> Complete</span>
@@ -1133,6 +1018,31 @@
       </div>
     </section>
 
+    <!-- Sign-off. Who maintains it, what it stands for, and the two things a
+         reader can do about it. This used to sit under the masthead, where it
+         put a byline and two buttons between the title and the curriculum —
+         asking for a follow before the reader had seen anything worth
+         following. At the bottom it is the natural close of the page. -->
+    <section class="signoff container">
+      <div class="colophon-grid">
+        <div class="colophon-eyebrow reveal reveal--left">Maintainer</div>
+        <div class="reveal" style="--stagger-delay: 80ms;">
+          <p class="signoff-attribution">Maintained by @ritikshub. Free forever.<br><span class="signoff-creed">Free education for all. Long live the revolution.</span></p>
+          <div class="signoff-cta">
+            <a class="signoff-btn signoff-btn--primary" href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener" aria-label="Star buildingbackend on GitHub">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.896l-7.416 3.517 1.48-8.279L0 9.306l8.332-1.151z"/></svg>
+              <span>Star on GitHub</span>
+              <span class="signoff-btn-count" data-gh-stars="ritikshub/buildingbackend" data-loading="true">…</span>
+            </a>
+            <a class="signoff-btn" href="https://x.com/ritikshub" target="_blank" rel="me noopener" aria-label="Follow @ritikshub on X">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              <span>Follow @ritikshub</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="site-footer">
@@ -1141,18 +1051,16 @@
       <div class="footer-links">
         <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
         <a href="about.html">About</a>
-        <a href="catalog.html">Catalog</a>
-        <a href="jargon.html">Jargon</a>
         <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
       </div>
     </div>
   </footer>
 
-  <script src="data.js?v=20260813d"></script>
+  <script src="data.js?v=20260813m"></script>
   <script src="progress.js?v=20260813d"></script>
   <script src="header.js?v=20260813d" defer></script>
   <script src="cmdpalette.js?v=20260813d" defer></script>
-  <script src="app.js?v=20260813d"></script>
+  <script src="app.js?v=20260813m"></script>
   <script>
   /**
    * Homepage topic finder.
@@ -1269,12 +1177,9 @@
         var label = '', kind = '';
         if (r.kind === 'lesson') {
           label = chapterByPath[r.lessonPath] || String(r.phaseId);
-        } else if (r.kind === 'artifact') {
-          label = '—';
-          kind  = r.artKind || 'output';
         } else {
           label = '—';
-          kind  = 'jargon';
+          kind  = r.artKind || 'output';
         }
         rows.push({ href: href });
         html += itemHtml(label, r.name || '', query, kind);
@@ -1385,6 +1290,147 @@
     } else {
       init();
     }
+  }());
+
+  /**
+   * Self-typing placeholder for the topic finder.
+   *
+   * A static hint can only name two or three things before it runs out of
+   * room. Typing the tail out, holding it, then backing off cycles through
+   * the vocabulary the course actually covers, so the box advertises its
+   * range instead of describing it. "Search " never moves — the control has
+   * to read as a search box at every frame of the loop.
+   *
+   * It yields to the user at all times: focus, typed text, a hidden tab, the
+   * masthead scrolled off screen, or prefers-reduced-motion all stop it, and
+   * the hand-written placeholder is what stands in.
+   */
+  (function () {
+    'use strict';
+
+    var input = document.getElementById('topicFindInput');
+    if (!input) return;
+
+    var STATIC = input.getAttribute('placeholder') || '';
+    var PREFIX = 'Search ';
+    var CARET  = '▌';
+    var TOPICS = [
+      'any topic…',
+      'sockets',
+      'TCP vs UDP',
+      'B-trees',
+      'write-ahead logs',
+      'Redis',
+      'consensus',
+      'TLS handshakes',
+      'rate limiting',
+      'sharding'
+    ];
+
+    var TYPE_MS   = 55;    // per character out; jittered, since nobody types on a metronome
+    var ERASE_MS  = 28;    // per character back — deleting is always the faster half
+    var LEAD_MS   = 480;   // beat before the caret starts blinking on a finished word
+    var BLINK_MS  = 300;
+    var BLINKS    = 4;     // even count, so the caret is left showing
+    var GAP_MS    = 300;   // empty beat between words
+    var FIRST_MS  = 700;   // let the page settle before anything moves
+
+    var reduce  = window.matchMedia
+      ? window.matchMedia('(prefers-reduced-motion: reduce)')
+      : null;
+    var timer   = null;
+    var running = false;
+    var visible = true;    // masthead on screen
+    var word    = 0;       // index into TOPICS
+    var chars   = 0;       // characters currently shown of TOPICS[word]
+    var erasing = false;
+
+    function paint(text, caret) {
+      input.setAttribute('placeholder', PREFIX + text + (caret ? CARET : ''));
+    }
+
+    function at(fn, ms) {
+      clearTimeout(timer);
+      timer = setTimeout(fn, ms);
+    }
+
+    function step() {
+      if (!running) return;
+      var full = TOPICS[word];
+
+      if (!erasing) {
+        chars++;
+        paint(full.slice(0, chars), true);
+        if (chars >= full.length) { erasing = true; at(blink(0, true), LEAD_MS); return; }
+        at(step, TYPE_MS + Math.random() * 45);
+        return;
+      }
+
+      chars--;
+      paint(full.slice(0, chars), true);
+      if (chars <= 0) {
+        erasing = false;
+        word = (word + 1) % TOPICS.length;
+        at(step, GAP_MS);
+        return;
+      }
+      at(step, ERASE_MS);
+    }
+
+    // Holds the finished word while the caret blinks, then hands back to step()
+    // to erase it. Returns a thunk so it can be handed straight to at().
+    function blink(count, on) {
+      return function () {
+        if (!running) return;
+        if (count >= BLINKS) { at(step, GAP_MS); return; }
+        paint(TOPICS[word], !on);
+        at(blink(count + 1, !on), BLINK_MS);
+      };
+    }
+
+    function start(delay) {
+      if (running || !visible || document.hidden) return;
+      if (reduce && reduce.matches) return;
+      if (input.value || document.activeElement === input) return;
+      running = true;
+      chars   = 0;
+      erasing = false;
+      at(step, delay);
+    }
+
+    function stop() {
+      running = false;
+      clearTimeout(timer);
+      timer = null;
+      input.setAttribute('placeholder', STATIC);
+    }
+
+    input.addEventListener('focus', stop);
+    input.addEventListener('blur', function () {
+      if (!input.value) start(GAP_MS);
+    });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop();
+      else start(GAP_MS);
+    });
+
+    if (reduce) {
+      var onReduce = function () { if (reduce.matches) stop(); else start(GAP_MS); };
+      if (reduce.addEventListener) reduce.addEventListener('change', onReduce);
+      else if (reduce.addListener) reduce.addListener(onReduce);
+    }
+
+    // No reason to keep a timer alive for a box the reader has scrolled past.
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        if (visible) start(GAP_MS);
+        else stop();
+      }).observe(input);
+    }
+
+    start(FIRST_MS);
   }());
   </script>
   <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>

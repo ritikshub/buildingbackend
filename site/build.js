@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * Build script for Building Backend website.
- * Parses README.md, ROADMAP.md, and glossary/terms.md from the repo root
- * and generates data.js with all phase/lesson/glossary data.
+ * Parses README.md and ROADMAP.md from the repo root and generates
+ * data.js with all phase/lesson data.
  *
  * Run: node site/build.js
  * Called automatically by GitHub Actions on every push.
@@ -14,7 +14,6 @@ const path = require('path');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const README_PATH = path.join(REPO_ROOT, 'README.md');
 const ROADMAP_PATH = path.join(REPO_ROOT, 'ROADMAP.md');
-const GLOSSARY_PATH = path.join(REPO_ROOT, 'glossary', 'terms.md');
 const OUTPUT_PATH = path.join(__dirname, 'data.js');
 
 const REPO_URL = 'https://github.com/ritikshub/buildingbackend';
@@ -299,47 +298,6 @@ function countProseWords(line) {
   return text.split(/\s+/).filter(t => /[A-Za-z0-9]/.test(t)).length;
 }
 
-// ─── Parse glossary/terms.md ──────────────────────────────────────────
-function parseGlossary(content) {
-  const terms = [];
-  let currentTerm = null;
-
-  for (const line of content.split(/\r?\n/)) {
-    // Match term headers: ### ACID or ### ABAC (Attribute-Based Access Control)
-    const termMatch = line.match(/^###\s+(.+)/);
-    if (termMatch) {
-      if (currentTerm && currentTerm.says && currentTerm.means) {
-        terms.push(currentTerm);
-      }
-      currentTerm = { term: termMatch[1].trim(), says: '', means: '' };
-      continue;
-    }
-
-    if (!currentTerm) continue;
-
-    // Match "What people say" line
-    const saysMatch = line.match(/\*\*What people say:\*\*\s*"?(.+?)"?\s*$/);
-    if (saysMatch) {
-      currentTerm.says = saysMatch[1].replace(/^"/, '').replace(/"$/, '').trim();
-      continue;
-    }
-
-    // Match "What it actually means" line
-    const meansMatch = line.match(/\*\*What it actually means:\*\*\s*(.+)/);
-    if (meansMatch) {
-      currentTerm.means = meansMatch[1].trim();
-      continue;
-    }
-  }
-
-  // Push the last term
-  if (currentTerm && currentTerm.says && currentTerm.means) {
-    terms.push(currentTerm);
-  }
-
-  return terms;
-}
-
 // ─── Discover outputs/ artifacts (skills / prompts / agents) ──────────
 function parseFrontmatter(text) {
   if (!text.startsWith('---')) return null;
@@ -428,62 +386,11 @@ function discoverArtifacts() {
   return artifacts;
 }
 
-// ─── Manifest of each lesson's code/ + outputs/ files ─────────────────
-// Baked into data.js so the lesson page can list, describe, and link every
-// file with zero network calls, so it works offline and needs no GitHub repo.
-// Shape: { "phases/<phase>/<lesson>": { code: [{name,size}], outputs: [{name,size,desc}] } }
-function discoverLessonFiles() {
-  const manifest = {};
-  const phasesDir = path.join(REPO_ROOT, 'phases');
-  if (!fs.existsSync(phasesDir)) return manifest;
-
-  function listDir(dir, withDesc) {
-    if (!fs.existsSync(dir)) return [];
-    const files = [];
-    for (const name of fs.readdirSync(dir).sort()) {
-      if (name.startsWith('.')) continue;
-      const fp = path.join(dir, name);
-      let stat;
-      try { stat = fs.statSync(fp); } catch (_) { continue; }
-      if (!stat.isFile()) continue;
-      const entry = { name, size: stat.size };
-      if (withDesc) {
-        let desc = '';
-        try {
-          const meta = parseFrontmatter(fs.readFileSync(fp, 'utf8'));
-          if (meta && meta.description) desc = String(meta.description).trim();
-        } catch (_) {}
-        entry.desc = desc;
-      }
-      files.push(entry);
-    }
-    return files;
-  }
-
-  for (const phaseDirName of fs.readdirSync(phasesDir).sort()) {
-    if (!/^\d{2}-[a-z0-9-]+$/.test(phaseDirName)) continue;
-    const phaseDir = path.join(phasesDir, phaseDirName);
-    try { if (!fs.statSync(phaseDir).isDirectory()) continue; } catch (_) { continue; }
-    for (const lessonDirName of fs.readdirSync(phaseDir).sort()) {
-      if (!/^\d{2}-[a-z0-9-]+$/.test(lessonDirName)) continue;
-      const lessonRel = `phases/${phaseDirName}/${lessonDirName}`;
-      const lessonDir = path.join(phaseDir, lessonDirName);
-      const entry = {};
-      const code = listDir(path.join(lessonDir, 'code'), false);
-      const outputs = listDir(path.join(lessonDir, 'outputs'), true);
-      if (code.length) entry.code = code;
-      if (outputs.length) entry.outputs = outputs;
-      if (entry.code || entry.outputs) manifest[lessonRel] = entry;
-    }
-  }
-  return manifest;
-}
-
 // ─── Bundle lesson content into site/ so the deployed site is self-contained ──
 // The site is deployed with `site/` as the web root (Vercel outputDirectory),
-// and the repo may not be published to GitHub. So mirror every lesson's docs,
-// quiz, outputs, and code under `site/content/phases/…`, and have lesson.html
-// fetch it with a site-root-relative base ("content/…"). Works identically in
+// and the repo may not be published to GitHub. So mirror every lesson folder
+// under `site/content/phases/…`, and have lesson.html fetch its docs/en.md
+// with a site-root-relative base ("content/…"). Works identically in
 // local `python -m http.server site` and on Vercel, with no GitHub dependency.
 // Regenerated on every build and git-ignored (see .gitignore) so it never drifts.
 function copyLessonContent() {
@@ -536,7 +443,6 @@ function build() {
 
   const readme = fs.readFileSync(README_PATH, 'utf8');
   const roadmap = fs.readFileSync(ROADMAP_PATH, 'utf8');
-  const glossary = fs.readFileSync(GLOSSARY_PATH, 'utf8');
 
   console.log('🔍 Parsing ROADMAP.md...');
   const roadmapStatuses = parseRoadmap(roadmap);
@@ -544,14 +450,8 @@ function build() {
   console.log('🔍 Parsing README.md...');
   const phases = parseReadme(readme, roadmapStatuses);
 
-  console.log('🔍 Parsing glossary/terms.md...');
-  const glossaryTerms = parseGlossary(glossary);
-
   console.log('🔍 Discovering outputs + Phase 14 missions...');
   const artifacts = discoverArtifacts();
-
-  console.log('🗂  Building per-lesson code/outputs file manifest...');
-  const lessonFiles = discoverLessonFiles();
 
   console.log('📦 Bundling lesson content into site/content/ ...');
   const bundledFiles = copyLessonContent();
@@ -592,9 +492,7 @@ function build() {
   console.log(`   Complete: ${completeLessons}`);
   console.log(`   Summaries: ${summarized}, Keywords: ${withKeywords}`);
   console.log(`   Word counts: ${withWords} lessons, ${totalWords.toLocaleString()} words total`);
-  console.log(`   Glossary terms: ${glossaryTerms.length}`);
   console.log(`   Artifacts: ${artifacts.length}`);
-  console.log(`   Lessons with files: ${Object.keys(lessonFiles).length}`);
   console.log(`   Bundled content files: ${bundledFiles}`);
 
   // Generate data.js
@@ -603,11 +501,7 @@ function build() {
 
 const PHASES = ${JSON.stringify(phases, null, 2)};
 
-const GLOSSARY = ${JSON.stringify(glossaryTerms, null, 2)};
-
 const ARTIFACTS = ${JSON.stringify(artifacts, null, 2)};
-
-const LESSON_FILES = ${JSON.stringify(lessonFiles, null, 2)};
 `;
 
   fs.writeFileSync(OUTPUT_PATH, output, 'utf8');
@@ -616,19 +510,17 @@ const LESSON_FILES = ${JSON.stringify(lessonFiles, null, 2)};
   syncHeaders();
   syncCounts(writtenLessons, writtenPhases, artifacts.length);
   syncReadme(writtenLessons);
-  writeSitemap(phases, glossaryTerms.length);
-  writeLlms(phases, glossaryTerms.length, artifacts.length);
+  writeSitemap(phases);
+  writeLlms(phases, artifacts.length);
 }
 
 // ─── sitemap.xml from the same PHASES the site renders ───────────────────
-function writeSitemap(phases, glossaryCount) {
+function writeSitemap(phases) {
   const today = new Date().toISOString().slice(0, 10);
   const urls = [
     { loc: '/', priority: '1.0', freq: 'weekly' },
-    { loc: '/catalog.html', priority: '0.8', freq: 'weekly' },
     { loc: '/prereqs.html', priority: '0.7', freq: 'monthly' },
   ];
-  if (glossaryCount > 0) urls.push({ loc: '/jargon.html', priority: '0.6', freq: 'monthly' });
   urls.push({ loc: '/about.html', priority: '0.5', freq: 'monthly' });
   for (const phase of phases) {
     for (const l of phase.lessons) {
@@ -647,7 +539,7 @@ function writeSitemap(phases, glossaryCount) {
 }
 
 // ─── llms.txt: a link-rich map of the curriculum for AI agents ───────────
-function writeLlms(phases, glossaryCount, artifactCount) {
+function writeLlms(phases, artifactCount) {
   // written = lessons that resolve to a real path on disk; planned = everything on the roadmap.
   let written = 0, planned = 0;
   phases.forEach(p => {
@@ -658,7 +550,7 @@ function writeLlms(phases, glossaryCount, artifactCount) {
   out += `> A free, open-source curriculum that builds every core backend primitive by hand. ${planned} lessons across ${phases.length} phases, ${written} written so far, from raw sockets to a deployed, observable fleet. Python, standard library only.\n\n`;
   out += `Canonical site: ${SITE_ORIGIN}\n`;
   out += `Source: https://github.com/ritikshub/buildingbackend\n`;
-  out += `Jargon terms: ${glossaryCount} · Reusable outputs (prompts/skills/agents): ${artifactCount}\n\n`;
+  out += `Reusable outputs (prompts/skills/agents): ${artifactCount}\n\n`;
   for (const phase of phases) {
     out += `## Phase ${phase.id}: ${phase.name}\n`;
     if (phase.desc) out += `${phase.desc}\n`;
@@ -672,9 +564,7 @@ function writeLlms(phases, glossaryCount, artifactCount) {
     out += `\n`;
   }
   out += `## Optional\n`;
-  out += `- [Catalog](${SITE_ORIGIN}/catalog.html): full searchable lesson index\n`;
   out += `- [Roadmap](${SITE_ORIGIN}/prereqs.html): prerequisite ordering across phases\n`;
-  if (glossaryCount > 0) out += `- [Jargon](${SITE_ORIGIN}/jargon.html): what people say vs what it actually means, for ${glossaryCount} terms\n`;
   fs.writeFileSync(path.join(__dirname, 'llms.txt'), out, 'utf8');
   console.log(`   wrote llms.txt`);
 }
@@ -726,27 +616,25 @@ function syncReadme(lessons) {
 // lesson.html silently lost its "About" link, and a rename left one page on
 // the old logo. It is generated from this one template on every build now, so
 // the pages cannot disagree. The live IST clock is appended at runtime by
-// header.js — it is deliberately not in this markup.
+// header.js — it is deliberately not in this markup. There is no search
+// button: the homepage carries a full-width topic finder, and ⌘K still opens
+// the command palette from any page, so the icon was a third way to do the
+// same thing.
 const NAV_LINKS = [
   { key: 'contents', href: 'index.html#contents', label: 'Contents' },
-  { key: 'catalog',  href: 'catalog.html',        label: 'Catalog'  },
   { key: 'roadmap',  href: 'prereqs.html',        label: 'Roadmap'  },
-  { key: 'jargon',   href: 'jargon.html',         label: 'Jargon'   },
   { key: 'about',    href: 'about.html',          label: 'About'    },
 ];
 
 // Which nav item is "current" per page. lesson.html maps to nothing on
-// purpose: an individual lesson is not one of the five nav destinations.
+// purpose: an individual lesson is not one of the four nav destinations.
 const PAGE_ACTIVE = {
   'index.html': 'contents',
-  'catalog.html': 'catalog',
   'prereqs.html': 'roadmap',
-  'jargon.html': 'jargon',
   'about.html': 'about',
   'lesson.html': null,
 };
 
-const SEARCH_ICON = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
 const THEME_ICON = '<span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>';
 
 function headerHtml(page) {
@@ -761,15 +649,11 @@ function headerHtml(page) {
   return `  <header class="site-header">
     <div class="header-inner">
       <a href="index.html" class="logo">
-        <span class="logo-icon" aria-hidden="true"></span> BUILDING BACKEND
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
       </a>
       <nav class="header-nav">
 ${links}
       </nav>
-      <button class="search-toggle" type="button" data-cmd-palette
-        aria-label="Search (⌘K)" title="Search (⌘K)">
-        ${SEARCH_ICON}
-      </button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
         ${THEME_ICON}
       </button>
@@ -796,7 +680,7 @@ function syncHeaders() {
 }
 
 function syncCounts(lessons, phaseCount, outputs) {
-  const targets = ['index.html', 'catalog.html', 'lesson.html', 'prereqs.html', 'about.html', 'cmdpalette.js'];
+  const targets = ['index.html', 'lesson.html', 'prereqs.html', 'about.html', 'cmdpalette.js'];
   for (const f of targets) {
     const p = path.join(__dirname, f);
     if (!fs.existsSync(p)) continue;

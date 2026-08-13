@@ -9,7 +9,6 @@
  *   be:progress:v1 = {
  *     lessons: {
  *       "<lesson-path>": {
- *         answers: { "<qid>": { picked: number, correct: boolean, t: number } },
  *         completedAt: number | null,
  *         visitedAt: number
  *       }
@@ -20,7 +19,9 @@
  * "<lesson-path>" matches the path used in lesson.html?path=... and in
  * data.js urls (e.g. "phases/00-foundations/01-bits-and-bytes").
  *
- * "<qid>" is "<stage>-q<index>" e.g. "check-q0", to match the quiz renderer.
+ * Records written before the quizzes were removed also carry an `answers`
+ * map. Nothing reads it now; it is left in place rather than migrated away,
+ * since rewriting every stored lesson to drop a harmless key buys nothing.
  */
 (function () {
   var STORAGE_KEY = 'be:progress:v1';
@@ -56,7 +57,7 @@
 
   function ensureLesson(state, path) {
     if (!state.lessons[path]) {
-      state.lessons[path] = { answers: {}, completedAt: null, visitedAt: 0 };
+      state.lessons[path] = { completedAt: null, visitedAt: 0 };
     }
     return state.lessons[path];
   }
@@ -66,14 +67,6 @@
     var state = read();
     var lesson = ensureLesson(state, path);
     lesson.visitedAt = Date.now();
-    write(state);
-  }
-
-  function recordAnswer(path, qid, picked, correct) {
-    if (!path || !qid) return;
-    var state = read();
-    var lesson = ensureLesson(state, path);
-    lesson.answers[qid] = { picked: picked, correct: !!correct, t: Date.now() };
     write(state);
   }
 
@@ -99,7 +92,7 @@
   function getLessonProgress(path) {
     if (!path) return null;
     var state = read();
-    return state.lessons[path] || { answers: {}, completedAt: null, visitedAt: 0 };
+    return state.lessons[path] || { completedAt: null, visitedAt: 0 };
   }
 
   function isLessonComplete(path) {
@@ -159,7 +152,6 @@
 
   window.BEProgress = {
     recordVisit: recordVisit,
-    recordAnswer: recordAnswer,
     markLessonComplete: markLessonComplete,
     unmarkLessonComplete: unmarkLessonComplete,
     getLessonProgress: getLessonProgress,
