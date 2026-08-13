@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You are deciding which quality gates to keep in a pipeline that has type checking, unit tests, code review, CI integration tests and a staging environment. You measure how many of 40 seeded bugs each gate catches. Which number tells you what a gate is worth?",
-    "options": [
-      "How many of the 40 it catches on its own — a gate that catches 17 of 40 is clearly worth more than one that catches 5 of 40",
-      "How many it catches that no earlier gate in the pipeline already caught. Measured over the same 40 bugs, review caught 17 alone but 0 marginally, and staging caught 18 alone but 0 marginally, while types caught only 5 alone and all 5 were marginal",
-      "How many it catches divided by how long it takes to run, since the only real constraint on a pipeline is wall-clock time",
-      "The absolute count, weighted by bug severity — a gate that catches fewer but more serious bugs is more valuable than one that catches many trivial ones"
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer is the absolute count, and it is the number every tool reports. It is also the number that would have told you to keep code review and staging over type checking, which is exactly backwards for this pipeline: everything review and staging can see, something cheaper already saw. A gate you add to a pipeline is only worth the bugs that reach it and die there. Severity weighting (option 4) is a real refinement but it applies to the marginal set, not the absolute one — weighting 17 bugs that were already caught still gives you zero."
-  },
-  {
     "stage": "check",
     "question": "A one-character change makes a volume discount exclusive instead of inclusive. Over a measured day of 2,000 orders it prices 75 of them wrong — 3.75% — and overcharges $408.00 in total. Why did this take three days to detect?",
     "options": [

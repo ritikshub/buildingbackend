@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What kind of protocol is HTTP at its core?",
-    "options": [
-      "A binary streaming protocol with no defined message boundaries",
-      "A text-based request/response protocol running over TCP",
-      "A peer-to-peer protocol with no client or server role",
-      "An encryption protocol that replaces TLS"
-    ],
-    "correct": 1,
-    "explanation": "HTTP (HyperText Transfer Protocol) is a text-based request/response protocol: a client sends one request, the server sends one response, and the header portion is human-readable ASCII. It rides on top of TCP, which provides the reliable byte stream underneath."
-  },
-  {
-    "stage": "pre",
-    "question": "An HTTP message is made of four parts in order. Which is correct?",
-    "options": [
-      "Body, headers, blank line, start line",
-      "Start line, blank line, headers, body",
-      "Start line, headers, blank line, optional body",
-      "Headers, start line, body, checksum"
-    ],
-    "correct": 2,
-    "explanation": "Every HTTP message is a start line (request line or status line), then header lines, then a blank line (CRLF by itself) marking the end of headers, then an optional body. The blank line is how the receiver knows the headers are finished."
-  },
-  {
     "stage": "check",
     "question": "A client sends a request that times out with no reply. For which method is it safe to simply resend the same request?",
     "options": [

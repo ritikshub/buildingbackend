@@ -24,7 +24,7 @@ The mean is `(950 × 0.05 + 50 × 6.0) / 1000` = **347 ms**. That is a number yo
   <text x="400" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Averages lie: 1000 requests, 950 fast and 50 timing out</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="300" y="70" width="290" height="56" rx="10" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
-    <g fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"><rect x="177" y="222" width="16" height="24"/><rect x="197" y="150" width="16" height="96"/><rect x="217" y="86" width="16" height="160"/><rect x="237" y="162" width="16" height="84"/><rect x="257" y="220" width="16" height="26"/></g>
+    <g fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"><rect x="177" y="222" width="16" height="24"/><rect x="197" y="150" width="16" height="96"/><rect x="217" y="86" width="16" height="160"/><rect x="237" y="162" width="16" height="84"/><rect x="257" y="220" width="16" height="26"/></g>
     <g fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff"><rect x="677" y="232" width="16" height="14"/><rect x="697" y="224" width="16" height="22"/><rect x="717" y="234" width="16" height="12"/></g>
   </g>
   <g fill="none" stroke="currentColor" stroke-width="1.6"><path d="M64 246 L 756 246"/><path d="M225 246 L 225 258"/><path d="M705 246 L 705 258"/></g>
@@ -33,7 +33,7 @@ The mean is `(950 × 0.05 + 50 × 6.0) / 1000` = **347 ms**. That is a number yo
     <text x="445" y="94" font-size="11" font-weight="700" fill="#e0930f">the mean lands here —</text><text x="445" y="112" font-size="11" font-weight="700" fill="#e0930f">where no request lives</text>
     <text x="225" y="70" font-size="10" opacity="0.9">95% of requests</text><text x="540" y="200" font-size="10" opacity="0.7">nothing lives here</text><text x="690" y="206" font-size="10" opacity="0.9">5%: timing out</text>
     <text x="64" y="266" font-size="9" opacity="0.6">10ms</text><text x="295" y="266" font-size="9" opacity="0.6">100ms</text><text x="525" y="266" font-size="9" opacity="0.6">1s</text><text x="750" y="266" font-size="9" opacity="0.6">10s</text>
-    <text x="225" y="288" font-size="10.5" font-weight="700" fill="#3553ff">p50 = p95 = 50 ms</text><text x="419" y="288" font-size="10.5" font-weight="700" fill="#e0930f">mean = 347 ms</text><text x="705" y="288" font-size="10.5" font-weight="700" fill="#7c5cff">p99 = 6 s</text>
+    <text x="225" y="288" font-size="10.5" font-weight="700" fill="#c94a12">p50 = p95 = 50 ms</text><text x="419" y="288" font-size="10.5" font-weight="700" fill="#e0930f">mean = 347 ms</text><text x="705" y="288" font-size="10.5" font-weight="700" fill="#7c5cff">p99 = 6 s</text>
     <text x="400" y="316" font-size="11" opacity="0.9">The mean is an average of two populations that do not exist. Percentiles describe real users.</text>
   </g>
 </svg>
@@ -67,14 +67,14 @@ The defining property, and the whole reason metrics are affordable, is that a me
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 410" width="100%" style="max-width:840px" role="img" aria-label="The four metric types compared: a counter which only rises and resets to zero on restart, a gauge which moves up and down, a histogram which buckets a distribution, and a summary which precomputes quantiles on the instance and therefore cannot be aggregated.">
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Four metric types — what each is for, and what each will do to you</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="44" width="200" height="332" rx="12" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/><rect x="232" y="44" width="200" height="332" rx="12" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
+    <rect x="16" y="44" width="200" height="332" rx="12" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/><rect x="232" y="44" width="200" height="332" rx="12" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     <rect x="448" y="44" width="200" height="332" rx="12" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/><rect x="664" y="44" width="200" height="332" rx="12" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
-    <g stroke-opacity="0.4" stroke-width="1.2"><line x1="32" y1="240" x2="200" y2="240" stroke="#3553ff"/><line x1="248" y1="240" x2="416" y2="240" stroke="#0fa07f"/><line x1="464" y1="240" x2="632" y2="240" stroke="#e0930f"/><line x1="680" y1="240" x2="848" y2="240" stroke="#7c5cff"/></g>
+    <g stroke-opacity="0.4" stroke-width="1.2"><line x1="32" y1="240" x2="200" y2="240" stroke="#c94a12"/><line x1="248" y1="240" x2="416" y2="240" stroke="#0fa07f"/><line x1="464" y1="240" x2="632" y2="240" stroke="#e0930f"/><line x1="680" y1="240" x2="848" y2="240" stroke="#7c5cff"/></g>
   </g>
   <g fill="none" stroke-width="2" stroke-linecap="round">
-    <path d="M34 164 L 70 140 L 104 112 L 118 104" stroke="#3553ff"/>
-    <path d="M118 104 L 118 164" stroke="#3553ff" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.7"/>
-    <path d="M118 164 L 152 146 L 198 122" stroke="#3553ff"/>
+    <path d="M34 164 L 70 140 L 104 112 L 118 104" stroke="#c94a12"/>
+    <path d="M118 104 L 118 164" stroke="#c94a12" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.7"/>
+    <path d="M118 164 L 152 146 L 198 122" stroke="#c94a12"/>
     <path d="M248 138 L 266 116 L 284 152 L 302 124 L 320 154 L 338 120 L 356 146 L 374 114 L 392 140 L 414 126" stroke="#0fa07f"/>
     <path d="M680 150 L 848 150" stroke="#7c5cff" stroke-width="1.4" opacity="0.7"/>
     <g stroke="#7c5cff"><path d="M706 150 L 706 126"/><path d="M792 150 L 792 126"/><path d="M834 150 L 834 126"/></g>
@@ -85,9 +85,9 @@ The defining property, and the whole reason metrics are affordable, is that a me
     <rect x="574" y="150" width="14" height="14" fill="#e0930f" fill-opacity="0.16"/><rect x="592" y="156" width="14" height="8" fill="#e0930f" fill-opacity="0.16"/><rect x="610" y="158" width="14" height="6" fill="#e0930f" fill-opacity="0.16"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="116" y="72" font-size="13.5" font-weight="700" text-anchor="middle" fill="#3553ff">COUNTER</text><text x="116" y="88" font-size="9" text-anchor="middle" opacity="0.85">only ever goes up</text><text x="116" y="184" font-size="8.5" text-anchor="middle" opacity="0.7">restart resets it to 0</text>
+    <text x="116" y="72" font-size="13.5" font-weight="700" text-anchor="middle" fill="#c94a12">COUNTER</text><text x="116" y="88" font-size="9" text-anchor="middle" opacity="0.85">only ever goes up</text><text x="116" y="184" font-size="8.5" text-anchor="middle" opacity="0.7">restart resets it to 0</text>
     <text x="32" y="212" font-size="9" font-weight="700" opacity="0.75">FOR</text><text x="32" y="228" font-size="9.5" opacity="0.9">things that accumulate:</text><text x="32" y="244" font-size="9" opacity="0.75">requests, errors, bytes</text>
-    <text x="32" y="262" font-size="9" font-weight="700" fill="#3553ff">TRAP</text><text x="32" y="280" font-size="9.5" opacity="0.9">the raw value is useless.</text><text x="32" y="296" font-size="9.5" opacity="0.9">Only rate() has meaning,</text><text x="32" y="312" font-size="9.5" opacity="0.9">and it must detect resets.</text>
+    <text x="32" y="262" font-size="9" font-weight="700" fill="#c94a12">TRAP</text><text x="32" y="280" font-size="9.5" opacity="0.9">the raw value is useless.</text><text x="32" y="296" font-size="9.5" opacity="0.9">Only rate() has meaning,</text><text x="32" y="312" font-size="9.5" opacity="0.9">and it must detect resets.</text>
     <text x="332" y="72" font-size="13.5" font-weight="700" text-anchor="middle" fill="#0fa07f">GAUGE</text><text x="332" y="88" font-size="9" text-anchor="middle" opacity="0.85">up and down</text><text x="332" y="184" font-size="8.5" text-anchor="middle" opacity="0.7">a level, sampled</text>
     <text x="248" y="212" font-size="9" font-weight="700" opacity="0.75">FOR</text><text x="248" y="228" font-size="9.5" opacity="0.9">a level right now:</text><text x="248" y="244" font-size="9" opacity="0.75">queue depth, memory</text>
     <text x="248" y="262" font-size="9" font-weight="700" fill="#0fa07f">TRAP</text><text x="248" y="280" font-size="9.5" opacity="0.9">you only see scrape</text><text x="248" y="296" font-size="9.5" opacity="0.9">instants. A spike between</text><text x="248" y="312" font-size="9.5" opacity="0.9">two scrapes never existed.</text>
@@ -135,7 +135,7 @@ That redundancy looks wasteful. It is the entire point:
     <rect x="32" y="292" width="472" height="112" rx="9" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.45"/><rect x="552" y="292" width="296" height="112" rx="9" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.45"/>
   </g>
   <g fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.2"><line x1="36" y1="96" x2="500" y2="96"/><line x1="556" y1="118" x2="844" y2="118"/></g>
-  <g fill="#3553ff" fill-opacity="0.20" stroke="#3553ff" stroke-width="1.4">
+  <g fill="#c94a12" fill-opacity="0.20" stroke="#c94a12" stroke-width="1.4">
     <rect x="310" y="112" width="87" height="12" rx="3"/><rect x="310" y="138" width="120" height="12" rx="3"/><rect x="310" y="164" width="133" height="12" rx="3"/>
     <rect x="310" y="190" width="137" height="12" rx="3"/><rect x="310" y="242" width="140" height="12" rx="3"/><rect x="310" y="268" width="140" height="12" rx="3"/>
   </g>

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your handler does `threading.Thread(target=handle, args=(item,)).start()` for every arriving item. It passes every test. What is the failure mode in production?",
-    "options": [
-      "Threads are slower than processes in Python, so throughput will be roughly half of what you measured",
-      "The threads will leak memory because Python never garbage-collects finished Thread objects",
-      "It works fine as long as `handle` is thread-safe; the pattern itself is sound",
-      "Nothing in that line bounds the thread count, so the number of threads is set by your arrival rate rather than your capacity: a spike or a slow dependency produces thousands of threads, the kernel spends its time context-switching instead of working, and throughput FALLS exactly when it needed to rise. You also pay creation cost per item and have nowhere to put a return value or an exception"
-    ],
-    "correct": 3,
-    "explanation": "The critical word is 'unbounded'. A thread-per-item design lets the outside world choose your concurrency level, and the failure is non-linear: your capacity does not merely get exceeded by the load, it is destroyed by the load, because every context switch evicts cache the previous thread had warmed. The missing return value and the lost exception are the other two failures — `Thread(target=...)` returns None, and an exception in a thread is printed to stderr while the submitter carries on believing the work succeeded."
-  },
-  {
     "stage": "check",
     "question": "Two pools serve identical overload — 4 workers, 5 ms of work, offered at ~3000 items/s for one second. One has an unbounded queue, one is bounded at 64. Both served ~760 items/s. What actually differed?",
     "options": [

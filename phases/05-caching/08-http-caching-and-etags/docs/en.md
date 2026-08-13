@@ -59,7 +59,7 @@ When a cache holds a copy and a request comes in, it answers two questions in or
 
     <!-- process boxes -->
     <g stroke-width="1.8" stroke-linejoin="round">
-      <rect x="320" y="48" width="220" height="44" rx="10" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+      <rect x="320" y="48" width="220" height="44" rx="10" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
       <rect x="620" y="140" width="220" height="64" rx="10" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
       <rect x="280" y="252" width="300" height="60" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
       <rect x="40" y="468" width="260" height="82" rx="10" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
@@ -188,10 +188,10 @@ Two validators exist:
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
       <rect x="140" y="44" width="140" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
-      <rect x="580" y="44" width="140" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="580" y="44" width="140" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
     <text x="210" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Cache</text>
-    <text x="650" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Server</text>
+    <text x="650" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Server</text>
 
     <!-- lifelines -->
     <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1.3" stroke-dasharray="4 5">

@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why is networking split into layers instead of written as one big program?",
-    "options": [
-      "To make the data travel faster over the wire",
-      "So each layer can change independently — swap Wi-Fi for a cable and the apps above keep working unchanged",
-      "Because computers can only run one protocol at a time",
-      "To reduce the number of bytes each message needs"
-    ],
-    "correct": 1,
-    "explanation": "A layer is a contract: it depends only on the service the layer below promises, not on how that service is implemented. That is what lets you replace one layer (say, the physical medium) without rewriting the ones above it. Layering actually adds a few bytes of overhead per layer; the payoff is an internet that can evolve one piece at a time."
-  },
-  {
-    "stage": "pre",
-    "question": "When a layer 'encapsulates' data, what does it do?",
-    "options": [
-      "It encrypts the data so lower layers cannot read it",
-      "It compresses the data to make it smaller",
-      "It prepends its own header, turning the layer above's whole output into its payload",
-      "It splits the data into exactly 8-bit pieces"
-    ],
-    "correct": 2,
-    "explanation": "Encapsulation means putting a header in front of whatever came from the layer above, without changing those bytes — like sealing a letter inside an envelope inside a mailbag. Each layer treats the layer above's header-plus-data as an opaque payload it simply carries."
-  },
-  {
     "stage": "check",
     "question": "TCP/IP has four layers and OSI has seven. Which OSI layers does the TCP/IP 'Application' layer correspond to?",
     "options": [

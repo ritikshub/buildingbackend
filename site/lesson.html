@@ -4,29 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lesson - Building Backend</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>BE</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23b53707' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23b53707'>BE</text></svg>">
   <meta name="description" content="A lesson from the Building Backend curriculum. 164 lessons across 13 phases, in Python, every backend primitive built by hand.">
   <link rel="canonical" href="https://buildingbackend.vercel.app/lesson.html">
   <meta property="og:title" content="Building Backend · Lesson">
   <meta property="og:description" content="164 lessons. 13 phases. Build every backend primitive by hand, from a raw socket to a deployed fleet.">
-  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
   <!-- og:url omitted intentionally: lesson.html is a static template that loads the lesson body client-side via ?path=. Static hosting cannot template the URL, so we let crawlers fall back to the request URL (which is the lesson-specific share link). -->
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Building Backend">
   <meta name="twitter:description" content="164 lessons. 13 phases. Build every backend primitive by hand, once.">
-  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260719p">
+  <link rel="stylesheet" href="style.css?v=20260813d">
   <style>
     .scroll-progress {
       position: fixed;
       top: 0;
       left: 0;
       height: 2px;
-      background: var(--blueprint);
+      background: var(--ember);
       z-index: 9999;
       transition: width 0.05s linear;
       width: 0%;
@@ -71,8 +71,8 @@
     }
 
     .lesson-sidebar-toggle:hover {
-      border-color: var(--blueprint);
-      color: var(--blueprint);
+      border-color: var(--ember);
+      color: var(--ember);
     }
 
     .lesson-sidebar::-webkit-scrollbar { width: 4px; }
@@ -102,14 +102,14 @@
     }
 
     .sidebar-lesson-link:hover {
-      background: var(--blueprint-tint);
+      background: var(--ember-tint);
       color: var(--ink);
     }
 
     .sidebar-lesson-link.active {
-      color: var(--blueprint);
-      background: var(--blueprint-tint);
-      border-left-color: var(--blueprint);
+      color: var(--ember);
+      background: var(--ember-tint);
+      border-left-color: var(--ember);
     }
 
     .sidebar-lesson-link.disabled {
@@ -125,13 +125,13 @@
     }
 
     .sidebar-lesson-dot.complete {
-      background: var(--blueprint);
-      border-color: var(--blueprint);
+      background: var(--ember);
+      border-color: var(--ember);
     }
 
     .sidebar-lesson-dot.in-progress {
-      background: linear-gradient(135deg, var(--blueprint) 0%, var(--blueprint) 50%, transparent 50%, transparent 100%);
-      border-color: var(--blueprint);
+      background: linear-gradient(135deg, var(--ember) 0%, var(--ember) 50%, transparent 50%, transparent 100%);
+      border-color: var(--ember);
     }
 
     .sidebar-lesson-dot.planned {
@@ -158,7 +158,7 @@
     }
 
     .sidebar-phase-nav a:hover {
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     .lesson-main {
@@ -195,7 +195,7 @@
       width: 24px;
       height: 24px;
       border: 2px solid var(--rule-soft);
-      border-top-color: var(--blueprint);
+      border-top-color: var(--ember);
       border-radius: 50%;
       animation: spin 0.9s linear infinite;
     }
@@ -221,7 +221,7 @@
       font-family: var(--font-display);
       font-size: 1.8rem;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
       margin-bottom: 12px;
     }
 
@@ -236,10 +236,10 @@
       font-weight: 400;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      color: var(--blueprint);
+      color: var(--ember);
       margin-bottom: 20px;
       padding-bottom: 16px;
-      border-bottom: 2px solid var(--blueprint);
+      border-bottom: 2px solid var(--ember);
       line-height: 1;
     }
 
@@ -260,7 +260,7 @@
     .lesson-article h2.section-build,
     .lesson-article h2.section-use,
     .lesson-article h2.section-ship {
-      border-left: 3px solid var(--blueprint);
+      border-left: 3px solid var(--ember);
       padding-left: 16px;
     }
 
@@ -299,7 +299,7 @@
       font-size: 4rem;
       line-height: 0.85;
       padding: 0.06em 0.16em 0 0;
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     .lesson-article .motto {
@@ -308,16 +308,16 @@
       font-size: 1.15rem;
       line-height: 1.55;
       color: var(--ink);
-      border-left: 2px solid var(--blueprint);
-      background: var(--blueprint-tint);
+      border-left: 2px solid var(--ember);
+      background: var(--ember-tint);
       padding: 18px 22px;
       margin: 24px 0 32px;
       text-align: left;
     }
 
     .lesson-article blockquote {
-      border-left: 2px solid var(--blueprint);
-      background: var(--blueprint-tint);
+      border-left: 2px solid var(--ember);
+      background: var(--ember-tint);
       padding: 14px 22px;
       margin: 20px 0;
       color: var(--ink);
@@ -336,14 +336,14 @@
     }
 
     .lesson-article a {
-      color: var(--blueprint);
+      color: var(--ember);
       text-decoration: none;
-      border-bottom: 1px solid var(--blueprint);
+      border-bottom: 1px solid var(--ember);
       transition: background 0.15s;
     }
 
     .lesson-article a:hover {
-      background: var(--blueprint-tint);
+      background: var(--ember-tint);
     }
 
     .lesson-article hr {
@@ -351,8 +351,8 @@
       height: 6px;
       margin: 40px 0;
       background-image:
-        repeating-linear-gradient(to right, var(--blueprint) 0, var(--blueprint) 4px, transparent 4px, transparent 8px),
-        repeating-linear-gradient(to right, transparent 0, transparent 8px, var(--blueprint-tint-strong) 8px, var(--blueprint-tint-strong) 14px);
+        repeating-linear-gradient(to right, var(--ember) 0, var(--ember) 4px, transparent 4px, transparent 8px),
+        repeating-linear-gradient(to right, transparent 0, transparent 8px, var(--ember-tint-strong) 8px, var(--ember-tint-strong) 14px);
       background-size: 100% 3px, 100% 3px;
       background-position: 0 0, 0 3px;
       background-repeat: no-repeat;
@@ -382,7 +382,7 @@
       top: 0.65em;
       width: 6px;
       height: 6px;
-      background: var(--blueprint);
+      background: var(--ember);
     }
 
     .lesson-article ol {
@@ -413,7 +413,7 @@
       font-size: 0.78rem;
       font-weight: 600;
       letter-spacing: 0.06em;
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     .lesson-article code {
@@ -422,7 +422,7 @@
       background: var(--code-bg);
       padding: 1px 6px;
       border: 1px solid var(--rule-soft);
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     .lesson-article pre {
@@ -454,7 +454,7 @@
       text-transform: uppercase;
       letter-spacing: 0.16em;
       padding: 4px 10px;
-      background: var(--blueprint);
+      background: var(--ember);
       color: var(--bg);
       z-index: 2;
     }
@@ -477,20 +477,20 @@
     }
 
     .code-copy:hover {
-      color: var(--blueprint);
-      border-color: var(--blueprint);
+      color: var(--ember);
+      border-color: var(--ember);
     }
 
-    .syn-keyword { color: var(--blueprint); font-weight: 500; }
+    .syn-keyword { color: var(--ember); font-weight: 500; }
     .syn-string { color: var(--ink); }
-    .syn-number { color: var(--blueprint); }
+    .syn-number { color: var(--ember); }
     .syn-comment { color: var(--ink-mute); font-style: italic; }
     .syn-function { color: var(--ink); font-weight: 500; }
     .syn-operator { color: var(--ink-soft); }
 
-    [data-theme="dark"] .syn-keyword { color: var(--blueprint); }
+    [data-theme="dark"] .syn-keyword { color: var(--ember); }
     [data-theme="dark"] .syn-string { color: var(--ink); }
-    [data-theme="dark"] .syn-number { color: var(--blueprint); }
+    [data-theme="dark"] .syn-number { color: var(--ember); }
     [data-theme="dark"] .syn-comment { color: var(--ink-mute); }
     [data-theme="dark"] .syn-function { color: var(--ink); }
     [data-theme="dark"] .syn-operator { color: var(--ink-soft); }
@@ -531,7 +531,7 @@
     .lesson-article tbody tr:last-child td { border-bottom: none; }
 
     .lesson-article tbody tr:hover {
-      background: var(--blueprint-tint);
+      background: var(--ember-tint);
     }
 
     .lesson-article .key-terms-table .col-says {
@@ -542,7 +542,7 @@
 
     .learning-objectives {
       background: transparent;
-      border: 1px solid var(--blueprint);
+      border: 1px solid var(--ember);
       padding: 22px 26px;
       margin: 24px 0 32px;
     }
@@ -553,7 +553,7 @@
       font-weight: 500;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
       margin: 0 0 14px;
       display: flex;
       align-items: center;
@@ -591,14 +591,14 @@
     }
 
     .lesson-meta-tag.time-tag {
-      border-color: var(--blueprint);
-      color: var(--blueprint);
-      background: var(--blueprint-tint);
+      border-color: var(--ember);
+      color: var(--ember);
+      background: var(--ember-tint);
     }
 
     .quiz-section,
     .quiz-container {
-      border: 1px solid var(--blueprint);
+      border: 1px solid var(--ember);
       padding: 22px 26px;
       margin: 32px 0;
       background: transparent;
@@ -610,7 +610,7 @@
       font-weight: 500;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
       margin: 0 0 18px;
       display: flex;
       align-items: center;
@@ -631,7 +631,7 @@
       font-size: 0.7rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
       margin-bottom: 6px;
     }
 
@@ -669,8 +669,8 @@
     }
 
     .quiz-option:hover:not(.selected):not(.disabled) {
-      border-color: var(--blueprint);
-      background: var(--blueprint-tint);
+      border-color: var(--ember);
+      background: var(--ember-tint);
     }
 
     .quiz-option .opt-letter,
@@ -691,17 +691,17 @@
     .quiz-option.selected.correct,
     .quiz-option.correct,
     .quiz-option.disabled.is-answer {
-      border-color: var(--blueprint);
-      background: var(--blueprint-tint);
-      color: var(--blueprint);
+      border-color: var(--ember);
+      background: var(--ember-tint);
+      color: var(--ember);
     }
 
     .quiz-option.selected.correct .opt-letter,
     .quiz-option.selected.correct .quiz-marker,
     .quiz-option.correct .opt-letter,
     .quiz-option.correct .quiz-marker {
-      border-color: var(--blueprint);
-      background: var(--blueprint);
+      border-color: var(--ember);
+      background: var(--ember);
       color: var(--bg);
     }
 
@@ -728,8 +728,8 @@
       color: var(--ink-soft);
       line-height: 1.55;
       padding: 12px 16px;
-      border-left: 2px solid var(--blueprint);
-      background: var(--blueprint-tint);
+      border-left: 2px solid var(--ember);
+      background: var(--ember-tint);
       display: none;
     }
 
@@ -738,8 +738,8 @@
     .quiz-score {
       text-align: center;
       padding: 24px;
-      border: 1px solid var(--blueprint);
-      background: var(--blueprint-tint);
+      border: 1px solid var(--ember);
+      background: var(--ember-tint);
       display: none;
       margin-top: 16px;
     }
@@ -749,7 +749,7 @@
     .quiz-score-number {
       font-family: var(--font-display);
       font-size: 2.6rem;
-      color: var(--blueprint);
+      color: var(--ember);
       line-height: 1;
     }
 
@@ -772,18 +772,18 @@
       border: 1px solid var(--rule-soft);
     }
 
-    .quiz-deeper code { color: var(--blueprint); }
+    .quiz-deeper code { color: var(--ember); }
 
     .lab-challenge {
       background: transparent;
-      border: 1px dashed var(--blueprint);
+      border: 1px dashed var(--ember);
       padding: 20px 26px;
       margin: 28px 0;
     }
 
     .lab-challenge h2 {
       font-family: var(--font-display);
-      color: var(--blueprint) !important;
+      color: var(--ember) !important;
       border: none !important;
       padding: 0 !important;
       margin: 0 0 12px !important;
@@ -821,8 +821,8 @@
     }
 
     .mermaid-btn:hover {
-      border-color: var(--blueprint);
-      color: var(--blueprint);
+      border-color: var(--ember);
+      color: var(--ember);
     }
 
     .mermaid-render {
@@ -962,8 +962,8 @@
     }
 
     .lesson-nav-btn:hover {
-      border-color: var(--blueprint);
-      background: var(--blueprint-tint);
+      border-color: var(--ember);
+      background: var(--ember-tint);
     }
 
     .lesson-nav-btn .nav-label {
@@ -971,7 +971,7 @@
       font-size: 0.68rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     .lesson-nav-btn .nav-title {
@@ -1017,17 +1017,17 @@
       font-family: var(--font-mono);
       font-size: 0.85rem;
       flex-shrink: 0;
-      border: 1px solid var(--blueprint);
-      color: var(--blueprint);
-      background: var(--blueprint-tint);
+      border: 1px solid var(--ember);
+      color: var(--ember);
+      background: var(--ember-tint);
     }
 
     .lesson-panel-icon.coral,
     .lesson-panel-icon.blue,
     .lesson-panel-icon.green {
-      background: var(--blueprint-tint);
-      color: var(--blueprint);
-      border-color: var(--blueprint);
+      background: var(--ember-tint);
+      color: var(--ember);
+      border-color: var(--ember);
     }
 
     .lesson-panel-title {
@@ -1063,8 +1063,8 @@
     }
 
     .output-card:hover {
-      border-color: var(--blueprint);
-      background: var(--blueprint-tint);
+      border-color: var(--ember);
+      background: var(--ember-tint);
     }
 
     .output-card-name {
@@ -1085,17 +1085,17 @@
       letter-spacing: 0.12em;
       padding: 2px 8px;
       margin-bottom: 10px;
-      border: 1px solid var(--blueprint);
-      color: var(--blueprint);
-      background: var(--blueprint-tint);
+      border: 1px solid var(--ember);
+      color: var(--ember);
+      background: var(--ember-tint);
     }
 
     .output-badge.prompt,
     .output-badge.skill,
     .output-badge.other {
-      border-color: var(--blueprint);
-      color: var(--blueprint);
-      background: var(--blueprint-tint);
+      border-color: var(--ember);
+      color: var(--ember);
+      background: var(--ember-tint);
     }
 
     .output-desc {
@@ -1133,8 +1133,8 @@
 
     .output-btn:hover,
     .code-card-btn:hover {
-      border-color: var(--blueprint);
-      color: var(--blueprint);
+      border-color: var(--ember);
+      color: var(--ember);
     }
 
     .output-install-hint {
@@ -1159,7 +1159,7 @@
     }
 
     .code-card:hover {
-      border-color: var(--blueprint);
+      border-color: var(--ember);
     }
 
     .code-card-header {
@@ -1198,11 +1198,11 @@
     .code-card-run {
       font-family: var(--font-mono);
       font-size: 0.78rem;
-      color: var(--blueprint);
-      background: var(--blueprint-tint);
+      color: var(--ember);
+      background: var(--ember-tint);
       padding: 10px 12px;
       margin-bottom: 12px;
-      border: 1px solid var(--blueprint);
+      border: 1px solid var(--ember);
       text-transform: none;
       line-height: 1.4;
       white-space: nowrap;
@@ -1265,14 +1265,14 @@
     .timeline-item.current .timeline-dot {
       width: 18px;
       height: 18px;
-      background: var(--blueprint);
-      border-color: var(--blueprint);
+      background: var(--ember);
+      border-color: var(--ember);
     }
 
     .timeline-item.prev .timeline-dot,
     .timeline-item.done .timeline-dot {
-      background: var(--blueprint);
-      border-color: var(--blueprint);
+      background: var(--ember);
+      border-color: var(--ember);
     }
 
     .timeline-line {
@@ -1284,7 +1284,7 @@
 
     .timeline-line.done,
     .timeline-line.active {
-      background: var(--blueprint);
+      background: var(--ember);
     }
 
     .timeline-label {
@@ -1299,7 +1299,7 @@
     }
 
     .timeline-item.current .timeline-label {
-      color: var(--blueprint);
+      color: var(--ember);
       font-weight: 500;
     }
 
@@ -1323,7 +1323,7 @@
 
     .phase-progress-fill {
       height: 100%;
-      background: var(--blueprint);
+      background: var(--ember);
       transition: width 0.5s ease;
     }
 
@@ -1340,12 +1340,12 @@
       font-size: 0.85rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
       text-align: center;
       margin-top: 14px;
       padding: 14px;
-      border: 1px solid var(--blueprint);
-      background: var(--blueprint-tint);
+      border: 1px solid var(--ember);
+      background: var(--ember-tint);
       display: none;
     }
 
@@ -1364,7 +1364,7 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--bg);
-      background: var(--blueprint);
+      background: var(--ember);
       padding: 8px 16px;
     }
 
@@ -1383,8 +1383,8 @@
     }
 
     .continue-link:hover {
-      color: var(--blueprint);
-      border-bottom-color: var(--blueprint);
+      color: var(--ember);
+      border-bottom-color: var(--ember);
     }
 
     .continue-callout {
@@ -1398,7 +1398,7 @@
       max-width: 480px;
     }
 
-    .continue-callout code { color: var(--blueprint); }
+    .continue-callout code { color: var(--ember); }
 
     .panel-loading {
       font-family: var(--font-mono);
@@ -1416,9 +1416,9 @@
     }
 
     .panel-fallback a {
-      color: var(--blueprint);
+      color: var(--ember);
       text-decoration: none;
-      border-bottom: 1px solid var(--blueprint);
+      border-bottom: 1px solid var(--ember);
       font-family: var(--font-body);
       font-size: 0.95rem;
     }
@@ -1447,7 +1447,7 @@
       font-family: var(--font-mono);
       font-size: 0.7rem;
       font-weight: 500;
-      color: var(--blueprint);
+      color: var(--ember);
       text-transform: uppercase;
       letter-spacing: 0.16em;
       margin-bottom: 18px;
@@ -1488,17 +1488,17 @@
 
     .toc-link:hover {
       color: var(--ink);
-      background: var(--blueprint-tint);
+      background: var(--ember-tint);
     }
 
     .toc-link:focus-visible {
-      outline: 2px solid var(--blueprint);
+      outline: 2px solid var(--ember);
       outline-offset: 2px;
     }
 
     .toc-link.active {
-      color: var(--blueprint);
-      border-left-color: var(--blueprint);
+      color: var(--ember);
+      border-left-color: var(--ember);
       font-weight: 500;
     }
 
@@ -1621,10 +1621,10 @@
   </div>
 
   <script src="build-meta.js"></script>
-  <script src="data.js?v=20260719p"></script>
-  <script src="progress.js?v=20260719p"></script>
-  <script src="header.js?v=20260719p" defer></script>
-  <script src="cmdpalette.js?v=20260719p" defer></script>
+  <script src="data.js?v=20260813d"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
     mermaid.initialize({
@@ -2857,15 +2857,15 @@
         var article = document.querySelector('.lesson-article');
         if (!article) return;
 
-        var conceptH2 = article.querySelector('#the-concept, #concept');
-        var buildH2 = article.querySelector('#build-it, #build');
         var keyTermsH2 = article.querySelector('#key-terms');
 
-        var preQuizHtml = buildQuizHtml(questions.filter(function (q) { return q.stage === 'pre'; }), 'pre', 'Pre-Lesson Check');
+        // There is no pre-lesson stage: a quiz before the material has been
+        // read tests nothing. Lessons open on the writing, and the checks come
+        // once there is something to check.
         var checkQuizHtml = buildQuizHtml(questions.filter(function (q) { return q.stage === 'check'; }), 'check', 'Mid-Lesson Check');
         var postQuizHtml = buildQuizHtml(questions.filter(function (q) { return q.stage === 'post'; }), 'post', 'Post-Lesson Quiz');
 
-        if (!preQuizHtml && !checkQuizHtml && !postQuizHtml) {
+        if (!checkQuizHtml && !postQuizHtml) {
           var allHtml = buildQuizHtml(questions, 'all', 'Quiz');
           if (allHtml && keyTermsH2) {
             keyTermsH2.insertAdjacentHTML('beforebegin', allHtml);
@@ -2874,12 +2874,6 @@
           }
           restoreQuizAnswers();
           return;
-        }
-
-        if (preQuizHtml && conceptH2) {
-          conceptH2.insertAdjacentHTML('beforebegin', preQuizHtml);
-        } else if (preQuizHtml && buildH2) {
-          buildH2.insertAdjacentHTML('beforebegin', preQuizHtml);
         }
 
         // Mid-lesson check: land between Build It and Use It if possible,

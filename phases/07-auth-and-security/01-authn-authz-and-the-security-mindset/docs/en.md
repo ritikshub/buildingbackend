@@ -70,7 +70,7 @@ The order is not negotiable: **you authenticate first, then authorize.** You can
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Two gates, two questions — authenticate first, then authorize</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="20" y="66" width="118" height="66" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.6"/>
-    <rect x="226" y="58" width="188" height="82" rx="12" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="226" y="58" width="188" height="82" rx="12" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="498" y="58" width="188" height="82" rx="12" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="762" y="66" width="96" height="66" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.6"/>
   </g>
@@ -86,7 +86,7 @@ The order is not negotiable: **you authenticate first, then authorize.** You can
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="79" y="96" font-size="12" font-weight="700" text-anchor="middle">REQUEST</text>
     <text x="79" y="116" font-size="9" text-anchor="middle" opacity="0.7">+ credential</text>
-    <text x="320" y="90" font-size="12.5" font-weight="700" text-anchor="middle" fill="#3553ff">① AUTHENTICATION</text>
+    <text x="320" y="90" font-size="12.5" font-weight="700" text-anchor="middle" fill="#c94a12">① AUTHENTICATION</text>
     <text x="320" y="110" font-size="10.5" text-anchor="middle">"who are you?"</text>
     <text x="320" y="127" font-size="9" text-anchor="middle" opacity="0.72">verify the credential</text>
     <text x="592" y="90" font-size="12.5" font-weight="700" text-anchor="middle" fill="#0fa07f">② AUTHORIZATION</text>
@@ -164,7 +164,7 @@ For step 2 the industry-standard checklist is **STRIDE**, six threat categories,
     <line x1="20" y1="266" x2="880" y2="266"/><line x1="20" y1="316" x2="880" y2="316"/><line x1="20" y1="366" x2="880" y2="366"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor">
-    <text x="20" y="95" font-size="12" font-weight="700" fill="#3553ff">S · Spoofing</text>
+    <text x="20" y="95" font-size="12" font-weight="700" fill="#c94a12">S · Spoofing</text>
     <text x="230" y="95">pretend to be another user or service</text>
     <text x="500" y="95" font-weight="700">Authenticity</text>
     <text x="648" y="95">passwords · MFA · tokens — L3–L7</text>
@@ -252,11 +252,11 @@ Because security is a property of the system and not a feature, the controls are
       <text x="596" y="202" font-size="10" text-anchor="end" fill="#e0930f">L12 · P2·L9</text>
     </g>
     <g>
-      <rect x="150" y="232" width="460" height="46" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff" stroke-width="1.5"/>
-      <rect x="150" y="232" width="6" height="46" rx="3" fill="#3553ff"/>
+      <rect x="150" y="232" width="460" height="46" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12" stroke-width="1.5"/>
+      <rect x="150" y="232" width="6" height="46" rx="3" fill="#c94a12"/>
       <text x="170" y="252" font-size="11.5" font-weight="700" fill="currentColor">4 · Authentication</text>
       <text x="170" y="269" font-size="9" fill="currentColor" opacity="0.78">establishes WHO — sessions, JWT, OAuth, API keys</text>
-      <text x="596" y="260" font-size="10" text-anchor="end" fill="#3553ff">L4–L8</text>
+      <text x="596" y="260" font-size="10" text-anchor="end" fill="#c94a12">L4–L8</text>
     </g>
     <g>
       <rect x="150" y="290" width="460" height="46" rx="9" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f" stroke-width="1.5"/>

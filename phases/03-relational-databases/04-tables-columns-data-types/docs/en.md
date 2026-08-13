@@ -39,7 +39,7 @@ A table is a set of columns; each column is a **name + a type + optional constra
   <g>
   <rect x="45" y="34" width="550" height="112" rx="12" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
   <rect x="65.0" y="76" width="150" height="58" rx="9" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="245.0" y="76" width="150" height="58" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="245.0" y="76" width="150" height="58" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="425.0" y="76" width="150" height="58" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   </g>
   <g>

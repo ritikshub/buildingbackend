@@ -41,15 +41,15 @@ Kubernetes gave the industry the vocabulary, but the three ideas exist wherever 
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Three probes — the difference is the CONSEQUENCE of failing</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="24" y="46" width="268" height="302" rx="14" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
-    <rect x="306" y="46" width="268" height="302" rx="14" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="306" y="46" width="268" height="302" rx="14" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="588" y="46" width="268" height="302" rx="14" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
     <rect x="40" y="278" width="236" height="54" rx="9" fill="#e0930f" fill-opacity="0.22" stroke="#e0930f"/>
-    <rect x="322" y="278" width="236" height="54" rx="9" fill="#3553ff" fill-opacity="0.20" stroke="#3553ff"/>
+    <rect x="322" y="278" width="236" height="54" rx="9" fill="#c94a12" fill-opacity="0.20" stroke="#c94a12"/>
     <rect x="604" y="278" width="236" height="54" rx="9" fill="#7c5cff" fill-opacity="0.20" stroke="#7c5cff"/>
   </g>
   <g fill="none" stroke-width="1.3">
     <line x1="44" y1="108" x2="272" y2="108" stroke="#e0930f" stroke-opacity="0.5"/>
-    <line x1="326" y1="108" x2="554" y2="108" stroke="#3553ff" stroke-opacity="0.5"/>
+    <line x1="326" y1="108" x2="554" y2="108" stroke="#c94a12" stroke-opacity="0.5"/>
     <line x1="608" y1="108" x2="836" y2="108" stroke="#7c5cff" stroke-opacity="0.5"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
@@ -66,7 +66,7 @@ Kubernetes gave the industry the vocabulary, but the three ideas exist wherever 
     <text x="158" y="300" font-size="11.5" font-weight="700" text-anchor="middle">KILL + RESTART</text>
     <text x="158" y="315" font-size="9" text-anchor="middle" opacity="0.9">irreversible — and it fires on</text>
     <text x="158" y="327" font-size="9" text-anchor="middle" opacity="0.9">every replica at the same time</text>
-    <text x="440" y="76" font-size="14" font-weight="700" text-anchor="middle" fill="#3553ff">READINESS</text>
+    <text x="440" y="76" font-size="14" font-weight="700" text-anchor="middle" fill="#c94a12">READINESS</text>
     <text x="440" y="95" font-size="10" text-anchor="middle" opacity="0.85">GET /readyz</text>
     <text x="322" y="130" font-size="9" opacity="0.6">ASKS</text>
     <text x="322" y="146" font-size="10.5">Should I receive traffic</text>
@@ -248,7 +248,7 @@ Incident 4 is fixed by a sequence, and the step everyone omits is step 2.
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="170" y="158" width="113" height="36" rx="8" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
-    <rect x="283" y="158" width="159" height="36" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="283" y="158" width="159" height="36" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="442" y="158" width="68" height="36" rx="8" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="510" y="158" width="340" height="36" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="6 5"/>
     <rect x="170" y="240" width="91" height="30" rx="7" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"/>

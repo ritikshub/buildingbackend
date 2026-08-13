@@ -446,7 +446,7 @@ But the interesting result is the one that has nothing to do with the retry coun
       <text x="136" y="146">attempt 1</text><text x="314" y="146">attempt 2</text><text x="492" y="146">attempt 3</text><text x="670" y="146">attempt 4</text>
     </g>
     <g font-size="8.5" text-anchor="middle">
-      <text x="136" y="165" fill="#3553ff" font-weight="700">INSERT row ✓</text><text x="314" y="165" fill="#3553ff" font-weight="700">INSERT row ✓</text><text x="492" y="165" fill="#3553ff" font-weight="700">INSERT row ✓</text><text x="670" y="165" fill="#3553ff" font-weight="700">INSERT row ✓</text>
+      <text x="136" y="165" fill="#c94a12" font-weight="700">INSERT row ✓</text><text x="314" y="165" fill="#c94a12" font-weight="700">INSERT row ✓</text><text x="492" y="165" fill="#c94a12" font-weight="700">INSERT row ✓</text><text x="670" y="165" fill="#c94a12" font-weight="700">INSERT row ✓</text>
       <text x="136" y="181" fill="#d64545">receipt svc 504</text><text x="314" y="181" fill="#d64545">receipt svc 504</text><text x="492" y="181" fill="#d64545">receipt svc 504</text><text x="670" y="181" fill="#0fa07f" font-weight="700">receipt svc 200</text>
       <text x="136" y="194" fill="currentColor" opacity="0.7">raise → retry</text><text x="314" y="194" fill="currentColor" opacity="0.7">raise → retry</text><text x="492" y="194" fill="currentColor" opacity="0.7">raise → retry</text><text x="670" y="194" fill="#0fa07f" font-weight="700">ack — SUCCESS</text>
     </g>

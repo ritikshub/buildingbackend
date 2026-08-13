@@ -104,7 +104,7 @@ The upshot: 2PC is a reasonable tool between two databases you control inside on
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="40" y="112" width="126" height="50" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="40" y="112" width="126" height="50" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="200" y="112" width="126" height="50" rx="9" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="360" y="112" width="126" height="50" rx="9" fill="#e0930f" fill-opacity="0.22" stroke="#e0930f"/>
     <rect x="520" y="112" width="126" height="50" rx="9" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="5 4"/>
@@ -118,7 +118,7 @@ The upshot: 2PC is a reasonable tool between two databases you control inside on
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="40" y="308" width="126" height="50" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="40" y="308" width="126" height="50" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="200" y="308" width="126" height="50" rx="9" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="360" y="308" width="126" height="50" rx="9" fill="#7c5cff" fill-opacity="0.22" stroke="#7c5cff"/>
     <rect x="520" y="308" width="126" height="50" rx="9" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="5 4"/>
@@ -220,8 +220,8 @@ The measured run below produces 13 duplicates out of 413 deliveries from 6 relay
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="24" y="70" width="196" height="188" rx="12" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f" stroke-dasharray="7 5"/>
-    <rect x="42" y="118" width="160" height="44" rx="8" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="42" y="174" width="160" height="44" rx="8" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="42" y="118" width="160" height="44" rx="8" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="42" y="174" width="160" height="44" rx="8" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="256" y="70" width="216" height="188" rx="12" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="272" y="112" width="184" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.4"/>
     <rect x="272" y="150" width="184" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.4"/>
@@ -361,7 +361,7 @@ One subtlety the program implements because real decoders do: WAL records are wr
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Your database has been writing the event log all along</text>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="28" y="48" width="330" height="86" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="28" y="48" width="330" height="86" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="28" y="176" width="330" height="122" rx="11" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     <rect x="44" y="228" width="56" height="30" rx="5" fill="#7c5cff" fill-opacity="0.18" stroke="#7c5cff"/>
     <rect x="104" y="228" width="56" height="30" rx="5" fill="#7c5cff" fill-opacity="0.18" stroke="#7c5cff"/>
@@ -382,7 +382,7 @@ One subtlety the program implements because real decoders do: WAL records are wr
   </g>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="193" y="74" font-size="11.5" font-weight="700" text-anchor="middle" fill="#3553ff">PRIMARY DATABASE</text>
+    <text x="193" y="74" font-size="11.5" font-weight="700" text-anchor="middle" fill="#c94a12">PRIMARY DATABASE</text>
     <text x="193" y="95" font-size="9.5" text-anchor="middle" opacity="0.9">tables: orders · outbox · inbox</text>
     <text x="193" y="115" font-size="9" text-anchor="middle" opacity="0.8">the current state you query</text>
     <text x="205" y="158" font-size="9" opacity="0.9">writes every change here FIRST — for its own crash recovery</text>

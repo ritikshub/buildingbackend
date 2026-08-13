@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A web service runs flawlessly on one instance, with user sessions stored in a Python dict. You scale it to six instances behind a round-robin load balancer and change no code. Of the authenticated requests that follow a login, roughly what share now fail with a 401?",
-    "options": [
-      "None — the sessions are still in memory and the code is unchanged",
-      "About 1 in 6, since one instance out of six holds the session",
-      "About 85%, because only 1 request in 6 returns to the instance holding the session",
-      "100% — no request can ever find its session again"
-    ],
-    "correct": 2,
-    "explanation": "Measured: 85.0% at six instances, and the rule is exact rather than statistical — 1 − floor(20/N)/20 for a 20-request session. 'About 1 in 6' is the tempting answer because it inverts the ratio: round-robin returns only 1 request in 6 to the instance that holds the session, so 5 in 6 fail, not 1 in 6. 'None' is what your test suite reports, because it runs a single replica, where the measured logout rate really is 0.0%. And it is not 100%, which is why the bug looks like flakiness instead of an outage."
-  },
-  {
     "stage": "check",
     "question": "Each instance enforces a 100-requests-per-minute policy using its own in-memory counter. The autoscaler grows the fleet from 6 instances to 16. What limit does a client actually experience?",
     "options": [

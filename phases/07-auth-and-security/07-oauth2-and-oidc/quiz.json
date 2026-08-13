@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A photo-printing app needs to read a user's Google Photos. Why is asking for the user's Google password the wrong design, and what does OAuth provide instead?",
-    "options": [
-      "Passwords are fine here as long as the app stores them hashed",
-      "Handing the app the Google password gives it full, permanent access to everything in the account, with no way to scope it to 'read photos only' and no way to revoke just this app. OAuth solves this with delegation: the user authenticates to Google (never to the app), consents to a specific scope, and Google issues the app a scoped, revocable access token — the password is never shared",
-      "The app should use the password but only over HTTPS",
-      "OAuth is irrelevant here; the app should just scrape the photos"
-    ],
-    "correct": 1,
-    "explanation": "Sharing a password is the anti-pattern OAuth exists to eliminate: it grants everything, forever, unrevocably, and indistinguishably from the user. Delegated authorization lets the user grant narrow, revocable permission through a trusted third party (the authorization server) without exposing the credential. The app receives a token limited to the consented scope, which the resource server enforces."
-  },
-  {
     "stage": "check",
     "question": "In the OAuth flow, who does the user actually authenticate to, and why does that matter?",
     "options": [

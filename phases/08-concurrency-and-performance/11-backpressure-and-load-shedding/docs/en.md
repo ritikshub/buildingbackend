@@ -75,7 +75,7 @@ The measured columns in the Build It confirm this to within a few percent. The t
     <path d="M90 340 L 228 337.2 L 366 332.5 L 435 328.8 L 504 323.1 L 573 313.8 L 642 295 L 676 276 L 711 238.8 L 732 190 L 745 126 L 752 70" fill="none" stroke="#0fa07f" stroke-width="2.6" stroke-linejoin="round"/>
     <path d="M90 340 L 228 333 L 366 321.3 L 435 311.9 L 504 297.8 L 573 274.4 L 628 240.4 L 642 227.5 L 676 180.6 L 697 133.7 L 711 87 L 719 70" fill="none" stroke="#e0930f" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="7 4"/>
 
-    <g fill="#3553ff" stroke="#3553ff" stroke-width="1.6" fill-opacity="0.35">
+    <g fill="#c94a12" stroke="#c94a12" stroke-width="1.6" fill-opacity="0.35">
       <circle cx="435" cy="328.8" r="4.5"/><circle cx="573" cy="313.8" r="4.5"/><circle cx="642" cy="295" r="4.5"/><circle cx="711" cy="242.1" r="4.5"/><circle cx="745" cy="95.9" r="4.5"/>
     </g>
     <g fill="none" stroke-width="2">
@@ -90,7 +90,7 @@ The measured columns in the Build It confirm this to within a few percent. The t
       <text x="790" y="320" font-size="10" fill="#d64545" font-weight="700">rho = 1</text><text x="790" y="334" font-size="9" fill="#d64545">vertical</text>
     </g>
     <g fill="currentColor">
-      <text x="150" y="110" font-size="11.5" font-weight="700" fill="#0fa07f">— steady service:  W/S = 1/(1-rho)</text><text x="150" y="130" font-size="11.5" font-weight="700" fill="#e0930f">- - variable service (CV^2 = 4)</text><text x="150" y="150" font-size="11.5" font-weight="700" fill="#3553ff">o  measured, 900k simulated requests</text><text x="150" y="176" font-size="10" opacity="0.9">rho = 0.50 -&gt; 2.0x</text>
+      <text x="150" y="110" font-size="11.5" font-weight="700" fill="#0fa07f">— steady service:  W/S = 1/(1-rho)</text><text x="150" y="130" font-size="11.5" font-weight="700" fill="#e0930f">- - variable service (CV^2 = 4)</text><text x="150" y="150" font-size="11.5" font-weight="700" fill="#c94a12">o  measured, 900k simulated requests</text><text x="150" y="176" font-size="10" opacity="0.9">rho = 0.50 -&gt; 2.0x</text>
       <text x="330" y="176" font-size="10" opacity="0.9">rho = 0.90 -&gt; 9.7x</text><text x="150" y="192" font-size="10" opacity="0.9">rho = 0.80 -&gt; 5.0x</text><text x="330" y="192" font-size="10" opacity="0.9">rho = 0.95 -&gt; 22.7x</text><text x="596" y="200" font-size="10" font-weight="700" fill="#e0930f" text-anchor="end">knee at 0.78</text>
       <text x="760" y="286" font-size="10" font-weight="700" fill="#0fa07f">knee at 0.90</text>
     </g>
@@ -123,7 +123,7 @@ Engineers protect one queue and leave five unbounded, because the other five do 
     <g fill="currentColor" font-size="9" font-weight="700" opacity="0.65">
       <text x="46" y="62">THE QUEUE</text><text x="330" y="62">THE KNOB THAT BOUNDS IT</text><text x="600" y="62">THE DEFAULT YOU INHERIT</text><text x="866" y="62" text-anchor="end">BOUND?</text>
     </g>
-    <path d="M28 70 L 852 70" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.4"/><path d="M34 84 L 34 424" fill="none" stroke="#3553ff" stroke-width="1.6" stroke-dasharray="4 4" opacity="0.7" marker-end="url(#l11-a2)"/>
+    <path d="M28 70 L 852 70" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.4"/><path d="M34 84 L 34 424" fill="none" stroke="#c94a12" stroke-width="1.6" stroke-dasharray="4 4" opacity="0.7" marker-end="url(#l11-a2)"/>
 
     <g fill="none" stroke-width="1.8">
       <rect x="44" y="78" width="262" height="38" rx="7" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/><rect x="44" y="126" width="262" height="38" rx="7" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/><rect x="44" y="174" width="262" height="38" rx="7" fill="#d64545" fill-opacity="0.11" stroke="#d64545"/><rect x="44" y="222" width="262" height="38" rx="7" fill="#d64545" fill-opacity="0.11" stroke="#d64545"/>

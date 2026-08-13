@@ -78,7 +78,7 @@ Here is the same order flow, both ways:
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="36" y="112" width="104" height="54" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="36" y="112" width="104" height="54" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="188" y="112" width="112" height="54" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="330" y="112" width="112" height="54" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="472" y="112" width="112" height="54" rx="9" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"/>
@@ -94,7 +94,7 @@ Here is the same order flow, both ways:
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="36" y="322" width="104" height="54" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="36" y="322" width="104" height="54" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="188" y="292" width="112" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="188" y="352" width="112" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="352" y="322" width="118" height="54" rx="9" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f"/>
@@ -238,7 +238,7 @@ Here is the thing to internalise, because it is the whole reason this phase exis
     <path d="M546 344 L 546 350"/>
     <path d="M790 342 L 790 350"/>
   </g>
-  <g fill="none" stroke="#3553ff" stroke-width="1.6" stroke-dasharray="6 4" opacity="0.8">
+  <g fill="none" stroke="#c94a12" stroke-width="1.6" stroke-dasharray="6 4" opacity="0.8">
     <path d="M494 168 L 826 168"/>
   </g>
 
@@ -263,7 +263,7 @@ Here is the thing to internalise, because it is the whole reason this phase exis
     <text x="660" y="372" font-size="9" text-anchor="middle" opacity="0.9">time  →  a 10x burst arrives and drains</text>
     <text x="546" y="366" font-size="8" text-anchor="middle" opacity="0.75">burst</text>
     <text x="790" y="366" font-size="8" text-anchor="middle" opacity="0.75">drained</text>
-    <text x="820" y="160" font-size="8.5" text-anchor="end" fill="#3553ff" font-weight="700">alarm threshold — Little's Law: depth ÷ drain rate = seconds of backlog</text>
+    <text x="820" y="160" font-size="8.5" text-anchor="end" fill="#c94a12" font-weight="700">alarm threshold — Little's Law: depth ÷ drain rate = seconds of backlog</text>
     <text x="660" y="398" font-size="9.5" text-anchor="middle" font-weight="700">THE USER ALREADY LEFT</text>
     <text x="660" y="414" font-size="8.5" text-anchor="middle" opacity="0.8">consumers drain at their sustainable rate</text>
 

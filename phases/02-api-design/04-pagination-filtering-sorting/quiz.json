@@ -1,12 +1,5 @@
 [
   {
-    "question": "Why does LIMIT 20 OFFSET 100000 get slower as the offset grows, while a keyset query stays fast?",
-    "options": ["OFFSET locks the table", "OFFSET forces the DB to generate and discard 100,000 rows before returning 20; a keyset predicate seeks directly into an index", "Keyset queries skip the WHERE clause", "OFFSET disables the index entirely by design"],
-    "correct": 1,
-    "explanation": "OFFSET N produces and throws away N rows first — linear cost in depth. A keyset predicate like (created_at, id) < (:ts, :id) seeks straight to the cursor position in a composite index, so cost is constant regardless of page depth.",
-    "stage": "pre"
-  },
-  {
     "question": "During pagination, another process inserts a row that sorts to the top. What does an offset-paginated client observe?",
     "options": ["Nothing changes", "Every row shifts by one, so the last row of the previous page reappears (duplicate)", "The server returns a 409", "The cursor is invalidated"],
     "correct": 1,

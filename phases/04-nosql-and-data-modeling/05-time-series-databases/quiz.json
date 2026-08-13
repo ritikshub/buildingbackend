@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What makes time-series data different from the general data a relational database expects?",
-    "options": ["Nothing — it's ordinary rows that happen to have a timestamp column", "It's append-only and time-ordered, written once and almost never updated, queried by time range and usually aggregated, kept hot-recent/dropped-old, and arrives at enormous volume — a rigid shape a TSDB is built to exploit", "It must always be stored as text, not numbers", "It can only be queried one point at a time by exact timestamp"],
-    "correct": 1,
-    "explanation": "A time series has an unusually predictable shape: points append in time order and are never updated, you read ranges (not single points) and usually aggregate them, recent data is hot while old data is dropped on a retention schedule, and the volume is huge. A relational database is a general tool that assumes none of this; a TSDB is designed to exploit every one of these properties."
-  },
-  {
     "stage": "check",
     "question": "In the time-series data model, what is 'cardinality' and why does it decide whether a TSDB survives?",
     "options": ["The number of points in a series; more points is always fine", "The total count of distinct series — the product of how many distinct values each tag can take; a high-cardinality value in a tag (like user_id) explodes it into millions of series and kills the database", "The compression ratio the database achieves", "How many days of data you retain"],

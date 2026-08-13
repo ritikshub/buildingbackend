@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service reports 92% line coverage and the CI gate is set at 90%. A reviewer asks what that number tells you about the quality of the test suite. What is the most accurate answer?",
-    "options": [
-      "That roughly 92% of the code's behaviour has been verified, so the remaining risk is concentrated in the 8% of lines nothing touches",
-      "Almost nothing on its own. Measured here: six tests that call every function and contain zero assertions scored 100.0% line coverage (48 of 48 lines) and 87.5% branch coverage while killing 0 of 70 seeded faults. Coverage and detection are independent quantities",
-      "That the suite is adequate for the covered code but says nothing about integration behaviour, which is what the remaining 8% represents",
-      "That the suite is probably fine — 92% is above the industry-standard 80% threshold, and pushing higher has diminishing returns because the last lines are error handlers"
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer treats coverage as a proxy for verification, which is exactly the belief the metric's name encourages. Coverage records which lines the interpreter executed; it has no access to whether anything compared a result to an expectation. The proof is constructive rather than statistical: a suite wrapping every call in try/except with no assertions reaches the metric's ceiling and detects nothing at all, so a suite can sit anywhere on the range from 0% to 100% detection at the same coverage number. Option 3 is a real concern but a different one — coverage's blindness here has nothing to do with integration. Option 4's 'industry-standard 80%' has no measured basis in anything."
-  },
-  {
     "stage": "check",
     "question": "A six-line shipping function is exercised by exactly one test, `shipping_cents(6000, True)`. Both of its `if` statements come out true. What do line and branch coverage report?",
     "options": [

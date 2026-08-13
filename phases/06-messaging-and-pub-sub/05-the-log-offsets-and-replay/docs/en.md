@@ -77,7 +77,7 @@ The program makes that difference concrete: for 2,000 records and 3 groups, queu
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="36" y="118" width="92" height="46" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="36" y="118" width="92" height="46" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="172" y="96" width="232" height="92" rx="10" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
     <rect x="452" y="96" width="112" height="40" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="452" y="148" width="112" height="40" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
@@ -93,7 +93,7 @@ The program makes that difference concrete: for 2,000 records and 3 groups, queu
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="36" y="352" width="92" height="46" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="36" y="352" width="92" height="46" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="1.6" stroke="#0fa07f">
     <rect x="176" y="330" width="34" height="42" rx="4" fill="#0fa07f" fill-opacity="0.16"/>
@@ -114,7 +114,7 @@ The program makes that difference concrete: for 2,000 records and 3 groups, queu
     <path d="M622 351 L 656 351" marker-end="url(#l05-arrow)"/>
   </g>
   <g fill="none" stroke-width="1.8">
-    <path d="M229 400 L 229 378" stroke="#3553ff" marker-end="url(#l05-arrow)"/>
+    <path d="M229 400 L 229 378" stroke="#c94a12" marker-end="url(#l05-arrow)"/>
     <path d="M373 400 L 373 378" stroke="#7c5cff" marker-end="url(#l05-arrow)"/>
     <path d="M517 400 L 517 378" stroke="#e0930f" marker-end="url(#l05-arrow)"/>
   </g>
@@ -150,7 +150,7 @@ The program makes that difference concrete: for 2,000 records and 3 groups, queu
     <text x="193" y="322" font-size="8" text-anchor="middle" opacity="0.75">0</text>
     <text x="373" y="322" font-size="8" text-anchor="middle" opacity="0.75">offset 5</text>
     <text x="589" y="322" font-size="8" text-anchor="middle" opacity="0.75">tail</text>
-    <text x="229" y="416" font-size="9" font-weight="700" text-anchor="middle" fill="#3553ff">nightly-batch</text>
+    <text x="229" y="416" font-size="9" font-weight="700" text-anchor="middle" fill="#c94a12">nightly-batch</text>
     <text x="229" y="430" font-size="8" text-anchor="middle" opacity="0.85">offset 1</text>
     <text x="373" y="416" font-size="9" font-weight="700" text-anchor="middle" fill="#7c5cff">search-indexer</text>
     <text x="373" y="430" font-size="8" text-anchor="middle" opacity="0.85">offset 5</text>
@@ -258,7 +258,7 @@ Two lookups combine: choosing the segment (a binary search over base offsets, wh
     <rect x="396" y="70" width="118" height="56" rx="8" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f" stroke-dasharray="6 4"/>
     <rect x="520" y="70" width="118" height="56" rx="8" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="644" y="70" width="118" height="56" rx="8" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
-    <rect x="768" y="70" width="88" height="56" rx="8" fill="#3553ff" fill-opacity="0.15" stroke="#3553ff"/>
+    <rect x="768" y="70" width="88" height="56" rx="8" fill="#c94a12" fill-opacity="0.15" stroke="#c94a12"/>
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="1.8">
@@ -270,7 +270,7 @@ Two lookups combine: choosing the segment (a binary search over base offsets, wh
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="24" y="322" width="404" height="118" rx="11" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff"/>
+    <rect x="24" y="322" width="404" height="118" rx="11" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12"/>
     <rect x="452" y="322" width="404" height="118" rx="11" fill="#e0930f" fill-opacity="0.09" stroke="#e0930f"/>
   </g>
 
@@ -317,11 +317,11 @@ Two lookups combine: choosing the segment (a binary search over base offsets, wh
     <text x="140" y="288" font-size="8.5" opacity="0.9">crc32: a half-written or bit-rotted record is detected, not believed — this is how a torn tail is found</text>
     <text x="300" y="304" font-size="9" font-weight="700" fill="#7c5cff">sparse index: 253 entries, one per 8 records, 4,048 B = 1.88% of the log</text>
 
-    <text x="42" y="346" font-size="11" font-weight="700" fill="#3553ff">SEEKING — segment search + sparse index</text>
+    <text x="42" y="346" font-size="11" font-weight="700" fill="#c94a12">SEEKING — segment search + sparse index</text>
     <text x="42" y="368" font-size="9" opacity="0.92">read_from(1,337): binary-search filenames -> ...1224.log</text>
     <text x="42" y="384" font-size="9" opacity="0.92">binary-search its index -> nearest entry at 1,336</text>
     <text x="42" y="400" font-size="9" opacity="0.92">seek, then scan forward 1 record</text>
-    <text x="42" y="422" font-size="9.5" font-weight="700" fill="#3553ff">3.48 records scanned on average vs 999.5 naive — 287x</text>
+    <text x="42" y="422" font-size="9.5" font-weight="700" fill="#c94a12">3.48 records scanned on average vs 999.5 naive — 287x</text>
 
     <text x="470" y="346" font-size="11" font-weight="700" fill="#e0930f">RETENTION — deletion is per segment, never per record</text>
     <text x="470" y="368" font-size="9" opacity="0.92">retention.ms = 7d  -> 1 segment, 309 records, 32,674 B</text>
@@ -407,7 +407,7 @@ A history window is not a snapshot. Deleting old segments deletes whole *keys* �
   <text x="440" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">One log, two retention policies — a history or a table, not both</text>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="252" y="44" width="376" height="56" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="252" y="44" width="376" height="56" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="24" y="164" width="404" height="192" rx="12" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f"/>
     <rect x="452" y="164" width="404" height="192" rx="12" fill="#0fa07f" fill-opacity="0.09" stroke="#0fa07f"/>
   </g>

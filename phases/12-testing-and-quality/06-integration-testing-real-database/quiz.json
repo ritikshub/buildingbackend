@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your test suite runs against SQLite because it is fast and needs no daemon. Production is PostgreSQL. Same schema file, same SQL, same ORM. How does that substitution usually bite you?",
-    "options": [
-      "Rarely — SQL is standardised, so only a handful of exotic functions and date types differ, and an ORM abstracts those away",
-      "Almost entirely at INSERT time, where SQLite is more permissive: you get loud 500s in production the first time a path runs, and you fix them",
-      "Roughly half the divergences PostgreSQL refuses outright, and the other half are answered by BOTH engines with different answers and no error raised anywhere",
-      "Only under concurrency — single-threaded queries return identical results, so a serial test suite is safe"
-    ],
-    "correct": 2,
-    "explanation": "Measured across ten schema-and-query pairs: all ten diverged, five with a PostgreSQL error (22P02, 22001, 22012, 23503, 42803) and five with no error in either engine. Option B is the tempting one because those are the divergences you have actually seen — an error has a stack trace and gets fixed, so it is the half that reaches your memory. The silent half never does: SUM over a NUMERIC(10,2) column measured 10.305000000000001 against an exact 10.31, LIKE 'ADA%' matched 1 row against 0, page 1 of an ORDER BY held ['Bob','Zoe'] against ['ada','Bob'], and the next id after a rolled-back INSERT was 2 against 3. Option A is what an ORM appears to promise; the ORM emits the same SQL and the engines disagree about what it means."
-  },
-  {
     "stage": "check",
     "question": "Of these four behaviours, which one is IDENTICAL in SQLite and PostgreSQL?",
     "options": [

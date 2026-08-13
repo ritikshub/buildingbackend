@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why is 'on commit, write every modified data page to its final location on disk' a bad way to achieve durability?",
-    "options": ["It uses too much RAM", "It's slow (scattered random writes on the commit path) and unsafe (a crash mid-write leaves a torn, corrupt data file)", "It's actually the best way", "Pages can't be written to disk"],
-    "correct": 1,
-    "explanation": "Modified pages are scattered, so committing means many slow random writes. Worse, a crash partway through leaves the data file partially updated — a torn write — with no record of the correct state. WAL fixes both."
-  },
-  {
     "stage": "check",
     "question": "What is the write-ahead rule?",
     "options": ["Write data pages before logging", "Before a change is written to the data pages on disk, a record describing it must first be appended and flushed to the log", "Always write to two disks at once", "Log only after the transaction commits"],

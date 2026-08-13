@@ -133,10 +133,10 @@ length, then the protobuf bytes — all carried inside HTTP/2 DATA frames. A una
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="90" y="44" width="140" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="90" y="44" width="140" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="570" y="44" width="140" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="160" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
+    <text x="160" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
     <text x="640" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Server</text>
     <!-- lifelines -->
     <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1.3" stroke-dasharray="4 5">
@@ -155,10 +155,10 @@ length, then the protobuf bytes — all carried inside HTTP/2 DATA frames. A una
       <path d="M634 332 L166 332" marker-end="url(#l13-ar)"/>
     </g>
     <!-- message 1: HEADERS (client -> server) -->
-    <text x="400" y="128" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">HEADERS</text>
+    <text x="400" y="128" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">HEADERS</text>
     <text x="400" y="138" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">:method POST&#8195;:path /pb.Greeter/SayHello&#8195;content-type application/grpc</text>
     <!-- message 2: DATA (client -> server) -->
-    <text x="400" y="170" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">DATA</text>
+    <text x="400" y="170" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">DATA</text>
     <text x="400" y="180" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">[flag=0]&#8201;[len=8]&#8201;[protobuf: id=150, name=&quot;Ada&quot;]</text>
     <!-- note band 2: server processing -->
     <rect x="70" y="196" width="660" height="22" rx="6" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f" stroke-opacity="0.6" stroke-width="1"/>

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service returns a 500 to one user in production. Why can't you debug it the way you would on your laptop?",
-    "options": [
-      "Production machines run a different version of the language",
-      "Production code is compiled and laptops run interpreted code",
-      "The request is unreproducible, you can't attach a debugger to a live process serving real users, you don't know which of forty machines handled it, and the request's internal state was freed microseconds after it finished — you know only what the program deliberately wrote down while it ran",
-      "You can debug it identically; you just need SSH access"
-    ],
-    "correct": 2,
-    "explanation": "Production is a black box. Every internal fact — the branch taken, the variable's value, how long the database call blocked — exists for microseconds and is then garbage-collected. Nothing recovers it after the fact. What you can know at 03:14 is exactly and only the telemetry the program emitted while the request was alive, which is why emitting it is a feature you design rather than an afterthought."
-  },
-  {
     "stage": "check",
     "question": "What is the actual difference between monitoring and observability?",
     "options": [

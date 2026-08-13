@@ -37,8 +37,8 @@ because the herd keeps re-forming on every failed recompute.
     <text x="440" y="66" text-anchor="middle" font-size="11" font-weight="700" fill="#e0930f">TTL expires on ONE hot key</text>
     <path d="M440 80 L440 96" fill="none" stroke="#e0930f" stroke-width="1.7" marker-end="url(#p5l6a-am)"/>
 
-    <rect x="170" y="100" width="540" height="44" rx="10" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="440" y="120" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">50,000 concurrent requests — every one now a MISS</text>
+    <rect x="170" y="100" width="540" height="44" rx="10" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="440" y="120" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">50,000 concurrent requests — every one now a MISS</text>
     <text x="440" y="136" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">cache-aside says "read the database and repopulate" — so all 50,000 do, at once</text>
 
     <g fill="none" stroke="#e0930f" stroke-width="1.4" stroke-opacity="0.85">
@@ -103,7 +103,7 @@ request for the same key parks until the leader finishes, then takes the leader'
   <defs>
     <marker id="p5l6b-am" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
     <marker id="p5l6b-ag" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
-    <marker id="p5l6b-ab" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p5l6b-ab" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="700" fill="currentColor">Single-flight: the same 50,000 misses, but ONE of them reaches the database</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
@@ -111,8 +111,8 @@ request for the same key parks until the leader finishes, then takes the leader'
     <text x="440" y="66" text-anchor="middle" font-size="11" font-weight="700" fill="#e0930f">TTL expires on ONE hot key</text>
     <path d="M440 80 L440 96" fill="none" stroke="#e0930f" stroke-width="1.7" marker-end="url(#p5l6b-am)"/>
 
-    <rect x="170" y="100" width="540" height="44" rx="10" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="440" y="120" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">50,000 concurrent requests — every one now a MISS</text>
+    <rect x="170" y="100" width="540" height="44" rx="10" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="440" y="120" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">50,000 concurrent requests — every one now a MISS</text>
     <text x="440" y="136" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">nothing about the traffic changed — only what happens next</text>
 
     <g fill="none" stroke="#e0930f" stroke-width="1.4" stroke-opacity="0.85">
@@ -148,17 +148,17 @@ request for the same key parks until the leader finishes, then takes the leader'
       <path d="M255 358 L625 358"/>
       <path d="M255 358 L255 372" marker-end="url(#p5l6b-ag)"/>
     </g>
-    <path d="M625 358 L625 372" fill="none" stroke="#3553ff" stroke-width="1.6" marker-end="url(#p5l6b-ab)"/>
+    <path d="M625 358 L625 372" fill="none" stroke="#c94a12" stroke-width="1.6" marker-end="url(#p5l6b-ab)"/>
     <text x="255" y="352" text-anchor="middle" font-size="9" font-weight="700" fill="#0fa07f">1 wins the lock</text>
-    <text x="625" y="352" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">49,999 lose it</text>
+    <text x="625" y="352" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">49,999 lose it</text>
 
     <rect x="110" y="376" width="290" height="66" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f" stroke-width="1.8"/>
     <text x="255" y="398" text-anchor="middle" font-size="11" font-weight="700" fill="#0fa07f">THE LEADER — 1 request</text>
     <text x="255" y="416" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">runs the recompute exactly once</text>
     <text x="255" y="433" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.75">everyone's work, done a single time</text>
 
-    <rect x="480" y="376" width="290" height="66" rx="10" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="625" y="398" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">THE WAITERS — 49,999</text>
+    <rect x="480" y="376" width="290" height="66" rx="10" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="625" y="398" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">THE WAITERS — 49,999</text>
     <text x="625" y="416" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">park until the leader finishes</text>
     <text x="625" y="433" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.75">zero database calls between them</text>
 
@@ -174,9 +174,9 @@ request for the same key parks until the leader finishes, then takes the leader'
     <text x="490" y="500" text-anchor="middle" font-size="9" fill="#0fa07f">the one result, published to every waiter</text>
 
     <path d="M255 550 L255 570" fill="none" stroke="#0fa07f" stroke-width="1.8" marker-end="url(#p5l6b-ag)"/>
-    <path d="M772 409 L826 409 Q848 409 848 431 L848 578 Q848 600 826 600 L764 600" fill="none" stroke="#3553ff" stroke-width="1.8" marker-end="url(#p5l6b-ab)"/>
-    <text x="838" y="470" text-anchor="end" font-size="8.5" fill="#3553ff" opacity="0.9">each waiter wakes with</text>
-    <text x="838" y="484" text-anchor="end" font-size="8.5" fill="#3553ff" opacity="0.9">the leader's value</text>
+    <path d="M772 409 L826 409 Q848 409 848 431 L848 578 Q848 600 826 600 L764 600" fill="none" stroke="#c94a12" stroke-width="1.8" marker-end="url(#p5l6b-ab)"/>
+    <text x="838" y="470" text-anchor="end" font-size="8.5" fill="#c94a12" opacity="0.9">each waiter wakes with</text>
+    <text x="838" y="484" text-anchor="end" font-size="8.5" fill="#c94a12" opacity="0.9">the leader's value</text>
 
     <rect x="120" y="574" width="640" height="54" rx="10" fill="#0fa07f" fill-opacity="0.09" stroke="#0fa07f" stroke-opacity="0.8" stroke-width="1.6"/>
     <text x="440" y="596" text-anchor="middle" font-size="11" font-weight="700" fill="#0fa07f">All 50,000 requests get the value — the database served exactly ONE query</text>

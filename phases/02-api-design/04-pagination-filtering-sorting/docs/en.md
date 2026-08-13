@@ -130,7 +130,7 @@ watch the difference. Offset re-reads by *position*; cursor seeks by *key*:
   <text x="670" y="208" font-size="8" fill="currentColor" opacity="0.8">for the same 20 rows</text>
   <text x="30" y="242" font-size="8.5" fill="currentColor" opacity="0.9">The composite index (created_at DESC, id DESC) makes it one seek &#8594; constant cost at any depth: page 5,000 costs what page 1 costs.</text>
   <text x="16" y="278" font-size="11" fill="currentColor" font-weight="700">2 &#183; CORRECTNESS — one concurrent insert, applied to both paths</text>
-  <text x="884" y="278" font-size="9" fill="#3553ff" text-anchor="end" font-weight="700">client: ?limit=2&amp;offset=2&#8195;vs&#8195;?limit=2&amp;cursor=eyJ...</text>
+  <text x="884" y="278" font-size="9" fill="#c94a12" text-anchor="end" font-weight="700">client: ?limit=2&amp;offset=2&#8195;vs&#8195;?limit=2&amp;cursor=eyJ...</text>
   <g fill="none" stroke-linejoin="round" stroke-width="1.8">
     <rect x="16" y="292" width="430" height="272" rx="11" fill="#e0930f" fill-opacity="0.05" stroke="#e0930f" stroke-opacity="0.75"/>
     <rect x="454" y="292" width="430" height="272" rx="11" fill="#0fa07f" fill-opacity="0.05" stroke="#0fa07f" stroke-opacity="0.75"/>

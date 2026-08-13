@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why do databases offer multiple isolation levels instead of always giving perfect isolation?",
-    "options": ["To confuse developers", "Perfect isolation is expensive — it forces transactions to wait on each other — so databases let you trade correctness against concurrency", "Lower levels store less data", "It's a historical accident with no real effect"],
-    "correct": 1,
-    "explanation": "Making every transaction behave exactly as if alone forces waiting, which kills concurrency. Isolation is a spectrum so you can choose how much anomaly-protection you need versus how much parallelism you want."
-  },
-  {
     "stage": "check",
     "question": "What is a dirty read?",
     "options": ["Reading a corrupted disk block", "Reading another transaction's uncommitted change, which may later be rolled back — so you acted on data that never really existed", "Reading the same row twice", "Reading with a stale index"],

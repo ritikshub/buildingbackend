@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "To fix a 'blocked by CORS' error, a developer sets `Access-Control-Allow-Origin: *` on their cookie-authenticated API. What did they actually do?",
-    "options": [
-      "Correctly fixed the problem — the wildcard is the standard configuration",
-      "They told browsers that any website may read their API's responses. Combined with cookie auth this is dangerous, which is why browsers refuse to honor `*` together with credentials — but the fix is not to work around that: it's to keep an allowlist of your own origins and reflect the request's Origin only if it's on the list. The wildcard turns a private API into one any site's JavaScript can read on the user's behalf",
-      "They improved performance by caching responses",
-      "Nothing changed; CORS headers are ignored by servers"
-    ],
-    "correct": 1,
-    "explanation": "CORS decides which origins a browser will let read a cross-origin response. `*` means 'everyone', and browsers deliberately forbid `*` with `Access-Control-Allow-Credentials: true` because that would let any site read authenticated responses. The correct approach is an explicit origin allowlist, reflecting the Origin header only for known origins (plus `Vary: Origin`). Working around the wildcard restriction re-creates the hole."
-  },
-  {
     "stage": "check",
     "question": "The Same-Origin Policy has a crucial send/read asymmetry. What is it, and why does it matter for these attacks?",
     "options": [

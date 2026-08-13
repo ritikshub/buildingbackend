@@ -57,7 +57,7 @@ change — interval instead of instant — is what makes tracing a different pil
   <defs><marker id="l07-a1" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker></defs>
   <text x="410" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">One span, every field</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="40" y="46" width="340" height="58" rx="10" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/><rect x="40" y="148" width="740" height="286" rx="12" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+    <rect x="40" y="46" width="340" height="58" rx="10" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/><rect x="40" y="148" width="740" height="286" rx="12" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
   </g>
   <path d="M120 104 C 120 130, 96 126, 96 218" fill="none" stroke="#7c5cff" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#l07-a1)"/>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
@@ -114,9 +114,9 @@ as a horizontal bar, positioned by start time and scaled by duration, on one sha
     <path d="M30 90 L 30 184 L 36 184"/><path d="M30 90 L 30 112 L 36 112"/><path d="M30 90 L 30 148 L 36 148"/><path d="M46 198 L 46 220 L 52 220"/><path d="M62 234 L 62 256 L 68 256"/><path d="M62 234 L 62 292 L 68 292"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-    <rect x="20" y="62" width="180" height="28" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/><rect x="36" y="98" width="170" height="28" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
-    <rect x="36" y="134" width="170" height="28" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/><rect x="36" y="170" width="170" height="28" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="52" y="206" width="158" height="28" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/><rect x="68" y="242" width="146" height="28" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
+    <rect x="20" y="62" width="180" height="28" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/><rect x="36" y="98" width="170" height="28" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
+    <rect x="36" y="134" width="170" height="28" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/><rect x="36" y="170" width="170" height="28" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="52" y="206" width="158" height="28" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/><rect x="68" y="242" width="146" height="28" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     <rect x="68" y="278" width="146" height="28" rx="9" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor" font-size="9.5">
@@ -124,10 +124,10 @@ as a horizontal bar, positioned by start time and scaled by duration, on one sha
     <text x="78" y="296">bank.authorize CLI</text>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="1.6">
-    <rect x="320" y="70" width="480" height="12" rx="4" fill="#3553ff" fill-opacity="0.30" stroke="#3553ff"/><rect x="320" y="106" width="3" height="12" rx="1.5" fill="#7f7f7f" fill-opacity="0.5" stroke="currentColor" stroke-opacity="0.6"/>
+    <rect x="320" y="70" width="480" height="12" rx="4" fill="#c94a12" fill-opacity="0.30" stroke="#c94a12"/><rect x="320" y="106" width="3" height="12" rx="1.5" fill="#7f7f7f" fill-opacity="0.5" stroke="currentColor" stroke-opacity="0.6"/>
     <rect x="320" y="142" width="5" height="12" rx="1.5" fill="#0fa07f" fill-opacity="0.5" stroke="#0fa07f"/><rect x="325" y="142" width="5" height="12" rx="1.5" fill="#0fa07f" fill-opacity="0.5" stroke="#0fa07f"/>
-    <rect x="330" y="142" width="4" height="12" rx="1.5" fill="#0fa07f" fill-opacity="0.5" stroke="#0fa07f"/><rect x="334" y="178" width="466" height="12" rx="4" fill="#3553ff" fill-opacity="0.30" stroke="#3553ff"/>
-    <rect x="335" y="214" width="465" height="12" rx="4" fill="#3553ff" fill-opacity="0.30" stroke="#3553ff"/><rect x="335" y="250" width="4" height="12" rx="1.5" fill="#7f7f7f" fill-opacity="0.5" stroke="currentColor" stroke-opacity="0.6"/>
+    <rect x="330" y="142" width="4" height="12" rx="1.5" fill="#0fa07f" fill-opacity="0.5" stroke="#0fa07f"/><rect x="334" y="178" width="466" height="12" rx="4" fill="#c94a12" fill-opacity="0.30" stroke="#c94a12"/>
+    <rect x="335" y="214" width="465" height="12" rx="4" fill="#c94a12" fill-opacity="0.30" stroke="#c94a12"/><rect x="335" y="250" width="4" height="12" rx="1.5" fill="#7f7f7f" fill-opacity="0.5" stroke="currentColor" stroke-opacity="0.6"/>
     <rect x="338" y="286" width="462" height="12" rx="4" fill="#e0930f" fill-opacity="0.42" stroke="#e0930f" stroke-width="2"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor" font-size="9" text-anchor="end" opacity="0.9">
@@ -187,14 +187,14 @@ waterfall is worse than none.
     <path d="M660 104 L 660 122" marker-end="url(#l07-a2)"/><path d="M660 168 L 660 186" marker-end="url(#l07-a2)"/><path d="M660 232 L 660 250" marker-end="url(#l07-a2)"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="40" y="46" width="360" height="58" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/><rect x="40" y="122" width="360" height="46" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-    <rect x="40" y="186" width="360" height="46" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/><rect x="40" y="250" width="360" height="46" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="40" y="46" width="360" height="58" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/><rect x="40" y="122" width="360" height="46" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+    <rect x="40" y="186" width="360" height="46" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/><rect x="40" y="250" width="360" height="46" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="40" y="316" width="360" height="96" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/><rect x="480" y="46" width="360" height="58" rx="10" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     <rect x="480" y="122" width="360" height="46" rx="10" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/><rect x="480" y="186" width="360" height="46" rx="10" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     <rect x="480" y="250" width="360" height="46" rx="10" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/><rect x="480" y="316" width="360" height="96" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor" text-anchor="middle">
-    <text x="220" y="70" font-size="13" font-weight="700" fill="#3553ff">HEAD SAMPLING</text><text x="220" y="90" font-size="10" opacity="0.85">decide at the ROOT, before any work happens</text>
+    <text x="220" y="70" font-size="13" font-weight="700" fill="#c94a12">HEAD SAMPLING</text><text x="220" y="90" font-size="10" opacity="0.85">decide at the ROOT, before any work happens</text>
     <text x="220" y="142" font-size="10.5">1 · hash(trace_id) &lt; 1% of 2^64 ?</text><text x="220" y="158" font-size="9" opacity="0.75">deterministic, so every service agrees</text>
     <text x="220" y="206" font-size="10.5">2 · write the bit into traceparent</text><text x="220" y="222" font-size="9" opacity="0.75">00-4bf9...c31-00f067aa0ba902b7-01</text>
     <text x="220" y="270" font-size="10.5">3 · every downstream service obeys</text><text x="220" y="286" font-size="9" opacity="0.75">sampled=0 means those spans never exist</text><text x="660" y="70" font-size="13" font-weight="700" fill="#7c5cff">TAIL SAMPLING</text>

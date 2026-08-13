@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A payment webhook is fired with `asyncio.create_task(send_webhook(order.id))` and the return value is discarded. In staging it works every time; in production it fires roughly 70% of the time, with no pattern anyone can find. What is happening?",
-    "options": [
-      "The event loop is overloaded and silently drops scheduled callbacks once its ready queue exceeds a fixed length, so roughly 30% of tasks never run",
-      "`create_task` returns before the coroutine has started, so a coroutine whose first statement raises is discarded without ever being scheduled",
-      "The event loop keeps only a WEAK reference to tasks, so a task nothing else references can be garbage-collected mid-execution. In the lesson's run, forcing `gc.collect()` at the right moment took 10 of 10 unreferenced tasks and left 10 of 10 referenced ones alive; in production the collector runs on its own schedule, which is exactly why the failures had no pattern",
-      "Webhook delivery is inherently at-most-once over HTTP, so a ~30% loss rate is the expected behaviour and the fix is a retry queue"
-    ],
-    "correct": 2,
-    "explanation": "The asyncio documentation says it outright: save a reference to the result of `create_task`, because the loop only keeps a weak reference. A strong reference exists only while the task is in the ready queue or is reachable through whatever it is suspended on — so a task awaiting something that only its own frame can reach forms a reference cycle with no external root, and the collector is entitled to take it. The 'no pattern' symptom is the tell: GC timing, not payload or merchant, decides who dies."
-  },
-  {
     "stage": "check",
     "question": "The same `asyncio.timeout(0.100)` was measured over three coroutines that differ only in how long they spin on the CPU between awaits. The results were 101.9 ms, 150.3 ms and 800.4 ms for chunk sizes of 1 ms, 30 ms and 400 ms. What does this prove?",
     "options": [

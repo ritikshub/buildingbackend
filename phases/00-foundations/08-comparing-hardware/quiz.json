@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Two general ideas run through every hardware speed unit. What are they?",
-    "options": ["Size and color", "Throughput (how much per second) and latency (how long each operation takes)", "Price and weight", "Bits and pixels"],
-    "correct": 1,
-    "explanation": "Whether it's GB/s, FLOPS, or milliseconds, hardware speed comes down to throughput (how much work per second) and latency (how long a single operation takes). You care about both, for different reasons."
-  },
-  {
     "stage": "check",
     "question": "Your internet is advertised as 100 Mbps. How many megaBYTES per second is that?",
     "options": ["100 MB/s", "12.5 MB/s", "800 MB/s", "1 MB/s"],

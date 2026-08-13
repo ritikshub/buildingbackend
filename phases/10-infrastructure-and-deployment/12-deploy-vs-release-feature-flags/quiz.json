@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You ship a new checkout flow behind a 10% rollout. The guard is `if random.random() < 0.10:` evaluated wherever the flag is read. Your dashboard confirms 10% of requests take the new path. What is your actual blast radius?",
-    "options": [
-      "10% of users — the request percentage and the user percentage are the same thing at scale",
-      "Close to 100% of users, because each user re-rolls the dice on every request and almost all of them land on the new path at least once",
-      "Under 10% of users, because a user has to be unlucky repeatedly to stay on the new path",
-      "Exactly 10% of users, but they change every hour, which is fine for a short rollout"
-    ],
-    "correct": 1,
-    "explanation": "The request percentage and the user percentage are completely different numbers when bucketing is not sticky. Measured over 200,000 evaluations of a 10% rollout, a fresh random draw per request hit 9.97% of requests — a perfect-looking rollout — while 98.52% of users touched the new path at least once, across 35,073 variant switches. The dashboard shows the number you asked for while the blast radius is effectively everyone. The fix is to make the bucket a pure function of a stable identifier: sha256(flag_salt + ':' + user_id) % 10000 < 1000."
-  },
-  {
     "stage": "check",
     "question": "Your flag service becomes unreachable. Two flags are affected: `recommendations_enabled`, a kill switch that is normally ON, and `new_pricing_engine`, a risky new path currently at 10%. Your SDK is configured to fail open for everything. What happens?",
     "options": [

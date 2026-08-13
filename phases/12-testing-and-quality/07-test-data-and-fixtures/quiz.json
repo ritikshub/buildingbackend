@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your integration suite loads a 4,374-line `fixtures/seed.sql` before every run. To test pagination you add one row — a third order for the shared admin user, `user_id = 1`. Roughly how many of the suite's 240 tests should you expect to go red?",
-    "options": [
-      "One or two — only tests that specifically assert on that user's order list can be affected",
-      "About 52, roughly a fifth of the suite, most of them about things other than orders",
-      "None — adding a row cannot break a test, only changing or deleting one can",
-      "All 240, because the whole suite shares the same fixture file"
-    ],
-    "correct": 1,
-    "explanation": "Measured in this lesson: 52 of 240 tests (21.7%), against 0 for the same suite built on factories. The tempting answer is 'one or two', and it is the answer a careful engineer gives, because it is what the *change* logically touches. It is wrong because it reasons about the change instead of about the binding: 116 of the 240 tests (48.3%) bound to user 1, since a shared seed is searched by grep and the first row that satisfies your precondition is almost always the god fixture. Anything reading that user's order count, order list or order sum is now red — invoice totals, dashboard totals, refund credit — none of which are about pagination. 'All 240' overshoots for the same reason in reverse: only the tests whose assertions actually read the changed cells break."
-  },
-  {
     "stage": "check",
     "question": "The lesson measures that the same 240-test suite performs 298 assertion reads in both the shared-seed world and the factory world — the identical number. What changes between the two, and why does it matter?",
     "options": [

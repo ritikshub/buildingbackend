@@ -83,7 +83,7 @@ Which means the two shapes **compose**. A topic fans out across subscriptions; *
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="40" y="108" width="96" height="48" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="40" y="108" width="96" height="48" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="184" y="102" width="152" height="60" rx="9" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="404" y="84" width="112" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="404" y="120" width="112" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
@@ -98,7 +98,7 @@ Which means the two shapes **compose**. A topic fans out across subscriptions; *
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="40" y="358" width="96" height="48" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="40" y="358" width="96" height="48" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="184" y="352" width="130" height="60" rx="9" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f"/>
     <rect x="360" y="278" width="196" height="56" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     <rect x="360" y="356" width="196" height="56" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
@@ -479,10 +479,10 @@ And `warehouse`, on the same topic over the same window, never noticed: peak bac
     <path d="M90 329 L 836 329"/>
   </g>
 
-  <path d="M187 373 L 236 373 L 285 329 L 382 257 L 479 185 L 528 149 L 545 134 L 577 170 L 635 185 L 720 285 L 815 380" fill="none" stroke="#3553ff" stroke-width="2.8"/>
+  <path d="M187 373 L 236 373 L 285 329 L 382 257 L 479 185 L 528 149 L 545 134 L 577 170 L 635 185 L 720 285 L 815 380" fill="none" stroke="#c94a12" stroke-width="2.8"/>
   <path d="M187 373 L 285 373 L 382 366 L 479 373 L 577 373 L 635 373 L 736 373 L 815 380" fill="none" stroke="#0fa07f" stroke-width="2.8"/>
   <path d="M90 380 L 836 380" fill="none" stroke="#7c5cff" stroke-width="2.8" stroke-dasharray="7 5"/>
-  <circle cx="545" cy="134" r="4" fill="#3553ff"/>
+  <circle cx="545" cy="134" r="4" fill="#c94a12"/>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="72" y="138" font-size="9" text-anchor="end" opacity="0.8">34</text>
@@ -497,11 +497,11 @@ And `warehouse`, on the same topic over the same window, never noticed: peak bac
     <text x="382" y="398" font-size="9.5" text-anchor="middle" font-weight="700" fill="#e0930f">SUBSCRIBER AWAY — 30 messages published</text>
     <text x="440" y="416" font-size="9" text-anchor="middle" opacity="0.8">virtual time  ->  60 messages published over 0.60s, drained by 0.745s</text>
 
-    <text x="560" y="128" font-size="9.5" font-weight="700" fill="#3553ff">peak 34</text>
+    <text x="560" y="128" font-size="9.5" font-weight="700" fill="#c94a12">peak 34</text>
     <text x="106" y="356" font-size="9" fill="#0fa07f" font-weight="700">warehouse — peak backlog 2, never noticed</text>
-    <text x="600" y="200" font-size="9.5" fill="#3553ff" font-weight="700">analytics (DURABLE)</text>
-    <text x="600" y="216" font-size="9" fill="#3553ff">catches up · acked 60/60 · LOST 0</text>
-    <text x="600" y="232" font-size="9" fill="#3553ff">1 redelivery: the lease it held expired</text>
+    <text x="600" y="200" font-size="9.5" fill="#c94a12" font-weight="700">analytics (DURABLE)</text>
+    <text x="600" y="216" font-size="9" fill="#c94a12">catches up · acked 60/60 · LOST 0</text>
+    <text x="600" y="232" font-size="9" fill="#c94a12">1 redelivery: the lease it held expired</text>
     <text x="240" y="360" font-size="9.5" fill="#7c5cff" font-weight="700">live-dashboard (EPHEMERAL) — backlog flat at 0 the entire run</text>
 
     <text x="440" y="440" font-size="10.5" text-anchor="middle" font-weight="700" fill="#7c5cff">...and it lost 31 of 60 messages. A flat backlog graph looks identical whether an ephemeral</text>
@@ -519,7 +519,7 @@ The per-subscription selectivity column is where the decisions live. `audit-arch
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">One publish, N deliveries — 200 messages in, and what came out</text>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="200" y="66" width="123" height="34" rx="5" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+    <rect x="200" y="66" width="123" height="34" rx="5" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
     <rect x="200" y="126" width="560" height="34" rx="5" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="200" y="186" width="307" height="34" rx="5" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f"/>
     <rect x="507" y="186" width="253" height="34" rx="5" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="5 4"/>
@@ -528,7 +528,7 @@ The per-subscription selectivity column is where the decisions live. `audit-arch
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="192" y="82" font-size="10" font-weight="700" text-anchor="end">PUBLISHED</text>
     <text x="192" y="96" font-size="8.5" text-anchor="end" opacity="0.8">200 msgs</text>
-    <text x="333" y="88" font-size="10" font-weight="700" fill="#3553ff">85,146 B  ·  1.00x  ·  the bytes you actually sent</text>
+    <text x="333" y="88" font-size="10" font-weight="700" fill="#c94a12">85,146 B  ·  1.00x  ·  the bytes you actually sent</text>
     <text x="192" y="142" font-size="10" font-weight="700" text-anchor="end">CONSUMER-SIDE</text>
     <text x="192" y="156" font-size="8.5" text-anchor="end" opacity="0.8">filtering</text>
     <text x="440" y="148" font-size="11" font-weight="700" text-anchor="middle">912 deliveries  ·  388,453 B  ·  4.56x</text>
@@ -545,8 +545,8 @@ The per-subscription selectivity column is where the decisions live. `audit-arch
   <g fill="none" stroke-linejoin="round" stroke-width="1.6">
     <rect x="330" y="302" width="300" height="20" rx="4" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="330" y="330" width="300" height="20" rx="4" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
-    <rect x="330" y="358" width="155" height="20" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-    <rect x="330" y="386" width="104" height="20" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+    <rect x="330" y="358" width="155" height="20" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+    <rect x="330" y="386" width="104" height="20" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
     <rect x="330" y="414" width="23" height="20" rx="4" fill="#0fa07f" fill-opacity="0.20" stroke="#0fa07f"/>
     <rect x="330" y="302" width="300" height="132" rx="0" fill="none" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="4 4"/>
   </g>

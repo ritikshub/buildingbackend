@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your app tier runs in eu-west-1 and your database is still in us-east-1 (75 ms round trip). A request makes 6 sequential queries that each took 0.55 ms when everything was in one region. What happens to p50 latency?",
-    "options": [
-      "Roughly unchanged — the queries themselves are just as fast, and the network is only a few milliseconds",
-      "It roughly doubles, because the network adds about as much as the query work",
-      "It goes from about 9 ms to about 456 ms, because 6 sequential round trips is 450 ms of pure propagation",
-      "It gets worse only at p99; the median is protected because most requests hit the connection pool"
-    ],
-    "correct": 2,
-    "explanation": "Six sequential queries pay six round trips: 6 x 75 ms = 450 ms of propagation before any work happens. The measured run went from 9.3 ms to 456.2 ms p50 — 49.3x. The tempting wrong answers assume the network is a small additive term, but for sequential dependent calls it multiplies by the number of round trips. Note the giveaway in the real data: remote p50 (456.2 ms) and p99 (467.0 ms) are nearly identical, because a fixed propagation cost is not a tail phenomenon — no percentile escapes it."
-  },
-  {
     "stage": "check",
     "question": "You lower your DNS record's TTL to 60 seconds so failover will be quick. One hour after a health-check-driven failover, what fraction of clients is still resolving to the dead region?",
     "options": [

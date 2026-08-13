@@ -1,12 +1,5 @@
 [
   {
-    "question": "A payment POST times out. Why is retrying without an idempotency key unsafe?",
-    "options": ["Retries are always blocked by the server", "The client can't tell whether the request never arrived, failed, or succeeded with the response lost — a blind retry in the last case double-charges", "The token expires", "POST is idempotent so it's actually safe"],
-    "correct": 1,
-    "explanation": "On timeout the client faces three indistinguishable worlds; the only safe move is to retry, but if the original actually succeeded and only the response was lost, a blind retry creates a second charge. POST is not idempotent, so each retry can act again.",
-    "stage": "pre"
-  },
-  {
     "question": "Why must the server 'claim the key' (insert the record) BEFORE executing the operation, rather than checking if it exists and then inserting?",
     "options": ["It's faster", "Check-then-insert is a race — two simultaneous duplicates both pass the check; an atomic claim via the primary-key constraint lets exactly one win", "The database requires it", "To avoid storing the response"],
     "correct": 1,

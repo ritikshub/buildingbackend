@@ -1,13 +1,13 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 6 280 192" width="560" height="384" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="A fisherman sitting cross-legged in the shade beside a beached boat, hunched over a net, mending a hole in it.">
   <style>
     .note-fig-ink        { stroke: #e8e6dc; }
-    .note-fig-net        { stroke: #6b8eff; }
-    .note-fig-mesh-line  { stroke: #6b8eff; opacity: 0.5; }
-    .note-fig-hole       { stroke: #6b8eff; fill: #0a0d1a; }
-    .note-fig-hull       { fill: #0a0d1a; }
-    .note-fig-sand       { stroke: #7a7878; }
-    .note-fig-motion     { stroke: #6b8eff; opacity: 0.38; }
-    .note-fig-shade-line { stroke: #7a7878; opacity: 0.28; }
+    .note-fig-net        { stroke: #ff8c42; }
+    .note-fig-mesh-line  { stroke: #ff8c42; opacity: 0.5; }
+    .note-fig-hole       { stroke: #ff8c42; fill: #14100c; }
+    .note-fig-hull       { fill: #14100c; }
+    .note-fig-sand       { stroke: #7d766c; }
+    .note-fig-motion     { stroke: #ff8c42; opacity: 0.38; }
+    .note-fig-shade-line { stroke: #7d766c; opacity: 0.28; }
   </style>
             <defs>
               <!-- Diamond lattice: the thing that actually reads as netting. -->

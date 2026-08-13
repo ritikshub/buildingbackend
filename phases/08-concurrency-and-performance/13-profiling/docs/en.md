@@ -47,13 +47,13 @@ That is this lesson's headline mistake, and it is measurable. Here is the same p
     <text x="63" y="214" font-size="9" text-anchor="middle">6.4%</text><text x="328" y="214" font-size="10" text-anchor="middle" font-weight="700">price_line_items 59.5%</text><text x="658" y="214" font-size="10" text-anchor="middle">compute_tax 30.3%</text>
     <text x="817" y="214" font-size="9" text-anchor="middle">3.7%</text><text x="440" y="248" font-size="10.5" text-anchor="middle" font-weight="700" fill="#d64545">charge_payment: 0.0% — 0 of 1,476 samples. It is not in the profile at all.</text>
 
-    <text x="16" y="290" font-size="11" font-weight="700" fill="#3553ff">WALL-CLOCK PROFILER · py-spy --idle, off-CPU sampling</text><text x="16" y="306" font-size="9.5" opacity="0.85">samples fire on a timer whether the thread runs or waits</text>
+    <text x="16" y="290" font-size="11" font-weight="700" fill="#c94a12">WALL-CLOCK PROFILER · py-spy --idle, off-CPU sampling</text><text x="16" y="306" font-size="9.5" opacity="0.85">samples fire on a timer whether the thread runs or waits</text>
     <g fill="none" stroke-width="1.8" stroke-linejoin="round">
-      <rect x="16" y="316" width="47" height="32" rx="4" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="63" y="316" width="184" height="32" rx="4" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="247" y="316" width="137" height="32" rx="4" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="384" y="316" width="454" height="32" rx="4" fill="#3553ff" fill-opacity="0.20" stroke="#3553ff" stroke-width="2.4"/>
-      <rect x="838" y="316" width="26" height="32" rx="4" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+      <rect x="16" y="316" width="47" height="32" rx="4" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="63" y="316" width="184" height="32" rx="4" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="247" y="316" width="137" height="32" rx="4" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="384" y="316" width="454" height="32" rx="4" fill="#c94a12" fill-opacity="0.20" stroke="#c94a12" stroke-width="2.4"/>
+      <rect x="838" y="316" width="26" height="32" rx="4" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     </g>
     <text x="39" y="336" font-size="8" text-anchor="middle">3.5</text><text x="155" y="336" font-size="9" text-anchor="middle">price 24.3%</text><text x="315" y="336" font-size="9" text-anchor="middle">tax 16.2%</text>
     <text x="611" y="336" font-size="10.5" text-anchor="middle" font-weight="700">charge_payment 54.1% ← the answer</text><text x="851" y="336" font-size="8" text-anchor="middle">1.9</text>
@@ -143,14 +143,14 @@ A **sampling** profiler interrupts the program on a timer and records the curren
     <path d="M16 160 L 560 160" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.2"/>
     <text x="16" y="180" font-size="9.5" opacity="0.9">18 hook events. Exact call counts, exact call graph, no statistics.</text><text x="16" y="196" font-size="9.5" font-weight="700" fill="#7c5cff">Cost scales with CALLS: the 8 tiny calls pay 16 hooks; the 150 ms call pays 2.</text>
 
-    <text x="16" y="240" font-size="11" font-weight="700" fill="#3553ff">SAMPLING · a timer interrupt records the stack, 1 ms apart</text>
-    <g stroke="#3553ff" stroke-width="2.4">
+    <text x="16" y="240" font-size="11" font-weight="700" fill="#c94a12">SAMPLING · a timer interrupt records the stack, 1 ms apart</text>
+    <g stroke="#c94a12" stroke-width="2.4">
       <path d="M50 250 L 50 272 M118 250 L 118 272 M186 250 L 186 272 M254 250 L 254 272"/>
       <path d="M322 250 L 322 272 M390 250 L 390 272 M458 250 L 458 272 M526 250 L 526 272"/>
     </g>
     <path d="M16 272 L 560 272" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.2"/>
     <text x="16" y="292" font-size="9.5" opacity="0.9">8 samples, whatever the code does. Most short calls are never seen —</text><text x="16" y="308" font-size="9.5" opacity="0.9">but over 2,779 samples the SHARES converge on the truth anyway.</text>
-    <text x="16" y="324" font-size="9.5" font-weight="700" fill="#3553ff">Cost scales with SAMPLE RATE: halve the rate, halve the overhead.</text>
+    <text x="16" y="324" font-size="9.5" font-weight="700" fill="#c94a12">Cost scales with SAMPLE RATE: halve the rate, halve the overhead.</text>
 
     <rect x="588" y="108" width="276" height="212" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f" stroke-width="1.8" fill-rule="evenodd"/>
     <text x="602" y="130" font-size="10.5" font-weight="700" fill="#e0930f">MEASURED, THIS LESSON</text><text x="602" y="152" font-size="9.5" opacity="0.95">one-line function, 200,000 calls</text><text x="602" y="168" font-size="10" font-weight="700">46 ns → 190 ns per call = 4.2x</text>
@@ -215,7 +215,7 @@ Frames joined by `;`, a space, a sample count. That's the entire format, and the
       <rect x="150" y="178" width="256" height="28" rx="3" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
       <rect x="406" y="178" width="153" height="28" rx="3" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
       <rect x="559" y="178" width="34" height="28" rx="3" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
-      <rect x="26" y="206" width="567" height="28" rx="3" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+      <rect x="26" y="206" width="567" height="28" rx="3" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     </g>
     <text x="88" y="197" font-size="9.5" text-anchor="middle" font-weight="700" fill="#d64545">charge_pay~</text><text x="278" y="197" font-size="9.5" text-anchor="middle">price_line_items</text><text x="482" y="197" font-size="9.5" text-anchor="middle">compute_tax</text>
     <text x="576" y="197" font-size="8" text-anchor="middle">val</text><text x="278" y="169" font-size="9.5" text-anchor="middle">fetch_price</text><text x="482" y="169" font-size="9.5" text-anchor="middle">_burn</text><text x="278" y="141" font-size="9.5" text-anchor="middle">_spin</text>
@@ -228,7 +228,7 @@ Frames joined by `;`, a space, a sample count. That's the entire format, and the
       <path d="M88 122 L 88 178" stroke-dasharray="4 4" stroke-opacity="0.55" marker-end="url(#l13-ar)"/>
     </g>
     <text x="646" y="112" font-size="10" font-weight="700" fill="#0fa07f">a PLATEAU: a wide box</text><text x="646" y="126" font-size="10" font-weight="700" fill="#0fa07f">with nothing above it</text><text x="646" y="140" font-size="9.5" opacity="0.9">is where the samples</text>
-    <text x="646" y="154" font-size="9.5" opacity="0.9">actually landed. Fix that.</text><text x="646" y="228" font-size="10" font-weight="700" fill="#3553ff">the root: every sample</text><text x="646" y="242" font-size="9.5" opacity="0.9">has it, so it is always</text>
+    <text x="646" y="154" font-size="9.5" opacity="0.9">actually landed. Fix that.</text><text x="646" y="228" font-size="10" font-weight="700" fill="#c94a12">the root: every sample</text><text x="646" y="242" font-size="9.5" opacity="0.9">has it, so it is always</text>
     <text x="646" y="256" font-size="9.5" opacity="0.9">100% and always useless</text><text x="88" y="112" font-size="9" text-anchor="middle" font-weight="700" fill="#d64545">no children:</text>
     <text x="88" y="100" font-size="9" text-anchor="middle" font-weight="700" fill="#d64545">a blocking leaf</text><text x="309" y="278" font-size="10" text-anchor="middle" opacity="0.9">width = share of samples · y = stack depth (callers below, callees above)</text>
 
@@ -314,11 +314,11 @@ The step people skip is the **predicted magnitude**. Not "this should help" but 
   <text x="440" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">The optimization loop — with Amdahl's ceiling as the gate, not the retro</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <g fill="none" stroke-width="2" stroke-linejoin="round">
-      <rect x="16" y="92" width="152" height="86" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="16" y="92" width="152" height="86" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="196" y="92" width="176" height="86" rx="10" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2.6"/>
       <rect x="400" y="92" width="160" height="86" rx="10" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
       <rect x="588" y="92" width="120" height="86" rx="10" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
-      <rect x="736" y="92" width="128" height="86" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="736" y="92" width="128" height="86" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
     <g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#l13-c)">
       <path d="M168 135 L 190 135"/><path d="M372 135 L 394 135"/>
@@ -327,7 +327,7 @@ The step people skip is the **predicted magnitude**. Not "this should help" but 
     </g>
     <text x="510" y="252" font-size="10" text-anchor="middle" opacity="0.85">the new profile becomes the next baseline — keep the old one to diff against</text>
 
-    <text x="92" y="116" font-size="11" font-weight="700" text-anchor="middle" fill="#3553ff">1 · MEASURE</text><text x="26" y="134" font-size="9">USE + golden signals</text><text x="26" y="148" font-size="9">to localize, THEN pick:</text>
+    <text x="92" y="116" font-size="11" font-weight="700" text-anchor="middle" fill="#c94a12">1 · MEASURE</text><text x="26" y="134" font-size="9">USE + golden signals</text><text x="26" y="148" font-size="9">to localize, THEN pick:</text>
     <text x="26" y="164" font-size="9" font-weight="700">latency → wall-clock</text><text x="26" y="176" font-size="9" font-weight="700">cost → on-CPU</text>
 
     <text x="284" y="116" font-size="11" font-weight="700" text-anchor="middle" fill="#e0930f">2 · THE CEILING (GATE)</text><text x="206" y="136" font-size="9.5">f = this component's share</text><text x="206" y="152" font-size="10" font-weight="700">max gain = 1/(1 − f)</text>
@@ -339,7 +339,7 @@ The step people skip is the **predicted magnitude**. Not "this should help" but 
     <text x="648" y="116" font-size="11" font-weight="700" text-anchor="middle" fill="#0fa07f">4 · CHANGE</text><text x="648" y="140" font-size="11" font-weight="700" text-anchor="middle" fill="#0fa07f">ONE THING</text>
     <text x="648" y="162" font-size="9" text-anchor="middle" opacity="0.9">two changes =</text><text x="648" y="174" font-size="9" text-anchor="middle" opacity="0.9">no attribution</text>
 
-    <text x="800" y="116" font-size="11" font-weight="700" text-anchor="middle" fill="#3553ff">5 · RE-MEASURE</text><text x="746" y="138" font-size="9.5">same tool, same</text><text x="746" y="152" font-size="9.5">environment, same</text><text x="746" y="166" font-size="9.5">load. Keep/revert.</text>
+    <text x="800" y="116" font-size="11" font-weight="700" text-anchor="middle" fill="#c94a12">5 · RE-MEASURE</text><text x="746" y="138" font-size="9.5">same tool, same</text><text x="746" y="152" font-size="9.5">environment, same</text><text x="746" y="166" font-size="9.5">load. Keep/revert.</text>
 
     <g fill="none" stroke="#d64545" stroke-width="1.8" marker-end="url(#l13-cr)">
       <path d="M230 178 L 230 296"/><path d="M800 92 L 800 66 L 640 66 L 640 62"/>

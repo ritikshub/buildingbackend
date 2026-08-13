@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "In plain HTTP, why can't a server notify a client the instant something happens (e.g. a new chat message)?",
-    "options": [
-      "Because HTTP has no way to encode text messages",
-      "Because HTTP is request/response — the server only ever speaks when the client asks, so it cannot start an exchange on its own",
-      "Because the server and client are on different IP addresses",
-      "Because HTTP responses are limited to 200 OK"
-    ],
-    "correct": 1,
-    "explanation": "HTTP is strictly request/response: the client asks and the server answers, then the exchange ends. The server has no channel to initiate a message. WebSockets and SSE both exist to give the server a way to push."
-  },
-  {
-    "stage": "pre",
-    "question": "Both WebSockets and Server-Sent Events start out as what?",
-    "options": [
-      "A raw TCP connection with no HTTP involved",
-      "An ordinary HTTP request that then negotiates something longer-lived",
-      "A UDP datagram stream",
-      "A DNS lookup"
-    ],
-    "correct": 1,
-    "explanation": "Both reuse the very first HTTP request. A WebSocket sends an HTTP GET asking to Upgrade; SSE sends an HTTP GET and the server replies with a normal 200 response it simply never closes. Starting as HTTP is what lets them pass through existing infrastructure."
-  },
-  {
     "stage": "check",
     "question": "How does a server compute the Sec-WebSocket-Accept value during the WebSocket handshake?",
     "options": [

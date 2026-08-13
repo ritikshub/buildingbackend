@@ -44,7 +44,7 @@ paper. You'll see both used interchangeably for the rest of your career, so meet
   </g>
   <g>
   <rect x="150" y="92" width="370" height="160" rx="10" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="154" y="96" width="362" height="34" rx="6" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="0" stroke-linejoin="round"/>
+  <rect x="154" y="96" width="362" height="34" rx="6" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="0" stroke-linejoin="round"/>
   </g>
   <g>
   <text x="185.0" y="116.0" font-size="12" text-anchor="middle" font-weight="700" >id</text>
@@ -136,7 +136,7 @@ join — the way you chain arithmetic. "UK authors' names" is `π_name( σ_count
   </g>
   <g>
   <rect x="35.0" y="71.0" width="130" height="48" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="285.0" y="71.0" width="130" height="48" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="285.0" y="71.0" width="130" height="48" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="535.0" y="71.0" width="130" height="48" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   </g>
   <g>

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Two incidents hit the same consumer group, whose capacity is 1,000 msg/s. Incident A is a 10x burst: 8,000 msg/s for 30 seconds, then back to the normal 800 msg/s. Incident B is a sustained 1,200 msg/s -- only 20% over capacity -- with no end. Which one should worry you more, and why?",
-    "options": [
-      "A, because a 10x spike is ten times the load and peak backlog is what determines whether the broker's disk survives",
-      "B. A queue absorbs a burst but cannot absorb a sustained mismatch. A delivered 210,000 excess messages once and drained in a measured 1,045s; B delivers 200 excess messages every second forever, passes A's peak backlog after about 18 minutes, and grows without bound until retention starts deleting unread data",
-      "A, because bursts arrive faster than any autoscaler can react, whereas a 20% overload gives you hours of warning",
-      "They are equally dangerous, since both eventually exceed the same retention window and the only real difference is how quickly they get there"
-    ],
-    "correct": 1,
-    "explanation": "The size of an anomaly on the input graph is uncorrelated with its danger; only the sign of lambda - mu matters. A burst is bounded excess, and Little's Law prices its recovery exactly: excess / headroom = 210,000 / 200 = 1,050s predicted, 1,045s measured. A sustained mismatch has no bounded excess at all, so there is no recovery time to compute -- and it is nearly invisible on an arrival-rate chart, which is exactly why it runs for hours before anyone notices."
-  },
-  {
     "stage": "check",
     "question": "A consumer's lag graph rose steadily for two hours and has now been perfectly flat for twenty minutes. Your teammate says the incident is resolving. What are the two possible explanations, and which metric distinguishes them?",
     "options": [

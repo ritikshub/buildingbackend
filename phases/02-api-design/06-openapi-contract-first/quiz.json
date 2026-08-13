@@ -1,12 +1,5 @@
 [
   {
-    "question": "Where does FastAPI expose the generated OpenAPI document and its two documentation UIs?",
-    "options": ["/spec, /swagger, /docs", "/openapi.json, /docs (Swagger UI), /redoc (ReDoc)", "/api.yaml, /ui, /reference", "/schema, /docs, /explorer"],
-    "correct": 1,
-    "explanation": "FastAPI serves the spec at /openapi.json, interactive Swagger UI at /docs, and a clean ReDoc reference at /redoc — all generated from your route signatures and Pydantic models.",
-    "stage": "pre"
-  },
-  {
     "question": "Beyond documentation, why does declaring response_model on a FastAPI route matter?",
     "options": ["It speeds up the route", "It filters the outgoing payload to the declared schema, so internal fields can't leak", "It enables caching", "It is required for async routes"],
     "correct": 1,

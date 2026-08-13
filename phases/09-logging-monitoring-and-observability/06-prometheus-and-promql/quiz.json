@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Prometheus collects metrics by 'pulling'. What does that mean in practice?",
-    "options": [
-      "The application opens a persistent connection to Prometheus and streams samples as they are recorded.",
-      "Prometheus makes an ordinary HTTP GET request to a /metrics endpoint on each target, on a fixed interval, and the response body is the samples.",
-      "Prometheus reads log files from each machine's disk over SSH and extracts numbers from them.",
-      "A sidecar agent on each host batches metrics and forwards them to Prometheus over gRPC."
-    ],
-    "correct": 1,
-    "explanation": "A scrape is a plain HTTP GET against the target's /metrics endpoint, and the response body is the exposition text. Because it is ordinary HTTP you can debug it with curl, and because Prometheus initiates it, a failed request becomes the synthetic `up` series — a liveness signal you never had to instrument. The push model (option 1) is what remote_write does on the way out of Prometheus, not on the way in."
-  },
-  {
     "stage": "check",
     "question": "A target is scraped every 15s and its `http_requests_total` counter reads 412. Why is that value, on its own, useless?",
     "options": [

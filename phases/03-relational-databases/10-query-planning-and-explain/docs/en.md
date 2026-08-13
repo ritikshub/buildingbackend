@@ -42,10 +42,10 @@ Between your SQL text and the rows coming back, a query passes through four stag
   </g>
   <g>
   <rect x="42.5" y="40.0" width="118" height="70" rx="9" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="186.5" y="40.0" width="151" height="70" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="363.5" y="40.0" width="122" height="70" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="511.5" y="40.0" width="158" height="70" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="695.5" y="40.0" width="118" height="70" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="186.5" y="40.0" width="151" height="70" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="363.5" y="40.0" width="122" height="70" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="511.5" y="40.0" width="158" height="70" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="695.5" y="40.0" width="118" height="70" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="839.5" y="40.0" width="118" height="70" rx="9" fill="#12a05a" fill-opacity="0.14" stroke="#12a05a" stroke-width="2" stroke-linejoin="round"/>
   </g>
   <g>
@@ -121,7 +121,7 @@ will match — and that estimate drives everything:
   <path d="M456.0 150.0 L505.0 150.0 L505.0 256" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#l10b-ah)"/>
   </g>
   <g>
-  <rect x="261.0" y="36" width="158" height="44" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="261.0" y="36" width="158" height="44" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <path d="M340 102.0 L456.0 150 L340 198.0 L224.0 150 Z" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
   <rect x="89.0" y="256" width="172" height="54" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="419.0" y="256" width="172" height="54" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>

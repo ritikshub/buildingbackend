@@ -30,13 +30,13 @@ OAuth defines four roles, and the whole protocol is choreography among them. The
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Four roles — the user authorizes; the client gets a scoped token, never the password</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2" font-family="'JetBrains Mono', ui-monospace, monospace">
-    <rect x="30" y="70" width="200" height="80" rx="11" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+    <rect x="30" y="70" width="200" height="80" rx="11" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     <rect x="30" y="200" width="200" height="72" rx="11" fill="#e0930f" fill-opacity="0.11" stroke="#e0930f"/>
     <rect x="360" y="200" width="200" height="72" rx="11" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     <rect x="680" y="200" width="200" height="72" rx="11" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="130" y="98" font-size="12" font-weight="700" text-anchor="middle" fill="#3553ff">RESOURCE OWNER</text>
+    <text x="130" y="98" font-size="12" font-weight="700" text-anchor="middle" fill="#c94a12">RESOURCE OWNER</text>
     <text x="130" y="118" font-size="9.5" text-anchor="middle">the user — owns the data,</text>
     <text x="130" y="134" font-size="9.5" text-anchor="middle">grants permission</text>
     <text x="130" y="228" font-size="12" font-weight="700" text-anchor="middle" fill="#e0930f">CLIENT</text>

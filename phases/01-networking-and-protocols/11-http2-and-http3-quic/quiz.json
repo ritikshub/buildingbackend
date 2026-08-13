@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is the core limitation of an HTTP/1.1 connection that HTTP/2 was designed to fix?",
-    "options": [
-      "It cannot send request headers",
-      "It carries effectively one request at a time, so a slow response blocks the requests behind it",
-      "It only works over UDP",
-      "It cannot transfer binary files"
-    ],
-    "correct": 1,
-    "explanation": "An HTTP/1.1 connection is sequential: a request must get its full response before the next moves, so a slow response causes head-of-line blocking at the HTTP layer. Browsers opened multiple connections to work around it, but each still handled one request at a time."
-  },
-  {
-    "stage": "pre",
-    "question": "In HTTP/1.1, how are request and response headers put on the wire?",
-    "options": [
-      "As compressed binary indexes into a shared table",
-      "As plain text, resent in full on every request",
-      "They are never sent, only the body is",
-      "As a single 9-byte frame"
-    ],
-    "correct": 1,
-    "explanation": "HTTP/1.1 headers are text and are sent in full on every request — the same User-Agent, Cookie, and Accept lines repeated each time. HTTP/2's HPACK later replaced this with a shared table so repeated headers cost a few bytes."
-  },
-  {
     "stage": "check",
     "question": "How does HTTP/2 carry many concurrent requests over a single TCP connection?",
     "options": [

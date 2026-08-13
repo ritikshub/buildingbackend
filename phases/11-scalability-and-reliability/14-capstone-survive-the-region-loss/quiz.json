@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service has an SLO of 99.95% availability measured over a monthly window. How much total downtime does that permit per month, counting every cause — deploys, dependencies, DNS, human error and deliberate tests?",
-    "options": [
-      "About 21.9 minutes",
-      "About 3 hours 39 minutes",
-      "About 43 minutes",
-      "About 5 minutes"
-    ],
-    "correct": 0,
-    "explanation": "A month averages 365.25/12 = 30.44 days = 43,830 minutes, and 0.05% of that is 21.9 minutes, or 1,315 error-seconds. 43 minutes is the answer for 99.9%, which is the number people usually have in their head and is 2x too generous. 3 hours 39 minutes is what five 99.9% dependencies in series actually deliver (0.999^5 = 99.50%) — a real and important number, but it is the composed result, not the budget. The reason this arithmetic matters before anything else is that it makes the budget a spending account: in the capstone run, six minutes of deliberate failure injection consumed 21.5% of the whole month for the naive build."
-  },
-  {
     "stage": "check",
     "question": "One instance in a 30-instance fleet stops responding: the process stays up, still accepts TCP connections, but never sends a reply. A layer-4 health check probes it every 30 seconds. What happens?",
     "options": [

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You shard a multi-tenant database across 8 machines with a good hash function: shard = blake2b(tenant_id) % 8. You have 500 tenants, and one enterprise customer generates 40% of all writes. What does the write distribution look like?",
-    "options": [
-      "Roughly even at about 12.5% per shard — that is what a cryptographic hash function guarantees, and it is why hashing is preferred over range sharding",
-      "Measured: 47.7% of all writes land on one shard, an 18.1x imbalance, because the hash randomises which shard a tenant lands on but does nothing about how much traffic that tenant sends. Placement was uniform (each shard owned a similar number of tenants); volume was not",
-      "Even, because with 500 tenants spread over 8 shards the law of large numbers averages out any individual tenant's contribution",
-      "The hash function will need re-seeding; a good hash would place the large tenant on a shard of its own automatically"
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer is right about what a hash function does and wrong about what the problem is. blake2b really does spread 500 tenant ids uniformly across 8 buckets — the measured key-placement imbalance was 1.05x, essentially perfect. But a hash operates on the key, not on the traffic behind the key, and the traffic is Zipfian: one tenant carried 40.1% of writes, so whichever shard it hashed to inherited all of it. The law-of-large-numbers answer fails for the same reason: averaging works when contributions are similar in size, and here one contribution is larger than the other 499 combined. This is why the fix is a directory (place the whale deliberately) or a composite key (split the whale), never a better hash."
-  },
-  {
     "stage": "check",
     "question": "You range-shard orders across 8 machines by order_id, cutting the existing 1,000,000 rows into 8 equal ranges. order_id comes from a sequence. A month later shard 7 is at 95% CPU and the other seven are nearly idle. Someone proposes splitting shard 7 in two. What happens?",
     "options": [

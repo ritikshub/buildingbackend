@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Checkout latency has gone from 40 ms to over 2 seconds and 3% of requests are failing, but CPU sits at 41% and memory at 58% on every service. What is the most likely explanation?",
-    "options": [
-      "The metrics pipeline is broken — if the service were really slow, CPU would be high, so the latency numbers cannot be trusted.",
-      "A CPU-bound hot loop is being hidden by averaging across many replicas; drilling into per-replica CPU will reveal a pegged instance.",
-      "Requests are waiting on a resource the operating system does not report — a connection pool, thread pool, lock or semaphore. Waiting consumes no CPU, so saturation of an in-process resource is invisible in CPU and memory.",
-      "Memory at 58% indicates garbage-collection pressure, which is the usual cause of multi-second latency with normal CPU."
-    ],
-    "correct": 2,
-    "explanation": "Blocked requests burn wall-clock time, not cycles. A thread parked waiting for a pool connection shows up as latency and as queue depth, never as CPU. This is why the USE method asks for utilization AND saturation of every resource, including the ones only your process knows about, and why CPU-based alerting sleeps through the most common serious incidents."
-  },
-  {
     "stage": "check",
     "question": "Your availability SLO is 99.9% over 30 days. Over the last 5 minutes, 3.2% of requests returned 5xx. What is the error-budget burn rate, and what does it mean?",
     "options": [

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You've done password storage perfectly — Argon2id, salts, a pepper, breach screening. Why do accounts still get taken over?",
-    "options": [
-      "Because Argon2id has known weaknesses that let attackers reverse the hashes",
-      "Because the three most common ways a password reaches an attacker — phishing a fake login page, reuse of a password leaked from another site, and bulk guessing of common passwords — all hand over a *real* password without ever touching your database, so how you store passwords is irrelevant to them. The fix is to stop relying on the password as the sole proof of identity: add a second factor",
-      "Because the salts weren't long enough",
-      "Because passwords should have been encrypted rather than hashed"
-    ],
-    "correct": 1,
-    "explanation": "Password storage defends the stolen database file. Phishing, credential stuffing, and bulk guessing bypass the database entirely by obtaining a genuine password — from the user, from another breach, or by guessing. No storage scheme helps once the attacker has the correct password. A second factor from a different category (something you have/are) means the phished password alone is no longer enough."
-  },
-  {
     "stage": "check",
     "question": "How does your phone's authenticator app (TOTP) produce the same 6 digits as the server without ever communicating with it?",
     "options": [

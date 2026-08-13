@@ -52,7 +52,7 @@ That is a remarkably good deal. You do not have to reason about every interleavi
     <text x="440" y="24" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">Deadlock needs all four. Remove any one and it cannot happen.</text><text x="440" y="42" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.75">Coffman, Elphick &amp; Shoshani, "System Deadlocks", ACM Computing Surveys 3(2), 1971</text>
 
     <g fill="none" stroke-width="2" stroke-linejoin="round">
-      <rect x="68" y="56" width="744" height="44" rx="8" fill="#d64545" fill-opacity="0.14" stroke="#d64545"/><rect x="68" y="116" width="164" height="196" rx="9" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/><rect x="260" y="116" width="164" height="196" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+      <rect x="68" y="56" width="744" height="44" rx="8" fill="#d64545" fill-opacity="0.14" stroke="#d64545"/><rect x="68" y="116" width="164" height="196" rx="9" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/><rect x="260" y="116" width="164" height="196" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
       <rect x="452" y="116" width="164" height="196" rx="9" fill="#e0930f" fill-opacity="0.12" stroke="#e0930f"/><rect x="644" y="116" width="164" height="196" rx="9" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/><rect x="68" y="328" width="744" height="38" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     </g>
     <text x="440" y="77" text-anchor="middle" font-size="15" font-weight="700" fill="#d64545">DEADLOCK</text><text x="440" y="92" text-anchor="middle" font-size="9.5" fill="#d64545">holds only while all four pillars stand</text>
@@ -63,8 +63,8 @@ That is a remarkably good deal. You do not have to reason about every interleavi
       <text x="150" y="245" font-size="9.5">atomic compare-and-swap</text><text x="150" y="272" font-size="8.5" opacity="0.75">the deepest fix: there is</text><text x="150" y="284" font-size="8.5" opacity="0.75">no lock left to contend for</text>
       <text x="150" y="302" font-size="8.5" opacity="0.6">often a redesign</text>
 
-      <text x="342" y="140" font-size="11.5" font-weight="700" fill="#3553ff">HOLD AND WAIT</text><text x="342" y="160" font-size="9" opacity="0.85">keeps what it holds while</text><text x="342" y="173" font-size="9" opacity="0.85">asking for the next one</text>
-      <text x="342" y="200" font-size="9" font-weight="700" fill="#3553ff">REMOVE IT BY</text><text x="342" y="217" font-size="9.5">take every lock in ONE</text><text x="342" y="231" font-size="9.5">atomic step, or release</text>
+      <text x="342" y="140" font-size="11.5" font-weight="700" fill="#c94a12">HOLD AND WAIT</text><text x="342" y="160" font-size="9" opacity="0.85">keeps what it holds while</text><text x="342" y="173" font-size="9" opacity="0.85">asking for the next one</text>
+      <text x="342" y="200" font-size="9" font-weight="700" fill="#c94a12">REMOVE IT BY</text><text x="342" y="217" font-size="9.5">take every lock in ONE</text><text x="342" y="231" font-size="9.5">atomic step, or release</text>
       <text x="342" y="245" font-size="9.5">all of them and restart</text><text x="342" y="272" font-size="8.5" opacity="0.75">the waiter/semaphore fix:</text><text x="342" y="284" font-size="8.5" opacity="0.75">admit at most N-1 claimants</text>
       <text x="342" y="302" font-size="8.5" opacity="0.6">needs the lock set up front</text>
 
@@ -102,10 +102,10 @@ The fourth condition — circular wait — is worth making precise, because "cyc
     <text x="222" y="70" text-anchor="middle" font-size="12.5" font-weight="700" fill="#d64545">BEFORE — each thread locks its own source first</text><text x="658" y="70" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0fa07f">AFTER — every thread takes acct-A before acct-B</text>
 
     <g fill="none" stroke-width="2" stroke-linejoin="round">
-      <rect x="169" y="86" width="110" height="34" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/><rect x="293" y="174" width="110" height="34" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.6"/><rect x="169" y="262" width="110" height="34" rx="8" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
+      <rect x="169" y="86" width="110" height="34" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/><rect x="293" y="174" width="110" height="34" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.6"/><rect x="169" y="262" width="110" height="34" rx="8" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
       <rect x="45" y="174" width="110" height="34" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.6"/>
     </g>
-    <text x="224" y="108" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">T1  A -&gt; B</text><text x="348" y="196" text-anchor="middle" font-size="11" fill="currentColor">lock acct-B</text><text x="224" y="284" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">T2  B -&gt; A</text>
+    <text x="224" y="108" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">T1  A -&gt; B</text><text x="348" y="196" text-anchor="middle" font-size="11" fill="currentColor">lock acct-B</text><text x="224" y="284" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">T2  B -&gt; A</text>
     <text x="100" y="196" text-anchor="middle" font-size="11" fill="currentColor">lock acct-A</text>
 
     <g fill="none" stroke-width="2">
@@ -117,10 +117,10 @@ The fourth condition — circular wait — is worth making precise, because "cyc
     <text x="222" y="326" text-anchor="middle" font-size="10.5" font-weight="700" fill="#d64545">T1 -&gt; [B] -&gt; T2 -&gt; [A] -&gt; T1</text><text x="222" y="348" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.9">CIRCULAR WAIT present · both threads 0.1% CPU, forever</text>
 
     <g fill="none" stroke-width="2" stroke-linejoin="round">
-      <rect x="470" y="122" width="104" height="34" rx="8" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/><rect x="606" y="122" width="104" height="34" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.6"/><rect x="742" y="122" width="104" height="34" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+      <rect x="470" y="122" width="104" height="34" rx="8" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/><rect x="606" y="122" width="104" height="34" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.6"/><rect x="742" y="122" width="104" height="34" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
       <rect x="742" y="248" width="104" height="34" rx="8" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     </g>
-    <text x="522" y="144" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">T2  B -&gt; A</text><text x="658" y="144" text-anchor="middle" font-size="11" fill="currentColor">lock acct-A</text><text x="794" y="144" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">T1  A -&gt; B</text>
+    <text x="522" y="144" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">T2  B -&gt; A</text><text x="658" y="144" text-anchor="middle" font-size="11" fill="currentColor">lock acct-A</text><text x="794" y="144" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">T1  A -&gt; B</text>
     <text x="794" y="264" text-anchor="middle" font-size="11" font-weight="700" fill="#0fa07f">lock acct-B</text><text x="794" y="278" text-anchor="middle" font-size="9" fill="#0fa07f">FREE</text>
     <g fill="none" stroke-width="2">
       <path d="M576 139 L 600 139" stroke="#d64545" stroke-dasharray="6 5" marker-end="url(#l10-wait)"/><path d="M712 139 L 736 139" stroke="#0fa07f" marker-end="url(#l10-hold)"/><path d="M794 158 L 794 242" stroke="#0fa07f" marker-end="url(#l10-hold)"/>
@@ -196,7 +196,7 @@ Dijkstra's dining philosophers (EWD310, 1971) is usually taught as a puzzle. It 
     <text x="440" y="24" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">Dining philosophers: one deadlock, three different conditions to break</text>
 
     <g fill="none" stroke-width="2" stroke-linejoin="round">
-      <rect x="16" y="42" width="380" height="350" rx="12" fill="#d64545" fill-opacity="0.10" stroke="#d64545"/><rect x="412" y="48" width="452" height="104" rx="10" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/><rect x="412" y="168" width="452" height="104" rx="10" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+      <rect x="16" y="42" width="380" height="350" rx="12" fill="#d64545" fill-opacity="0.10" stroke="#d64545"/><rect x="412" y="48" width="452" height="104" rx="10" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/><rect x="412" y="168" width="452" height="104" rx="10" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
       <rect x="412" y="288" width="452" height="104" rx="10" fill="#e0930f" fill-opacity="0.12" stroke="#e0930f"/>
     </g>
     <text x="206" y="68" text-anchor="middle" font-size="12.5" font-weight="700" fill="#d64545">NAIVE — everyone takes left, then right</text>
@@ -208,7 +208,7 @@ Dijkstra's dining philosophers (EWD310, 1971) is usually taught as a puzzle. It 
       <path d="M120 178 L 154 168" stroke="#d64545" stroke-dasharray="5 4" marker-end="url(#l10-pw)"/>
     </g>
 
-    <g fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.8">
+    <g fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.8">
       <circle cx="206" cy="106" r="19"/><circle cx="313" cy="183" r="19"/><circle cx="272" cy="309" r="19"/>
       <circle cx="140" cy="309" r="19"/><circle cx="100" cy="183" r="19"/>
     </g>
@@ -216,7 +216,7 @@ Dijkstra's dining philosophers (EWD310, 1971) is usually taught as a puzzle. It 
       <circle cx="245" cy="165" r="12"/><circle cx="269" cy="238" r="12"/><circle cx="206" cy="284" r="12"/>
       <circle cx="143" cy="238" r="12"/><circle cx="167" cy="165" r="12"/>
     </g>
-    <g text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">
+    <g text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">
       <text x="206" y="110">P0</text><text x="313" y="187">P1</text><text x="272" y="313">P2</text>
       <text x="140" y="313">P3</text><text x="100" y="187">P4</text>
     </g>
@@ -230,17 +230,17 @@ Dijkstra's dining philosophers (EWD310, 1971) is usually taught as a puzzle. It 
     <text x="206" y="352" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.9">solid = holds · dashed = waits for</text><text x="206" y="372" text-anchor="middle" font-size="10.5" font-weight="700" fill="#d64545">measured: 4 meals, then 5/5 stuck forever</text>
 
     <g fill="none" stroke-width="1.8" stroke-linejoin="round">
-      <rect x="432" y="78" width="46" height="44" rx="8" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f"/><rect x="432" y="198" width="46" height="44" rx="8" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff"/><rect x="432" y="318" width="46" height="44" rx="8" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"/>
+      <rect x="432" y="78" width="46" height="44" rx="8" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f"/><rect x="432" y="198" width="46" height="44" rx="8" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12"/><rect x="432" y="318" width="46" height="44" rx="8" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"/>
     </g>
     <g text-anchor="middle" font-size="11" font-weight="700">
-      <text x="455" y="106" fill="#0fa07f">CW</text><text x="455" y="226" fill="#3553ff">H+W</text><text x="455" y="346" fill="#e0930f">N-P</text>
+      <text x="455" y="106" fill="#0fa07f">CW</text><text x="455" y="226" fill="#c94a12">H+W</text><text x="455" y="346" fill="#e0930f">N-P</text>
     </g>
 
     <text x="500" y="78" font-size="11.5" font-weight="700" fill="#0fa07f">ASYMMETRY — P4 reaches right, then left</text><text x="500" y="99" font-size="9.5" fill="currentColor" opacity="0.9">breaks CIRCULAR WAIT: one reversed philosopher is enough</text><text x="500" y="113" font-size="9.5" fill="currentColor" opacity="0.9">to open the ring, so no cycle can ever form.</text>
     <text x="500" y="136" font-size="10" font-weight="700" fill="#0fa07f">measured: 566 meals in 0.6 s, 0 stalls</text>
 
-    <text x="500" y="198" font-size="11.5" font-weight="700" fill="#3553ff">WAITER — a semaphore admits at most 4</text><text x="500" y="219" font-size="9.5" fill="currentColor" opacity="0.9">breaks HOLD-AND-WAIT: with only 4 claimants and 5 forks,</text><text x="500" y="233" font-size="9.5" fill="currentColor" opacity="0.9">someone always gets both. Pigeonhole, not luck.</text>
-    <text x="500" y="256" font-size="10" font-weight="700" fill="#3553ff">measured: 827 meals in 0.6 s, 0 stalls</text>
+    <text x="500" y="198" font-size="11.5" font-weight="700" fill="#c94a12">WAITER — a semaphore admits at most 4</text><text x="500" y="219" font-size="9.5" fill="currentColor" opacity="0.9">breaks HOLD-AND-WAIT: with only 4 claimants and 5 forks,</text><text x="500" y="233" font-size="9.5" fill="currentColor" opacity="0.9">someone always gets both. Pigeonhole, not luck.</text>
+    <text x="500" y="256" font-size="10" font-weight="700" fill="#c94a12">measured: 827 meals in 0.6 s, 0 stalls</text>
 
     <text x="500" y="318" font-size="11.5" font-weight="700" fill="#e0930f">TIMEOUT + RANDOM BACKOFF</text><text x="500" y="339" font-size="9.5" fill="currentColor" opacity="0.9">breaks NO-PREEMPTION: acquire(timeout=), then put the fork</text><text x="500" y="353" font-size="9.5" fill="currentColor" opacity="0.9">back down. Without the RANDOM part this becomes livelock.</text>
     <text x="500" y="376" font-size="10" font-weight="700" fill="#e0930f">measured: 1,633 meals, 146 retries, 0 stalls</text>

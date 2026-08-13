@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is the single job of the physical layer (layer 1)?",
-    "options": [
-      "To assign IP addresses to machines",
-      "To move raw bits between two directly connected devices as a physical signal over a medium",
-      "To guarantee that no packet is ever lost",
-      "To decide which program on a machine receives the data"
-    ],
-    "correct": 1,
-    "explanation": "The physical layer only turns bits into a physical signal (voltage, light, or radio) and moves them over the medium. Addressing, reliability, and delivering to a program all belong to higher layers."
-  },
-  {
     "stage": "check",
     "question": "In a star topology where every node connects to one central switch, what is the single point of failure?",
     "options": [

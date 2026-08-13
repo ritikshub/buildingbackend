@@ -157,7 +157,7 @@ exactly the decision in `code/routing_table.py`:
 
     <!-- process boxes -->
     <g stroke-width="1.8" stroke-linejoin="round">
-      <rect x="285" y="48"  width="230" height="44" rx="10" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+      <rect x="285" y="48"  width="230" height="44" rx="10" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
       <rect x="270" y="128" width="260" height="44" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f"/>
       <rect x="40"  y="213" width="220" height="44" rx="10" fill="#d64545" fill-opacity="0.12" stroke="#d64545"/>
       <rect x="282" y="298" width="236" height="44" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f"/>

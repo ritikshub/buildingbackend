@@ -124,8 +124,8 @@ The other defining property of rolling, and the one with the longest tail of con
       <rect x="780.4" y="184" width="49.6" height="40" fill="#0fa07f" fill-opacity="0.55" stroke="#0fa07f"/>
     </g>
     <text x="465" y="174" font-size="8.5" font-weight="700" text-anchor="middle" fill="#d64545">75% of users on the bad version</text>
-    <path d="M409.6 226 L 409.6 236" stroke="#3553ff" stroke-width="2"/>
-    <text x="412" y="245" font-size="8.5" font-weight="700" fill="#3553ff">abort 42s</text>
+    <path d="M409.6 226 L 409.6 236" stroke="#c94a12" stroke-width="2"/>
+    <text x="412" y="245" font-size="8.5" font-weight="700" fill="#c94a12">abort 42s</text>
 
     <g stroke-width="1.1">
       <rect x="150" y="296" width="123.6" height="40" fill="#0fa07f" fill-opacity="0.55" stroke="#0fa07f"/>
@@ -553,7 +553,7 @@ The two numbers compound in the obvious direction: exposure multiplies the clock
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
     <g fill="none" stroke-width="1.9" stroke-linejoin="round">
-      <rect x="16" y="88" width="104" height="52" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="16" y="88" width="104" height="52" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="152" y="78" width="98" height="72" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="300" y="54" width="164" height="52" rx="9" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
       <rect x="300" y="124" width="164" height="52" rx="9" fill="#d64545" fill-opacity="0.13" stroke="#d64545"/>
@@ -563,7 +563,7 @@ The two numbers compound in the obvious direction: exposure multiplies the clock
     </g>
 
     <g fill="currentColor" text-anchor="middle">
-      <text x="68" y="112" font-size="10.5" font-weight="700" fill="#3553ff">LIVE TRAFFIC</text>
+      <text x="68" y="112" font-size="10.5" font-weight="700" fill="#c94a12">LIVE TRAFFIC</text>
       <text x="68" y="128" font-size="9.5" opacity="0.9">60 req/s</text>
       <text x="201" y="104" font-size="10" font-weight="700" fill="#7c5cff">WEIGHTED</text>
       <text x="201" y="118" font-size="10" font-weight="700" fill="#7c5cff">ROUTER</text>

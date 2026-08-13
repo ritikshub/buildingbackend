@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A 900 ms checkout endpoint is slow. A senior engineer is confident it is the JSON serialization and spends two weeks rewriting it. What is the strongest argument for profiling before that sprint starts, rather than after it ships?",
-    "options": [
-      "Profilers usually disagree with human intuition, so the engineer's theory is statistically likely to be wrong and should be checked",
-      "Profiling gives the fraction f that the component occupies, and Amdahl's ceiling 1/(1-f) bounds the payoff BEFORE any work happens. In the lesson's run the serializer was f=2.0%, so even an infinitely fast version could only ever return a 1.02x speedup — a two-week outcome that was fully determined on day one and computable in seconds",
-      "Profiling would have shown the engineer which library to use for the rewrite, saving most of the two weeks",
-      "Without a profile there is no baseline to compare against afterwards, so nobody could prove the rewrite helped at all"
-    ],
-    "correct": 1,
-    "explanation": "The point is not that guesses are usually wrong — this one might have been right about the code being inefficient. The point is that a guess tells you nothing about how much the fix is WORTH. Amdahl's Law converts one measured fraction into a hard upper bound on the payoff, and a ceiling of 1.02x kills the project before anyone opens an editor. Compute it first and write it in the ticket."
-  },
-  {
     "stage": "check",
     "question": "The lesson's endpoint spends 500.8 ms of its 895.1 ms blocked in a payment call. The on-CPU sampler reports charge_payment at 0.0% of 1,476 samples. Why?",
     "options": [

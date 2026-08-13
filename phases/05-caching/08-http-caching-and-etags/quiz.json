@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "How do a browser and CDN know whether and how long to cache a response?",
-    "options": ["They guess based on file size", "The server attaches HTTP caching headers (Cache-Control, ETag) to the response, and compliant caches obey them", "They ask the user", "They cache everything for 24 hours by default"],
-    "correct": 1,
-    "explanation": "HTTP builds caching into the protocol (RFC 9111). The server declares the rules per response via headers, and every browser, proxy, and CDN in the chain follows them."
-  },
-  {
     "stage": "check",
     "question": "What's the difference between freshness and validation?",
     "options": ["They're the same", "Freshness (max-age) lets a cache serve its copy with zero network; validation lets a stale copy be reused without re-downloading, by asking the server if it changed", "Freshness is for images, validation for text", "Validation always re-downloads the body"],

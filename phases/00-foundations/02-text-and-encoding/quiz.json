@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A byte just holds a number from 0 to 255. So what has to happen for the number 72 to mean the letter 'H'?",
-    "options": ["The hardware physically changes", "Everyone agrees on a table that maps numbers to characters", "72 always means H by law of physics", "The byte becomes bigger"],
-    "correct": 1,
-    "explanation": "Text is just numbers plus a shared agreement (an encoding/table) that says which number is which character. ASCII is that table for the first 128 characters."
-  },
-  {
     "stage": "check",
     "question": "In ASCII, 'A' is 65. What is 'a', given that uppercase and lowercase are 32 apart?",
     "options": ["33", "66", "97", "128"],

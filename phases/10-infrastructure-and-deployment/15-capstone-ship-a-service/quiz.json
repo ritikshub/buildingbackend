@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A rolling deploy is halfway through when the new version's readiness probe starts failing on every new instance. The migration that went out with this release already dropped the old column. maxUnavailable is 1. What does the orchestrator do?",
-    "options": [
-      "It detects the failure and automatically rolls the Deployment back to the previous ReplicaSet",
-      "It holds the fleet in the half-migrated state indefinitely; after progressDeadlineSeconds it changes a status condition and keeps trying",
-      "It proceeds anyway, because a rollout that cannot finish is worse than a rollout with unhealthy instances",
-      "It scales the old version back to full capacity to protect the error rate"
-    ],
-    "correct": 1,
-    "explanation": "Nothing rolls back on its own. maxUnavailable: 1 forbids taking down another old instance until a new one is ready, and a level-triggered control loop keeps retrying forever, so the mixed fleet persists. progressDeadlineSeconds (default 600) flips the condition to ProgressDeadlineExceeded — it reports, it does not act. In the measured run this composition of three correct guards cost 48,983 5xx and 32,259 silent bad reads over 909 s, and rollback was unavailable because the old column was already gone."
-  },
-  {
     "stage": "check",
     "question": "Your change is gated by a flag at 1% exposure. You deploy the new artifact to 1 of 6 instances and run canary analysis for 10 minutes: 24,600 requests, zero errors, latency flat. You promote. What did the canary actually establish?",
     "options": [

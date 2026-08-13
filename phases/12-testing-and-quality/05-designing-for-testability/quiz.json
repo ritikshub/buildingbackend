@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A 60-line process_order() reads the clock, opens its own database connection and calls a payment gateway whose sandbox returns one fixed exchange rate. You want to test its currency-rounding rule. In Python you can patch any name you like. Given unlimited patching effort, how much of the function's behaviour can a test actually reach?",
-    "options": [
-      "All of it — Python lets you patch any module attribute, so any behaviour is reachable with enough doubles",
-      "All of it except timing and performance characteristics, which no unit test can observe",
-      "Most of it, but not all: patching recovered 20 of 24 branches, and 4 remained unreachable at any effort",
-      "Almost none of it — a test with four doubles is only testing the doubles, so it proves nothing"
-    ],
-    "correct": 2,
-    "explanation": "Measured: 15 of 24 decision branches with no patching, 20 of 24 once the clock is frozen and the gateway faked (4 doubles), and 24 of 24 against the refactored core with none. Option 1 is the tempting answer because it is true about Python and wrong about the consequence: patching a *name* does not let you choose a *value* the collaborator will never produce. The sandbox rate is 1.08 = 27/25, and an integer amount times a fraction with an odd denominator can never land on exactly one half — 0 of 2,000,000 amounts scanned reach the rounding tie. Option 4 overstates the case in the other direction: that same heavily-doubled suite still killed 57.8% of seeded mutants, so it was not worthless, just capped."
-  },
-  {
     "stage": "check",
     "question": "You fix a function's clock through four different seams, then apply three refactors that change no observable behaviour: hoisting a repeated clock read into a variable, adding a default argument, and aliasing the clock to a module-level name at import. Which seam still controls the clock after all three?",
     "options": [

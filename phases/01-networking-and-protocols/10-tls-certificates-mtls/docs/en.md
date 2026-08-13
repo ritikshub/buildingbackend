@@ -66,14 +66,14 @@ establishes a shared secret key. In TLS 1.3 this takes a single round trip:
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="130" y="42" width="140" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="130" y="42" width="140" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="530" y="42" width="140" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="200" y="61" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
+    <text x="200" y="61" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
     <text x="600" y="61" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Server</text>
     <!-- lifelines -->
     <g stroke-width="1.3" stroke-dasharray="4 5">
-      <path d="M200 72 L200 420" stroke="#3553ff" stroke-opacity="0.35"/>
+      <path d="M200 72 L200 420" stroke="#c94a12" stroke-opacity="0.35"/>
       <path d="M600 72 L600 420" stroke="#0fa07f" stroke-opacity="0.35"/>
     </g>
     <!-- note band 1: TCP -->
@@ -203,14 +203,14 @@ intermediate signs the server's **leaf** certificate:
     <g stroke-width="1.8" stroke-linejoin="round">
       <rect x="130" y="50"  width="300" height="52" rx="12" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
       <rect x="130" y="146" width="300" height="52" rx="12" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f"/>
-      <rect x="130" y="242" width="300" height="52" rx="12" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+      <rect x="130" y="242" width="300" height="52" rx="12" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     </g>
     <g text-anchor="middle">
       <text x="280" y="74"  font-size="12.5" font-weight="700" fill="#0fa07f">Root CA</text>
       <text x="280" y="90"  font-size="8" fill="currentColor" opacity="0.7">in the OS / browser trust store</text>
       <text x="280" y="170" font-size="12.5" font-weight="700" fill="currentColor">Intermediate CA</text>
       <text x="280" y="186" font-size="8" fill="currentColor" opacity="0.7">signed by the root</text>
-      <text x="280" y="266" font-size="12.5" font-weight="700" fill="#3553ff">Leaf certificate</text>
+      <text x="280" y="266" font-size="12.5" font-weight="700" fill="#c94a12">Leaf certificate</text>
       <text x="280" y="282" font-size="8" fill="currentColor" opacity="0.7">the server's identity — bank.example</text>
     </g>
     <!-- takeaway -->

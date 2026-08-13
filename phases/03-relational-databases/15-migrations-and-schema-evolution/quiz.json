@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why is running ALTER TABLE by hand on the production database a bad practice?",
-    "options": ["It's actually fine", "It's unreviewed, unrepeatable, and unversioned — environments drift, there's no record of the schema's state, and a typo goes straight to production", "ALTER TABLE doesn't work in production", "It's too slow"],
-    "correct": 1,
-    "explanation": "Hand-run DDL is unreviewed (typos go live), unrepeatable (staging and prod drift, new environments miss the change), and unversioned (nobody knows the schema state). Migrations make schema changes reviewed, repeatable, and versioned like code."
-  },
-  {
     "stage": "check",
     "question": "How does a migration runner know which migrations to apply?",
     "options": ["It re-runs all of them every time", "It records applied versions in a migrations table in the database and applies only the pending (not-yet-applied) ones, in order", "It asks the developer", "It applies them randomly"],

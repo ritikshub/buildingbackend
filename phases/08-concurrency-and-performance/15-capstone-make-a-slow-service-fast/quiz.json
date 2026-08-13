@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A service reports p99 = 93 ms on its own latency dashboard, has a 0.00% error rate, and sits at 5% CPU — while users report six-second waits. What is the most likely explanation?",
-    "options": [
-      "The dashboard is averaging the p99 across instances, and averaging percentiles is undefined, so the real fleet-wide p99 is much higher than any instance reports",
-      "The service's timer starts after the request has already waited in a queue or on a lock, so it measures the work and never the waiting — the user's clock starts at arrival, the service's starts much later",
-      "The users are on slow networks, so the extra seconds are client-side latency the server cannot see and should not be held responsible for",
-      "The CPU graph is sampled every 15 seconds and is hiding short bursts of 100% utilisation that are the real cause of the six-second waits"
-    ],
-    "correct": 1,
-    "explanation": "In the capstone the same requests measure 92.9 ms by the service's own in-handler timer and 6,667 ms from their intended arrival time — a 72x gap — because the timer starts after `lock.acquire()`. Averaging percentiles really is undefined and slow clients really do exist, which is what makes those answers tempting, but neither produces a systematic 72x gap between two instruments watching the same requests. Any histogram that starts after a queue is structurally blind to that queue."
-  },
-  {
     "stage": "check",
     "question": "A wall-clock profile of one request shows: connect 45.4%, item fetches 24.4%, list/profile/settings 20.3%, score_items() 5.1%. score_items() is also 100% of the on-CPU samples. Which change should you make first, and why?",
     "options": [

@@ -73,18 +73,18 @@ The two maps describe the same territory. TCP/IP's **Application** layer swallow
     <text x="140" y="62" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">OSI — 7 layers</text>
     <text x="575" y="62" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">TCP/IP — 4 layers</text>
     <g fill="none" stroke-width="1.6">
-      <path d="M240 101 L470 149" stroke="#3553ff" stroke-opacity="0.5"/>
-      <path d="M240 149 L470 149" stroke="#3553ff" stroke-opacity="0.5"/>
-      <path d="M240 197 L470 149" stroke="#3553ff" stroke-opacity="0.5"/>
+      <path d="M240 101 L470 149" stroke="#c94a12" stroke-opacity="0.5"/>
+      <path d="M240 149 L470 149" stroke="#c94a12" stroke-opacity="0.5"/>
+      <path d="M240 197 L470 149" stroke="#c94a12" stroke-opacity="0.5"/>
       <path d="M240 245 L470 245" stroke="#0fa07f" stroke-opacity="0.55"/>
       <path d="M240 293 L470 293" stroke="#e0930f" stroke-opacity="0.55"/>
       <path d="M240 341 L470 365" stroke="#7c5cff" stroke-opacity="0.5"/>
       <path d="M240 389 L470 365" stroke="#7c5cff" stroke-opacity="0.5"/>
     </g>
     <g stroke-width="1.5" stroke-linejoin="round">
-      <rect x="40" y="80"  width="200" height="42" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
-      <rect x="40" y="128" width="200" height="42" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
-      <rect x="40" y="176" width="200" height="42" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="40" y="80"  width="200" height="42" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
+      <rect x="40" y="128" width="200" height="42" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
+      <rect x="40" y="176" width="200" height="42" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
       <rect x="40" y="224" width="200" height="42" rx="8" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/>
       <rect x="40" y="272" width="200" height="42" rx="8" fill="#e0930f" fill-opacity="0.11" stroke="#e0930f"/>
       <rect x="40" y="320" width="200" height="42" rx="8" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/>
@@ -107,7 +107,7 @@ The two maps describe the same territory. TCP/IP's **Application** layer swallow
       <text x="140" y="400" font-size="7.5" opacity="0.6">copper · fiber · radio</text>
     </g>
     <g stroke-width="2" stroke-linejoin="round">
-      <rect x="470" y="80"  width="210" height="138" rx="10" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="470" y="80"  width="210" height="138" rx="10" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="470" y="224" width="210" height="42"  rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
       <rect x="470" y="272" width="210" height="42"  rx="10" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
       <rect x="470" y="320" width="210" height="90"  rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
@@ -171,7 +171,7 @@ The receiver runs the whole process in reverse, called **decapsulation**. Bits a
   </defs>
   <text x="390" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="13.5" font-weight="700" fill="currentColor">Wrap on the way down, unwrap in the exact reverse order on the way up</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="218" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#3553ff">SENDER · encapsulate ↓</text>
+    <text x="218" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#c94a12">SENDER · encapsulate ↓</text>
     <text x="580" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#0fa07f">RECEIVER · decapsulate ↑</text>
 
     <path d="M22 82 L22 316" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.4" marker-end="url(#l1e-ar)"/>
@@ -187,16 +187,16 @@ The receiver runs the whole process in reverse, called **decapsulation**. Bits a
     </g>
     <!-- sender bars -->
     <g stroke-width="1.2" stroke-linejoin="round">
-      <rect x="98"  y="75"  width="120" height="30" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="98"  y="75"  width="120" height="30" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="98"  y="133" width="20"  height="30" rx="4" fill="#0fa07f" fill-opacity="0.2"  stroke="#0fa07f"/>
-      <rect x="118" y="133" width="120" height="30" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="118" y="133" width="120" height="30" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="98"  y="191" width="40"  height="30" rx="4" fill="#e0930f" fill-opacity="0.2"  stroke="#e0930f"/>
       <rect x="138" y="191" width="20"  height="30" rx="4" fill="#0fa07f" fill-opacity="0.2"  stroke="#0fa07f"/>
-      <rect x="158" y="191" width="120" height="30" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="158" y="191" width="120" height="30" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="98"  y="249" width="60"  height="30" rx="4" fill="#7c5cff" fill-opacity="0.2"  stroke="#7c5cff"/>
       <rect x="158" y="249" width="40"  height="30" rx="4" fill="#e0930f" fill-opacity="0.2"  stroke="#e0930f"/>
       <rect x="198" y="249" width="20"  height="30" rx="4" fill="#0fa07f" fill-opacity="0.2"  stroke="#0fa07f"/>
-      <rect x="218" y="249" width="120" height="30" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="218" y="249" width="120" height="30" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="98"  y="307" width="240" height="30" rx="4" fill="#7f7f7f" fill-opacity="0.1" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="4 4"/>
     </g>
     <!-- sender segment labels -->
@@ -218,16 +218,16 @@ The receiver runs the whole process in reverse, called **decapsulation**. Bits a
 
     <!-- receiver bars -->
     <g stroke-width="1.2" stroke-linejoin="round">
-      <rect x="580" y="75"  width="120" height="30" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="580" y="75"  width="120" height="30" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="560" y="133" width="20"  height="30" rx="4" fill="#0fa07f" fill-opacity="0.2"  stroke="#0fa07f"/>
-      <rect x="580" y="133" width="120" height="30" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="580" y="133" width="120" height="30" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="520" y="191" width="40"  height="30" rx="4" fill="#e0930f" fill-opacity="0.2"  stroke="#e0930f"/>
       <rect x="560" y="191" width="20"  height="30" rx="4" fill="#0fa07f" fill-opacity="0.2"  stroke="#0fa07f"/>
-      <rect x="580" y="191" width="120" height="30" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="580" y="191" width="120" height="30" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="460" y="249" width="60"  height="30" rx="4" fill="#7c5cff" fill-opacity="0.2"  stroke="#7c5cff"/>
       <rect x="520" y="249" width="40"  height="30" rx="4" fill="#e0930f" fill-opacity="0.2"  stroke="#e0930f"/>
       <rect x="560" y="249" width="20"  height="30" rx="4" fill="#0fa07f" fill-opacity="0.2"  stroke="#0fa07f"/>
-      <rect x="580" y="249" width="120" height="30" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="580" y="249" width="120" height="30" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="460" y="307" width="240" height="30" rx="4" fill="#7f7f7f" fill-opacity="0.1" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="4 4"/>
     </g>
     <!-- receiver segment labels -->

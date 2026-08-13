@@ -74,7 +74,7 @@ That column of `1`s is genuinely optimal and genuinely worthless, because nobody
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">Round-robin equalises request COUNT. Request count is not load.</text>
 
-    <text x="235" y="56" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">requests routed — the graph on your dashboard</text><text x="655" y="56" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e0930f">work actually done, seconds — the truth</text>
+    <text x="235" y="56" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">requests routed — the graph on your dashboard</text><text x="655" y="56" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e0930f">work actually done, seconds — the truth</text>
 
     <g fill="none" stroke="currentColor" stroke-width="1.4">
       <path d="M58 300 L 412 300"/><path d="M58 300 L 58 106"/><path d="M478 300 L 832 300"/><path d="M478 300 L 478 106"/>
@@ -83,7 +83,7 @@ That column of `1`s is genuinely optimal and genuinely worthless, because nobody
       <path d="M53 106 L 58 106"/><path d="M53 300 L 58 300"/><path d="M473 106 L 478 106"/><path d="M473 300 L 478 300"/>
     </g>
 
-    <g fill="#3553ff" fill-opacity="0.30" stroke="#3553ff" stroke-width="1.6">
+    <g fill="#c94a12" fill-opacity="0.30" stroke="#c94a12" stroke-width="1.6">
       <rect x="66" y="140" width="30" height="160"/><rect x="110" y="140" width="30" height="160"/><rect x="154" y="140" width="30" height="160"/><rect x="198" y="140" width="30" height="160"/><rect x="242" y="140" width="30" height="160"/><rect x="286" y="140" width="30" height="160"/><rect x="330" y="140" width="30" height="160"/><rect x="374" y="140" width="30" height="160"/>
     </g>
     <g fill="#e0930f" fill-opacity="0.30" stroke="#e0930f" stroke-width="1.6">
@@ -91,7 +91,7 @@ That column of `1`s is genuinely optimal and genuinely worthless, because nobody
     </g>
     <rect x="530" y="121" width="30" height="179" fill="none" stroke="#d64545" stroke-width="2.4"/><rect x="706" y="156" width="30" height="144" fill="none" stroke="#0fa07f" stroke-width="2.4"/><rect x="794" y="156" width="30" height="144" fill="none" stroke="#0fa07f" stroke-width="2.4"/>
 
-    <path d="M62 140 L 408 140" fill="none" stroke="#3553ff" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.9"/><path d="M482 139 L 828 139" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="5 4" opacity="0.55"/>
+    <path d="M62 140 L 408 140" fill="none" stroke="#c94a12" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.9"/><path d="M482 139 L 828 139" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="5 4" opacity="0.55"/>
 
     <g fill="currentColor" font-size="8.5" text-anchor="middle" opacity="0.9">
       <text x="81" y="133">2522</text><text x="125" y="133">2522</text><text x="169" y="133">2522</text><text x="213" y="133">2522</text><text x="257" y="133">2522</text><text x="301" y="133">2522</text><text x="345" y="133">2521</text><text x="389" y="133">2521</text>
@@ -106,10 +106,10 @@ That column of `1`s is genuinely optimal and genuinely worthless, because nobody
     <g fill="currentColor" font-size="9" text-anchor="end" opacity="0.7">
       <text x="49" y="303">0</text><text x="49" y="110">3000</text><text x="469" y="303">0</text><text x="469" y="110">60 s</text>
     </g>
-    <text x="416" y="144" font-size="8.5" fill="#3553ff" font-weight="700">flat</text><text x="836" y="143" font-size="8.5" fill="currentColor" opacity="0.6">mean</text>
+    <text x="416" y="144" font-size="8.5" fill="#c94a12" font-weight="700">flat</text><text x="836" y="143" font-size="8.5" fill="currentColor" opacity="0.6">mean</text>
 
     <g font-size="10">
-      <text x="235" y="338" text-anchor="middle" fill="#3553ff" font-weight="700">spread: 1 request  ·  0.04%</text><text x="655" y="338" text-anchor="middle" fill="#e0930f" font-weight="700">spread: 11.0 s  ·  24.14%  ·  busy 55.7% vs 69.2%</text>
+      <text x="235" y="338" text-anchor="middle" fill="#c94a12" font-weight="700">spread: 1 request  ·  0.04%</text><text x="655" y="338" text-anchor="middle" fill="#e0930f" font-weight="700">spread: 11.0 s  ·  24.14%  ·  busy 55.7% vs 69.2%</text>
     </g>
     <text x="440" y="360" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.85">why: the 900 ms tail is 1% of requests and 41% of the work — round-robin dealt 14 to 31 of them per backend, blind.</text>
 
@@ -182,7 +182,7 @@ Now the two things that are wrong with it.
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">The death spiral: a broken backend wins every load contest it enters</text>
 
     <g fill="none" stroke-width="1.9" stroke-linejoin="round">
-      <rect x="60" y="60" width="210" height="58" rx="10" fill="#d64545" fill-opacity="0.12" stroke="#d64545"/><rect x="610" y="60" width="210" height="58" rx="10" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/><rect x="610" y="164" width="210" height="58" rx="10" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/><rect x="60" y="164" width="210" height="58" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="60" y="60" width="210" height="58" rx="10" fill="#d64545" fill-opacity="0.12" stroke="#d64545"/><rect x="610" y="60" width="210" height="58" rx="10" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/><rect x="610" y="164" width="210" height="58" rx="10" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/><rect x="60" y="164" width="210" height="58" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
     <g fill="none" stroke="#d64545" stroke-width="1.9">
       <path d="M270 82 L 604 82" marker-end="url(#p11-03-c1)"/><path d="M715 118 L 715 158" marker-end="url(#p11-03-c1)"/><path d="M610 200 L 276 200" marker-end="url(#p11-03-c1)"/><path d="M165 164 L 165 124" marker-end="url(#p11-03-c1)"/>
@@ -191,7 +191,7 @@ Now the two things that are wrong with it.
     <g fill="currentColor" text-anchor="middle">
       <text x="165" y="80" font-size="10.5" font-weight="700" fill="#d64545">1 · the backend breaks</text><text x="165" y="96" font-size="9" opacity="0.9">returns HTTP 500 in 0.5 ms,</text><text x="165" y="110" font-size="9" opacity="0.9">doing none of the work</text><text x="715" y="80" font-size="10.5" font-weight="700" fill="#e0930f">2 · its signal looks PERFECT</text>
       <text x="715" y="96" font-size="9" opacity="0.9">0 outstanding requests,</text><text x="715" y="110" font-size="9" opacity="0.9">0.5 ms latency — best in fleet</text><text x="715" y="184" font-size="10.5" font-weight="700" fill="#7c5cff">3 · the balancer ranks it #1</text><text x="715" y="200" font-size="9" opacity="0.9">least-conn: lowest count wins</text>
-      <text x="715" y="214" font-size="9" opacity="0.9">peak EWMA: lowest latency wins</text><text x="165" y="184" font-size="10.5" font-weight="700" fill="#3553ff">4 · so it gets MORE traffic</text><text x="165" y="200" font-size="9" opacity="0.9">which it also fails instantly,</text><text x="165" y="214" font-size="9" opacity="0.9">which improves its score again</text>
+      <text x="715" y="214" font-size="9" opacity="0.9">peak EWMA: lowest latency wins</text><text x="165" y="184" font-size="10.5" font-weight="700" fill="#c94a12">4 · so it gets MORE traffic</text><text x="165" y="200" font-size="9" opacity="0.9">which it also fails instantly,</text><text x="165" y="214" font-size="9" opacity="0.9">which improves its score again</text>
     </g>
     <text x="440" y="134" font-size="10.5" text-anchor="middle" fill="#d64545" font-weight="700">the signal is correct — the interpretation is not</text><text x="440" y="152" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.85">0 outstanding really IS the lowest load in the fleet. Nothing here is a bug.</text>
 
@@ -288,7 +288,7 @@ This is the result to memorise. It is one extra line of code and it is the reaso
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 476" width="100%" style="max-width:840px" role="img" aria-label="On the left, the power of two choices drawn as a mechanism: a balancer draws two backends uniformly at random from a row of ten, compares their outstanding-request counts, and sends the request to the lighter of the two, with the probability argument that a single random pick hits the worst backend with probability one over n while two picks both have to be bad, which is one over n squared. On the right, measured maximum load for n balls thrown into n bins: with one sample the maximum grows from 4.24 at n equals one hundred to 7.92 at n equals one hundred thousand, while with two samples it barely moves from 2.64 to 3.50, and a third sample only reaches 3.00. The second sample removes 4.42 of maximum load and the third removes 0.50 more.">
   <defs>
-    <marker id="p11-03-b1" markerWidth="10" markerHeight="10" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker><marker id="p11-03-b2" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="currentColor"/></marker>
+    <marker id="p11-03-b1" markerWidth="10" markerHeight="10" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker><marker id="p11-03-b2" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="currentColor"/></marker>
   </defs>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">One extra random sample buys an exponential improvement</text>
@@ -296,15 +296,15 @@ This is the result to memorise. It is one extra line of code and it is the reaso
     <text x="215" y="54" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">the entire algorithm — no global state, no coordination</text>
 
     <rect x="30" y="66" width="150" height="34" rx="8" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff" stroke-width="1.9"/><text x="105" y="88" text-anchor="middle" font-size="11" font-weight="700" fill="#7c5cff">balancer</text>
-    <g fill="none" stroke="#3553ff" stroke-width="1.7">
+    <g fill="none" stroke="#c94a12" stroke-width="1.7">
       <path d="M85 100 C 85 126, 126 124, 126 144" marker-end="url(#p11-03-b1)"/><path d="M140 100 C 190 118, 262 120, 262 144" marker-end="url(#p11-03-b1)"/>
     </g>
-    <text x="70" y="122" font-size="8.5" fill="#3553ff" text-anchor="end" font-weight="700">draw 1</text><text x="196" y="114" font-size="8.5" fill="#3553ff" font-weight="700">draw 2</text>
+    <text x="70" y="122" font-size="8.5" fill="#c94a12" text-anchor="end" font-weight="700">draw 1</text><text x="196" y="114" font-size="8.5" fill="#c94a12" font-weight="700">draw 2</text>
 
     <g fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f" stroke-width="1.4">
       <rect x="45" y="150" width="26" height="32" rx="5"/><rect x="79" y="150" width="26" height="32" rx="5"/><rect x="113" y="150" width="26" height="32" rx="5"/><rect x="147" y="150" width="26" height="32" rx="5"/><rect x="181" y="150" width="26" height="32" rx="5"/><rect x="215" y="150" width="26" height="32" rx="5"/><rect x="249" y="150" width="26" height="32" rx="5"/><rect x="283" y="150" width="26" height="32" rx="5"/><rect x="317" y="150" width="26" height="32" rx="5"/><rect x="351" y="150" width="26" height="32" rx="5"/>
     </g>
-    <rect x="113" y="150" width="26" height="32" rx="5" fill="none" stroke="#3553ff" stroke-width="2.4"/><rect x="249" y="150" width="26" height="32" rx="5" fill="none" stroke="#3553ff" stroke-width="2.4"/><rect x="249" y="150" width="26" height="32" rx="5" fill="#0fa07f" fill-opacity="0.22" stroke="none"/>
+    <rect x="113" y="150" width="26" height="32" rx="5" fill="none" stroke="#c94a12" stroke-width="2.4"/><rect x="249" y="150" width="26" height="32" rx="5" fill="none" stroke="#c94a12" stroke-width="2.4"/><rect x="249" y="150" width="26" height="32" rx="5" fill="#0fa07f" fill-opacity="0.22" stroke="none"/>
     <g fill="currentColor" font-size="11" text-anchor="middle" font-weight="700">
       <text x="58" y="171">3</text><text x="92" y="171">1</text><text x="126" y="171">4</text><text x="160" y="171">1</text><text x="194" y="171">5</text><text x="228" y="171">9</text><text x="262" y="171">2</text><text x="296" y="171">6</text><text x="330" y="171">5</text><text x="364" y="171">3</text>
     </g>
@@ -399,10 +399,10 @@ Now re-read the instruction "send it to the least loaded backend" as what it act
 
     <rect x="60" y="64" width="310" height="30" rx="7" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff" stroke-width="1.7"/><text x="215" y="84" text-anchor="middle" font-size="9.5" font-weight="700" fill="#7c5cff">one shared load report, read by all four</text><rect x="510" y="64" width="310" height="30" rx="7" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff" stroke-width="1.7"/><text x="665" y="84" text-anchor="middle" font-size="9.5" font-weight="700" fill="#7c5cff">the identical report, equally stale</text>
 
-    <g fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.6">
+    <g fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.6">
       <rect x="90" y="110" width="40" height="30" rx="6"/><rect x="160" y="110" width="40" height="30" rx="6"/><rect x="230" y="110" width="40" height="30" rx="6"/><rect x="300" y="110" width="40" height="30" rx="6"/><rect x="520" y="110" width="40" height="30" rx="6"/><rect x="590" y="110" width="40" height="30" rx="6"/><rect x="660" y="110" width="40" height="30" rx="6"/><rect x="730" y="110" width="40" height="30" rx="6"/>
     </g>
-    <g fill="#3553ff" font-size="8.5" text-anchor="middle" font-weight="700">
+    <g fill="#c94a12" font-size="8.5" text-anchor="middle" font-weight="700">
       <text x="110" y="130">LB1</text><text x="180" y="130">LB2</text><text x="250" y="130">LB3</text><text x="320" y="130">LB4</text><text x="540" y="130">LB1</text><text x="610" y="130">LB2</text><text x="680" y="130">LB3</text><text x="750" y="130">LB4</text>
     </g>
 

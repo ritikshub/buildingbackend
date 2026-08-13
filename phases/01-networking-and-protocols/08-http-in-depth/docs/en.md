@@ -79,10 +79,10 @@ The single request-and-reply, drawn against the TCP connection underneath it:
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="120" y="44" width="140" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="120" y="44" width="140" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="500" y="44" width="140" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="190" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
+    <text x="190" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
     <text x="570" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Server</text>
     <!-- lifelines -->
     <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1.3" stroke-dasharray="4 5">
@@ -223,10 +223,10 @@ HTTP/1.1 this is the **default** — the connection persists unless someone send
     <rect x="72" y="308" width="616" height="196" rx="10" fill="#e0930f" fill-opacity="0.06"/>
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="120" y="42" width="140" height="28" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="120" y="42" width="140" height="28" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="500" y="42" width="140" height="28" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="190" y="60" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
+    <text x="190" y="60" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
     <text x="570" y="60" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Server</text>
     <!-- lifelines -->
     <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1.3" stroke-dasharray="4 5">

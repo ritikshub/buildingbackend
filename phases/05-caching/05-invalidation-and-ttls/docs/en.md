@@ -31,7 +31,7 @@ must reason about both.
   <defs>
     <marker id="p5l5a-ara" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
     <marker id="p5l5a-arr" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#d64545"/></marker>
-    <marker id="p5l5a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p5l5a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Three ways an entry leaves the cache — three completely different drivers</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
@@ -44,14 +44,14 @@ must reason about both.
     <g fill="none" stroke-width="1.8">
       <path d="M178 166 C 235 166, 240 94, 290 94" stroke="#e0930f" marker-end="url(#p5l5a-ara)"/>
       <path d="M178 178 L 290 178" stroke="#d64545" marker-end="url(#p5l5a-arr)"/>
-      <path d="M178 190 C 235 190, 240 262, 290 262" stroke="#3553ff" marker-end="url(#p5l5a-arb)"/>
+      <path d="M178 190 C 235 190, 240 262, 290 262" stroke="#c94a12" marker-end="url(#p5l5a-arb)"/>
     </g>
 
     <!-- panels -->
     <g fill-opacity="0.07" stroke-width="1.7" stroke-linejoin="round">
       <rect x="296" y="58" width="584" height="72" rx="10" fill="#e0930f" stroke="#e0930f"/>
       <rect x="296" y="142" width="584" height="72" rx="10" fill="#d64545" stroke="#d64545"/>
-      <rect x="296" y="226" width="584" height="72" rx="10" fill="#3553ff" stroke="#3553ff"/>
+      <rect x="296" y="226" width="584" height="72" rx="10" fill="#c94a12" stroke="#c94a12"/>
     </g>
 
     <text x="312" y="80" font-size="12" font-weight="700" fill="#e0930f">① EXPIRATION — time-driven</text>
@@ -62,7 +62,7 @@ must reason about both.
     <text x="312" y="184" font-size="10" fill="currentColor">the cache is full: something must go to make room — even if it is fresh</text>
     <text x="312" y="204" font-size="9" fill="currentColor" opacity="0.72">trigger: maxmemory reached · maxmemory-policy picks the victim (allkeys-lru / lfu)</text>
 
-    <text x="312" y="248" font-size="12" font-weight="700" fill="#3553ff">③ INVALIDATION — event-driven</text>
+    <text x="312" y="248" font-size="12" font-weight="700" fill="#c94a12">③ INVALIDATION — event-driven</text>
     <text x="312" y="268" font-size="10" fill="currentColor">the data changed: a write just made this copy a lie, so it must go now</text>
     <text x="312" y="288" font-size="9" fill="currentColor" opacity="0.72">trigger: your write path · delete the key, bump a key version, or INCR a generation</text>
   </g>
@@ -122,15 +122,15 @@ never-touched dead keys) and wasted work (passive avoids scanning on the hot pat
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Expiration runs twice: lazily when you read, and by a background sampler</text>
   <g fill-opacity="0.05" stroke-width="2" stroke-linejoin="round">
-    <rect x="16" y="44" width="424" height="330" rx="12" fill="#3553ff" stroke="#3553ff" stroke-opacity="0.8"/>
+    <rect x="16" y="44" width="424" height="330" rx="12" fill="#c94a12" stroke="#c94a12" stroke-opacity="0.8"/>
     <rect x="460" y="44" width="424" height="330" rx="12" fill="#7c5cff" stroke="#7c5cff" stroke-opacity="0.8"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="228" y="70" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3553ff">PASSIVE (lazy) — on read</text>
+    <text x="228" y="70" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c94a12">PASSIVE (lazy) — on read</text>
     <text x="672" y="70" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7c5cff">ACTIVE — background cycle, ~10×/sec</text>
 
     <!-- ===== passive ===== -->
-    <rect x="158" y="92" width="140" height="34" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.7" stroke-linejoin="round"/>
+    <rect x="158" y="92" width="140" height="34" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.7" stroke-linejoin="round"/>
     <text x="228" y="114" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">GET key</text>
     <path d="M228 126 L228 150" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#p5l5b-ar)"/>
     <path d="M228 152 L304 186 L228 220 L152 186 Z" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>

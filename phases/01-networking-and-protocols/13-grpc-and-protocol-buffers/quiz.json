@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What does RPC (Remote Procedure Call) let you do?",
-    "options": [
-      "Encrypt every packet on a connection",
-      "Call a procedure on another machine as if it were a local function, with the framework hiding the network",
-      "Compress JSON before sending it",
-      "Assign a machine an IP address automatically"
-    ],
-    "correct": 1,
-    "explanation": "RPC makes a remote call look like a local function call: your code reads like get_user(150), but the arguments are serialized, sent to a server, executed, and the result returned. Both sides must agree on the procedure name and the argument/return shapes."
-  },
-  {
-    "stage": "pre",
-    "question": "In a protobuf schema like `int32 id = 1;`, what is the `1`?",
-    "options": [
-      "A default value for id",
-      "The maximum number of ids allowed",
-      "The field NUMBER, which is what identifies the field on the wire",
-      "The version of the protobuf format"
-    ],
-    "correct": 2,
-    "explanation": "The `= 1` is the field number, not a default. Protocol Buffers puts field numbers (not names) on the wire, which is what makes the encoding compact and forward/backward compatible. Changing a field's number breaks the wire contract; renaming the field does not."
-  },
-  {
     "stage": "check",
     "question": "How is a field's tag byte computed in the protobuf wire format?",
     "options": [

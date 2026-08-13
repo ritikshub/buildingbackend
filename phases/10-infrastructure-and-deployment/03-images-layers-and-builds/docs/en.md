@@ -61,15 +61,15 @@ An image is not a filesystem, and it is not a tarball of a filesystem. Per the *
     <text x="32" y="256" font-size="9" fill="currentColor" opacity="0.9">6 layers, 260.24 MB of blobs</text>
     <text x="32" y="270" font-size="9" font-weight="700" fill="#7c5cff">the manifest holds no bytes either</text>
 
-    <rect x="300" y="52" width="252" height="152" rx="11" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff" stroke-width="2"/>
-    <text x="312" y="74" font-size="11.5" font-weight="700" fill="#3553ff">CONFIG BLOB — the recipe half</text>
+    <rect x="300" y="52" width="252" height="152" rx="11" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12" stroke-width="2"/>
+    <text x="312" y="74" font-size="11.5" font-weight="700" fill="#c94a12">CONFIG BLOB — the recipe half</text>
     <text x="312" y="88" font-size="8" fill="currentColor" opacity="0.8">vnd.oci.image.config.v1+json</text>
     <g fill="currentColor" font-size="9">
       <text x="312" y="108">Env</text><text x="372" y="108">PORT=8080</text>
       <text x="312" y="124">Cmd</text><text x="372" y="124">python /app/src/main.py</text>
       <text x="312" y="140">WorkingDir</text><text x="392" y="140">/</text>
     </g>
-    <text x="312" y="160" font-size="9" font-weight="700" fill="#3553ff">rootfs.diff_ids — ORDERED, load-bearing</text>
+    <text x="312" y="160" font-size="9" font-weight="700" fill="#c94a12">rootfs.diff_ids — ORDERED, load-bearing</text>
     <text x="312" y="174" font-size="8.5" fill="currentColor" opacity="0.9">e693.. b7ea.. 2ccc.. 3857.. 7b02.. 0497..</text>
     <text x="312" y="192" font-size="9" font-weight="700" fill="#d64545">not one byte of any file lives here</text>
 
@@ -167,7 +167,7 @@ The classic error follows immediately. `COPY . /app` near the top puts your most
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 512" width="100%" style="max-width:840px" role="img" aria-label="Two Dockerfile orderings rebuilt after the identical one-line source edit. On the left, dependencies are installed before the source is copied: the base, the apt install, the requirements copy and the pip install are all cache hits, and only the source copy and the bytecode compile are rebuilt, for four hundred and ten kilobytes and three point two one seconds. On the right, the whole context is copied first: that copy misses, and because a miss invalidates every later instruction, the apt install, the pip install and the compile are all rebuilt in a cascade, for two hundred and fifteen megabytes and five hundred fifty one seconds. That is one hundred seventy one times slower and five hundred thirty seven times more bytes. The bottom note gives the honest reverse case: when the lockfile itself changes, the good ordering wins by only one point one six times.">
   <defs>
-    <marker id="l03-a2" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="l03-a2" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="l03-a2r" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#d64545"/></marker>
   </defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">One cache miss invalidates every layer below it. Order is a performance decision.</text>
@@ -195,7 +195,7 @@ The classic error follows immediately. `COPY . /app` near the top puts your most
       <text x="42" y="220">RUN pip install -r requirements.txt</text><text x="404" y="220" text-anchor="end" font-weight="700" fill="#0fa07f">HIT</text>
       <text x="42" y="230" font-size="8" opacity="0.8">the 470 s step — untouched, because the lockfile did not move</text>
       <text x="42" y="258" font-weight="700">COPY src /app/src</text><text x="404" y="258" text-anchor="end" font-weight="700" fill="#e0930f">REBUILT</text>
-      <text x="42" y="268" font-size="8" opacity="0.85" fill="#3553ff">your one-line edit lands here — 371.5 KB</text>
+      <text x="42" y="268" font-size="8" opacity="0.85" fill="#c94a12">your one-line edit lands here — 371.5 KB</text>
       <text x="42" y="294" font-weight="700">RUN python -m compileall /app/src</text><text x="404" y="294" text-anchor="end" font-weight="700" fill="#e0930f">REBUILT</text>
       <text x="42" y="304" font-size="8" opacity="0.85">the only thing downstream of the edit — 39.0 KB</text>
     </g>
@@ -210,7 +210,7 @@ The classic error follows immediately. `COPY . /app` near the top puts your most
     <g fill="currentColor" font-size="9.5">
       <text x="476" y="118">FROM python:3.12-slim</text><text x="838" y="118" text-anchor="end" font-weight="700" fill="#0fa07f">HIT</text>
       <text x="476" y="148" font-weight="700">COPY . /app</text><text x="838" y="148" text-anchor="end" font-weight="700" fill="#d64545">MISS</text>
-      <text x="476" y="160" font-size="8" opacity="0.85" fill="#3553ff">the identical one-line edit lands here</text>
+      <text x="476" y="160" font-size="8" opacity="0.85" fill="#c94a12">the identical one-line edit lands here</text>
       <text x="476" y="184" font-weight="700">RUN apt-get install build-essential</text><text x="838" y="184" text-anchor="end" font-weight="700" fill="#d64545">REBUILT</text>
       <text x="476" y="194" font-size="8" opacity="0.85">78 s of apt, for a change to a .py file — 153.24 MB</text>
       <text x="476" y="220" font-weight="700">RUN pip install -r /app/requirements.txt</text><text x="838" y="220" text-anchor="end" font-weight="700" fill="#d64545">REBUILT</text>
@@ -235,8 +235,8 @@ The classic error follows immediately. `COPY . /app` near the top puts your most
       <text x="476" y="384" font-size="10">wall time</text><text x="674" y="384" font-size="10" font-weight="700" fill="#d64545">551.21 s</text>
     </g>
 
-    <rect x="16" y="410" width="848" height="62" rx="9" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="440" y="430" font-size="11.5" font-weight="700" text-anchor="middle" fill="#3553ff">3.21 s vs 551.21 s = 171.6x&#8195;&#8195;410.4 KB vs 215.16 MB = 537x</text>
+    <rect x="16" y="410" width="848" height="62" rx="9" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="440" y="430" font-size="11.5" font-weight="700" text-anchor="middle" fill="#c94a12">3.21 s vs 551.21 s = 171.6x&#8195;&#8195;410.4 KB vs 215.16 MB = 537x</text>
     <text x="440" y="446" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.9">Same base, same lockfile, same source, same .dockerignore. Two lines moved. A cold build is a tie: 551.22 s vs 551.21 s.</text>
     <text x="440" y="462" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.9">THE HONEST REVERSE: bump the lockfile instead and A must rerun pip too — 473.22 s vs 551.21 s, a lead of just 1.16x.</text>
 

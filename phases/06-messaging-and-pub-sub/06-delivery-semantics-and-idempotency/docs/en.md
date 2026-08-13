@@ -86,18 +86,18 @@ This is the practical default for almost everything, and every broker in the pha
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="248" y="98" width="94" height="42" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
-    <rect x="356" y="98" width="104" height="42" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="356" y="98" width="104" height="42" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="474" y="98" width="104" height="42" rx="8" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"/>
     <rect x="596" y="66" width="252" height="94" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
 
     <rect x="248" y="244" width="94" height="42" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="356" y="244" width="104" height="42" rx="8" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff"/>
-    <rect x="474" y="244" width="104" height="42" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="474" y="244" width="104" height="42" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="596" y="212" width="252" height="94" rx="10" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
 
     <rect x="248" y="390" width="94" height="42" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="356" y="390" width="104" height="42" rx="8" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f"/>
-    <rect x="474" y="390" width="104" height="42" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="474" y="390" width="104" height="42" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="596" y="358" width="252" height="94" rx="10" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
   </g>
 
@@ -193,15 +193,15 @@ There is no option three, because option three would be the protocol that provab
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="16" y="44" width="418" height="176" rx="13" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f"/>
     <rect x="446" y="44" width="418" height="176" rx="13" fill="#7c5cff" fill-opacity="0.07" stroke="#7c5cff"/>
-    <rect x="16" y="236" width="848" height="52" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="16" y="236" width="848" height="52" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="16" y="308" width="418" height="112" rx="12" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
     <rect x="446" y="308" width="418" height="112" rx="12" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="40" y="120" width="86" height="44" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="40" y="120" width="86" height="44" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="322" y="120" width="90" height="44" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
-    <rect x="470" y="120" width="86" height="44" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="470" y="120" width="86" height="44" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="752" y="120" width="90" height="44" rx="8" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
   </g>
 
@@ -239,7 +239,7 @@ There is no option three, because option three would be the protocol that provab
     <text x="610" y="186" font-size="9" text-anchor="middle" fill="#7c5cff" font-weight="700">dropped</text>
     <text x="655" y="206" font-size="9.5" text-anchor="middle" opacity="0.95">card ALREADY charged</text>
 
-    <text x="440" y="258" font-size="12" font-weight="700" text-anchor="middle" fill="#3553ff">WHAT THE BROKER OBSERVES IN BOTH WORLDS:  silence</text>
+    <text x="440" y="258" font-size="12" font-weight="700" text-anchor="middle" fill="#c94a12">WHAT THE BROKER OBSERVES IN BOTH WORLDS:  silence</text>
     <text x="440" y="276" font-size="9.5" text-anchor="middle" opacity="0.9">no message distinguishes them — the proof: the last message of any finite protocol can itself be lost</text>
 
     <text x="225" y="334" font-size="12" font-weight="700" text-anchor="middle" fill="#7c5cff">RESEND</text>

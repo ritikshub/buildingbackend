@@ -45,10 +45,10 @@ front of* many possible doors, and it can be bypassed. The database's constraint
   <path d="M562 157.0 L 618 222.0" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l06a-ah)"/>
   </g>
   <g>
-  <rect x="25" y="58" width="178" height="44" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="25" y="118" width="178" height="44" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="25" y="178" width="178" height="44" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="25" y="238" width="178" height="44" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="25" y="58" width="178" height="44" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="25" y="118" width="178" height="44" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="25" y="178" width="178" height="44" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="25" y="238" width="178" height="44" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <path d="M300 91 a 131.0 9 0 0 1 262 0 v 132 a 131.0 9 0 0 1 -262 0 Z" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff" stroke-width="2"/>
   <path d="M300 91 a 131.0 9 0 0 0 262 0" fill="none" stroke="#7c5cff" stroke-width="2"/>
   <rect x="618" y="92" width="165" height="48" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
@@ -185,7 +185,7 @@ CREATE TABLE order_line (
   <path d="M701.0 212 L 701.0 246" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l06b-ah)"/>
   </g>
   <g>
-  <rect x="338.0" y="34" width="144" height="46" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="338.0" y="34" width="144" height="46" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <path d="M410 96.0 L528.0 138 L410 180.0 L292.0 138 Z" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
   <rect x="38" y="246" width="172" height="54" rx="9" fill="#e0564f" fill-opacity="0.14" stroke="#e0564f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="300" y="246" width="230" height="54" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>

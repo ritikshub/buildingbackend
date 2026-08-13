@@ -74,7 +74,7 @@ An **SLA — Service Level Agreement** — is an external **contract**, with fin
     <path d="M259 278 L 259 292" marker-end="url(#l09-a1)"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="24" y="46" width="470" height="108" rx="12" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="24" y="46" width="470" height="108" rx="12" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="24" y="170" width="470" height="108" rx="12" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
     <rect x="24" y="294" width="470" height="108" rx="12" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
     <rect x="568" y="72" width="56" height="308" rx="8" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.3"/>
@@ -86,7 +86,7 @@ An **SLA — Service Level Agreement** — is an external **contract**, with fin
     <path d="M556 300 L 636 300" stroke="#e0930f" stroke-width="2.5"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="44" y="72" font-size="12.5" font-weight="700" fill="#3553ff">SLI — Service Level Indicator</text>
+    <text x="44" y="72" font-size="12.5" font-weight="700" fill="#c94a12">SLI — Service Level Indicator</text>
     <text x="44" y="91" font-size="9.5" opacity="0.9">what you MEASURE — a user-visible ratio</text>
     <text x="44" y="112" font-size="10.5" font-weight="700">good events / valid events</text>
     <text x="44" y="130" font-size="9.5" opacity="0.8">non-5xx responses  /  all valid requests</text>
@@ -197,14 +197,14 @@ Which surfaces a trap that catches real teams: **your histogram's bucket boundar
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">One latency SLI, drawn — where the 300 ms threshold cuts</text>
   <rect x="569" y="56" width="233" height="244" fill="#e0930f" fill-opacity="0.07" stroke="none"/>
   <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-    <rect x="100" y="286" width="53" height="14" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="159" y="226" width="53" height="74" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="218" y="107" width="53" height="193" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="277" y="70" width="53" height="230" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="336" y="125" width="53" height="175" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="395" y="180" width="53" height="120" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="454" y="231" width="53" height="69" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="513" y="263" width="53" height="37" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="100" y="286" width="53" height="14" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="159" y="226" width="53" height="74" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="218" y="107" width="53" height="193" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="277" y="70" width="53" height="230" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="336" y="125" width="53" height="175" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="395" y="180" width="53" height="120" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="454" y="231" width="53" height="69" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="513" y="263" width="53" height="37" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="572" y="293" width="53" height="7" fill="#e0930f" fill-opacity="0.20" stroke="#e0930f"/>
     <rect x="631" y="296" width="53" height="4" fill="#e0930f" fill-opacity="0.20" stroke="#e0930f"/>
     <rect x="690" y="297" width="53" height="3" fill="#e0930f" fill-opacity="0.20" stroke="#e0930f"/>
@@ -227,7 +227,7 @@ Which surfaces a trap that catches real teams: **your histogram's bucket boundar
       <text x="657" y="316">750</text><text x="716" y="316">1k</text><text x="775" y="316">2.5k</text>
     </g>
     <text x="440" y="332" font-size="8.5" opacity="0.65" text-anchor="middle">histogram bucket upper bound (ms) — 300 must be one of these, or the SLO is unmeasurable</text>
-    <text x="340" y="356" font-size="10.5" font-weight="700" text-anchor="middle" fill="#3553ff">GOOD  ·  9,900 / 10,000  =  99.00%</text>
+    <text x="340" y="356" font-size="10.5" font-weight="700" text-anchor="middle" fill="#c94a12">GOOD  ·  9,900 / 10,000  =  99.00%</text>
     <text x="690" y="356" font-size="10.5" font-weight="700" text-anchor="middle" fill="#e0930f">TAIL  ·  100 / 10,000  =  1.00%</text>
     <text x="440" y="378" font-size="9.5" opacity="0.9" text-anchor="middle">A page that makes 20 such requests hits the tail with probability 1 - 0.99^20 = 18.2%.</text>
     <text x="440" y="394" font-size="9.5" opacity="0.9" text-anchor="middle">The tail is not an edge case. It is most of your users, some of the time.</text>
@@ -301,7 +301,7 @@ The two agree *only* if traffic is uniform, which it never is: a 12-minute total
     <path d="M90 362 L 800 362"/>
   </g>
   <path d="M90 330 L800 330" fill="none" stroke="#e0930f" stroke-width="2.2" stroke-dasharray="7 5"/>
-  <path d="M90 60 L293 82 L318 114 L521 130 L547 271 L699 314 L749 330 L800 346" fill="none" stroke="#3553ff" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M90 60 L293 82 L318 114 L521 130 L547 271 L699 314 L749 330 L800 346" fill="none" stroke="#c94a12" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>
   <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6">
     <path d="M318 116 L 334 146"/>
     <path d="M566 208 L 550 246"/>

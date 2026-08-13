@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why can't you just use a plain map as a long-lived cache?",
-    "options": ["Maps are too slow to look up", "A map grows without bound and eventually exhausts memory — you need a size cap and an eviction policy", "Maps can't store strings", "Maps lose data on every write"],
-    "correct": 1,
-    "explanation": "An unbounded map never removes entries, so it climbs until the process is OOM-killed. Bounding the size forces the real question: which entry to evict when it's full."
-  },
-  {
     "stage": "check",
     "question": "What does LRU use to decide what to evict, and why is that a good bet?",
     "options": ["The largest value, to free the most memory", "The least-recently-used item, because temporal locality makes recency a strong predictor of near-future use", "A random item, for fairness", "The most frequently used item"],

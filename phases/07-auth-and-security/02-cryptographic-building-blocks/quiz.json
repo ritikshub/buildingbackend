@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A developer stores `{\"user\":\"alice\",\"admin\":false}` in a cookie, Base64-encodes it \"so users can't read or change it,\" and ships. What's wrong?",
-    "options": [
-      "Nothing — Base64 is a lightweight form of encryption suitable for cookies",
-      "Base64 is an encoding, not encryption: it has no key and hides nothing. Anyone decodes it in one line, changes `admin` to `true`, re-encodes, and sends it back. Encoding provides zero confidentiality and zero integrity — to make the cookie unforgeable you need a MAC (or a signature) over its contents; to make it unreadable you need encryption",
-      "The problem is only that JSON is used; a binary format would be safe",
-      "It's fine as long as the cookie is sent over HTTPS, since TLS encrypts it"
-    ],
-    "correct": 1,
-    "explanation": "Base64 exists to make bytes survive a text channel, not to keep a secret — it is a public, reversible round-trip. TLS protects the cookie in transit, but the client is the attacker here: they hold the cookie and can decode and edit it at rest. Integrity (unforgeability) comes from a MAC/signature over the contents; confidentiality (unreadability) comes from encryption. This is the forged-token bug from Lesson 1."
-  },
-  {
     "stage": "check",
     "question": "Why must you compare a MAC/tag with `hmac.compare_digest` rather than `==`?",
     "options": [

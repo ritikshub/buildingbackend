@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why is opening a new database connection for every request a performance problem?",
-    "options": ["Connections are free but slow to close", "Each open is a costly handshake (TCP + TLS + auth + a server-side process/thread), and databases cap how many connections can exist", "Connections use no resources", "The query planner reopens them anyway"],
-    "correct": 1,
-    "explanation": "Establishing a connection takes multiple round trips plus server-side setup — milliseconds next to a microsecond query. And every connection consumes DB memory/processes, so databases enforce a hard maximum you can exhaust."
-  },
-  {
     "stage": "check",
     "question": "How does a connection pool help?",
     "options": ["It makes queries run in parallel automatically", "It opens a fixed set of connections once and lends them to requests, so the expensive handshake happens a few times at startup instead of per request", "It removes the database's connection limit", "It caches query results"],

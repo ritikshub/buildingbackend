@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "An autoscaler is configured to hold CPU at 60%. Traffic doubles instantly and stays there. Roughly how long before the fleet is the right size — given a 60 s metric scrape, a 60 s averaging window, a 60 s decision interval, a 90 s boot and a 60 s warmup?",
-    "options": [
-      "About 60 seconds — the decision interval is the only real delay",
-      "About 4-5 minutes, because all of those delays are on the feedback path and add up",
-      "About 90 seconds — the boot time dominates and the rest is negligible",
-      "Immediately, because target-tracking computes the exact answer in one step"
-    ],
-    "correct": 1,
-    "explanation": "The delays are in series on the feedback path, so they add: 60 s scrape + 30 s (half the averaging window) + 30 s (half the decision interval) + 90 s boot + 60 s warmup = 270 s = 4.5 minutes. Option D is the tempting one and it is half right: the target-tracking formula IS exact — but only when there is no delay, because then the fleet that produced the metric is the fleet you have. Option A picks the one delay that is easiest to see on a config page and ignores provisioning, which is the largest term."
-  },
-  {
     "stage": "check",
     "question": "The lesson's simulator ran the identical controller against identical, perfectly flat traffic and varied only the dead time. At 0 s the fleet parked on 24 instances; at 210 s it swung between 6 and 145. What caused the swing?",
     "options": [

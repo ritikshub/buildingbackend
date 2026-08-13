@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You have forty hand-written tests over a fifteen-line pagination cursor codec. They cover empty keys, 200-character keys, CJK, an emoji, an apostrophe, a newline, -1 and 2**31-1. All forty are green. Three real bugs are then switched on, one at a time. How many does the suite catch?",
-    "options": [
-      "Two of three. A suite that deliberate will catch anything at a value boundary; only the bug involving multiple rows interacting could slip through",
-      "Zero of three. It stayed 40/40 green on every one — the same verdict it gives on correct code. Three properties (15 lines) caught 3 of 3, in 5, 4 and 10 generated cases",
-      "All three, eventually — the suite is thorough enough that each bug breaks at least one assertion, which is exactly what those boundary cases are for",
-      "One of three. The unicode bug is caught by the CJK and emoji cases; the other two involve behaviour outside the codec itself and are out of scope for a unit test"
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer treats a list of edge cases as coverage of the input space, and it is not. Every one of the three bugs needs an input a person does not type: a token whose base64 happens to contain '+', a sort key that is not already NFC-normalised, and two rows that share a sort key across a page boundary. CJK and emoji are irrelevant to the unicode bug — the trigger is decomposed characters, not non-ASCII ones, and everything you type on a keyboard arrives normalised. The failure is not diligence; it is that you never write a test for the input you failed to imagine, and that is very nearly the set of inputs you already got right."
-  },
-  {
     "stage": "check",
     "question": "A property test fails on a randomly generated 4,000-character string. Before shrinking, that is a bad bug report. What does shrinking actually cost, and what does it produce?",
     "options": [

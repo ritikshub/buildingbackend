@@ -67,7 +67,7 @@ Now write the smallest honest test of one pricing rule — *an order of exactly 
 
     <rect x="30" y="66" width="248" height="298" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff" stroke-width="1.8"/>
     <text x="42" y="88" font-size="10.5" font-weight="700" fill="currentColor">def process_order_legacy(</text>
-    <text x="42" y="103" font-size="10.5" font-weight="700" fill="#3553ff">        order_id: int</text>
+    <text x="42" y="103" font-size="10.5" font-weight="700" fill="#c94a12">        order_id: int</text>
     <text x="42" y="118" font-size="10.5" font-weight="700" fill="currentColor">) -&gt; dict:</text>
     <text x="42" y="136" font-size="9" fill="currentColor" opacity="0.75">57 lines · 1 parameter · everything</text>
     <text x="42" y="148" font-size="9" fill="currentColor" opacity="0.75">else it decides with, it fetches</text>
@@ -107,7 +107,7 @@ Now write the smallest honest test of one pricing rule — *an order of exactly 
     </g>
 
     <rect x="470" y="66" width="380" height="86" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff" stroke-width="1.8"/>
-    <text x="484" y="88" font-size="10.5" font-weight="700" fill="currentColor">def process_order(order_id, <tspan fill="#3553ff">deps</tspan>) -&gt; dict:</text>
+    <text x="484" y="88" font-size="10.5" font-weight="700" fill="currentColor">def process_order(order_id, <tspan fill="#c94a12">deps</tspan>) -&gt; dict:</text>
     <text x="484" y="106" font-size="9.5" fill="currentColor" opacity="0.85">the imperative shell · 15 lines</text>
     <text x="484" y="122" font-size="9.5" fill="currentColor" opacity="0.85">it loads, charges, saves, mails — and</text>
     <text x="484" y="138" font-size="9.5" fill="currentColor" opacity="0.85">decides nothing at all</text>
@@ -116,15 +116,15 @@ Now write the smallest honest test of one pricing rule — *an order of exactly 
     <text x="672" y="170" font-size="9" fill="#0fa07f" font-weight="700">calls, with values</text>
 
     <rect x="470" y="180" width="380" height="106" rx="9" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f" stroke-width="1.8"/>
-    <text x="484" y="202" font-size="10.5" font-weight="700" fill="currentColor">price_order(order, <tspan fill="#3553ff">fx</tspan>, <tspan fill="#3553ff">now</tspan>)</text>
+    <text x="484" y="202" font-size="10.5" font-weight="700" fill="currentColor">price_order(order, <tspan fill="#c94a12">fx</tspan>, <tspan fill="#c94a12">now</tspan>)</text>
     <text x="700" y="202" font-size="9.5" fill="currentColor" opacity="0.8">12 lines</text>
-    <text x="484" y="222" font-size="10.5" font-weight="700" fill="currentColor">settle(priced, outcome, <tspan fill="#3553ff">started</tspan>, <tspan fill="#3553ff">finished</tspan>)</text>
+    <text x="484" y="222" font-size="10.5" font-weight="700" fill="currentColor">settle(priced, outcome, <tspan fill="#c94a12">started</tspan>, <tspan fill="#c94a12">finished</tspan>)</text>
     <text x="484" y="240" font-size="9.5" fill="currentColor" opacity="0.8">10 lines</text>
     <text x="484" y="262" font-size="10" font-weight="700" fill="#0fa07f">0 hidden inputs — every input is a parameter</text>
     <text x="484" y="277" font-size="9.5" fill="currentColor" opacity="0.85">so a test writes the value it wants to see</text>
 
-    <rect x="470" y="300" width="380" height="64" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="484" y="320" font-size="10" font-weight="700" fill="#3553ff">Deps(repo, gateway, mailer, clock, audit)</text>
+    <rect x="470" y="300" width="380" height="64" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="484" y="320" font-size="10" font-weight="700" fill="#c94a12">Deps(repo, gateway, mailer, clock, audit)</text>
     <text x="484" y="336" font-size="9.5" fill="currentColor" opacity="0.9">the test constructs fakes and passes them in.</text>
     <text x="484" y="352" font-size="10" font-weight="700" fill="#0fa07f">2 setup lines · 0 doubles patched · 0 I/O ops</text>
 
@@ -215,8 +215,8 @@ That table is an opinion until you measure it, so the program does. It takes one
       <text x="800" y="219" fill="#d64545">1/4</text>
     </g>
 
-    <rect x="30" y="248" width="820" height="66" rx="9" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="46" y="268" font-size="10" fill="currentColor"><tspan font-weight="700" fill="#3553ff">Read the FAIL cells as what each seam is really coupled to.</tspan> The module-global seam is a bet on an</text>
+    <rect x="30" y="248" width="820" height="66" rx="9" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="46" y="268" font-size="10" fill="currentColor"><tspan font-weight="700" fill="#c94a12">Read the FAIL cells as what each seam is really coupled to.</tspan> The module-global seam is a bet on an</text>
     <text x="46" y="285" font-size="10" fill="currentColor">import path; the call-list seam is a bet on how many times you call a collaborator. Neither is a behaviour,</text>
     <text x="46" y="302" font-size="10" fill="currentColor">so both break on refactors that change nothing a user could observe — 0 of 3, measured, for the call list.</text>
     <text x="440" y="344" font-size="11" text-anchor="middle" fill="currentColor" opacity="0.9">This is the whole of "the tests broke and nothing changed". The tests were never about the behaviour.</text>
@@ -347,7 +347,7 @@ Three harnesses, defined honestly:
       <text x="600" y="384" font-weight="700" fill="#e0930f">A frozen clock cannot test a timeout</text>
     </g>
     <text x="440" y="424" font-size="11" text-anchor="middle" fill="currentColor" opacity="0.9">The core reaches all three in one line each, because the rate, the instant and the elapsed time are arguments.</text>
-    <text x="440" y="452" font-size="11" text-anchor="middle" font-weight="700" fill="#3553ff">An unreachable branch is not untested code. It is code no test could ever have been written for.</text>
+    <text x="440" y="452" font-size="11" text-anchor="middle" font-weight="700" fill="#c94a12">An unreachable branch is not untested code. It is code no test could ever have been written for.</text>
   </g>
 </svg>
 ```
@@ -456,7 +456,7 @@ The comparison has to be fair or it proves nothing, so all three suites are gene
     <g stroke-width="1.8">
       <rect x="300" y="96" width="289" height="30" rx="4" fill="#d64545" fill-opacity="0.20" stroke="#d64545"/>
       <rect x="300" y="146" width="367" height="30" rx="4" fill="#0fa07f" fill-opacity="0.20" stroke="#0fa07f"/>
-      <rect x="300" y="196" width="344" height="30" rx="4" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff"/>
+      <rect x="300" y="196" width="344" height="30" rx="4" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12"/>
     </g>
 
     <g font-size="10" fill="currentColor">
@@ -464,19 +464,19 @@ The comparison has to be fair or it proves nothing, so all three suites are gene
       <text x="30" y="121" font-size="8.5" opacity="0.8">tier 1: frozen clock, faked gateway</text>
       <text x="30" y="158" font-weight="700" fill="#0fa07f">core, same assertions</text>
       <text x="30" y="171" font-size="8.5" opacity="0.8">on the same finished invoice</text>
-      <text x="30" y="208" font-weight="700" fill="#3553ff">core, one decision per test</text>
+      <text x="30" y="208" font-weight="700" fill="#c94a12">core, one decision per test</text>
       <text x="30" y="221" font-size="8.5" opacity="0.8">asserting on each rule directly</text>
     </g>
     <g font-size="11.5" font-weight="700">
       <text x="601" y="116" fill="#d64545">57.8%</text>
       <text x="679" y="166" fill="#0fa07f">73.4%</text>
-      <text x="656" y="216" fill="#3553ff">68.8%</text>
+      <text x="656" y="216" fill="#c94a12">68.8%</text>
     </g>
     <g font-size="9.5" fill="currentColor" opacity="0.85">
       <text x="655" y="116">37 killed</text><text x="733" y="166">47 killed</text><text x="710" y="216">44 killed</text>
     </g>
     <g font-size="11" font-weight="700" text-anchor="end" fill="currentColor">
-      <text x="828" y="116" fill="#d64545">112</text><text x="828" y="166" fill="#0fa07f">0</text><text x="828" y="216" fill="#3553ff">0</text>
+      <text x="828" y="116" fill="#d64545">112</text><text x="828" y="166" fill="#0fa07f">0</text><text x="828" y="216" fill="#c94a12">0</text>
     </g>
     <g font-size="9" fill="currentColor" text-anchor="middle" opacity="0.7">
       <text x="300" y="246">0%</text><text x="425" y="246">25%</text><text x="550" y="246">50%</text><text x="675" y="246">75%</text><text x="800" y="246">100%</text>

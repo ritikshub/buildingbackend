@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A service publishes AccountCreated and, 40 ms later, AccountDeleted for the same account. Two consumers read the same stream in parallel; the first takes 90 ms because it missed a cache, the second takes 3 ms. Nothing crashes, no message is lost, and both handlers pass their unit tests. What is the outcome?",
-    "options": ["Nothing goes wrong: the 40 ms gap is far larger than any realistic scheduling difference between two consumers", "The delete is applied before the create, so the delete matches no row and the create then inserts an account that was already closed. Parallelism reordered two causally related events, and no component reported an error because none of them failed", "The broker detects the causal relationship from the timestamps and re-serialises the two events before delivery", "The second consumer blocks until the first commits, because a consumer group serialises delivery of related messages"],
-    "correct": 1,
-    "explanation": "This is the whole lesson in one example. Delivery was correct, both handlers were correct, and the data was corrupted anyway. A broker has no idea two messages are causally related unless you tell it, and it tells it by the partition key. The measured run in this lesson pushed 300 account lifecycles through six parallel consumers with round-robin partitioning and produced 242 inversions across 178 of 300 accounts, with 109 left in the wrong final state."
-  },
-  {
     "stage": "check",
     "question": "Why is the partition key described as the single most consequential design decision in an event-driven system?",
     "options": ["Because it determines the broker's on-disk layout and therefore its storage cost", "Because it is the only field the broker uses for message deduplication", "Because it does three unrelated jobs at once: it defines which messages are guaranteed to be ordered relative to each other, it determines how evenly load spreads across partitions, and it caps your maximum consumer parallelism. Engineers typically reason about only one of the three, and discover the other two in production", "Because changing it requires a schema migration across every producer and consumer simultaneously"],

@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "An HTTP server is fundamentally which combination of parts on top of a TCP socket?",
-    "options": [
-      "A database, a cache, and a load balancer",
-      "An accept loop, a request parser, and a response builder",
-      "A compiler, a linker, and a runtime",
-      "A DNS resolver and a TLS handshake"
-    ],
-    "correct": 1,
-    "explanation": "Strip away the framework and an HTTP server is exactly three things: an accept loop (socket/bind/listen/accept from Lesson 05), a parser that turns the request bytes into a method and path, and a builder that assembles a correct response string. Everything else is hardening around those three."
-  },
-  {
-    "stage": "pre",
-    "question": "In an HTTP/1.1 request, what marks the boundary between the headers and the body?",
-    "options": [
-      "A semicolon",
-      "A blank line — the CRLF sequence \\r\\n\\r\\n",
-      "The Content-Type header",
-      "A null byte (\\x00)"
-    ],
-    "correct": 1,
-    "explanation": "HTTP lines end in CRLF (\\r\\n). An empty line — \\r\\n\\r\\n — separates the header block from the body (RFC 9112 §2.1). A server reads from the socket until it sees that blank line to know it has the full set of headers."
-  },
-  {
     "stage": "check",
     "question": "Why does the server read from the socket in a loop until it sees \\r\\n\\r\\n, instead of trusting a single recv()?",
     "options": [

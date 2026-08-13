@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "After a successful login, the next request the user makes arrives with no memory of who they are. Why, and what's wrong with just storing `user=alice` in a cookie to fix it?",
-    "options": [
-      "HTTP keeps a connection open, so this shouldn't happen; it's a bug in the server",
-      "HTTP is stateless — each request is independent — so the server must be reminded who the caller is on every request. Storing `user=alice` in a cookie fails because the client fully controls the cookie: anyone can send `user=admin`. Identity the client asserts is not identity; the server must hand out an unguessable token it maps to server-side state",
-      "The cookie approach is fine as long as the cookie is sent over HTTPS",
-      "You should re-send the password on every request instead"
-    ],
-    "correct": 1,
-    "explanation": "Statelessness means no request remembers the last, so a session is the server's mechanism for carrying identity forward. A plaintext identity cookie is the forged-token bug from Lesson 1 — client-controlled data can't establish identity. The fix is a random session ID mapped to server-held data, or a signed cookie whose contents can't be tampered with. Re-sending the password everywhere massively increases exposure and breaks MFA."
-  },
-  {
     "stage": "check",
     "question": "Why must a session ID be generated from a CSPRNG with high entropy, rather than something like `session_<incrementing_number>`?",
     "options": [

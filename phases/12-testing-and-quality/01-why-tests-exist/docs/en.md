@@ -92,17 +92,17 @@ Append to a list when two values differ. Catch exceptions so that one crash cann
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 452" width="100%" style="max-width:840px" role="img" aria-label="A test framework demystified in three panels. The first panel shows the entire test runner used in this lesson: thirteen non-blank lines of Python that append a message to a list when two values differ, catch exceptions so one crash cannot hide the rest, and return the list. The second panel shows one test as a name plus a function that calls the code and compares one value. The third panel shows what the runner prints when that test fails: the test name, the intent string, the expected value 1000 and the actual value 0. Below, the measured run: fourteen tests against the module as written give zero failures, and the same fourteen tests after one character was changed from greater-or-equal to greater give three failures, including a whole invoice whose discount fell from 750 to 250 and whose total rose from 5221 to 5765.">
   <defs>
-    <marker id="p12-01-a1" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p12-01-a1" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">A test is a program that runs your program and asserts a fact about it</text>
     <text x="440" y="46" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.8">that sentence is the whole idea. this is the whole implementation — no framework anywhere in it.</text>
 
-    <text x="160" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">1 · the runner — 13 non-blank lines</text>
+    <text x="160" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">1 · the runner — 13 non-blank lines</text>
     <text x="436" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#7c5cff">2 · one test</text>
     <text x="718" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#d64545">3 · what it prints when it fails</text>
 
-    <rect x="30" y="80" width="260" height="186" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.6"/>
+    <rect x="30" y="80" width="260" height="186" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.6"/>
     <rect x="316" y="80" width="240" height="186" rx="8" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff" stroke-width="1.6"/>
     <rect x="582" y="80" width="268" height="186" rx="8" fill="#d64545" fill-opacity="0.10" stroke="#d64545" stroke-width="1.6"/>
 
@@ -149,8 +149,8 @@ Append to a list when two values differ. Catch exceptions so that one crash cann
     <text x="594" y="224" font-size="8.4" font-weight="700" fill="#0fa07f">everything pytest adds on top of</text>
     <text x="594" y="238" font-size="8.4" font-weight="700" fill="#0fa07f">this is ergonomics, not capability.</text>
 
-    <path d="M290 160 L 310 160" fill="none" stroke="#3553ff" stroke-width="1.6" marker-end="url(#p12-01-a1)"/>
-    <path d="M556 160 L 576 160" fill="none" stroke="#3553ff" stroke-width="1.6" marker-end="url(#p12-01-a1)"/>
+    <path d="M290 160 L 310 160" fill="none" stroke="#c94a12" stroke-width="1.6" marker-end="url(#p12-01-a1)"/>
+    <path d="M556 160 L 576 160" fill="none" stroke="#c94a12" stroke-width="1.6" marker-end="url(#p12-01-a1)"/>
 
     <rect x="30" y="286" width="820" height="126" rx="9" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.5"/>
     <text x="46" y="306" font-size="9" font-weight="700" fill="currentColor" opacity="0.7">MEASURED — 14 TESTS, ONE MODULE, ONE CHARACTER OF DIFFERENCE</text>
@@ -292,13 +292,13 @@ Here is what happens:
 
     <text x="30" y="74" font-size="9" font-weight="700" fill="currentColor" opacity="0.62">MARGINAL — WHERE EACH OF THE 40 BUGS IS <tspan font-weight="700">FIRST</tspan> CAUGHT (one bug = 20 px)</text>
     <g>
-      <rect x="30" y="82" width="100" height="42" fill="#3553ff" fill-opacity="0.30" stroke="#3553ff" stroke-width="1.6"/>
+      <rect x="30" y="82" width="100" height="42" fill="#c94a12" fill-opacity="0.30" stroke="#c94a12" stroke-width="1.6"/>
       <rect x="130" y="82" width="500" height="42" fill="#0fa07f" fill-opacity="0.30" stroke="#0fa07f" stroke-width="1.6"/>
       <rect x="630" y="82" width="80" height="42" fill="#e0930f" fill-opacity="0.30" stroke="#e0930f" stroke-width="1.6"/>
       <rect x="710" y="82" width="120" height="42" fill="#d64545" fill-opacity="0.32" stroke="#d64545" stroke-width="2"/>
     </g>
     <g text-anchor="middle" font-size="10" font-weight="700">
-      <text x="80" y="100" fill="#3553ff">types</text><text x="80" y="115" fill="currentColor">5</text>
+      <text x="80" y="100" fill="#c94a12">types</text><text x="80" y="115" fill="currentColor">5</text>
       <text x="380" y="100" fill="#0fa07f">unit tests</text><text x="380" y="115" fill="currentColor">25</text>
       <text x="670" y="100" fill="#e0930f">integration</text><text x="670" y="115" fill="currentColor">4</text>
       <text x="770" y="100" fill="#d64545">ESCAPED</text><text x="770" y="115" fill="currentColor">6</text>
@@ -312,7 +312,7 @@ Here is what happens:
     <text x="30" y="172" font-size="9" font-weight="700" fill="currentColor" opacity="0.62">ALONE (pale) VERSUS MARGINAL (solid) — THE SAME FIVE GATES, SAME 40 BUGS</text>
     <g stroke-width="1.4">
       <rect x="115" y="182" width="100" height="18" fill="#7f7f7f" fill-opacity="0.16" stroke="#7f7f7f"/>
-      <rect x="115" y="182" width="100" height="18" fill="#3553ff" fill-opacity="0.45" stroke="#3553ff"/>
+      <rect x="115" y="182" width="100" height="18" fill="#c94a12" fill-opacity="0.45" stroke="#c94a12"/>
       <rect x="115" y="208" width="560" height="18" fill="#7f7f7f" fill-opacity="0.16" stroke="#7f7f7f"/>
       <rect x="115" y="208" width="500" height="18" fill="#0fa07f" fill-opacity="0.45" stroke="#0fa07f"/>
       <rect x="115" y="234" width="340" height="18" fill="#7f7f7f" fill-opacity="0.16" stroke="#7f7f7f"/>
@@ -325,7 +325,7 @@ Here is what happens:
       <text x="107" y="273">integration</text><text x="107" y="299" font-weight="700" fill="#d64545">staging</text>
     </g>
     <g fill="currentColor" font-size="9.5" font-weight="700">
-      <text x="225" y="195">5 alone · <tspan fill="#3553ff">5 marginal</tspan></text>
+      <text x="225" y="195">5 alone · <tspan fill="#c94a12">5 marginal</tspan></text>
       <text x="685" y="221">28 alone · <tspan fill="#0fa07f">25 marginal</tspan></text>
       <text x="465" y="247">17 alone · <tspan fill="#d64545">0 marginal</tspan></text>
       <text x="645" y="273">26 alone · <tspan fill="#e0930f">4 marginal</tspan></text>
@@ -415,7 +415,7 @@ The slip rate cancels. You never have to estimate it — which is what makes thi
     <text x="280" y="371" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.85">kill rate k — the share of your slips the suite catches</text>
     <text x="34" y="220" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.85" transform="rotate(-90 34 220)">edits you can afford</text>
 
-    <path d="M80 340 L119 331.9 L158 322.9 L197 312.6 L236 300.8 L275 286.8 L314 269.6 L353 247.6 L392 216.4 L411.5 194.4 L431 163.2 L442.7 135.8 L450.5 110" fill="none" stroke="#3553ff" stroke-width="2.8" stroke-linejoin="round"/>
+    <path d="M80 340 L119 331.9 L158 322.9 L197 312.6 L236 300.8 L275 286.8 L314 269.6 L353 247.6 L392 216.4 L411.5 194.4 L431 163.2 L442.7 135.8 L450.5 110" fill="none" stroke="#c94a12" stroke-width="2.8" stroke-linejoin="round"/>
 
     <circle cx="353" cy="247.6" r="5" fill="#0fa07f"/><circle cx="411.5" cy="194.4" r="5" fill="#7c5cff"/>
     <path d="M353 247.6 L 353 340" fill="none" stroke="#0fa07f" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.7"/>
@@ -538,8 +538,8 @@ This is not a philosophical caution. It is arithmetic, and here it is priced:
     <text x="46" y="248" font-size="9" fill="currentColor" opacity="0.9">a list of (price, qty) pairs — its input space has no bound</text>
     <text x="46" y="264" font-size="9" fill="currentColor" opacity="0.9">at all, so exhaustion is not slow. it is undefined.</text>
 
-    <rect x="454" y="58" width="396" height="212" rx="9" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff" stroke-opacity="0.55" stroke-width="1.5"/>
-    <text x="470" y="78" font-size="9" font-weight="700" fill="#3553ff">SO WE SAMPLE — 200 CASES, TWO WAYS OF CHOOSING THEM</text>
+    <rect x="454" y="58" width="396" height="212" rx="9" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12" stroke-opacity="0.55" stroke-width="1.5"/>
+    <text x="470" y="78" font-size="9" font-weight="700" fill="#c94a12">SO WE SAMPLE — 200 CASES, TWO WAYS OF CHOOSING THEM</text>
     <text x="470" y="98" font-size="9" fill="currentColor" opacity="0.9">the target: an add32 wrong at exactly ONE point in the 2⁶⁴.</text>
     <text x="470" y="114" font-size="9" fill="currentColor" opacity="0.9">200 independent runs of 200 cases each.</text>
 

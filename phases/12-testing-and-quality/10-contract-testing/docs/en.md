@@ -161,7 +161,7 @@ Here is the part that surprises people the first time they see the numbers. The 
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">The consumer records what it uses. The provider replays it, alone, in its own CI.</text>
 
     <g fill="none" stroke-width="1.9" stroke-linejoin="round">
-      <rect x="20" y="46" width="248" height="72" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="20" y="46" width="248" height="72" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="316" y="46" width="248" height="72" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="#7f7f7f"/>
       <rect x="612" y="46" width="248" height="72" rx="10" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
     </g>
@@ -170,7 +170,7 @@ Here is the part that surprises people the first time they see the numbers. The 
       <path d="M564 82 L 606 82" marker-end="url(#p12-10-a1)"/>
     </g>
     <g fill="currentColor" text-anchor="middle">
-      <text x="144" y="66" font-size="10.5" font-weight="700" fill="#3553ff">1 · THE CONSUMER'S OWN TEST</text>
+      <text x="144" y="66" font-size="10.5" font-weight="700" fill="#c94a12">1 · THE CONSUMER'S OWN TEST</text>
       <text x="144" y="83" font-size="8.8" opacity="0.9">build_receipt() — the real function —</text>
       <text x="144" y="96" font-size="8.8" opacity="0.9">runs against a mock it controls and</text>
       <text x="144" y="109" font-size="8.8" opacity="0.9">records 3 interactions it exercised</text>
@@ -187,10 +187,10 @@ Here is the part that surprises people the first time they see the numbers. The 
     <text x="20" y="146" font-size="11" font-weight="700" fill="currentColor">what the contract actually constrains: 4 of the provider's 11 top-level fields</text>
 
     <g stroke-width="1.5">
-      <rect x="20" y="158" width="27" height="21" rx="5" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <rect x="57" y="158" width="48" height="21" rx="5" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <rect x="115" y="158" width="75" height="21" rx="5" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <rect x="200" y="158" width="59" height="21" rx="5" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="20" y="158" width="27" height="21" rx="5" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <rect x="57" y="158" width="48" height="21" rx="5" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <rect x="115" y="158" width="75" height="21" rx="5" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <rect x="200" y="158" width="59" height="21" rx="5" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="269" y="158" width="70" height="21" rx="5" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.4"/>
       <rect x="349" y="158" width="75" height="21" rx="5" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.4"/>
       <rect x="434" y="158" width="54" height="21" rx="5" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.4"/>
@@ -200,10 +200,10 @@ Here is the part that surprises people the first time they see the numbers. The 
       <rect x="272" y="188" width="43" height="21" rx="5" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.4"/>
     </g>
     <g font-size="9" fill="currentColor">
-      <text x="26" y="173" font-weight="700" fill="#3553ff">id</text>
-      <text x="63" y="173" font-weight="700" fill="#3553ff">status</text>
-      <text x="121" y="173" font-weight="700" fill="#3553ff">total_cents</text>
-      <text x="206" y="173" font-weight="700" fill="#3553ff">currency</text>
+      <text x="26" y="173" font-weight="700" fill="#c94a12">id</text>
+      <text x="63" y="173" font-weight="700" fill="#c94a12">status</text>
+      <text x="121" y="173" font-weight="700" fill="#c94a12">total_cents</text>
+      <text x="206" y="173" font-weight="700" fill="#c94a12">currency</text>
       <text x="275" y="173" opacity="0.7">created_at</text>
       <text x="355" y="173" opacity="0.7">customer_id</text>
       <text x="440" y="173" opacity="0.7">channel</text>
@@ -281,14 +281,14 @@ Three mechanisms get called "contract testing" in conversation and they prove th
 
     <g fill="none" stroke-width="1.6" stroke-linejoin="round">
       <rect x="310" y="42" width="112" height="42" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="#7f7f7f"/>
-      <rect x="440" y="42" width="112" height="42" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="440" y="42" width="112" height="42" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="570" y="42" width="112" height="42" rx="8" fill="#e0930f" fill-opacity="0.12" stroke="#e0930f"/>
     </g>
     <g text-anchor="middle" fill="currentColor">
       <text x="366" y="58" font-size="10" font-weight="700" fill="#7f7f7f">SPEC DIFF</text>
       <text x="366" y="72" font-size="8" opacity="0.85">shape of the</text>
       <text x="366" y="81" font-size="8" opacity="0.85">published API</text>
-      <text x="496" y="58" font-size="10" font-weight="700" fill="#3553ff">CONTRACT</text>
+      <text x="496" y="58" font-size="10" font-weight="700" fill="#c94a12">CONTRACT</text>
       <text x="496" y="72" font-size="8" opacity="0.85">what a consumer</text>
       <text x="496" y="81" font-size="8" opacity="0.85">actually reads</text>
       <text x="626" y="58" font-size="10" font-weight="700" fill="#e0930f">END-TO-END</text>
@@ -332,7 +332,7 @@ Three mechanisms get called "contract testing" in conversation and they prove th
     </g>
 
     <g font-size="11" font-weight="700" text-anchor="middle">
-      <text x="366" y="288" fill="#7f7f7f">4 / 6</text><text x="496" y="288" fill="#3553ff">3 / 6</text><text x="626" y="288" fill="#e0930f">4 / 6</text>
+      <text x="366" y="288" fill="#7f7f7f">4 / 6</text><text x="496" y="288" fill="#c94a12">3 / 6</text><text x="626" y="288" fill="#e0930f">4 / 6</text>
     </g>
     <text x="20" y="288" font-size="9" font-weight="700" fill="currentColor" opacity="0.7">CAUGHT, OUT OF SIX</text>
 
@@ -381,7 +381,7 @@ For a **response**, the provider writes and the consumer reads. For a **request*
     <text x="440" y="24" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">Whoever READS the changed data ships first — and who that is flips with the direction</text>
 
     <g fill="none" stroke-width="1.7" stroke-linejoin="round">
-      <rect x="20" y="38" width="410" height="86" rx="10" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff"/>
+      <rect x="20" y="38" width="410" height="86" rx="10" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12"/>
       <rect x="450" y="38" width="410" height="86" rx="10" fill="#7c5cff" fill-opacity="0.08" stroke="#7c5cff"/>
       <rect x="52" y="72" width="118" height="26" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
       <rect x="280" y="72" width="118" height="26" rx="6" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
@@ -393,7 +393,7 @@ For a **response**, the provider writes and the consumer reads. For a **request*
       <path d="M600 85 L 704 85" marker-end="url(#p12-10-b1)"/>
     </g>
     <g fill="currentColor" text-anchor="middle">
-      <text x="225" y="58" font-size="10.5" font-weight="700" fill="#3553ff">a RESPONSE change</text>
+      <text x="225" y="58" font-size="10.5" font-weight="700" fill="#c94a12">a RESPONSE change</text>
       <text x="111" y="89" font-size="9.5" font-weight="700" fill="#e0930f">provider = WRITER</text>
       <text x="339" y="89" font-size="9.5" font-weight="700" fill="#0fa07f">consumer = READER</text>
       <text x="222" y="79" font-size="8" opacity="0.75">data</text>
@@ -421,15 +421,15 @@ For a **response**, the provider writes and the consumer reads. For a **request*
     <g fill="currentColor" font-size="8.6">
       <text x="20" y="190">1</text><text x="40" y="190">add an optional response field with a default</text><text x="298" y="190" opacity="0.7">resp</text><text x="344" y="190">400/400</text><text x="424" y="190">400/400</text><text x="500" y="190" font-weight="700" fill="#0fa07f">FULL</text><text x="592" y="190">either</text><text x="700" y="190">0 / 0</text>
       <text x="20" y="210">2</text><text x="40" y="210">remove an optional response field</text><text x="298" y="210" opacity="0.7">resp</text><text x="344" y="210">400/400</text><text x="424" y="210">400/400</text><text x="500" y="210" font-weight="700" fill="#0fa07f">FULL</text><text x="592" y="210">either</text><text x="700" y="210">0 / 0</text>
-      <text x="20" y="230">3</text><text x="40" y="230">remove a required response field</text><text x="298" y="230" opacity="0.7">resp</text><text x="344" y="230">400/400</text><text x="424" y="230" fill="#d64545">0/400</text><text x="500" y="230" font-weight="700" fill="#3553ff">BACKWARD</text><text x="592" y="230">consumer</text><text x="700" y="230">0 / 1,489</text>
+      <text x="20" y="230">3</text><text x="40" y="230">remove a required response field</text><text x="298" y="230" opacity="0.7">resp</text><text x="344" y="230">400/400</text><text x="424" y="230" fill="#d64545">0/400</text><text x="500" y="230" font-weight="700" fill="#c94a12">BACKWARD</text><text x="592" y="230">consumer</text><text x="700" y="230">0 / 1,489</text>
       <text x="20" y="250">4</text><text x="40" y="250">rename a response field</text><text x="298" y="250" opacity="0.7">resp</text><text x="344" y="250" fill="#d64545">0/400</text><text x="424" y="250" fill="#d64545">0/400</text><text x="500" y="250" font-weight="700" fill="#d64545">NEITHER</text><text x="592" y="250" font-weight="700" fill="#d64545">no safe order</text><text x="700" y="250" fill="#d64545">1,521 / 1,546</text>
-      <text x="20" y="270">5</text><text x="40" y="270">widen a response type   integer -&gt; number</text><text x="298" y="270" opacity="0.7">resp</text><text x="344" y="270">400/400</text><text x="424" y="270" fill="#d64545">0/400</text><text x="500" y="270" font-weight="700" fill="#3553ff">BACKWARD</text><text x="592" y="270">consumer</text><text x="700" y="270">0 / 1,523</text>
+      <text x="20" y="270">5</text><text x="40" y="270">widen a response type   integer -&gt; number</text><text x="298" y="270" opacity="0.7">resp</text><text x="344" y="270">400/400</text><text x="424" y="270" fill="#d64545">0/400</text><text x="500" y="270" font-weight="700" fill="#c94a12">BACKWARD</text><text x="592" y="270">consumer</text><text x="700" y="270">0 / 1,523</text>
       <text x="20" y="290">6</text><text x="40" y="290">narrow a response type  number -&gt; integer</text><text x="298" y="290" opacity="0.7">resp</text><text x="344" y="290" fill="#d64545">104/400</text><text x="424" y="290">400/400</text><text x="500" y="290" font-weight="700" fill="#7c5cff">FORWARD</text><text x="592" y="290">provider</text><text x="700" y="290">1,059 / 0</text>
-      <text x="20" y="310" font-weight="700">7</text><text x="40" y="310" font-weight="700">add a value to a response enum</text><text x="298" y="310" opacity="0.7">resp</text><text x="344" y="310">400/400</text><text x="424" y="310" fill="#d64545">318/400</text><text x="500" y="310" font-weight="700" fill="#3553ff">BACKWARD</text><text x="592" y="310">consumer</text><text x="700" y="310">0 / 323</text>
+      <text x="20" y="310" font-weight="700">7</text><text x="40" y="310" font-weight="700">add a value to a response enum</text><text x="298" y="310" opacity="0.7">resp</text><text x="344" y="310">400/400</text><text x="424" y="310" fill="#d64545">318/400</text><text x="500" y="310" font-weight="700" fill="#c94a12">BACKWARD</text><text x="592" y="310">consumer</text><text x="700" y="310">0 / 323</text>
       <text x="20" y="330" font-weight="700">8</text><text x="40" y="330" font-weight="700">remove a value from a response enum</text><text x="298" y="330" opacity="0.7">resp</text><text x="344" y="330" fill="#d64545">296/400</text><text x="424" y="330">400/400</text><text x="500" y="330" font-weight="700" fill="#7c5cff">FORWARD</text><text x="592" y="330">provider</text><text x="700" y="330">384 / 0</text>
-      <text x="20" y="350" font-weight="700">9</text><text x="40" y="350" font-weight="700">make a required response field OPTIONAL</text><text x="298" y="350" opacity="0.7">resp</text><text x="344" y="350">400/400</text><text x="424" y="350" fill="#d64545">296/400</text><text x="500" y="350" font-weight="700" fill="#3553ff">BACKWARD</text><text x="592" y="350">consumer</text><text x="700" y="350">0 / 447</text>
+      <text x="20" y="350" font-weight="700">9</text><text x="40" y="350" font-weight="700">make a required response field OPTIONAL</text><text x="298" y="350" opacity="0.7">resp</text><text x="344" y="350">400/400</text><text x="424" y="350" fill="#d64545">296/400</text><text x="500" y="350" font-weight="700" fill="#c94a12">BACKWARD</text><text x="592" y="350">consumer</text><text x="700" y="350">0 / 447</text>
       <text x="20" y="370">10</text><text x="40" y="370">add a required request field</text><text x="298" y="370" font-weight="700" fill="#7c5cff">req</text><text x="344" y="370" fill="#d64545">0/400</text><text x="424" y="370">400/400</text><text x="500" y="370" font-weight="700" fill="#7c5cff">FORWARD</text><text x="592" y="370" font-weight="700" fill="#7c5cff">consumer</text><text x="700" y="370">0 / 1,505</text>
-      <text x="20" y="390">11</text><text x="40" y="390">make a required request field optional</text><text x="298" y="390" font-weight="700" fill="#7c5cff">req</text><text x="344" y="390">400/400</text><text x="424" y="390" fill="#d64545">282/400</text><text x="500" y="390" font-weight="700" fill="#3553ff">BACKWARD</text><text x="592" y="390" font-weight="700" fill="#7c5cff">provider</text><text x="700" y="390">451 / 0</text>
+      <text x="20" y="390">11</text><text x="40" y="390">make a required request field optional</text><text x="298" y="390" font-weight="700" fill="#7c5cff">req</text><text x="344" y="390">400/400</text><text x="424" y="390" fill="#d64545">282/400</text><text x="500" y="390" font-weight="700" fill="#c94a12">BACKWARD</text><text x="592" y="390" font-weight="700" fill="#7c5cff">provider</text><text x="700" y="390">451 / 0</text>
       <text x="20" y="410" font-weight="700">12</text><text x="40" y="410" font-weight="700" fill="#d64545">redenominate total_cents in DOLLARS (same type)</text><text x="298" y="410" opacity="0.7">resp</text><text x="344" y="410" fill="#0fa07f">400/400</text><text x="424" y="410" fill="#0fa07f">400/400</text><text x="500" y="410" font-weight="700" fill="#0fa07f">FULL</text><text x="592" y="410" font-weight="700" fill="#d64545">SILENT</text><text x="700" y="410" font-weight="700" fill="#d64545">0 / 0 — and 811 / 2,337 WRONG</text>
     </g>
 

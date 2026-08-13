@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "An engineer receives 41 alerts overnight. Forty are noise; the one real alert at 04:12 is swiped away unread, and checkout stays broken for two more hours. What is the most accurate description of what failed?",
-    "options": [
-      "The engineer was not disciplined enough and should read every alert",
-      "The monitoring backend dropped the important notification",
-      "A detection failure with a human in the loop: the rule evaluated correctly and the notification arrived, but the previous forty alerts had trained the responder that alerts carry no information — and the alerts themselves are what produced that training",
-      "The alert thresholds were set slightly too low and need a small adjustment"
-    ],
-    "correct": 2,
-    "explanation": "Every mechanical part of the pipeline worked — evaluation, routing, delivery. The system failed at the last hop, the human, and it failed because the signal-to-noise ratio had taught that human a correct inference: alerts here don't mean anything. That makes alert fatigue a property of your alert set, not a character flaw in the person carrying the pager, and it means the fix is deleting alerts rather than exhorting people to read them."
-  },
-  {
     "stage": "check",
     "question": "Why is 'page on symptoms, not causes' the standard rule, rather than a stylistic preference?",
     "options": [

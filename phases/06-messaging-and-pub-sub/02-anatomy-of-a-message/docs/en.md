@@ -60,7 +60,7 @@ This split is not stylistic. It buys three concrete things:
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="40" y="48" width="800" height="152" rx="14" fill="#7f7f7f" fill-opacity="0.06" stroke="currentColor" stroke-opacity="0.45" stroke-dasharray="7 6"/>
-    <rect x="62" y="80" width="756" height="60" rx="10" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="62" y="80" width="756" height="60" rx="10" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="62" y="148" width="756" height="40" rx="10" fill="#7c5cff" fill-opacity="0.15" stroke="#7c5cff"/>
   </g>
 
@@ -80,14 +80,14 @@ This split is not stylistic. It buys three concrete things:
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="60" y="272" width="240" height="118" rx="11" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-    <rect x="320" y="272" width="240" height="118" rx="11" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="60" y="272" width="240" height="118" rx="11" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+    <rect x="320" y="272" width="240" height="118" rx="11" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="580" y="272" width="240" height="118" rx="11" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
   </g>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="76" y="70" font-size="10" opacity="0.8">ONE MESSAGE ON THE WIRE — 205 bytes, schema-ful binary encoding</text>
-    <text x="80" y="102" font-size="11.5" font-weight="700" fill="#3553ff">ENVELOPE — 124 B — infrastructure metadata</text>
+    <text x="80" y="102" font-size="11.5" font-weight="700" fill="#c94a12">ENVELOPE — 124 B — infrastructure metadata</text>
     <text x="80" y="120" font-size="9" opacity="0.9">message_id · correlation_id · causation_id · type · schema_version · source</text>
     <text x="80" y="134" font-size="9" opacity="0.9">occurred_at · published_at · recorded_at · content_type · traceparent · partition_key · crc32</text>
     <text x="80" y="166" font-size="11.5" font-weight="700" fill="#7c5cff">PAYLOAD — 81 B — the business fact</text>
@@ -98,14 +98,14 @@ This split is not stylistic. It buys three concrete things:
     <text x="180" y="331" font-size="9" text-anchor="middle" opacity="0.9">orders by partition_key</text>
     <text x="180" y="346" font-size="9" text-anchor="middle" opacity="0.9">dedups on message_id</text>
     <text x="180" y="361" font-size="9" text-anchor="middle" opacity="0.9">stamps recorded_at</text>
-    <text x="180" y="380" font-size="9" text-anchor="middle" font-weight="700" fill="#3553ff">never parses the body</text>
+    <text x="180" y="380" font-size="9" text-anchor="middle" font-weight="700" fill="#c94a12">never parses the body</text>
 
     <text x="440" y="296" font-size="11" font-weight="700" text-anchor="middle">GENERIC MIDDLEWARE</text>
     <text x="440" y="316" font-size="9" text-anchor="middle" opacity="0.9">filters on headers</text>
     <text x="440" y="331" font-size="9" text-anchor="middle" opacity="0.9">continues the trace</text>
     <text x="440" y="346" font-size="9" text-anchor="middle" opacity="0.9">retries, dead-letters</text>
     <text x="440" y="361" font-size="9" text-anchor="middle" opacity="0.9">audits, meters, bills</text>
-    <text x="440" y="380" font-size="9" text-anchor="middle" font-weight="700" fill="#3553ff">cannot parse the body</text>
+    <text x="440" y="380" font-size="9" text-anchor="middle" font-weight="700" fill="#c94a12">cannot parse the body</text>
 
     <text x="700" y="296" font-size="11" font-weight="700" text-anchor="middle" fill="#0fa07f">CONSUMER</text>
     <text x="700" y="316" font-size="9" text-anchor="middle" opacity="0.9">1. validate the envelope</text>
@@ -184,8 +184,8 @@ Correlation gives you a *set*. Causation gives you *edges*, and a set plus edges
     <rect x="480" y="112" width="192" height="30" rx="8" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="510" y="158" width="192" height="30" rx="8" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="540" y="204" width="192" height="30" rx="8" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
-    <rect x="570" y="250" width="192" height="30" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-    <rect x="570" y="296" width="192" height="30" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="570" y="250" width="192" height="30" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+    <rect x="570" y="296" width="192" height="30" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="540" y="342" width="192" height="30" rx="8" fill="#7c5cff" fill-opacity="0.15" stroke="#7c5cff"/>
   </g>
   <g fill="none" stroke="currentColor" stroke-width="1.5">
@@ -270,13 +270,13 @@ Everything else follows from where you sit on those two axes.
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="126" y="60" width="352" height="176" rx="12" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
     <rect x="490" y="60" width="352" height="176" rx="12" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.5"/>
-    <rect x="126" y="248" width="352" height="176" rx="12" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="126" y="248" width="352" height="176" rx="12" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="490" y="248" width="352" height="176" rx="12" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="1.6">
     <rect x="146" y="186" width="312" height="26" rx="4" fill="#e0930f" fill-opacity="0.30" stroke="#e0930f"/>
-    <rect x="146" y="374" width="261" height="26" rx="4" fill="#3553ff" fill-opacity="0.28" stroke="#3553ff"/>
+    <rect x="146" y="374" width="261" height="26" rx="4" fill="#c94a12" fill-opacity="0.28" stroke="#c94a12"/>
     <rect x="510" y="374" width="79" height="26" rx="4" fill="#0fa07f" fill-opacity="0.34" stroke="#0fa07f"/>
   </g>
 
@@ -301,7 +301,7 @@ Everything else follows from where you sit on those two axes.
     <text x="510" y="166" font-size="9.5" opacity="0.85">and keep the byte cost of text</text>
     <text x="510" y="192" font-size="10.5" font-weight="700" opacity="0.8">worth it for correctness, not for size</text>
 
-    <text x="146" y="278" font-size="12.5" font-weight="700" fill="#3553ff">MessagePack · CBOR (RFC 8949) · BSON</text>
+    <text x="146" y="278" font-size="12.5" font-weight="700" fill="#c94a12">MessagePack · CBOR (RFC 8949) · BSON</text>
     <text x="146" y="300" font-size="9.5" opacity="0.9">JSON's data model, compact binary framing</text>
     <text x="146" y="316" font-size="9.5" opacity="0.9">native byte strings — no base64 tax</text>
     <text x="146" y="332" font-size="9.5" opacity="0.9">still self-describing: field names remain</text>

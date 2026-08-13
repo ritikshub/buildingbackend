@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your fleet is at 24 instances doing 19,000 req/s. You double it to 48. Throughput falls to 17,400 req/s, p99 rises, CPU per instance drops from 61% to 34%, and nothing errors. What is the most likely explanation?",
-    "options": [
-      "A bad deploy shipped alongside the scale-up; the new instances are running different code.",
-      "The load balancer has not finished redistributing connections, and throughput will recover once it does.",
-      "Throughput as a function of fleet size has a peak, and you have crossed it — the coordination cost between instances now grows faster than the capacity they add.",
-      "The database has become the bottleneck; you need read replicas before adding more application instances."
-    ],
-    "correct": 2,
-    "explanation": "The falling per-instance CPU is the clue that rules out the other three. A bad deploy or a saturated database would show something pinned at 100% and something erroring; instead every instance is healthier than before and the system is slower. That combination — more machines, less throughput, lower per-node utilization, no errors — has one cause: you are past the peak of the scalability curve, in the retrograde region. A load-balancer rebalance settles in seconds, not minutes, and would not depress total throughput below its starting value."
-  },
-  {
     "stage": "check",
     "question": "A service has a serial fraction σ = 0.05. According to Amdahl's Law, what does a 100-machine fleet deliver, and what is the ceiling?",
     "options": [

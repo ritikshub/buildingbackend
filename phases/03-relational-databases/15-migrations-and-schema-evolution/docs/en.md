@@ -63,7 +63,7 @@ bookkeeping table (Rails calls it `schema_migrations`, others `_migrations` or `
   <path d="M458 234 L 598 234" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l15a-ah)"/>
   </g>
   <g>
-  <rect x="258" y="58" width="210" height="58" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="258" y="58" width="210" height="58" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="268" y="150" width="190" height="104" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>
   <path d="M598 157 a 60.0 9 0 0 1 120 0 v 90 a 60.0 9 0 0 1 -120 0 Z" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f" stroke-width="2"/>
   <path d="M598 157 a 60.0 9 0 0 0 120 0" fill="none" stroke="#e0930f" stroke-width="2"/>
@@ -110,7 +110,7 @@ Instead of changing a schema in one destructive step, you split it into safe sta
   <g>
   <rect x="165.0" y="52" width="210" height="66" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="162.5" y="144" width="215" height="66" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="165.0" y="236" width="210" height="66" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="165.0" y="236" width="210" height="66" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="165.0" y="328" width="210" height="66" rx="9" fill="#e0564f" fill-opacity="0.14" stroke="#e0564f" stroke-width="2" stroke-linejoin="round"/>
   </g>
   <g>

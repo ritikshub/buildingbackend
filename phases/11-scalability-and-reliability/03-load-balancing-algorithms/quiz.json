@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Eight identical backends sit behind a round-robin balancer. The per-instance request-rate graph shows eight lines exactly on top of each other, all morning. What does that tell you about how evenly the work is distributed?",
-    "options": [
-      "The work is evenly distributed — identical request counts on identical hardware is the definition of balanced, and any remaining latency difference must come from the backends themselves",
-      "Nothing useful. Over the same 20,174 requests the counts differed by one request (0.04%) while the actual work differed by 24.14%, because 1% of requests cost 900 ms and carried 41% of the total work — round-robin dealt between 14 and 31 of those per backend because it cannot see request size",
-      "The work is evenly distributed on average, and the variance disappears entirely once you look at a long enough window",
-      "It tells you the balancer is broken — a healthy round-robin balancer should show slightly different counts per instance as it adapts to load"
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer treats 'same number of requests' as 'same amount of work', which is only true if requests are the same size. They never are: a cache hit costs 3 ms and a large-tenant export costs 900 ms. Round-robin equalises arrivals perfectly — its maximum is exactly 1 when you throw n requests at n backends — and that is precisely why the flat graph is so misleading. The flatness is not evidence that routing is fine; it is evidence that the balancer is not measuring anything. Averaging over a longer window does not help either, because the damage is instantaneous queueing: 31.1% of requests waited behind something while another backend sat completely idle."
-  },
-  {
     "stage": "check",
     "question": "One backend in a fleet of eight is 3× slower than the rest — 60 ms where the others take 20 ms — but it passes every health check because the health check returns 200 OK without touching anything. Under round-robin, what is the consequence for the fleet as a whole?",
     "options": [

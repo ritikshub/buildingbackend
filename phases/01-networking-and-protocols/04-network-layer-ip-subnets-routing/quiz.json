@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A MAC address already identifies a machine on the local link. Why does the network layer add IP addresses on top?",
-    "options": [
-      "IP addresses are shorter and faster to compare",
-      "MAC addresses are hierarchical and routable across networks; IP addresses are not",
-      "IP addresses are hierarchical and routable, so a router can reach machines on networks it has never directly touched",
-      "IP addresses encrypt the packet, MAC addresses do not"
-    ],
-    "correct": 2,
-    "explanation": "A MAC (Media Access Control) address only has meaning on the local link and is not routable. An IP address is logical and hierarchical: its leading bits name a network, so routers can forward toward a whole network prefix without knowing individual hosts far away."
-  },
-  {
-    "stage": "pre",
-    "question": "How many bits is an IPv4 address, and how is it written?",
-    "options": [
-      "128 bits, as eight hexadecimal groups",
-      "32 bits, as four dotted decimals each 0–255",
-      "48 bits, as six hex pairs",
-      "64 bits, as two decimal halves"
-    ],
-    "correct": 1,
-    "explanation": "IPv4 (RFC 791) is 32 bits, written in dotted-decimal such as 192.168.1.10 — four bytes, each 0–255. IPv6 (RFC 4291) is the 128-bit, eight-hex-group form."
-  },
-  {
     "stage": "check",
     "question": "For the block 192.168.1.128/26, what are the network address, broadcast address, and usable host count?",
     "options": [

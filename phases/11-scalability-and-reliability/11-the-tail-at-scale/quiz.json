@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A user request fans out to 100 backend shards and must wait for all of them. Each shard has a p99 of 105 ms. Roughly what fraction of user requests will contain at least one call slower than 105 ms?",
-    "options": [
-      "About 1% — the shard p99 is 1%, and fanning out doesn't change what each shard promises.",
-      "About 10% — the probabilities add up across a few of the hundred calls.",
-      "About 63% — it is 1 − 0.99^100, because the request is fast only if ALL 100 calls are fast.",
-      "About 99% — with 100 calls you are essentially guaranteed to hit the tail every time."
-    ],
-    "correct": 2,
-    "explanation": "The request is fast only if every call is fast, so P(all fast) = 0.99^100 = 0.366 and P(at least one slow) = 63.4% (measured: 63.7%). The first option is the trap almost everyone falls into: it reads the SLO as a promise about user experience, but a per-call percentile says nothing about a composed request. The second option assumes probabilities add — they don't, they compound. The fourth is right in spirit but arrives too early; you need N ≈ 1000 for 99.996%."
-  },
-  {
     "stage": "check",
     "question": "Your backends have a p50 of 9.2 ms and a p99 of 105 ms. The measured p50 of the 100-way fan-out request is 129 ms. Why is the composed MEDIAN worse than any single backend's p99?",
     "options": [

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service emits perfectly structured JSON logs and handles 200 concurrent requests. Why can't you follow one request through the log stream?",
-    "options": [
-      "JSON logs are written out of order, so the stream needs re-sorting before it can be read",
-      "Structured logs drop fields under load, so some lines are incomplete",
-      "All 200 requests write into one stream interleaved, and no field identifies which lines belong together — user_id fails because one user can have several requests in flight, and timestamps fail because events collide at millisecond resolution and time-order is not causal grouping",
-      "Log levels are set too low, so the interesting lines are filtered out"
-    ],
-    "correct": 2,
-    "explanation": "Structure makes each line queryable; it does not make lines belong to each other. At ~1,200 events per second, several requests share the same millisecond, and sorting by time groups events that are adjacent in time rather than related by cause. A user with three tabs open produces three concurrent requests under one user_id. The fix is a dedicated identifier minted once per request-journey and stamped on every line."
-  },
-  {
     "stage": "check",
     "question": "Why is `threading.local()` the wrong place to store a trace ID in an `asyncio` service, and what does `contextvars.ContextVar` do differently?",
     "options": [

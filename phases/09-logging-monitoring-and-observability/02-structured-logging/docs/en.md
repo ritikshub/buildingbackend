@@ -116,13 +116,13 @@ Levels come from **syslog**, the Unix logging protocol standardized in **RFC 542
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 872 442" width="100%" style="max-width:840px" role="img" aria-label="The five log severity levels as a ladder from CRITICAL at the top to DEBUG at the bottom, each annotated with the discipline rule for using it, its typical daily volume shown as a bar that grows toward the bottom, and whether it is enabled in production.">
   <text x="436" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">The severity ladder — rarity at the top, volume at the bottom</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="32" y="70" width="170" height="56" rx="10" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff"/><rect x="32" y="132" width="170" height="56" rx="10" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/><rect x="32" y="194" width="170" height="56" rx="10" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="32" y="70" width="170" height="56" rx="10" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff"/><rect x="32" y="132" width="170" height="56" rx="10" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/><rect x="32" y="194" width="170" height="56" rx="10" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="32" y="256" width="170" height="56" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/><rect x="32" y="318" width="170" height="56" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.5"/>
   </g>
   <g stroke="currentColor" stroke-width="1.2" opacity="0.3">
     <line x1="214" y1="129" x2="840" y2="129"/><line x1="214" y1="191" x2="840" y2="191"/><line x1="214" y1="253" x2="840" y2="253"/><line x1="214" y1="315" x2="840" y2="315"/>
   </g>
-  <g fill="#3553ff" fill-opacity="0.5" stroke="none">
+  <g fill="#c94a12" fill-opacity="0.5" stroke="none">
     <rect x="592" y="100" width="10" height="8" rx="3"/><rect x="592" y="162" width="24" height="8" rx="3"/><rect x="592" y="224" width="46" height="8" rx="3"/><rect x="592" y="286" width="78" height="8" rx="3"/><rect x="592" y="348" width="116" height="8" rx="3"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">

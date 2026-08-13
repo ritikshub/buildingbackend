@@ -130,7 +130,7 @@ broadcast address:
     <text x="400" y="129" text-anchor="middle" font-size="10" fill="currentColor">lives on this in-port</text>
 
     <!-- decision diamond -->
-    <path d="M400,150 L498,188 L400,226 L302,188 Z" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M400,150 L498,188 L400,226 L302,188 Z" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.6" stroke-linejoin="round"/>
     <text x="400" y="192" text-anchor="middle" font-size="10.5" font-weight="700" fill="currentColor">Destination MAC?</text>
 
     <!-- spine arrows -->
@@ -180,11 +180,11 @@ switch from flooding to forwarding:
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="70"  y="40" width="120" height="36" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="70"  y="40" width="120" height="36" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="340" y="40" width="120" height="36" rx="8" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
       <rect x="610" y="40" width="120" height="36" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="130" y="58" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Host A</text>
+    <text x="130" y="58" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Host A</text>
     <text x="130" y="70" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">port 1</text>
     <text x="400" y="58" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">Switch</text>
     <text x="400" y="70" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">MAC table</text>
@@ -250,11 +250,11 @@ directly with its MAC address:
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="70"  y="42" width="120" height="36" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="70"  y="42" width="120" height="36" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="340" y="42" width="120" height="36" rx="8" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/>
       <rect x="610" y="42" width="120" height="36" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="130" y="60" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Host A</text>
+    <text x="130" y="60" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Host A</text>
     <text x="130" y="72" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">10.0.0.1</text>
     <text x="400" y="60" text-anchor="middle" font-size="11" font-weight="700" fill="#e0930f">Everyone</text>
     <text x="400" y="72" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">on the link</text>
@@ -281,7 +281,7 @@ directly with its MAC address:
     <text x="400" y="190" text-anchor="middle" font-size="8.5" fill="currentColor">ARP reply (unicast) &#183; "10.0.0.5 is at 00:1a:2b:00:00:0b"</text>
 
     <!-- note over A: cache -->
-    <rect x="20" y="210" width="250" height="26" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-opacity="0.6" stroke-width="1"/>
+    <rect x="20" y="210" width="250" height="26" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-opacity="0.6" stroke-width="1"/>
     <text x="145" y="227" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.9">caches 10.0.0.5 &#8594; 00:1a:2b:00:00:0b</text>
 
     <text x="400" y="298" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.85">One broadcast resolves the MAC; the cached answer skips the question next time.</text>

@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What raw material are computer chips made from?",
-    "options": ["Copper", "Silicon, which comes from sand", "Plastic", "Aluminum"],
-    "correct": 1,
-    "explanation": "Chips are built on silicon, refined from ordinary sand (silicon dioxide). Silicon is a semiconductor, which is what makes it useful for building switches."
-  },
-  {
     "stage": "check",
     "question": "Why is silicon (a semiconductor) the right material for building transistors?",
     "options": ["It is the cheapest metal", "It conducts electricity only sometimes, depending on how it's treated — exactly what a controllable switch needs", "It never conducts electricity", "It always conducts electricity"],

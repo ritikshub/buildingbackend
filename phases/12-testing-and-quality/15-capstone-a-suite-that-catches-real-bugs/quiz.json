@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You have measured, on your own service, that integration tests catch more bugs per test than unit tests do. A colleague at another company measured the opposite on theirs. Which of you is more likely to have made a measurement error?",
-    "options": [
-      "Neither necessarily — but one of you is describing your service's defect population, and the ranking is a fact about that population rather than about the test types",
-      "Neither necessarily, and more importantly neither ranking is portable even in principle: measured here, the SAME nine layers over the SAME 31 bugs give each layer a different marginal value depending only on build order — static analysis is worth 2 bugs built first and 0 built last, and the order-free Shapley ranking agrees with build order on 1 of 9 positions",
-      "Your colleague, almost certainly — the pyramid is a well-established result and a measurement that contradicts it usually means the unit tests were badly written or the sample was too small",
-      "You, almost certainly — integration tests are slower, so 'bugs per test' flatters them; the honest metric is bugs per CI second, and on that metric unit tests win essentially everywhere"
-    ],
-    "correct": 1,
-    "explanation": "Option 1 is nearly right and is the answer most experienced engineers give — it correctly locates the disagreement in the defect population rather than in the techniques. But it still assumes that for a FIXED population there is one true ranking, and there is not. Marginal value is a set function evaluated along a path: the first layer to reach a bug takes all the credit and every later layer that also reaches it gets zero. Measured here on one fixed population of 31 bugs, four build orders gave four different answers, with eight of the nine layers changing value — types 2 to 0, fakes 2 to 0, contract 3 to 5, fault 5 to 7, property 1 to 3 — while every ordering totalled the same 28. Options 3 and 4 both assume a portable ranking exists and merely disagree about which one it is."
-  },
-  {
     "stage": "check",
     "question": "The nine layers individually catch 2, 5, 2, 7, 6, 5, 5, 3 and 7 of the 31 bugs. What is the union, and what does the gap between the sum and the union tell you?",
     "options": [

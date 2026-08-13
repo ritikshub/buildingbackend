@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A consumer calls a payment API and gets back a 400 Bad Request because the message has a null amount_cents field. Your handler catches the exception and retries with exponential backoff, up to 12 deliveries. What actually happens?",
-    "options": [
-      "The retry eventually succeeds, because backoff gives the payment API time to recover from whatever caused the 400",
-      "All 12 attempts fail identically, because the cause is the message itself rather than a condition in the world. Those 11 extra attempts are pure waste that fill logs, burn consumer capacity, and - in an ordered partition - block every message behind this one for the whole 254-second retry window. A permanent failure must be dead-lettered on the first attempt",
-      "The broker detects that the error is non-retryable and moves the message to the DLQ automatically after the first failure",
-      "It is harmless: 11 extra attempts against one message is negligible load, and retrying uniformly keeps the error-handling code simple"
-    ],
-    "correct": 1,
-    "explanation": "Retrying a permanent failure is the defining beginner mistake in this subject. The measured run classified 79 permanently-broken messages out of 600: retrying them 5 times each cost 316 attempts that could not possibly succeed - 28.4% of all work done - and changed the number of successful messages not at all (521 either way). Brokers do not classify errors for you; only your code knows whether a 400 means 'bad bytes' or something recoverable. RFC 9110's 4xx/5xx split is the starting map."
-  },
-  {
     "stage": "check",
     "question": "Your fleet uses capped exponential backoff with no jitter. A dependency dies, then recovers 45 seconds later. Why does the recovery frequently fail, and what does adding jitter change?",
     "options": [

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A service runs 135 instances. The dashboard shows CPU peaking at 33% and averaging 12%. Finance asks why you cannot cut the fleet by half. What is the strongest engineering answer?",
-    "options": [
-      "The utilization target is set by the failure the fleet must survive: with a latency-safe utilization of 0.71 and three availability zones, the steady-state target is 0.71 x 2/3 = 47%, and deploy surge plus forecast error push it lower still. Looking half idle is the design, not the waste.",
-      "CPU is the wrong metric; the fleet is actually memory-bound, so the utilization graph is meaningless and the instance count cannot be reasoned about.",
-      "You cannot cut it because the autoscaler owns the instance count, so the number is not a decision anyone on the team is making.",
-      "33% is already close to the 40% industry-standard target for web services, so there is very little room to cut."
-    ],
-    "correct": 0,
-    "explanation": "The answer has to be arithmetic, not vibes. Two multiplicative facts set the target: you cannot run at 100% because latency explodes near saturation (the measured knee here is 0.71), and you cannot run each zone above (N-1)/N or losing one zone overloads the survivors (2/3 with three zones). Multiply them and you get 47%; add deploy surge and forecast headroom and the real fleet sits at 33%. Option B is a real concern but does not answer the question. Option C abdicates. Option D invents a standard - there is no universal target, only the one your knee and your failure domains produce."
-  },
-  {
     "stage": "check",
     "question": "A load test reports that one instance sustains 100 req/s before throughput stops increasing. Your objective is p99 <= 320 ms. What number belongs in the capacity model?",
     "options": [

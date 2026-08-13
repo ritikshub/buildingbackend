@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is RAM's job in a running computer?",
-    "options": ["To store files permanently", "To hold the instructions and data of whatever program is currently running", "To connect to the network", "To cool the CPU"],
-    "correct": 1,
-    "explanation": "RAM is the working memory: it holds the running program's instructions and data. The CPU reads from RAM whenever the value it needs isn't already in a register."
-  },
-  {
     "stage": "check",
     "question": "Why does DRAM lose its contents when the power is turned off?",
     "options": ["The files move to disk", "Each bit is stored as a charge in a capacitor, and the charge disappears without power", "The CPU deletes it on shutdown", "It doesn't — RAM is permanent"],

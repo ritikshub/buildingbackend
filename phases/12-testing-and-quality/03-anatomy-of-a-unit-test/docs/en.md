@@ -78,8 +78,8 @@ It is not a formatting convention. It is a structural constraint with two measur
     <rect x="30" y="62" width="390" height="196" rx="9" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4"/>
     <rect x="460" y="62" width="390" height="196" rx="9" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.4"/>
 
-    <rect x="42" y="74" width="366" height="34" rx="6" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff" stroke-width="1.5"/>
-    <text x="52" y="90" font-size="8.5" font-weight="700" fill="#3553ff">ARRANGE</text>
+    <rect x="42" y="74" width="366" height="34" rx="6" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12" stroke-width="1.5"/>
+    <text x="52" y="90" font-size="8.5" font-weight="700" fill="#c94a12">ARRANGE</text>
     <text x="52" y="103" font-size="9" fill="currentColor" opacity="0.9">items = ((&quot;sku&quot;, 20000, 1),)  ·  coupon SAVE25</text>
 
     <rect x="42" y="116" width="366" height="34" rx="6" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff" stroke-width="1.5"/>
@@ -337,11 +337,11 @@ Take the 8,000 orders a plausible generator produces: 16 catalogue prices, one t
       <circle cx="402" cy="284" r="6" fill="#e0930f" fill-opacity="0.7" stroke="#e0930f"/>
       <circle cx="458" cy="284" r="6" fill="#e0930f" fill-opacity="0.7" stroke="#e0930f"/>
       <circle cx="482" cy="284" r="6" fill="#e0930f" fill-opacity="0.7" stroke="#e0930f"/>
-      <circle cx="486" cy="268" r="6" fill="#3553ff" fill-opacity="0.7" stroke="#3553ff"/>
-      <circle cx="501" cy="284" r="6" fill="#3553ff" fill-opacity="0.7" stroke="#3553ff"/>
-      <circle cx="565" cy="284" r="6" fill="#3553ff" fill-opacity="0.7" stroke="#3553ff"/>
-      <circle cx="587" cy="284" r="6" fill="#3553ff" fill-opacity="0.7" stroke="#3553ff"/>
-      <circle cx="620" cy="284" r="6" fill="#3553ff" fill-opacity="0.7" stroke="#3553ff"/>
+      <circle cx="486" cy="268" r="6" fill="#c94a12" fill-opacity="0.7" stroke="#c94a12"/>
+      <circle cx="501" cy="284" r="6" fill="#c94a12" fill-opacity="0.7" stroke="#c94a12"/>
+      <circle cx="565" cy="284" r="6" fill="#c94a12" fill-opacity="0.7" stroke="#c94a12"/>
+      <circle cx="587" cy="284" r="6" fill="#c94a12" fill-opacity="0.7" stroke="#c94a12"/>
+      <circle cx="620" cy="284" r="6" fill="#c94a12" fill-opacity="0.7" stroke="#c94a12"/>
       <circle cx="812" cy="284" r="6" fill="#d64545" fill-opacity="0.75" stroke="#d64545"/><circle cx="812" cy="270" r="6" fill="#d64545" fill-opacity="0.75" stroke="#d64545"/><circle cx="812" cy="256" r="6" fill="#d64545" fill-opacity="0.75" stroke="#d64545"/><circle cx="812" cy="242" r="6" fill="#d64545" fill-opacity="0.75" stroke="#d64545"/>
     </g>
     <path d="M794 208 L 794 300" fill="none" stroke="#d64545" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.7"/>
@@ -351,14 +351,14 @@ Take the 8,000 orders a plausible generator produces: 16 catalogue prices, one t
       <text x="120" y="272" text-anchor="middle" fill="currentColor" opacity="0.8">C03</text>
       <text x="402" y="270" text-anchor="middle" fill="#e0930f" font-weight="700">R02 · 46</text>
       <text x="466" y="252" text-anchor="middle" fill="#e0930f" font-weight="700">R01 · 96</text>
-      <text x="536" y="264" text-anchor="middle" fill="#3553ff" font-weight="700">B01 · 139</text>
-      <text x="565" y="240" text-anchor="middle" fill="#3553ff" font-weight="700">B03 · 405</text>
-      <text x="640" y="270" text-anchor="middle" fill="#3553ff" font-weight="700">B04 · 887</text>
+      <text x="536" y="264" text-anchor="middle" fill="#c94a12" font-weight="700">B01 · 139</text>
+      <text x="565" y="240" text-anchor="middle" fill="#c94a12" font-weight="700">B03 · 405</text>
+      <text x="640" y="270" text-anchor="middle" fill="#c94a12" font-weight="700">B04 · 887</text>
       <text x="852" y="228" text-anchor="end" fill="#d64545" font-weight="700">4 bugs, never seen in 8,000</text>
     </g>
 
     <g font-size="9.5" font-weight="700">
-      <text x="46" y="366" fill="#7f7f7f">— arithmetic / conditional / exception / field</text><text x="336" y="366" fill="#e0930f">— rounding</text><text x="452" y="366" fill="#3553ff">— boundary</text><text x="580" y="366" fill="#d64545">— never reached by valid random input</text>
+      <text x="46" y="366" fill="#7f7f7f">— arithmetic / conditional / exception / field</text><text x="336" y="366" fill="#e0930f">— rounding</text><text x="452" y="366" fill="#c94a12">— boundary</text><text x="580" y="366" fill="#d64545">— never reached by valid random input</text>
     </g>
 
     <rect x="30" y="382" width="820" height="74" rx="9" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f" stroke-opacity="0.55" stroke-width="1.5"/>

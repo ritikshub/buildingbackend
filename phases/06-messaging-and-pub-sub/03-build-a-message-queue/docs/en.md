@@ -79,7 +79,7 @@ So a queue offers exactly two choices, and one of them loses money. **Pick at-le
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="16" y="58" width="276" height="330" rx="13" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f"/>
-    <rect x="302" y="58" width="276" height="330" rx="13" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff"/>
+    <rect x="302" y="58" width="276" height="330" rx="13" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12"/>
     <rect x="588" y="58" width="276" height="330" rx="13" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
   </g>
 
@@ -89,7 +89,7 @@ So a queue offers exactly two choices, and one of them loses money. **Pick at-le
     <rect x="38" y="222" width="232" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     <rect x="324" y="130" width="232" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     <rect x="324" y="176" width="232" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
-    <rect x="324" y="222" width="232" height="30" rx="7" fill="#3553ff" fill-opacity="0.22" stroke="#3553ff"/>
+    <rect x="324" y="222" width="232" height="30" rx="7" fill="#c94a12" fill-opacity="0.22" stroke="#c94a12"/>
     <rect x="610" y="130" width="232" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     <rect x="610" y="176" width="232" height="30" rx="7" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="610" y="222" width="232" height="30" rx="7" fill="#0fa07f" fill-opacity="0.22" stroke="#0fa07f"/>
@@ -116,16 +116,16 @@ So a queue offers exactly two choices, and one of them loses money. **Pick at-le
     <text x="154" y="349" font-size="12" font-weight="700" fill="#e0930f">LOST 1 of 60</text>
     <text x="154" y="368" font-size="10" opacity="0.9">duplicates 0 · no ack step</text>
 
-    <text x="440" y="82" font-size="12" font-weight="700" fill="#3553ff">ACK AFTER PROCESSING</text>
+    <text x="440" y="82" font-size="12" font-weight="700" fill="#c94a12">ACK AFTER PROCESSING</text>
     <text x="440" y="100" font-size="9.5" opacity="0.85">claim · work · ack</text>
     <text x="440" y="118" font-size="10.5" font-weight="700">AT-LEAST-ONCE</text>
     <text x="440" y="150" font-size="9.5">1. broker HIDES it (lease)</text>
     <text x="440" y="196" font-size="9.5">2. consumer does the work</text>
     <text x="440" y="242" font-size="9.5" font-weight="700">3. ack -> broker deletes</text>
-    <text x="440" y="282" font-size="10" font-weight="700" fill="#3553ff">crash before the ack</text>
+    <text x="440" y="282" font-size="10" font-weight="700" fill="#c94a12">crash before the ack</text>
     <text x="440" y="299" font-size="9.5" opacity="0.9">= the lease expires and</text>
     <text x="440" y="315" font-size="9.5" opacity="0.9">someone else picks it up</text>
-    <text x="440" y="349" font-size="12" font-weight="700" fill="#3553ff">LOST 0 of 60</text>
+    <text x="440" y="349" font-size="12" font-weight="700" fill="#c94a12">LOST 0 of 60</text>
     <text x="440" y="368" font-size="10" opacity="0.9">duplicates 1 · redelivered 2</text>
 
     <text x="726" y="82" font-size="12" font-weight="700" fill="#0fa07f">ACK AFTER + HEARTBEAT</text>
@@ -201,10 +201,10 @@ One warning separates a working heartbeat from a dangerous one. **The heartbeat 
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="102" y="76" width="141" height="26" rx="6" fill="#3553ff" fill-opacity="0.20" stroke="#3553ff"/>
+    <rect x="102" y="76" width="141" height="26" rx="6" fill="#c94a12" fill-opacity="0.20" stroke="#c94a12"/>
     <rect x="243" y="76" width="225" height="26" rx="6" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f" stroke-dasharray="5 4"/>
     <rect x="243" y="112" width="507" height="26" rx="6" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.45" stroke-dasharray="5 4"/>
-    <rect x="159" y="200" width="141" height="26" rx="6" fill="#3553ff" fill-opacity="0.20" stroke="#3553ff"/>
+    <rect x="159" y="200" width="141" height="26" rx="6" fill="#c94a12" fill-opacity="0.20" stroke="#c94a12"/>
     <rect x="320" y="236" width="430" height="26" rx="6" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.45" stroke-dasharray="5 4"/>
     <rect x="750" y="200" width="56" height="26" rx="6" fill="#0fa07f" fill-opacity="0.20" stroke="#0fa07f"/>
     <rect x="750" y="76" width="56" height="26" rx="6" fill="#0fa07f" fill-opacity="0.20" stroke="#0fa07f"/>
@@ -229,12 +229,12 @@ One warning separates a working heartbeat from a dangerous one. **The heartbeat 
     <text x="468" y="156" font-size="9.5" text-anchor="middle" font-weight="700" fill="#e0930f">t=14.50 · w3 finishes and its ack is REJECTED</text>
     <text x="468" y="172" font-size="9" text-anchor="middle" opacity="0.9">the refund was processed twice — nobody crashed, the timeout was just wrong</text>
 
-    <text x="34" y="194" font-size="11" font-weight="700" fill="#3553ff">B · THE WORKER REALLY DIED</text>
+    <text x="34" y="194" font-size="11" font-weight="700" fill="#c94a12">B · THE WORKER REALLY DIED</text>
     <text x="34" y="214" font-size="9.5" text-anchor="start">w1</text>
     <text x="229" y="217" font-size="9" text-anchor="middle" font-weight="700">lease 3.50 - 8.50</text>
     <text x="535" y="253" font-size="9" text-anchor="middle">m-0013 waits behind the 40 messages already in the queue</text>
     <text x="778" y="217" font-size="9" text-anchor="middle" font-weight="700" fill="#0fa07f">redeliver</text>
-    <text x="159" y="178" font-size="9" text-anchor="middle" fill="#3553ff" font-weight="700">t=3.50 w1 CRASHES holding m-0013</text>
+    <text x="159" y="178" font-size="9" text-anchor="middle" fill="#c94a12" font-weight="700">t=3.50 w1 CRASHES holding m-0013</text>
     <text x="320" y="288" font-size="9.5" text-anchor="start" font-weight="700">t=9.25 · visible again  →  t=24.50 · actually redelivered (delivery #2)</text>
     <text x="320" y="304" font-size="9" text-anchor="start" opacity="0.9">recovery took 21 seconds, not the 5 seconds the lease implied</text>
 
@@ -283,7 +283,7 @@ The **crash-consistency argument** falls out of the format. Because writes only 
   <text x="440" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">The append-only log — and the only damage a crash can do</text>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="30" y="48" width="70" height="40" rx="5" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff"/>
+    <rect x="30" y="48" width="70" height="40" rx="5" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12"/>
     <rect x="100" y="48" width="70" height="40" rx="5" fill="#7c5cff" fill-opacity="0.18" stroke="#7c5cff"/>
     <rect x="170" y="48" width="240" height="40" rx="5" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
   </g>

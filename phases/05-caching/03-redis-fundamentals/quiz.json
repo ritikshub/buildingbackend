@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why move the cache out of your app process and onto a shared server like Redis?",
-    "options": ["Redis is faster than local RAM", "So all instances share one consistent copy that survives restarts and isn't capped at one machine's RAM", "To reduce the number of servers", "Because in-process caches can't store strings"],
-    "correct": 1,
-    "explanation": "Per-instance caches disagree across the fleet, start cold on every deploy, and can't exceed one machine's RAM. A shared cache server gives one copy everyone reads and writes."
-  },
-  {
     "stage": "check",
     "question": "What makes Redis a 'data-structure server' rather than just a key-value store?",
     "options": ["It stores keys on disk", "Values can be rich types (hashes, lists, sets, sorted sets) the server understands and mutates in place, so operations run server-side", "It uses SQL", "It only stores integers"],

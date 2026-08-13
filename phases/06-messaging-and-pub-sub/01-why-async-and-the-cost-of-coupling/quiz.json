@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "An order request synchronously calls five services, each 99.9% available and each required for the order to succeed. What is the combined availability of that request, and why?",
-    "options": ["99.9%, because each service independently meets its target and the slowest one dominates", "99.5%. Availability down a serial dependency chain is the product of its members: 0.999^5 = 0.9950, which is 43.8 hours of downtime per year versus 8.8 for a single service. Every dependency added to the critical path makes the whole path permanently worse, and no amount of work inside any one service fixes it", "99.98%, because failures in different services are independent and therefore cancel out", "It cannot be calculated without knowing each service's latency"],
-    "correct": 1,
-    "explanation": "Required dependencies multiply. Five nines-of-three services give 0.999^5 = 99.50%; twenty give 0.999^20 = 98.02%, which is 7.2 days of downtime a year. This is the arithmetic that turns 'should this call be async?' from a style preference into a number — and the fix is not to make each service better, it is to remove services from the critical path."
-  },
-  {
     "stage": "check",
     "question": "A broker is said to break three couplings. Which one explains why a new analytics service can start reacting to orders without anyone editing or redeploying the orders service?",
     "options": ["Temporal coupling — the analytics service does not need to be up when the order is placed", "Load coupling — the queue absorbs the analytics service's slower processing rate", "Spatial (referential) coupling — the producer writes to a topic and never names a consumer, so subscribers can be added, removed or replaced without the producer knowing they exist", "None of them; the orders service must always be updated to add a new consumer"],

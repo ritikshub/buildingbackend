@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A developer commits `SIGNING_KEY = \"prod-secret\"`, realizes the mistake, and pushes a follow-up commit deleting the line. Is the key safe now?",
-    "options": [
-      "Yes — the deletion commit removed it",
-      "No. Git never forgets: the secret is in the repository history forever, and automated scanners crawl public commits within seconds, so it may already be harvested. The deletion doesn't remove it from history or undo any exposure. The only real fix is to ROTATE the key (issue a new one and revoke the old). Short-lived credentials would have limited the damage to a small window",
-      "Yes, as long as the repository is private",
-      "Yes, if you also force-push to rewrite the branch"
-    ],
-    "correct": 1,
-    "explanation": "Committing a secret compromises it the moment it's pushed — history retains it, and scanners and attackers find exposed keys almost instantly. Deleting the line (even rewriting history) can't guarantee no copy was taken, so you must assume compromise and rotate. This is why secrets belong outside source control entirely, and why short-lived, auto-rotated credentials are the strongest posture — a leaked one expires quickly."
-  },
-  {
     "stage": "check",
     "question": "Environment variables are a big improvement over hardcoding secrets. Why are they still 'how a secret is injected, not where it's managed'?",
     "options": [

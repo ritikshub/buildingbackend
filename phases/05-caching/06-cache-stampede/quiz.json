@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is a cache stampede (thundering herd)?",
-    "options": ["When the cache runs out of memory", "When a hot key expires and many concurrent requests all miss at once, recomputing the same value and overloading the source", "When Redis restarts", "When TTLs are too long"],
-    "correct": 1,
-    "explanation": "A single hot key's expiry turns a flood of cache hits into a flood of simultaneous misses, all hitting the database with the identical query in the same instant."
-  },
-  {
     "stage": "check",
     "question": "What are the four ingredients that together cause a stampede?",
     "options": ["Slow disk, big values, no TTL, one server", "A hot key + a hard expiry + high concurrency + a slow recompute", "Too many keys, low memory, LRU, and TCP", "Encryption, replication, sharding, and jitter"],

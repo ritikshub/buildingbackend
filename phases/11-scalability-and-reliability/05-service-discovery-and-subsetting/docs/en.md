@@ -68,25 +68,25 @@ That distinction produces both of the failure modes worth knowing:
       <path d="M242 84 L 254 96"/><path d="M254 84 L 242 96"/>
     </g>
     <path d="M407 100 L 407 152" fill="none" stroke="#7c5cff" stroke-width="2.4"/>
-    <path d="M420 100 L 420 152" fill="none" stroke="#3553ff" stroke-width="2.4"/>
+    <path d="M420 100 L 420 152" fill="none" stroke="#c94a12" stroke-width="2.4"/>
     <text x="334" y="118" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e0930f">STALE WINDOW</text>
     <text x="334" y="134" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.8">renewals that never came</text>
     <g fill="currentColor" font-size="9" text-anchor="middle">
       <text x="90" y="160" opacity="0.85">0s</text><text x="153" y="160" opacity="0.85">5s</text>
       <text x="217" y="160" opacity="0.85">10s</text><text x="248" y="80" fill="#d64545" font-weight="700">12.5s</text>
-      <text x="404" y="168" fill="#7c5cff" font-weight="700">25s</text><text x="437" y="168" fill="#3553ff" font-weight="700">26s</text>
+      <text x="404" y="168" fill="#7c5cff" font-weight="700">25s</text><text x="437" y="168" fill="#c94a12" font-weight="700">26s</text>
     </g>
 
     <g font-size="9.5">
       <rect x="500" y="76" width="10" height="10" rx="2" fill="#0fa07f" fill-opacity="0.35" stroke="#0fa07f" stroke-width="1.4"/>
       <rect x="500" y="96" width="10" height="10" rx="2" fill="#d64545" fill-opacity="0.35" stroke="#d64545" stroke-width="1.4"/>
       <rect x="500" y="116" width="10" height="10" rx="2" fill="#7c5cff" fill-opacity="0.35" stroke="#7c5cff" stroke-width="1.4"/>
-      <rect x="500" y="136" width="10" height="10" rx="2" fill="#3553ff" fill-opacity="0.35" stroke="#3553ff" stroke-width="1.4"/>
+      <rect x="500" y="136" width="10" height="10" rx="2" fill="#c94a12" fill-opacity="0.35" stroke="#c94a12" stroke-width="1.4"/>
       <g fill="currentColor">
         <text x="520" y="85"><tspan font-weight="700">0 / 5 / 10s</tspan>  renewals arrive, lease extended</text>
         <text x="520" y="105"><tspan font-weight="700" fill="#d64545">12.5s</tspan>  SIGKILL. No deregister, no goodbye</text>
         <text x="520" y="125"><tspan font-weight="700" fill="#7c5cff">25.0s</tspan>  lease expires: last renewal 10s + ttl 15s</text>
-        <text x="520" y="145"><tspan font-weight="700" fill="#3553ff">26.0s</tspan>  client's next 2s poll drops the endpoint</text>
+        <text x="520" y="145"><tspan font-weight="700" fill="#c94a12">26.0s</tspan>  client's next 2s poll drops the endpoint</text>
       </g>
     </g>
     <text x="440" y="184" text-anchor="middle" font-size="10.5" fill="currentColor">Measured over 20,000 random death times: mean stale window <tspan font-weight="700" fill="#e0930f">13.5s</tspan>, worst <tspan font-weight="700" fill="#e0930f">17.0s</tspan>. Every request inside it hits a closed socket.</text>
@@ -267,7 +267,7 @@ The mechanism is the boring one: **cache the last-known-good endpoint list on di
       <text x="725" y="178">stale list + outlier ejection</text>
     </g>
 
-    <g fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="1.7">
+    <g fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="1.7">
       <rect x="90" y="192" width="130" height="30" rx="7"/>
       <rect x="375" y="192" width="130" height="30" rx="7"/>
       <rect x="660" y="192" width="130" height="30" rx="7"/>
@@ -385,7 +385,7 @@ The observation that dissolves the whole problem: **a client does not need every
       <path d="M395 118 L 55 232"/><path d="M395 118 L 123 232"/><path d="M395 118 L 191 232"/><path d="M395 118 L 259 232"/><path d="M395 118 L 327 232"/><path d="M395 118 L 395 232"/>
     </g>
 
-    <g stroke="#3553ff" stroke-width="1.9" opacity="0.85" fill="none">
+    <g stroke="#c94a12" stroke-width="1.9" opacity="0.85" fill="none">
       <path d="M485 118 L 485 232"/><path d="M485 118 L 553 232"/>
       <path d="M553 118 L 621 232"/><path d="M553 118 L 689 232"/>
       <path d="M621 118 L 757 232"/><path d="M621 118 L 825 232"/>
@@ -394,7 +394,7 @@ The observation that dissolves the whole problem: **a client does not need every
       <path d="M825 118 L 689 232"/><path d="M825 118 L 825 232"/>
     </g>
 
-    <g fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.8">
+    <g fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.8">
       <circle cx="55" cy="110" r="13"/><circle cx="123" cy="110" r="13"/><circle cx="191" cy="110" r="13"/><circle cx="259" cy="110" r="13"/><circle cx="327" cy="110" r="13"/><circle cx="395" cy="110" r="13"/>
       <circle cx="485" cy="110" r="13"/><circle cx="553" cy="110" r="13"/><circle cx="621" cy="110" r="13"/><circle cx="689" cy="110" r="13"/><circle cx="757" cy="110" r="13"/><circle cx="825" cy="110" r="13"/>
     </g>
@@ -468,10 +468,10 @@ Everything hinges on the seed. `random.Random(round_id)` means every client in r
     <text x="440" y="48" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.9">M = 12 backends · k = 3 · subset_count = M / k = <tspan font-weight="700">4 clients per round</tspan> · round = client_id / subset_count</text>
 
     <text x="30" y="82" font-size="11" font-weight="700" fill="#7c5cff">ROUND 0 · shuffle(backends, seed = 0) →  clients 0-3</text>
-    <g font-size="9.5" font-weight="700" fill="#3553ff" text-anchor="middle">
+    <g font-size="9.5" font-weight="700" fill="#c94a12" text-anchor="middle">
       <text x="165" y="102">client 0</text><text x="337" y="102">client 1</text><text x="509" y="102">client 2</text><text x="681" y="102">client 3</text>
     </g>
-    <g fill="none" stroke="#3553ff" stroke-width="1.4" opacity="0.8">
+    <g fill="none" stroke="#c94a12" stroke-width="1.4" opacity="0.8">
       <path d="M90 108 L 90 106 L 240 106 L 240 108"/><path d="M262 108 L 262 106 L 412 106 L 412 108"/>
       <path d="M434 108 L 434 106 L 584 106 L 584 108"/><path d="M606 108 L 606 106 L 756 106 L 756 108"/>
     </g>
@@ -490,10 +490,10 @@ Everything hinges on the seed. `random.Random(round_id)` means every client in r
     <text x="778" y="129" font-size="9" fill="currentColor" opacity="0.75">backend ids</text>
 
     <text x="30" y="172" font-size="11" font-weight="700" fill="#7c5cff">ROUND 1 · shuffle(backends, seed = 1) →  clients 4-7</text>
-    <g font-size="9.5" font-weight="700" fill="#3553ff" text-anchor="middle">
+    <g font-size="9.5" font-weight="700" fill="#c94a12" text-anchor="middle">
       <text x="165" y="192">client 4</text><text x="337" y="192">client 5</text><text x="509" y="192">client 6</text><text x="681" y="192">client 7</text>
     </g>
-    <g fill="none" stroke="#3553ff" stroke-width="1.4" opacity="0.8">
+    <g fill="none" stroke="#c94a12" stroke-width="1.4" opacity="0.8">
       <path d="M90 198 L 90 196 L 240 196 L 240 198"/><path d="M262 198 L 262 196 L 412 196 L 412 198"/>
       <path d="M434 198 L 434 196 L 584 196 L 584 198"/><path d="M606 198 L 606 196 L 756 196 L 756 198"/>
     </g>

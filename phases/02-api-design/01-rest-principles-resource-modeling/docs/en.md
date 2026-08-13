@@ -92,8 +92,8 @@ store as a resource, not in one instance's memory:
     <text x="671" y="78" font-size="8.5" text-anchor="middle" fill="currentColor" opacity="0.8">the cart is stashed in instance 2's memory</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-      <rect x="60" y="88" width="340" height="44" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="501" y="88" width="340" height="44" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="60" y="88" width="340" height="44" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="501" y="88" width="340" height="44" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="40" y="170" width="380" height="46" rx="10" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/>
       <rect x="481" y="170" width="380" height="46" rx="10" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/>
       <rect x="40" y="250" width="120" height="56" rx="9" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/>
@@ -109,9 +109,9 @@ store as a resource, not in one instance's memory:
     </g>
 
     <g text-anchor="middle">
-      <text x="230" y="106" font-size="11" font-weight="700" fill="#3553ff">Client</text>
+      <text x="230" y="106" font-size="11" font-weight="700" fill="#c94a12">Client</text>
       <text x="230" y="121" font-size="8.5" fill="currentColor">carries auth + full request state, on every request</text>
-      <text x="671" y="106" font-size="11" font-weight="700" fill="#3553ff">Client</text>
+      <text x="671" y="106" font-size="11" font-weight="700" fill="#c94a12">Client</text>
       <text x="671" y="121" font-size="8.5" fill="currentColor">sends the same requests — the cart is not in them</text>
 
       <text x="230" y="189" font-size="11" font-weight="700" fill="#7c5cff">Load balancer</text>

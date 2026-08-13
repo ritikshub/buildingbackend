@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "An IP address identifies a machine. What does a port number identify?",
-    "options": [
-      "The physical network cable in use",
-      "A specific program (endpoint) on that machine",
-      "The speed of the connection",
-      "The country the server is located in"
-    ],
-    "correct": 1,
-    "explanation": "A port is a 16-bit number (0–65535) that selects which program on a machine gets the bytes. The pair (IP address, port) is a socket, and a connection is fully identified by the 4-tuple of source IP+port and destination IP+port."
-  },
-  {
-    "stage": "pre",
-    "question": "Which sequence establishes a TCP connection before any data is sent?",
-    "options": [
-      "A single SYN packet",
-      "SYN, then SYN-ACK, then ACK (the three-way handshake)",
-      "A DNS lookup followed by a ping",
-      "Nothing — TCP just starts sending data"
-    ],
-    "correct": 1,
-    "explanation": "TCP is connection-oriented: the client sends SYN, the server replies SYN-ACK, the client sends ACK. This exchange synchronizes both sides' sequence numbers so every later byte can be acknowledged."
-  },
-  {
     "stage": "check",
     "question": "How does TCP recover from a packet that is lost in the network?",
     "options": [

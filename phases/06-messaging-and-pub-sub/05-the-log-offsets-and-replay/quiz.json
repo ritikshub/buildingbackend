@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A queue and a topic both delete a message once it has been acknowledged. What single design change turns that broker into a log, and what does the change actually buy?",
-    "options": [
-      "Storing messages on disk instead of in memory, which buys durability across a broker restart",
-      "Decoupling retention from acknowledgement: the broker stops deleting on ack and instead expires records by a policy (age, size, or key), while each consumer tracks its own position. Because the record survives being read, a consumer can move its position backwards and read it again, and many consumers can read one copy at different speeds",
-      "Allowing more than one consumer to subscribe to the same destination, which buys fan-out to multiple services",
-      "Guaranteeing strict FIFO ordering of messages, which buys deterministic processing order for consumers"
-    ],
-    "correct": 1,
-    "explanation": "Durability, fan-out and ordering are all real properties, but none of them is the defining change - a durable, ordered, multi-subscriber queue is still a queue if reading destroys. The log's move is separating 'this reader has finished with this record' from 'nobody will ever need this record again'. Once retention is a policy rather than a consequence of consumption, replay, backfill, audit and independent read speeds all follow for free."
-  },
-  {
     "stage": "check",
     "question": "The lesson's program ran three consumer groups over one 2,000-record log holding 215,042 bytes. What would the same workload cost in the fan-out model of Lesson 4, and what is the marginal cost of adding a fourth consumer to each?",
     "options": [

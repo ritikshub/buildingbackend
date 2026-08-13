@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is a transistor, in the simplest terms?",
-    "options": ["A tiny battery", "A tiny switch, controlled by electricity, that is either on (1) or off (0)", "A small screen", "A unit of memory equal to one byte"],
-    "correct": 1,
-    "explanation": "A transistor is a tiny electrically-controlled switch. A voltage on its gate decides whether current flows. Billions of them, switching fast, are the physical basis of a computer."
-  },
-  {
     "stage": "check",
     "question": "An AND gate outputs 1 in which case?",
     "options": ["When either input is 1", "Only when both inputs are 1", "Only when both inputs are 0", "Always"],

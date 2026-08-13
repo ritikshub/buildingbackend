@@ -49,8 +49,8 @@ survives every function boundary, thread, process, and network hop:
   </g>
   <g fill="none" stroke="currentColor" stroke-width="1.8"><path d="M406 171 L 462 171" marker-end="url(#l03-a1)"/></g>
   <g stroke="none">
-    <rect x="36" y="99" width="6" height="11" fill="#3553ff"/><rect x="36" y="123" width="6" height="11" fill="#e0930f"/><rect x="36" y="147" width="6" height="11" fill="#0fa07f"/><rect x="36" y="171" width="6" height="11" fill="#e0930f"/>
-    <rect x="36" y="195" width="6" height="11" fill="#3553ff"/><rect x="36" y="219" width="6" height="11" fill="#e0930f"/><rect x="36" y="243" width="6" height="11" fill="#0fa07f"/><rect x="36" y="267" width="6" height="11" fill="#e0930f"/>
+    <rect x="36" y="99" width="6" height="11" fill="#c94a12"/><rect x="36" y="123" width="6" height="11" fill="#e0930f"/><rect x="36" y="147" width="6" height="11" fill="#0fa07f"/><rect x="36" y="171" width="6" height="11" fill="#e0930f"/>
+    <rect x="36" y="195" width="6" height="11" fill="#c94a12"/><rect x="36" y="219" width="6" height="11" fill="#e0930f"/><rect x="36" y="243" width="6" height="11" fill="#0fa07f"/><rect x="36" y="267" width="6" height="11" fill="#e0930f"/>
     <rect x="488" y="115" width="6" height="11" fill="#e0930f"/><rect x="488" y="157" width="6" height="11" fill="#e0930f"/><rect x="488" y="199" width="6" height="11" fill="#e0930f"/><rect x="488" y="241" width="6" height="11" fill="#e0930f"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
@@ -133,7 +133,7 @@ Recommendation since 2021. It defines two HTTP headers; `traceparent` carries id
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 864 330" width="100%" style="max-width:820px" role="img" aria-label="Byte layout of the W3C traceparent header, split into four dash-separated fields: a two-hex version, a thirty-two-hex trace id, a sixteen-hex parent span id, and two hex trace flags, each explained in a legend below.">
   <text x="432" y="28" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">traceparent — 55 bytes of lowercase hex, four fields</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="30" y="60" width="80" height="46" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="30" y="60" width="80" height="46" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="128" y="60" width="380" height="46" rx="9" fill="#0fa07f" fill-opacity="0.15" stroke="#0fa07f"/>
     <rect x="526" y="60" width="210" height="46" rx="9" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="754" y="60" width="80" height="46" rx="9" fill="#7c5cff" fill-opacity="0.15" stroke="#7c5cff"/>
@@ -149,7 +149,7 @@ Recommendation since 2021. It defines two HTTP headers; `traceparent` carries id
     <text x="794" y="128" font-size="10.5" font-weight="700">flags</text><text x="794" y="144" font-size="9" opacity="0.8">2 hex</text>
   </g>
   <g stroke="none">
-    <rect x="34" y="177" width="13" height="13" rx="3" fill="#3553ff"/><rect x="34" y="211" width="13" height="13" rx="3" fill="#0fa07f"/>
+    <rect x="34" y="177" width="13" height="13" rx="3" fill="#c94a12"/><rect x="34" y="211" width="13" height="13" rx="3" fill="#0fa07f"/>
     <rect x="34" y="245" width="13" height="13" rx="3" fill="#e0930f"/><rect x="34" y="279" width="13" height="13" rx="3" fill="#7c5cff"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
@@ -207,7 +207,7 @@ remote procedure call — write the current context into the carrier's headers.
   <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="6 5" opacity="0.75"><path d="M378 266 L 378 328 L 546 328" marker-end="url(#l03-a2)"/></g>
   <g fill="none" stroke="currentColor" stroke-width="2" opacity="0.85"><path d="M456 320 L 470 336"/><path d="M470 320 L 456 336"/></g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="24" y="70" width="180" height="56" rx="10" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="24" y="70" width="180" height="56" rx="10" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="288" y="70" width="180" height="56" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
     <rect x="552" y="70" width="180" height="56" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
     <rect x="24" y="210" width="180" height="56" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>

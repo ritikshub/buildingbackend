@@ -115,12 +115,12 @@ execution is a depth-first walk of it:
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" width="100%" style="max-width:880px" role="img" aria-label="The selection tree for the query products, name, reviews, rating, drawn twice: once with naive resolvers and once with a DataLoader. In both panels the query root is the client-declared tree, and the products field resolves with one database query that returns a list of 3 products. That list fans the children out over each element, so the tree repeats under products index 0, 1 and 2. Under each element the walk forks into two children: name, a leaf, which ends the walk and costs nothing, and reviews, which returns a list of review objects and whose own child rating is another leaf. In the left panel the reviews resolver fires once per product element, so three separate resolver calls each go straight to the database: query 2, query 3 and query 4. Nothing sits between the resolvers and the database, and each call knows only its own parent product, which is exactly why it has no idea it ran three times. The counter reads: DB queries 4, that is 1 products plus 3 reviews, which is N plus 1; at 50 products it becomes 1 plus 50 equals 51 queries. In the right panel the tree and the data are identical and only the reviews resolver changed: each of the same three calls now calls loader dot load of the product id, and a DataLoader sitting between the resolvers and the data source batches every load made in one event-loop tick into a single fetch, WHERE product_id = ANY of the keys. The counter reads: DB queries 2, that is 1 products plus 1 batched reviews, and at 50 products it is still 2 queries. The DataLoader batch function must return results in the same order and length as its input keys, and the loader must be created fresh per request.">
   <defs>
     <marker id="p2l08a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker>
-    <marker id="p2l08a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p2l08a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p2l08a-arm" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
     <marker id="p2l08a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">reviews fires once PER product — that is N+1; a DataLoader collapses it to one fetch</text>
-  <text x="450" y="46" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" fill="currentColor"><tspan opacity="0.75">the client declares  </tspan><tspan fill="#3553ff" font-weight="700">{ products { name reviews { rating } } }</tspan></text>
+  <text x="450" y="46" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" fill="currentColor"><tspan opacity="0.75">the client declares  </tspan><tspan fill="#c94a12" font-weight="700">{ products { name reviews { rating } } }</tspan></text>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="2">
@@ -142,23 +142,23 @@ execution is a depth-first walk of it:
     </g>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-      <rect x="155" y="96" width="150" height="34" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="595" y="96" width="150" height="34" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="130" y="144" width="200" height="40" rx="9" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
-      <rect x="570" y="144" width="200" height="40" rx="9" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="155" y="96" width="150" height="34" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="595" y="96" width="150" height="34" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="130" y="144" width="200" height="40" rx="9" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
+      <rect x="570" y="144" width="200" height="40" rx="9" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     </g>
     <g text-anchor="middle">
-      <text x="230" y="112" font-size="11" font-weight="700" fill="#3553ff">query root</text>
+      <text x="230" y="112" font-size="11" font-weight="700" fill="#c94a12">query root</text>
       <text x="230" y="124" font-size="7" fill="currentColor" opacity="0.75">depth-first walk starts here</text>
-      <text x="670" y="112" font-size="11" font-weight="700" fill="#3553ff">query root</text>
+      <text x="670" y="112" font-size="11" font-weight="700" fill="#c94a12">query root</text>
       <text x="670" y="124" font-size="7" fill="currentColor" opacity="0.75">depth-first walk starts here</text>
-      <text x="230" y="161" font-size="10" font-weight="700" fill="#3553ff">products → [product]</text>
+      <text x="230" y="161" font-size="10" font-weight="700" fill="#c94a12">products → [product]</text>
       <text x="230" y="176" font-size="7.5" fill="currentColor" opacity="0.8">1 DB query · returns a list of 3</text>
-      <text x="670" y="161" font-size="10" font-weight="700" fill="#3553ff">products → [product]</text>
+      <text x="670" y="161" font-size="10" font-weight="700" fill="#c94a12">products → [product]</text>
       <text x="670" y="176" font-size="7.5" fill="currentColor" opacity="0.8">1 DB query · returns a list of 3</text>
     </g>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M230 130 L230 144" marker-end="url(#p2l08a-arb)"/>
       <path d="M670 130 L670 144" marker-end="url(#p2l08a-arb)"/>
       <path d="M230 184 L230 200"/>

@@ -33,8 +33,8 @@ A mid-sized company's `users` table leaks — a backup left on a public bucket, 
     <text x="30" y="158" font-size="10.5" fill="currentColor">~10,000,000,000 / sec  +  rainbow tables  +  identical hashes crack together</text>
     <text x="730" y="158" font-size="10" fill="currentColor" opacity="0.85">whole DB: hours</text>
 
-    <text x="20" y="198" font-size="10.5" font-weight="700" fill="#3553ff">FAST HASH · SALTED</text>
-    <rect x="20" y="206" width="600" height="26" rx="5" fill="#3553ff" fill-opacity="0.6" stroke="none"/>
+    <text x="20" y="198" font-size="10.5" font-weight="700" fill="#c94a12">FAST HASH · SALTED</text>
+    <rect x="20" y="206" width="600" height="26" rx="5" fill="#c94a12" fill-opacity="0.6" stroke="none"/>
     <text x="30" y="224" font-size="10.5" fill="currentColor">rainbow tables dead, no bulk cracking — but still ~10,000,000,000 / sec</text>
     <text x="730" y="224" font-size="10" fill="currentColor" opacity="0.85">weak pw: hours</text>
 
@@ -99,13 +99,13 @@ You don't store the hash alone — you store a single string that also records *
   <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5">
     <g fill="none" stroke-width="1.6">
       <path d="M120 78 L 120 104 L 150 104" stroke="#7c5cff"/>
-      <path d="M200 78 L 200 128 L 230 128" stroke="#3553ff"/>
+      <path d="M200 78 L 200 128 L 230 128" stroke="#c94a12"/>
       <path d="M300 78 L 300 152 L 330 152" stroke="#e0930f"/>
       <path d="M470 78 L 470 104 L 500 104" stroke="#0fa07f"/>
       <path d="M660 78 L 660 128 L 690 128" stroke="#d64545"/>
     </g>
     <text x="156" y="108" fill="#7c5cff" font-weight="700">algorithm — argon2id (the memory-hard variant)</text>
-    <text x="236" y="132" fill="#3553ff" font-weight="700">version — 0x13 = 19</text>
+    <text x="236" y="132" fill="#c94a12" font-weight="700">version — 0x13 = 19</text>
     <text x="336" y="156" fill="#e0930f" font-weight="700">parameters — memory 64 MiB, time 3 passes, parallelism 4</text>
     <text x="506" y="108" fill="#0fa07f" font-weight="700">salt (Base64) — unique per user, not secret</text>
     <text x="696" y="132" fill="#d64545" font-weight="700">the hash (Base64)</text>
@@ -124,12 +124,12 @@ Because the parameters travel with the hash, you can **upgrade security transpar
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Register, verify, and transparent upgrade</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="30" y="66" font-size="12" font-weight="700" fill="#3553ff">REGISTER</text>
+    <text x="30" y="66" font-size="12" font-weight="700" fill="#c94a12">REGISTER</text>
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
       <rect x="30" y="76" width="120" height="34" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
       <rect x="30" y="118" width="120" height="30" rx="7" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
       <rect x="250" y="86" width="150" height="42" rx="8" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/>
-      <rect x="470" y="88" width="410" height="38" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="470" y="88" width="410" height="38" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     </g>
     <g fill="none" stroke="currentColor" stroke-width="1.6">
       <path d="M150 100 L 246 100" marker-end="url(#l3-ar)"/>

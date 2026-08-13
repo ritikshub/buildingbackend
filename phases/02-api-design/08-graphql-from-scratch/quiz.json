@@ -1,12 +1,5 @@
 [
   {
-    "question": "What single mechanism lets GraphQL fix both over-fetching and the N-round-trip waterfall?",
-    "options": ["HTTP/2 multiplexing", "Client-specified selection sets against one endpoint", "Binary encoding", "Server-side rendering"],
-    "correct": 1,
-    "explanation": "The client declares exactly the fields and nested relations it wants against a single endpoint, and gets them in one round trip — so it neither over-fetches unused fields nor makes N sequential calls to stitch resources together.",
-    "stage": "pre"
-  },
-  {
     "question": "Explain the N+1 problem in resolver terms and DataLoader's cardinal lifetime rule.",
     "options": ["It's a caching bug; share one loader globally", "Each list item resolves its child field with an independent query (1 + N); DataLoader batches same-tick loads and must be instantiated per request", "It only happens with mutations; use a singleton loader", "It's a network issue fixed by HTTP/2"],
     "correct": 1,

@@ -1,12 +1,5 @@
 [
   {
-    "question": "What does it mean for an HTTP method to be 'idempotent'?",
-    "options": ["It never changes server state", "N identical requests have the same effect as one", "It always returns the same status code", "It can be cached"],
-    "correct": 1,
-    "explanation": "Idempotent means sending the same request N times leaves the same server state as sending it once. PUT and DELETE are idempotent; POST is not. 'Safe' is the separate property of not changing state at all (GET).",
-    "stage": "pre"
-  },
-  {
     "question": "A client sends PATCH with Content-Type: application/merge-patch+json and body {\"coupon_code\": null}. What must the server do?",
     "options": ["Store the literal value null in coupon_code", "Remove/unset coupon_code", "Reject the request as invalid", "Replace the whole resource"],
     "correct": 1,

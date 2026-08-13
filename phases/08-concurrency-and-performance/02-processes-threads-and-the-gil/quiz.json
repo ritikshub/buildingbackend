@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You run the same total workload on 1, 2, 4 and 8 threads in CPython and get 1.00x, 1.00x, 0.99x, 1.00x. You then run an identical experiment on a different workload with the same threads and get 2.01x, 3.95x, 7.91x and 14.73x. What distinguishes the two workloads?",
-    "options": [
-      "The second workload used more threads than the first, and thread pools only pay off above four workers regardless of what the work is",
-      "The first workload allocated more memory, so the garbage collector serialised it; memory pressure, not locking, is what caps threaded throughput in CPython",
-      "The first is pure CPython bytecode, which requires holding the GIL, so the threads take strict turns. The second spends its time blocked in a system call (a socket read, or time.sleep), and CPython releases the GIL for the whole duration of that wait, so the waits genuinely overlap",
-      "The second workload ran on more physical cores; the first was pinned by the scheduler to a single core because short-lived threads are never migrated"
-    ],
-    "correct": 2,
-    "explanation": "The GIL (Global Interpreter Lock) is held only while a thread executes bytecode. Anything that leaves bytecode — a blocking syscall, time.sleep, or a C extension that wraps its loop in Py_BEGIN_ALLOW_THREADS — releases it. Nothing about the interpreter, the machine or the threading API differs between the two experiments; only whether the thread was holding the lock while it waited. That single sentence predicts both results."
-  },
-  {
     "stage": "check",
     "question": "The Build It measured 81.9 us to create, start and join a thread, 920.2 us for a fork()ed process, and 36 ms for a spawn()ed process. Why is the spawn number 440x the thread number, and when does that bite you?",
     "options": [

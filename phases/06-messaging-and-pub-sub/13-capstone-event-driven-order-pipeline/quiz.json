@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Each of the twelve preceding lessons fixed one failure in isolation, with everything else healthy. What is the additional risk that only appears when all of those mechanisms run together in production?",
-    "options": [
-      "None that matters. Mechanisms that are individually correct compose safely, which is why they can be designed and reviewed one at a time.",
-      "Throughput falls, because each mechanism adds a processing step, so the assembled pipeline is measurably slower than the sum of its parts and the latency budget is exceeded.",
-      "The mechanisms interact, and the correct response to one failure can trigger another: scaling consumers to cut lag is itself a rebalance that replays work, and parking a poison message to keep a partition moving destroys the ordering that the partition key was chosen to provide.",
-      "Memory pressure rises, because every mechanism keeps its own state - dedup tables, retry buffers, aggregation windows - and a consumer holding all of them eventually exhausts its heap."
-    ],
-    "correct": 2,
-    "explanation": "Latency and memory are real costs, but they are additive and predictable. The dangerous property is that two correct mechanisms can be jointly harmful. In the measured run the autoscaler fired at t=41 because time lag hit 10.10 s, and the scaling event was itself a rebalance that rewound uncommitted offsets and replayed work into an already-degraded pipeline. That is why the capstone runs nine faults simultaneously rather than one at a time."
-  },
-  {
     "stage": "check",
     "question": "Payments falls behind because its card gateway slows down, so the lag-driven controller adds members. In the measured run, what did that scaling event itself do to the pipeline?",
     "options": [

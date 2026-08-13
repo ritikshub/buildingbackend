@@ -43,8 +43,8 @@ An HTTP server is a program that does the same four socket calls you already kno
     <g stroke-width="1.8" stroke-linejoin="round">
       <rect x="150" y="48"  width="300" height="44" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f"/>
       <rect x="150" y="114" width="300" height="44" rx="10" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
-      <rect x="150" y="180" width="300" height="44" rx="10" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-      <rect x="150" y="246" width="300" height="44" rx="10" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+      <rect x="150" y="180" width="300" height="44" rx="10" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+      <rect x="150" y="246" width="300" height="44" rx="10" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
       <rect x="150" y="312" width="300" height="44" rx="10" fill="#e0930f" fill-opacity="0.12" stroke="#e0930f"/>
       <rect x="150" y="378" width="300" height="44" rx="10" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
       <rect x="150" y="444" width="300" height="44" rx="10" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
@@ -156,10 +156,10 @@ Put the client and server side by side and the protocol is one round trip over t
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="110" y="44" width="160" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="110" y="44" width="160" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="570" y="44" width="160" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="190" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
+    <text x="190" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
     <text x="650" y="63" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0fa07f">Server (accept loop)</text>
     <!-- lifelines -->
     <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1.3" stroke-dasharray="4 5">
@@ -186,7 +186,7 @@ Put the client and server side by side and the protocol is one round trip over t
     <path d="M644 224 L196 224" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l09b-ar)"/>
 
     <!-- note band 5: client work (over Client) -->
-    <rect x="20" y="242" width="340" height="24" rx="6" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-opacity="0.5" stroke-width="1"/>
+    <rect x="20" y="242" width="340" height="24" rx="6" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-opacity="0.5" stroke-width="1"/>
     <text x="190" y="258" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.85">read status, headers, then exactly 51 body bytes</text>
 
     <!-- note band 6: close (both) -->

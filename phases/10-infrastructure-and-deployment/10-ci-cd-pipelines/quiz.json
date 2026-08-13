@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your pipeline takes 20 minutes and bills 35 minutes of runner time. A senior engineer spends a sprint making the unit-test suite twice as fast — it drops from 6 minutes to 3. The next pipeline run still takes 20 minutes. What is the most likely explanation?",
-    "options": [
-      "The cache was cold on that run, so the saving will appear once it warms up",
-      "Unit-tests were not on the critical path — they had slack, so shortening them reduced billed work but changed the longest path through the DAG by nothing",
-      "The CI provider bills in whole minutes, so a 3-minute saving is rounded away",
-      "Twenty minutes is the provider's minimum scheduling quantum for a multi-job workflow"
-    ],
-    "correct": 1,
-    "explanation": "Wall time is the length of the longest path through the pipeline's dependency graph; total work is the sum of every stage. A stage with slack can be shortened, lengthened or deleted without moving the finish time at all. Measured in this lesson: halving unit-tests (350 s of slack) removed 105 s of billed work and saved the developer exactly 0 seconds, while halving integration-tests (0 slack) saved exactly 150 s. Compute the critical path before optimising anything, or you will pay for improvements no human can perceive."
-  },
-  {
     "stage": "check",
     "question": "A deploy pipeline runs a build step inside each environment's job — dev, staging and production each build from the same merge commit. The team argues this is safe because the source is identical and the base image is pinned by digest. What is actually true?",
     "options": [

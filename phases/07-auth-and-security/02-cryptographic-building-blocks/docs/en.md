@@ -121,7 +121,7 @@ The standard construction is **HMAC** (Hash-based MAC, RFC 2104): `HMAC(key, msg
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">HMAC: a tag only the shared key can make, checked in constant time</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2" font-family="'JetBrains Mono', ui-monospace, monospace">
-    <rect x="20" y="54" width="250" height="150" rx="11" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.7"/>
+    <rect x="20" y="54" width="250" height="150" rx="11" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.7"/>
     <rect x="630" y="54" width="250" height="150" rx="11" fill="#0fa07f" fill-opacity="0.06" stroke="#0fa07f" stroke-opacity="0.7"/>
     <rect x="40" y="88" width="150" height="34" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     <rect x="40" y="146" width="210" height="34" rx="7" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
@@ -135,7 +135,7 @@ The standard construction is **HMAC** (Hash-based MAC, RFC 2104): `HMAC(key, msg
     <path d="M755 122 L 755 144" marker-end="url(#l2m-ar)"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="145" y="76" font-size="11.5" font-weight="700" text-anchor="middle" fill="#3553ff">SENDER (holds key)</text>
+    <text x="145" y="76" font-size="11.5" font-weight="700" text-anchor="middle" fill="#c94a12">SENDER (holds key)</text>
     <text x="115" y="109" font-size="10" text-anchor="middle">message</text>
     <text x="145" y="167" font-size="9.5" text-anchor="middle">HMAC(key, message) = tag</text>
     <text x="450" y="150" font-size="11" text-anchor="middle" font-weight="700">send: (message, tag)</text>
@@ -168,17 +168,17 @@ Encryption — the tool for *confidentiality* — comes in two shapes, and the d
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Two shapes of encryption</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="44" width="424" height="296" rx="12" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.8"/>
+    <rect x="16" y="44" width="424" height="296" rx="12" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.8"/>
     <rect x="460" y="44" width="424" height="296" rx="12" fill="#7c5cff" fill-opacity="0.06" stroke="#7c5cff" stroke-opacity="0.8"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="228" y="70" font-size="13" font-weight="700" text-anchor="middle" fill="#3553ff">SYMMETRIC — one shared key</text>
+    <text x="228" y="70" font-size="13" font-weight="700" text-anchor="middle" fill="#c94a12">SYMMETRIC — one shared key</text>
     <text x="672" y="70" font-size="13" font-weight="700" text-anchor="middle" fill="#7c5cff">ASYMMETRIC — a key pair</text>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="1.8" font-family="'JetBrains Mono', ui-monospace, monospace">
     <rect x="34" y="96" width="120" height="38" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     <rect x="302" y="96" width="120" height="38" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
-    <rect x="176" y="150" width="104" height="34" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="176" y="150" width="104" height="34" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
   </g>
   <g fill="none" stroke="currentColor" stroke-width="1.6">
     <path d="M154 115 L 300 115" marker-end="url(#l2a-ar)"/>
@@ -187,7 +187,7 @@ Encryption — the tool for *confidentiality* — comes in two shapes, and the d
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="94" y="119" font-size="10" text-anchor="middle">plaintext</text>
     <text x="362" y="119" font-size="10" text-anchor="middle">ciphertext</text>
-    <text x="228" y="171" font-size="10" text-anchor="middle" fill="#3553ff">🔑 same key</text>
+    <text x="228" y="171" font-size="10" text-anchor="middle" fill="#c94a12">🔑 same key</text>
     <text x="228" y="210" font-size="9.5" text-anchor="middle" opacity="0.85">encrypts AND decrypts (AES-GCM)</text>
     <text x="228" y="230" font-size="9.5" text-anchor="middle" opacity="0.85">— also the basis of HMAC —</text>
     <text x="228" y="270" font-size="9" text-anchor="middle" opacity="0.7">Fast. Problem: both sides must</text>

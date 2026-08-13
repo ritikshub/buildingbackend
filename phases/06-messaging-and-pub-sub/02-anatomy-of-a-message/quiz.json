@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A teammate proposes publishing order events using Python's pickle module, arguing that a language-native binary serializer will be smaller and faster than JSON. What is the strongest objection?",
-    "options": ["Pickle is slower than JSON because it is written in pure Python rather than C", "Pickle's wire format contains opcodes that call arbitrary importable functions, so pickle.loads() on any message from the network is remote code execution by design, not by bug. It is also Python-only, breaks when classes are refactored, and in the measured run was 104 bytes against JSON's 98 -- it was not even a size win", "Pickle cannot represent nested dictionaries or lists, so complex order payloads will not round-trip", "Pickle output is not valid UTF-8, so most brokers will reject the message body"],
-    "correct": 1,
-    "explanation": "The measured run makes both halves concrete: pickle produced 104 bytes where JSON produced 98, so the assumed size win is absent, and a 43-byte crafted 'message' executed attacker-chosen code the moment pickle.loads touched it. Language-native serializers (pickle, Java Serializable, .NET BinaryFormatter) are designed to restore objects inside a trusted process. A message queue is by definition an untrusted boundary, so 'deserialize' and 'execute' must never be the same operation."
-  },
-  {
     "stage": "check",
     "question": "An order flow emits six messages. You have correlation_id on all of them but no causation_id. Which question becomes unanswerable?",
     "options": ["Whether all six messages belong to the same business transaction", "How many messages the transaction produced in total", "Which message caused which -- so when the shipment request is missing you can see that something is absent but not which branch died, and you cannot tell whether shipment.requested was caused by payment.authorized or directly by order.placed", "When each message was published, since correlation_id carries no timestamp"],

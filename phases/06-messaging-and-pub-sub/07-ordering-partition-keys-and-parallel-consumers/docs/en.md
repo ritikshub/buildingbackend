@@ -109,7 +109,7 @@ Two lines. Here is what they buy, measured on the identical workload and the ide
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="34" y="112" width="96" height="46" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="34" y="112" width="96" height="46" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="196" y="88" width="88" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     <rect x="196" y="124" width="88" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
     <rect x="196" y="160" width="88" height="30" rx="7" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
@@ -133,7 +133,7 @@ Two lines. Here is what they buy, measured on the identical workload and the ide
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="34" y="330" width="96" height="46" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="34" y="330" width="96" height="46" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="196" y="316" width="88" height="74" rx="9" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="352" y="316" width="120" height="74" rx="9" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="536" y="306" width="316" height="94" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
@@ -230,7 +230,7 @@ The program runs 20,000 messages over 500 tenants at `s = 1.0` through a hash pa
     <path d="M36 302 L 414 302"/>
     <path d="M468 302 L 846 302"/>
   </g>
-  <g fill="none" stroke="#3553ff" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.9">
+  <g fill="none" stroke="#c94a12" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.9">
     <path d="M36 256.5 L 414 256.5"/>
     <path d="M468 256.5 L 846 256.5"/>
   </g>
@@ -278,7 +278,7 @@ The program runs 20,000 messages over 500 tenants at `s = 1.0` through a hash pa
     <text x="118" y="172" font-size="9.5" font-weight="700" fill="#e0930f" text-anchor="middle">3,296</text>
     <text x="118" y="158" font-size="8.5" text-anchor="middle" opacity="0.8">HOT</text>
     <text x="164" y="296" font-size="8" text-anchor="middle" opacity="0.8">500</text>
-    <text x="410" y="250" font-size="8.5" text-anchor="end" fill="#3553ff" font-weight="700">mean 1,250</text>
+    <text x="410" y="250" font-size="8.5" text-anchor="end" fill="#c94a12" font-weight="700">mean 1,250</text>
     <text x="34" y="324" font-size="10" opacity="0.95">max/min 6.59   max/mean 2.64</text>
     <text x="34" y="342" font-size="10.5" font-weight="700" fill="#e0930f">effective parallelism 6.07 of 16 — 9.93 consumers wasted</text>
     <text x="34" y="360" font-size="9" opacity="0.8">the busiest partition sets the drain time; extra consumers cannot touch it</text>
@@ -286,7 +286,7 @@ The program runs 20,000 messages over 500 tenants at `s = 1.0` through a hash pa
     <text x="466" y="66" font-size="12" font-weight="700" fill="#0fa07f">hash(key + salt) % 16, top 3 keys, fanout 8</text>
     <text x="466" y="84" font-size="9.5" opacity="0.85">the three hot keys are spread over up to 8 partitions each</text>
     <text x="665" y="222" font-size="9.5" font-weight="700" fill="#0fa07f" text-anchor="middle">1,914</text>
-    <text x="842" y="250" font-size="8.5" text-anchor="end" fill="#3553ff" font-weight="700">mean 1,250</text>
+    <text x="842" y="250" font-size="8.5" text-anchor="end" fill="#c94a12" font-weight="700">mean 1,250</text>
     <text x="466" y="324" font-size="10" opacity="0.95">max/min 2.58   max/mean 1.53</text>
     <text x="466" y="342" font-size="10.5" font-weight="700" fill="#0fa07f">effective parallelism 10.45 of 16 — 5.55 wasted</text>
     <text x="466" y="360" font-size="9" opacity="0.8">...and those 3 tenants, 26.7% of traffic, now have NO ordering at all</text>
@@ -350,7 +350,7 @@ The account was updated, deleted, then created, then updated again. It ends the 
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="16" y="42" width="848" height="176" rx="13" fill="#7f7f7f" fill-opacity="0.06" stroke="currentColor" stroke-opacity="0.45" stroke-dasharray="7 6"/>
-    <rect x="40" y="80" width="180" height="60" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="40" y="80" width="180" height="60" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="40" y="152" width="180" height="46" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     <rect x="300" y="72" width="228" height="60" rx="9" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="300" y="148" width="228" height="60" rx="9" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
@@ -364,7 +364,7 @@ The account was updated, deleted, then created, then updated again. It ends the 
   </g>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="234" width="848" height="130" rx="13" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.7"/>
+    <rect x="16" y="234" width="848" height="130" rx="13" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.7"/>
   </g>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
@@ -385,7 +385,7 @@ The account was updated, deleted, then created, then updated again. It ends the 
     <text x="720" y="182" font-size="9.5" text-anchor="middle" opacity="0.9">c1 simply had less work to do</text>
     <text x="720" y="200" font-size="9" text-anchor="middle" opacity="0.8">no error, no retry, no alert</text>
 
-    <text x="34" y="260" font-size="11.5" font-weight="700" fill="#3553ff">HOW MANY KEYS MOVE — measured over 500 keys</text>
+    <text x="34" y="260" font-size="11.5" font-weight="700" fill="#c94a12">HOW MANY KEYS MOVE — measured over 500 keys</text>
     <text x="40" y="284" font-size="10">  8 → 12    modulo  65.8%     consistent hash  34.0%     ideal  33.3%</text>
     <text x="40" y="304" font-size="10"> 16 → 32    modulo  52.4%     consistent hash  50.0%     ideal  50.0%   ← doubling is the benign case</text>
     <text x="40" y="324" font-size="10" font-weight="700"> 16 → 17    modulo  94.6%     consistent hash   6.0%     ideal   5.9%   ← adding ONE partition</text>

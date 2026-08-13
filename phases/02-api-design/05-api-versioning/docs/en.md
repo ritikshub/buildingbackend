@@ -95,7 +95,7 @@ harmless server addition into an outage.
       <rect x="110" y="44" width="340" height="52" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
       <rect x="110" y="122" width="340" height="54" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
       <rect x="560" y="98" width="320" height="118" rx="10" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f" stroke-opacity="0.75"/>
-      <rect x="560" y="228" width="320" height="100" rx="10" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-opacity="0.8"/>
+      <rect x="560" y="228" width="320" height="100" rx="10" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-opacity="0.8"/>
       <rect x="560" y="344" width="320" height="100" rx="10" fill="#d64545" fill-opacity="0.07" stroke="#d64545" stroke-opacity="0.8"/>
       <rect x="20" y="212" width="520" height="254" rx="14" fill="#e0930f" fill-opacity="0.05" stroke="#e0930f" stroke-opacity="0.85" stroke-width="2" stroke-dasharray="7 6"/>
       <rect x="44" y="248" width="214" height="74" rx="9" fill="#e0930f" fill-opacity="0.11" stroke="#e0930f"/>
@@ -134,7 +134,7 @@ harmless server addition into an outage.
     <text x="574" y="197" font-size="8.5" fill="currentColor" opacity="0.85">dashboards — see the clock ticking here,</text>
     <text x="574" y="210" font-size="8.5" fill="currentColor" opacity="0.85">long before anything breaks</text>
 
-    <text x="574" y="250" font-size="10.5" font-weight="700" fill="#3553ff">3 · WHAT YOU ACTUALLY MEASURE</text>
+    <text x="574" y="250" font-size="10.5" font-weight="700" fill="#c94a12">3 · WHAT YOU ACTUALLY MEASURE</text>
     <text x="574" y="270" font-size="8.5" fill="currentColor">calls to the deprecated surface, counted</text>
     <text x="574" y="284" font-size="8.5" fill="currentColor">per consumer — that list IS the list of</text>
     <text x="574" y="298" font-size="8.5" fill="currentColor">people to nudge in step 4, and the</text>
@@ -150,7 +150,7 @@ harmless server addition into an outage.
 
     <text x="84" y="276" font-size="11.5" font-weight="700" fill="#e0930f">MEASURE</text>
     <text x="60" y="296" font-size="8.5" fill="currentColor">usage of the deprecated surface</text>
-    <text x="60" y="310" font-size="8.5" fill="currentColor">broken down per <tspan fill="#3553ff" font-weight="700">consumer</tspan></text>
+    <text x="60" y="310" font-size="8.5" fill="currentColor">broken down per <tspan fill="#c94a12" font-weight="700">consumer</tspan></text>
 
     <text x="342" y="276" font-size="11.5" font-weight="700" fill="#e0930f">NUDGE</text>
     <text x="318" y="296" font-size="8.5" fill="currentColor">contact the stragglers directly —</text>
@@ -190,7 +190,7 @@ harmless server addition into an outage.
       <rect x="20" y="584" width="206" height="132" rx="9" fill="#7c5cff" fill-opacity="0.08" stroke="#7c5cff" stroke-opacity="0.8"/>
       <rect x="238" y="584" width="206" height="132" rx="9" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f" stroke-opacity="0.8"/>
       <rect x="456" y="584" width="206" height="132" rx="9" fill="#d64545" fill-opacity="0.07" stroke="#d64545" stroke-opacity="0.8"/>
-      <rect x="674" y="584" width="206" height="132" rx="9" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-opacity="0.8"/>
+      <rect x="674" y="584" width="206" height="132" rx="9" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-opacity="0.8"/>
     </g>
 
     <g text-anchor="middle">
@@ -217,13 +217,13 @@ harmless server addition into an outage.
       <text x="559" y="690" font-size="8.5" fill="#d64545">changing meaning in place still</text>
       <text x="559" y="704" font-size="8.5" fill="#d64545">parses → silently wrong prices</text>
 
-      <text x="777" y="606" font-size="10" font-weight="700" fill="#3553ff">TOLERANT READERS</text>
+      <text x="777" y="606" font-size="10" font-weight="700" fill="#c94a12">TOLERANT READERS</text>
       <text x="777" y="622" font-size="8" fill="currentColor" opacity="0.7">(Postel's law)</text>
       <text x="777" y="642" font-size="8.5" fill="currentColor">a client must IGNORE unknown</text>
       <text x="777" y="656" font-size="8.5" fill="currentColor">response fields — that is what</text>
       <text x="777" y="670" font-size="8.5" fill="currentColor">lets the server add them freely</text>
-      <text x="777" y="690" font-size="8.5" fill="#3553ff">a model set to extra="forbid"</text>
-      <text x="777" y="704" font-size="8.5" fill="#3553ff">makes every addition an outage</text>
+      <text x="777" y="690" font-size="8.5" fill="#c94a12">a model set to extra="forbid"</text>
+      <text x="777" y="704" font-size="8.5" fill="#c94a12">makes every addition an outage</text>
     </g>
   </g>
 

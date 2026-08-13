@@ -56,7 +56,7 @@ background. The log, not the data file, is the source of durable truth.
   <path d="M300.0 326 L 300.0 348" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l13a-ah)"/>
   </g>
   <g>
-  <rect x="175.0" y="52" width="250" height="52" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="175.0" y="52" width="250" height="52" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="175.0" y="126" width="250" height="52" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="175.0" y="200" width="250" height="52" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="175.0" y="274" width="250" height="52" rx="9" fill="#12a05a" fill-opacity="0.14" stroke="#12a05a" stroke-width="2" stroke-linejoin="round"/>
@@ -118,7 +118,7 @@ that never committed. Recovery uses the log to fix both, in the spirit of the cl
   </g>
   <g>
   <rect x="288.0" y="46" width="144" height="44" rx="9" fill="#e0564f" fill-opacity="0.14" stroke="#e0564f" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="300.0" y="118" width="120" height="44" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="300.0" y="118" width="120" height="44" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <path d="M360 188.0 L495.0 240 L360 292.0 L225.0 240 Z" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
   <rect x="70" y="332" width="230" height="60" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="420" y="332" width="230" height="60" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>

@@ -1,12 +1,12 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 6 280 192" width="560" height="384" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="A fisherman sitting cross-legged in the shade beside a beached boat, hunched over a net, mending a hole in it.">
   <style>
     .note-fig-ink        { stroke: #1a1a1a; }
-    .note-fig-net        { stroke: #3553ff; }
-    .note-fig-mesh-line  { stroke: #3553ff; opacity: 0.5; }
-    .note-fig-hole       { stroke: #3553ff; fill: #fafaf5; }
+    .note-fig-net        { stroke: #b53707; }
+    .note-fig-mesh-line  { stroke: #b53707; opacity: 0.5; }
+    .note-fig-hole       { stroke: #b53707; fill: #fafaf5; }
     .note-fig-hull       { fill: #fafaf5; }
     .note-fig-sand       { stroke: #7a7a78; }
-    .note-fig-motion     { stroke: #3553ff; opacity: 0.38; }
+    .note-fig-motion     { stroke: #b53707; opacity: 0.38; }
     .note-fig-shade-line { stroke: #7a7a78; opacity: 0.28; }
   </style>
             <defs>

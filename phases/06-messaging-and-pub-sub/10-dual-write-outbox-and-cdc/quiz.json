@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A service runs db.commit() and then broker.publish(). The process is SIGKILLed between the two. What is the state of the system afterwards, and what does your monitoring show?",
-    "options": [
-      "The transaction is rolled back during crash recovery because the unit of work never completed, so the order row disappears along with the event and the customer sees a clean error they can retry",
-      "The order row is durable and no event will ever be emitted, and nothing errored anywhere -- no exception, no 500, no dead-letter entry, and no retry, because nothing knows there is anything to retry",
-      "The broker's producer client notices the gap in its sequence numbers when the service reconnects and re-sends the buffered event, so the system self-heals within the client's configured retry window",
-      "The database's write-ahead log replays the recorded publish intent during crash recovery and hands it to the producer, so the event is emitted once the process comes back up"
-    ],
-    "correct": 1,
-    "explanation": "COMMIT already made the row durable, so nothing rolls back; publish never ran, so no event exists. The measured run produced 45 orphaned orders from 45 kills with zero exceptions raised. The other options invent recovery machinery that does not exist: the broker client died with the process and never saw the event, and the database's WAL records database changes only -- it has no knowledge of your intent to publish, which lived solely in the registers of a process that no longer exists. That invisibility is what makes this bug so damaging: it is discovered weeks later by a support ticket."
-  },
-  {
     "stage": "check",
     "question": "Two-phase commit (2PC/XA) genuinely does make a database write and a broker publish atomic. Why is it still the wrong tool between an application database and a message broker?",
     "options": [

@@ -120,7 +120,7 @@ The claim is what serializes the race:
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" width="100%" style="max-width:880px" role="img" aria-label="A sequence diagram of two concurrent requests carrying the same Idempotency-Key, drawn against three lifelines: Request A on the left, the idempotency store in the middle, and the duplicate Request B on the right. Request A claims key-abc with an atomic INSERT ON CONFLICT DO NOTHING RETURNING statement, and Request B sends the identical claim concurrently. A note over the store explains that only one INSERT wins, because the primary key of tenant id plus idempotency key serializes the race: claim-then-execute, not check-then-insert. The store replies to A that the claim succeeded so A executes, and replies to B with 409, the key exists and is already in flight, plus Retry-After 2, so B waits without executing. A then charges the card once, drawn as a self-directed call on its own lifeline, and saves the 201 response and body as charge ch_0001. A final note over B says a later retry with the same key replays the stored 201 and returns ch_0001 again with no new charge. The lesson's run of 5 concurrent requests with one key produces one executed request and four in-flight 409s, the card is charged exactly once, and reusing the same key with a different body is rejected with 422 because the request fingerprint, a SHA-256 of method plus path plus body, differs.">
   <defs>
-    <marker id="p2l07a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p2l07a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p2l07a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
     <marker id="p2l07a-ara" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
   </defs>
@@ -130,16 +130,16 @@ The claim is what serializes the race:
 
     <!-- actor headers -->
     <g fill="none" stroke-width="1.7" stroke-linejoin="round">
-      <rect x="36" y="58" width="208" height="44" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="36" y="58" width="208" height="44" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="326" y="58" width="248" height="44" rx="8" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
-      <rect x="652" y="58" width="216" height="44" rx="8" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.75" stroke-dasharray="5 4"/>
+      <rect x="652" y="58" width="216" height="44" rx="8" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.75" stroke-dasharray="5 4"/>
     </g>
     <g text-anchor="middle">
-      <text x="140" y="78" font-size="11.5" font-weight="700" fill="#3553ff">Request A</text>
+      <text x="140" y="78" font-size="11.5" font-weight="700" fill="#c94a12">Request A</text>
       <text x="140" y="93" font-size="8" fill="currentColor" opacity="0.8">POST /v1/payments · key-abc</text>
       <text x="450" y="78" font-size="11.5" font-weight="700" fill="#7c5cff">Idempotency store</text>
       <text x="450" y="93" font-size="8" fill="currentColor" opacity="0.8">PRIMARY KEY (tenant_id, idempotency_key)</text>
-      <text x="760" y="78" font-size="11.5" font-weight="700" fill="#3553ff">Request B (duplicate)</text>
+      <text x="760" y="78" font-size="11.5" font-weight="700" fill="#c94a12">Request B (duplicate)</text>
       <text x="760" y="93" font-size="8" fill="currentColor" opacity="0.8">same key-abc · 4 of 5 concurrent</text>
     </g>
 
@@ -153,13 +153,13 @@ The claim is what serializes the race:
     </g>
 
     <!-- 1 · A claims the key -->
-    <path d="M148 132 L442 132" fill="none" stroke="#3553ff" stroke-width="1.7" marker-end="url(#p2l07a-arb)"/>
-    <text x="295" y="126" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">1&#8195;·&#8195;claim key-abc</text>
+    <path d="M148 132 L442 132" fill="none" stroke="#c94a12" stroke-width="1.7" marker-end="url(#p2l07a-arb)"/>
+    <text x="295" y="126" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">1&#8195;·&#8195;claim key-abc</text>
     <text x="295" y="146" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">INSERT ... ON CONFLICT DO NOTHING RETURNING *</text>
 
     <!-- 2 · B claims the same key -->
-    <path d="M752 176 L458 176" fill="none" stroke="#3553ff" stroke-width="1.7" marker-end="url(#p2l07a-arb)"/>
-    <text x="605" y="170" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">2&#8195;·&#8195;claim key-abc</text>
+    <path d="M752 176 L458 176" fill="none" stroke="#c94a12" stroke-width="1.7" marker-end="url(#p2l07a-arb)"/>
+    <text x="605" y="170" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">2&#8195;·&#8195;claim key-abc</text>
     <text x="605" y="190" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">same key, same body, arriving concurrently</text>
 
     <!-- note over the store -->

@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What most fundamentally distinguishes one type of database from another?",
-    "options": ["The programming language it's written in", "Its data model (the shape it stores data in) and its consistency model", "The company that sells it", "How much it costs"],
-    "correct": 1,
-    "explanation": "Databases are shaped by two choices: the data model (tables, key-value, document, graph, …) which decides what's easy to ask, and the consistency model (strong vs eventual). Almost every 'which database' debate is about these two axes."
-  },
-  {
     "stage": "check",
     "question": "A pure key-value store is extremely fast. What is the fundamental thing you give up for that speed?",
     "options": ["Durability", "The ability to find data by anything other than its key", "Storing large values", "Running on multiple machines"],

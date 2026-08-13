@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A service serves 300 req/s per box and falls over at 380. CPU sits at 34%, the disk is idle, and the 10 GbE network interface is moving 0.4% of its line rate. What is the most likely explanation?",
-    "options": [
-      "The dashboards are broken — something must be at 100%",
-      "The binding wall is a resource none of those graphs shows, such as durable writes, memory bandwidth, or a lock",
-      "The machine is correctly sized and 380 req/s is simply what this hardware does",
-      "The load balancer is limiting each instance to 380 req/s"
-    ],
-    "correct": 1,
-    "explanation": "A machine has more ceilings than the four graphs everyone puts on a dashboard. Durable writes (fsync), memory bandwidth, syscall rate, a per-connection memory cost or a contended lock can all saturate while CPU, disk %util and network throughput look calm. Option 3 is the tempting one, because 'this is what the hardware does' is unfalsifiable until someone measures — and in this lesson's own measurement, one fsync per request capped a box at 1,985 req/s while the next wall sat 12.7x further out. The first job is always to name the wall and quote its number."
-  },
-  {
     "stage": "check",
     "question": "The code measured a 4 KiB write at 1.46 us buffered and 503.87 us with fsync() — a factor of 346. What does that factor actually price?",
     "options": [

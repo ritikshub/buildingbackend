@@ -140,7 +140,7 @@ This one decision pays off three ways:
       <rect x="587" y="176" width="110" height="46" rx="8" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.35"/>
       <rect x="715" y="176" width="110" height="46" rx="8" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f" stroke-dasharray="5 4"/>
     </g>
-    <g text-anchor="middle" font-size="9" fill="#3553ff">
+    <g text-anchor="middle" font-size="9" fill="#c94a12">
       <text x="130" y="194">1700000088</text><text x="258" y="194">1700000089</text><text x="386" y="194">1700000090</text>
       <text x="514" y="194">1700000091</text><text x="642" y="194">1700000092</text><text x="770" y="194">1700000093</text>
     </g>
@@ -148,7 +148,7 @@ This one decision pays off three ways:
       <text x="130" y="212">52.6</text><text x="258" y="212">52.7</text><text x="386" y="212">52.8</text>
       <text x="514" y="212">52.8</text><text x="642" y="212">52.9</text><text x="770" y="212">53.0</text>
     </g>
-    <text x="66" y="194" text-anchor="end" font-size="8" fill="#3553ff">when →</text>
+    <text x="66" y="194" text-anchor="end" font-size="8" fill="#c94a12">when →</text>
     <text x="66" y="212" text-anchor="end" font-size="8" fill="#0fa07f">what →</text>
     <g fill="none" stroke="#0fa07f" stroke-width="1.7">
       <path d="M831 199 L872 199" marker-end="url(#p4l5a-arg)"/>
@@ -265,8 +265,8 @@ it.
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="700" fill="currentColor">Both streams are almost all redundancy — delta-of-delta the timestamps, XOR the values</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
-    <rect x="16" y="40" width="868" height="218" rx="11" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.55" stroke-width="1.8" fill-rule="evenodd"/>
-    <text x="34" y="62" font-size="11.5" font-weight="700" fill="#3553ff">TRICK 2 · TIMESTAMPS</text>
+    <rect x="16" y="40" width="868" height="218" rx="11" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.55" stroke-width="1.8" fill-rule="evenodd"/>
+    <text x="34" y="62" font-size="11.5" font-weight="700" fill="#c94a12">TRICK 2 · TIMESTAMPS</text>
     <text x="188" y="62" font-size="9" fill="currentColor" opacity="0.85">points arrive on a near-constant interval → the gap between them repeats</text>
 
     <rect x="460" y="130" width="250" height="66" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f" stroke-width="1.6"/>
@@ -279,7 +279,7 @@ it.
       <text x="170" y="190">written as</text>
     </g>
 
-    <g text-anchor="middle" font-size="10" fill="#3553ff">
+    <g text-anchor="middle" font-size="10" fill="#c94a12">
       <text x="250" y="92">10:00:00</text><text x="385" y="92">10:00:01</text><text x="520" y="92">10:00:02</text>
       <text x="655" y="92">10:00:03</text><text x="790" y="92">10:00:05</text>
     </g>
@@ -311,7 +311,7 @@ it.
     <text x="585" y="211" text-anchor="middle" font-size="8.5" font-weight="700" fill="#0fa07f">on schedule → dod = 0 → ONE bit</text>
 
     <text x="34" y="230" font-size="8.5" fill="currentColor" opacity="0.85">prefix code:  0 → on schedule (1 bit) · 10+7 → ±64 · 110+9 → ±256 · 1110+12 → ±2048 · 1111+32 → any jump</text>
-    <text x="34" y="249" font-size="9" font-weight="700" fill="#3553ff">A million perfectly regular timestamps ≈ a million bits = ~125 KB — vs 8 MB as raw 64-bit integers.</text>
+    <text x="34" y="249" font-size="9" font-weight="700" fill="#c94a12">A million perfectly regular timestamps ≈ a million bits = ~125 KB — vs 8 MB as raw 64-bit integers.</text>
 
     <rect x="16" y="270" width="868" height="176" rx="11" fill="#0fa07f" fill-opacity="0.05" stroke="#0fa07f" stroke-opacity="0.55" stroke-width="1.8"/>
     <text x="34" y="292" font-size="11.5" font-weight="700" fill="#0fa07f">TRICK 3 · VALUES</text>

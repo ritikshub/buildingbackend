@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A team says \"our goal is 100% uptime.\" What is the strongest engineering objection?",
-    "options": [
-      "It is impossible (most of the path to the user is infrastructure you don't own), uneconomic (each extra nine costs roughly 10x the last), and imperceptible (the user's own network is less reliable than your last two nines).",
-      "100% uptime is achievable but requires a service mesh and Kubernetes, which most teams don't run.",
-      "Uptime is the wrong word; the correct term is availability, and the two are measured differently.",
-      "It's fine as a goal, it just needs a longer measurement window so brief outages average out."
-    ],
-    "correct": 0,
-    "explanation": "All three objections matter, but the economic and perceptual ones do the real work. Going from 99.9% to 99.99% shrinks your annual badness allowance from 8h 45m to 52 minutes — bought with multi-region failover and automated rollback, not effort. And a user on a 99.5%-reliable mobile network cannot perceive the difference: you removed about 15% of the badness they experience for roughly 10x the cost."
-  },
-  {
     "stage": "check",
     "question": "Which of these is a valid SLI (Service Level Indicator) for a checkout API?",
     "options": [

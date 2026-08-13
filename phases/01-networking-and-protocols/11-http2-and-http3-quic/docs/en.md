@@ -51,10 +51,10 @@ so a slow response still blocks the ones behind it. The practical rule is
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="120" y="44" width="150" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="120" y="44" width="150" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="510" y="44" width="150" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="195" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
+    <text x="195" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
     <text x="585" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Server</text>
     <!-- lifelines -->
     <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1.3" stroke-dasharray="4 5">
@@ -119,7 +119,7 @@ interleaved on the one connection and sorted back out by stream at the other end
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 396" width="100%" style="max-width:760px" role="img" aria-label="HTTP/2 sequence over one connection. The client sends three HEADERS requests back to back without waiting: stream 1 GET /index.html, stream 3 GET /style.css, and stream 5 GET /app.js. The server then returns responses interleaved and out of order — stream 3 (style.css) finishes first, then stream 1 (index.html), then stream 5 (app.js) last. Each stream is drawn in its own color to show the frames interleaving on a single connection.">
   <defs>
-    <marker id="l11b-ar1" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="l11b-ar1" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="l11b-ar3" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
     <marker id="l11b-ar5" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
   </defs>
@@ -127,10 +127,10 @@ interleaved on the one connection and sorted back out by stream at the other end
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="120" y="44" width="150" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="120" y="44" width="150" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="510" y="44" width="150" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="195" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
+    <text x="195" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
     <text x="585" y="63" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Server</text>
     <!-- lifelines -->
     <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1.3" stroke-dasharray="4 5">
@@ -142,12 +142,12 @@ interleaved on the one connection and sorted back out by stream at the other end
     <text x="390" y="103" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.8">HTTP/2 — one connection, three streams interleaved</text>
     <!-- requests: all three sent back to back -->
     <g fill="none" stroke-width="1.6">
-      <path d="M201 142 L579 142" stroke="#3553ff" marker-end="url(#l11b-ar1)"/>
+      <path d="M201 142 L579 142" stroke="#c94a12" marker-end="url(#l11b-ar1)"/>
       <path d="M201 176 L579 176" stroke="#e0930f" marker-end="url(#l11b-ar3)"/>
       <path d="M201 210 L579 210" stroke="#7c5cff" marker-end="url(#l11b-ar5)"/>
     </g>
     <g text-anchor="middle" font-size="9.5" font-weight="600">
-      <text x="390" y="136" fill="#3553ff">HEADERS stream 1 (GET /index.html)</text>
+      <text x="390" y="136" fill="#c94a12">HEADERS stream 1 (GET /index.html)</text>
       <text x="390" y="170" fill="#e0930f">HEADERS stream 3 (GET /style.css)</text>
       <text x="390" y="204" fill="#7c5cff">HEADERS stream 5 (GET /app.js)</text>
     </g>
@@ -157,12 +157,12 @@ interleaved on the one connection and sorted back out by stream at the other end
     <!-- responses: interleaved, out of order -->
     <g fill="none" stroke-width="1.6">
       <path d="M579 282 L201 282" stroke="#e0930f" marker-end="url(#l11b-ar3)"/>
-      <path d="M579 316 L201 316" stroke="#3553ff" marker-end="url(#l11b-ar1)"/>
+      <path d="M579 316 L201 316" stroke="#c94a12" marker-end="url(#l11b-ar1)"/>
       <path d="M579 350 L201 350" stroke="#7c5cff" marker-end="url(#l11b-ar5)"/>
     </g>
     <g text-anchor="middle" font-size="9.5" font-weight="600">
       <text x="390" y="276" fill="#e0930f">HEADERS+DATA stream 3 (style.css ready first)</text>
-      <text x="390" y="310" fill="#3553ff">HEADERS+DATA stream 1 (index.html)</text>
+      <text x="390" y="310" fill="#c94a12">HEADERS+DATA stream 1 (index.html)</text>
       <text x="390" y="344" fill="#7c5cff">DATA stream 5 (app.js, arrives last)</text>
     </g>
     <!-- footer -->

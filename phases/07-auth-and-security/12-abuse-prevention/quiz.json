@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your login uses Argon2 with a high work factor, yet credential stuffing still takes over thousands of accounts. Why doesn't strong password hashing help here?",
-    "options": [
-      "Argon2 must be misconfigured; a higher work factor would stop it",
-      "In credential stuffing the attacker isn't guessing — they replay CORRECT passwords leaked from other sites' breaches, betting on password reuse. Since each attempt is a valid login with the right password, the cost of hashing is irrelevant; the attacker never brute-forces anything. The effective defenses make a correct password insufficient (MFA) or unavailable (breach screening), and make the volume/pattern detectable (rate limiting, bot detection)",
-      "The passwords are being decrypted from your database",
-      "It does help; the attack described is impossible"
-    ],
-    "correct": 1,
-    "explanation": "Slow hashing defends against guessing a stolen hash. Credential stuffing skips guessing entirely — the attacker already has correct plaintext credentials from elsewhere and simply tries them. So hash strength barely matters. What matters is MFA (a correct password alone can't log in), breach-password screening (the reused password was never allowed), and detecting the automated volume. This is why MFA is cited as blocking the vast majority of automated account attacks."
-  },
-  {
     "stage": "check",
     "question": "You add a per-IP rate limit of 10 login attempts per minute, and credential stuffing continues. What's happening, and what catches it?",
     "options": [

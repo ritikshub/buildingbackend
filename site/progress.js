@@ -20,7 +20,7 @@
  * "<lesson-path>" matches the path used in lesson.html?path=... and in
  * data.js urls (e.g. "phases/00-foundations/01-bits-and-bytes").
  *
- * "<qid>" is "<stage>-q<index>" e.g. "pre-q0", to match the quiz renderer.
+ * "<qid>" is "<stage>-q<index>" e.g. "check-q0", to match the quiz renderer.
  */
 (function () {
   var STORAGE_KEY = 'be:progress:v1';

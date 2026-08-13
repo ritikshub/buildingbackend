@@ -234,14 +234,14 @@ RPO is the gap *before* the incident; RTO is the gap *after* it.
       <path d="M140 380 L 140 392"/><path d="M186 380 L 186 392"/><path d="M232 380 L 232 392"/><path d="M278 380 L 278 392"/><path d="M324 380 L 324 392"/><path d="M370 380 L 370 392"/><path d="M416 380 L 416 392"/>
     </g>
     <g fill="none" stroke-width="2.4">
-      <path d="M480 374 L 480 398" stroke="#0fa07f"/><path d="M590 374 L 590 398" stroke="#3553ff"/><path d="M700 370 L 700 402" stroke="#d64545"/>
+      <path d="M480 374 L 480 398" stroke="#0fa07f"/><path d="M590 374 L 590 398" stroke="#c94a12"/><path d="M700 370 L 700 402" stroke="#d64545"/>
     </g>
     <g fill="none" stroke-width="1.4">
-      <path d="M480 368 L 590 368" stroke="#3553ff"/><path d="M480 354 L 700 354" stroke="#d64545"/>
+      <path d="M480 368 L 590 368" stroke="#c94a12"/><path d="M480 354 L 700 354" stroke="#d64545"/>
     </g>
     <g fill="currentColor">
-      <text x="120" y="364" font-size="8.5" opacity="0.7">WAL records, mean gap 5.03 s</text><text x="535" y="364" font-size="9" text-anchor="middle" font-weight="700" fill="#3553ff">1.016 s</text><text x="590" y="350" font-size="9" text-anchor="middle" font-weight="700" fill="#d64545">2.016 s</text>
-      <text x="480" y="416" font-size="8.5" text-anchor="middle" font-weight="700" fill="#0fa07f">08:58:08.067</text><text x="590" y="416" font-size="8.5" text-anchor="middle" font-weight="700" fill="#3553ff">08:58:09.083</text><text x="700" y="416" font-size="8.5" text-anchor="middle" font-weight="700" fill="#d64545">08:58:10.083</text>
+      <text x="120" y="364" font-size="8.5" opacity="0.7">WAL records, mean gap 5.03 s</text><text x="535" y="364" font-size="9" text-anchor="middle" font-weight="700" fill="#c94a12">1.016 s</text><text x="590" y="350" font-size="9" text-anchor="middle" font-weight="700" fill="#d64545">2.016 s</text>
+      <text x="480" y="416" font-size="8.5" text-anchor="middle" font-weight="700" fill="#0fa07f">08:58:08.067</text><text x="590" y="416" font-size="8.5" text-anchor="middle" font-weight="700" fill="#c94a12">08:58:09.083</text><text x="700" y="416" font-size="8.5" text-anchor="middle" font-weight="700" fill="#d64545">08:58:10.083</text>
       <text x="480" y="428" font-size="8.5" text-anchor="middle" opacity="0.85">last replayed record</text><text x="590" y="428" font-size="8.5" text-anchor="middle" opacity="0.85">recovery target</text><text x="700" y="428" font-size="8.5" text-anchor="middle" opacity="0.85">the DELETE</text>
       <text x="437" y="446" font-size="9.5" text-anchor="middle" font-weight="700" fill="#d64545">achieved RPO 2.016 s — against 6h 58m 10s from the backup alone: 12,443x better</text>
     </g>

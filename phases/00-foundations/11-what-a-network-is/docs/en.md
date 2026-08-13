@@ -45,18 +45,18 @@ one-sentence definition of everything you're going to build.
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 338" width="100%" style="max-width:720px" role="img" aria-label="One exchange between a client and a server, drawn as a sequence. Two actors stand at the top with dashed lifelines dropping from each: on the left, the Client, which asks; on the right, the Server, which answers. Before anything happens, a note over the server's lifeline says it is already running and waiting for a request — the server was started earlier and does nothing until it is asked. The first arrow is the request: it travels left to right, from the client to the server, because the client asks, unprompted. A note over the server then says it does the work and replies. The second arrow is the response: it travels right to left, from the server back to the client. A band underneath states that these are roles, not hardware — the same laptop is a client when it loads a web page, and a server when it shares a file. The takeaway is that a backend is simply a program playing the server role: it starts up, waits, and answers requests.">
   <defs>
-    <marker id="p0l11a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p0l11a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p0l11a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
   <text x="380" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">The one that asks is the client; the one that answers is the server</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g fill="none" stroke-width="1.7" stroke-linejoin="round">
-      <rect x="120" y="44" width="140" height="46" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="120" y="44" width="140" height="46" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="500" y="44" width="140" height="46" rx="10" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
     <g text-anchor="middle">
-      <text x="190" y="64" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
+      <text x="190" y="64" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
       <text x="190" y="80" font-size="9" fill="currentColor" opacity="0.8">(asks)</text>
       <text x="570" y="64" font-size="11.5" font-weight="700" fill="#0fa07f">Server</text>
       <text x="570" y="80" font-size="9" fill="currentColor" opacity="0.8">(answers)</text>
@@ -73,7 +73,7 @@ one-sentence definition of everything you're going to build.
     <text x="570" y="118" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.8">already running · waiting for a request</text>
     <!-- request: client to server -->
     <text x="380" y="156" text-anchor="middle" font-size="10" fill="currentColor">request · the client asks, unprompted</text>
-    <g fill="none" stroke="#3553ff" stroke-width="1.7">
+    <g fill="none" stroke="#c94a12" stroke-width="1.7">
       <path d="M196 163 L564 163" marker-end="url(#p0l11a-arb)"/>
     </g>
     <!-- note over the server: it acts only after being asked -->

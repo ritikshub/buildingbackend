@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Eleven services, and you want to be sure a change to one of them does not break the other ten. Your CI already deploys all eleven into a shared integration environment and runs an end-to-end suite there. How much confidence should that gate carry?",
-    "options": [
-      "A great deal — running the real services together is the only way to test a real integration, and any other approach is testing a simulation of your system rather than your system",
-      "Very little, and the arithmetic says why: 'the system works' is a claim about a combination of versions, so 11 services with 3 live versions each is 177,147 combinations against 19 contracts (9,324x), and because the environment is only usable when every member is green, a per-service health of 92.6% made it answerable on just 42.4% of days with a 52-day longest red streak",
-      "It is the right gate but it needs investment: with better test data, faster deploys into the environment and an owner for each red build, a shared environment scales fine to a few dozen services",
-      "It is reliable for catching breakage but too slow to gate on, so the correct use is to run it nightly and treat failures as a next-morning triage queue rather than a merge blocker"
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer is right about realism and wrong about arithmetic, and this lesson's whole argument is arithmetic. Two independent things scale badly. First, combinations multiply while contracts add: the environment holds exactly one of 177,147 possible version combinations at any moment, so 'it passed' is a statement about that one combination. Second, a shared environment is an AND over its members, so its availability is a product: services that are individually healthy 92.6% of the time produce an environment that is green on 42.4% of days, measured over 20,000 simulated days and matching the closed form 0.926^11 = 42.9% exactly. Investment (option 3) does not change the exponent. Nightly triage (option 4) does not help either, because the environment was red for 52 consecutive days for reasons unrelated to any one team's change — which is exactly why nobody read it."
-  },
-  {
     "stage": "check",
     "question": "A consumer records a contract by running its real code against a mock. The provider's response has 11 top-level fields; the consumer reads 4 of them. The provider then ships a build that adds 3 brand-new fields. What happens when the provider verifies the contract, and why?",
     "options": [

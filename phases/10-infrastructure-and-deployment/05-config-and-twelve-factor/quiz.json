@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Twenty minutes ago you changed one timeout value in production by editing a ConfigMap. There is now an incident and someone says 'roll back the deploy.' Your deploy history records image digests and nothing else, and the last three changes to this service were all config-only. What happens when the rollback runs?",
-    "options": [
-      "The rollback restores the previous timeout, because configuration is part of what a deployment records",
-      "The rollback fails with an error, because there is no previous image digest to return to",
-      "The rollback reports success and changes nothing, because all three recent states point at the same image digest — the fault survives the rollback",
-      "The orchestrator automatically reverts the ConfigMap alongside the Deployment, so both halves return together"
-    ],
-    "correct": 2,
-    "explanation": "A release is the pair (artifact + config), and it needs its own identity. If your history versions only the artifact, then config-only changes are invisible to it: rolling back returns you to the digest you are already running, the rollback 'succeeds', and nothing improves. Deriving a release id as hash(artifact_digest + config_hash) is what makes a config change a first-class, rollback-able event — one artifact combined with four configurations produced four distinct release ids in this lesson's run."
-  },
-  {
     "stage": "check",
     "question": "Your service reads a feature flag with `if bool(os.environ['FEATURE_NEW_CHECKOUT']):` and the deployment sets that variable to the string `false`. What does the service do?",
     "options": [

@@ -58,7 +58,7 @@ reference to a row breaks. The classic solution, used by Postgres and most datab
   <text x="390" y="30" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">One database page — fixed size (e.g. 8&#160;KB)</text>
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
     <rect x="22" y="52" width="736" height="196" rx="18" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2"/>
-    <rect x="42" y="88" width="120" height="128" rx="10" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff" stroke-width="2"/>
+    <rect x="42" y="88" width="120" height="128" rx="10" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12" stroke-width="2"/>
     <rect x="186" y="100" width="48" height="40" rx="7" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f" stroke-width="2"/>
     <rect x="240" y="100" width="48" height="40" rx="7" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f" stroke-width="2"/>
     <rect x="294" y="100" width="48" height="40" rx="7" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f" stroke-width="2"/>
@@ -124,7 +124,7 @@ O(n) full scan from Lesson 1). The heap is the default home for your rows; index
     <path d="M220 138 C 276 138, 276 212, 328 212" marker-end="url(#ah2)"/>
   </g>
   <g fill="none" stroke-linejoin="round">
-    <rect x="40" y="104" width="180" height="66" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="2"/>
+    <rect x="40" y="104" width="180" height="66" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="2"/>
     <rect x="330" y="58" width="230" height="44" rx="9" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f" stroke-width="2"/>
     <rect x="330" y="124" width="230" height="44" rx="9" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f" stroke-width="2"/>
     <rect x="330" y="190" width="230" height="44" rx="9" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f" stroke-width="2"/>
@@ -165,7 +165,7 @@ goes through it:
     <path d="M360 100 L 478 152 L 360 204 L 242 152 Z" fill="#7f7f7f" fill-opacity="0.05" stroke-width="2"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="250" y="42" width="220" height="44" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="250" y="42" width="220" height="44" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="506" y="130" width="188" height="46" rx="9" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="250" y="238" width="220" height="50" rx="9" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="250" y="330" width="220" height="50" rx="9" fill="#7c5cff" fill-opacity="0.15" stroke="#7c5cff"/>

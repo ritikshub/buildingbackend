@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "How does data modeling for a NoSQL store differ from relational modeling?",
-    "options": ["It's the same — normalize the data into clean tables and query it however you like", "It's inverted: because there are no joins and you fetch by key, you list the access patterns FIRST and design the keys so each query is a single lookup — you model the reads, not the domain", "You always store everything as one giant JSON blob", "You never need to think about queries in advance"],
-    "correct": 1,
-    "explanation": "Relational modeling is data-first: model the domain into normalized tables and let the planner join and adapt to any query. NoSQL is query-first: there are no joins and you can only fetch efficiently by key, so you write down every access pattern first and design the keys (and often one table) so each pattern becomes a direct lookup. You model the reads, not the domain — the general form of the wide-column 'model queries, not data' rule."
-  },
-  {
     "stage": "check",
     "question": "What do the partition key and the sort key each do in a composite-key NoSQL store?",
     "options": ["They're two names for the same thing", "The partition key picks which node the item lives on (by hashing) and groups items; the sort key orders items within a partition and lets you slice a range (begins_with, between, newest-first)", "The partition key sorts items and the sort key picks the node", "Both are optional and rarely used"],

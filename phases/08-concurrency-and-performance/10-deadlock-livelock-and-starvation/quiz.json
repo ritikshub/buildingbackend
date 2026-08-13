@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A transfer function does `with src.lock: with dst.lock: ...`. Two threads call it at the same moment with the arguments reversed — transfer(A, B) and transfer(B, A) — and the service stops responding. What will you find in your logs and metrics?",
-    "options": [
-      "A `LockError` or `TimeoutError` raised by whichever thread lost the race, with a stack trace pointing at the second acquisition",
-      "Nothing at all: no exception is raised, no log line is written, balances are unchanged, and the process burns about 0.1% of a core while the health check keeps returning 200. The only evidence that exists is a thread dump showing both threads stopped on the same `with dst.lock:` line",
-      "A spike to 100% CPU as both threads spin retrying the contended lock, which is what makes deadlock easy to spot on a dashboard",
-      "A segmentation fault or interpreter crash, because two threads holding each other's locks corrupts the lock's internal state"
-    ],
-    "correct": 1,
-    "explanation": "Deadlock is not an error condition — nothing failed, so nothing reports. Both threads are parked in the kernel on a futex, consuming no CPU and raising nothing. That silence is what makes it dangerous: your process stays alive and healthy-looking while every request touching those locks piles up behind it. A thread dump is the only artefact, and two threads stopped on the same acquisition line is the signature."
-  },
-  {
     "stage": "check",
     "question": "Coffman, Elphick and Shoshani (1971) proved deadlock requires mutual exclusion, hold-and-wait, no preemption, AND circular wait. Why does that decomposition matter practically?",
     "options": [

@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What does a graph database store, and how is that different from a relational schema?",
-    "options": ["The same tables, just drawn differently", "Nodes (entities with a label and properties) and edges (typed, directed relationships that themselves carry properties) — the relationship is a first-class object, a direct connection, not a foreign key or join table to be re-joined", "Only numeric adjacency matrices", "JSON documents with no relationships"],
-    "correct": 1,
-    "explanation": "A graph database stores exactly what you'd whiteboard: nodes (a user, an account) with labels and properties, and edges (Ada—FOLLOWS→Bob) that are typed, directed, and carry their own properties. The relationship is a first-class thing — a physical connection between nodes — rather than a value spread across a join table that must be re-derived by joining on every query."
-  },
-  {
     "stage": "check",
     "question": "What is 'index-free adjacency' and why is it the defining property of a graph database?",
     "options": ["It means the database has no indexes at all", "Each node stores direct pointers to its adjacent edges, so following a relationship is an O(1) dereference independent of total graph size — versus a relational index lookup whose cost grows with all the edges in the table and is repaid at every hop", "It means adjacency is computed by scanning the whole table each time", "It's a caching layer in front of a relational database"],

@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What does DNS (the Domain Name System) fundamentally do?",
-    "options": [
-      "It encrypts traffic between two machines",
-      "It maps human-readable names like example.com to records such as IP addresses",
-      "It assigns port numbers to running programs",
-      "It compresses packets to save bandwidth"
-    ],
-    "correct": 1,
-    "explanation": "DNS is a distributed, hierarchical database that translates names into typed records — most commonly a name into an IP address. Your applications type names; the network needs numbers, and DNS bridges the two."
-  },
-  {
-    "stage": "pre",
-    "question": "Which transport and port does a normal, small DNS query use?",
-    "options": [
-      "TCP on port 80",
-      "UDP on port 443",
-      "UDP on port 53",
-      "TCP on port 25"
-    ],
-    "correct": 2,
-    "explanation": "Normal DNS queries are tiny and latency-sensitive, so they go over UDP on port 53: one datagram out, one back, no connection setup. DNS falls back to TCP on port 53 only for large (truncated) responses and zone transfers."
-  },
-  {
     "stage": "check",
     "question": "In recursive resolution, what does a root server return when asked for example.com's A record?",
     "options": [

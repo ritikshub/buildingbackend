@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "At the lowest level, what can a single switch inside a computer represent?",
-    "options": ["Any number from 0 to 9", "One of two states: on or off", "A single letter", "A colour"],
-    "correct": 1,
-    "explanation": "A computer is built from tiny switches that are each either on or off. That single on/off choice is one bit, written as 1 or 0."
-  },
-  {
     "stage": "check",
     "question": "What decimal number is the binary value 1011?",
     "options": ["7", "11", "13", "1011"],

@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service writes its logs to /var/log/app.log with rotation built into the application. Why is that considered an anti-pattern, even though rotation prevents the disk from filling?",
-    "options": ["Writing to a file is slower than writing to stdout, so it adds latency", "The application is the wrong component to own log storage: it doesn't know how much disk exists, what retention compliance requires, or where lines must be shipped — all platform decisions that must change without a redeploy. Worse, two processes end up owning the same file: the app rotates by renaming while the shipping agent still holds the old inode, and lines vanish", "Log files can't contain JSON, only plain text", "Rotation is only safe if the application is single-threaded"],
-    "correct": 1,
-    "explanation": "This is factor XI of the Twelve-Factor App methodology: treat logs as event streams and write to stdout. The container runtime's log driver (json-file, journald) captures the stream to a known path on the node, and enforces rotation there — one place, for every container, in every language. Retention, shipping and size limits then become configuration the platform team changes, not code you redeploy."
-  },
-  {
     "stage": "check",
     "question": "Your log backend slows to a crawl during an incident and the agent's buffer fills. Which handling strategy is disqualified outright, and why?",
     "options": ["Dropping events, because losing telemetry during an incident defeats the purpose of having it", "Spilling to disk, because disk I/O on a busy node is too expensive", "Blocking the producer until the buffer drains. It loses no data, but it makes a slow log backend add latency to every request, saturating the thread pool or event loop until the healthy service goes down with it — your observability system becomes the outage", "Buffering in memory, because memory is more expensive than disk"],

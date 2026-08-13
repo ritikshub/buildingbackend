@@ -74,23 +74,23 @@ Here's a messaging table modeled the Cassandra way — partition by conversation
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 556" width="100%" style="max-width:880px" role="img" aria-label="How a compound key splits into two jobs in a wide-column store. The primary key is written as PRIMARY KEY, open bracket conv_id close bracket, then sent_at DESC. The first part, conv_id, is the partition key: it is hashed onto the consistent-hashing ring and decides which node in the cluster owns the data, which is what gives horizontal scale. The second part, sent_at DESC, is the clustering key: rows inside a partition are stored physically sorted by it, which is what gives fast ordered range reads. Below, a cluster holds two nodes. Node A owns the whole partition conv:42, containing two rows sorted newest first: sent_at 10:03 from Ada body hi, then sent_at 10:02 from Bob body yo; those rows sit next to each other on disk. Node B owns partition conv:88, containing sent_at 09:15 from Cy; reads for conv:88 never touch Node A. The consequence is a sharp split in cost: a query inside one partition, such as the last fifty messages in conv:42, is one node and one contiguous sequential read and is cheap, while a query that spans partitions, such as every message Ada ever sent, must ask every node and merge the results, and is expensive.">
   <defs>
-    <marker id="p4l4a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p4l4a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p4l4a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">One compound key, two different jobs — which node, and in what order</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="450" y="58" text-anchor="middle" font-size="13" fill="currentColor">PRIMARY KEY ( <tspan fill="#3553ff" font-weight="700">(conv_id)</tspan>, <tspan fill="#0fa07f" font-weight="700">sent_at DESC</tspan> )</text>
+    <text x="450" y="58" text-anchor="middle" font-size="13" fill="currentColor">PRIMARY KEY ( <tspan fill="#c94a12" font-weight="700">(conv_id)</tspan>, <tspan fill="#0fa07f" font-weight="700">sent_at DESC</tspan> )</text>
     <g fill="none" stroke-width="1.5">
-      <path d="M442 64 L442 70 L255 70 L255 73" stroke="#3553ff" marker-end="url(#p4l4a-arb)"/>
+      <path d="M442 64 L442 70 L255 70 L255 73" stroke="#c94a12" marker-end="url(#p4l4a-arb)"/>
       <path d="M540 64 L540 70 L645 70 L645 73" stroke="#0fa07f" marker-end="url(#p4l4a-arg)"/>
     </g>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-      <rect x="90" y="76" width="330" height="80" rx="10" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="90" y="76" width="330" height="80" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
       <rect x="480" y="76" width="330" height="80" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
     </g>
     <g text-anchor="middle" fill="currentColor">
-      <text x="255" y="98" font-size="11" font-weight="700" fill="#3553ff">1 · PARTITION KEY</text>
+      <text x="255" y="98" font-size="11" font-weight="700" fill="#c94a12">1 · PARTITION KEY</text>
       <text x="255" y="118" font-size="9.5">hash(conv_id) → a position on the ring</text>
       <text x="255" y="134" font-size="9.5">decides WHICH NODE owns every row</text>
       <text x="255" y="150" font-size="8.5" opacity="0.75">this is what gives horizontal scale</text>
@@ -101,7 +101,7 @@ Here's a messaging table modeled the Cassandra way — partition by conversation
       <text x="645" y="150" font-size="8.5" opacity="0.75">this is what gives ordered range reads</text>
     </g>
     <g fill="none" stroke-width="1.5">
-      <path d="M150 158 L150 174" stroke="#3553ff" marker-end="url(#p4l4a-arb)"/>
+      <path d="M150 158 L150 174" stroke="#c94a12" marker-end="url(#p4l4a-arb)"/>
       <path d="M750 158 L750 174" stroke="#0fa07f" marker-end="url(#p4l4a-arg)"/>
     </g>
 
@@ -198,21 +198,21 @@ lazily.** The write path:
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 616" width="100%" style="max-width:880px" role="img" aria-label="The LSM-tree write path, in four numbered steps. An incoming write of a key and value forks immediately into two things that both happen on every write, in parallel. Step one, on the left: the write is appended to the commit log, one sequential append to a file on disk — this is Phase 3's write-ahead log reused here, so an acknowledged write survives a crash. Step two, on the right: the write is inserted into the memtable, a sorted structure held in RAM such as a skip list, with no disk seek in the hot path, which is why writes are so cheap. Both are done before the write is acknowledged. Step three: when the memtable fills up, the whole thing is flushed at once to a new SSTable — a Sorted String Table, an immutable file that is never edited. On disk these SSTables pile up: SSTable 1, SSTable 2, SSTable 3, each sorted and immutable. Step four: compaction runs in the background, merge-sorting the sorted runs into fewer, larger files in linear sequential time, discarding superseded values and tombstones. The payoff is that writes never seek; the price is that a read may have to check the memtable plus several SSTables, which Bloom filters and compaction keep cheap.">
   <defs>
-    <marker id="p4l4b-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p4l4b-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p4l4b-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
     <marker id="p4l4b-arp" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">The LSM-tree write path — never seek, only append, and sort lazily</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="2">
-      <rect x="340" y="44" width="220" height="44" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="340" y="44" width="220" height="44" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="40" y="136" width="380" height="90" rx="10" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
       <rect x="480" y="136" width="380" height="90" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
       <rect x="180" y="274" width="380" height="76" rx="10" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
     </g>
 
     <g text-anchor="middle" fill="currentColor">
-      <text x="450" y="64" font-size="12" font-weight="700" fill="#3553ff">write(key, value)</text>
+      <text x="450" y="64" font-size="12" font-weight="700" fill="#c94a12">write(key, value)</text>
       <text x="450" y="80" font-size="8.5" opacity="0.75">one message, arriving</text>
 
       <text x="450" y="114" font-size="8.5" font-weight="700" opacity="0.85">BOTH of these happen on every write — in parallel</text>
@@ -234,7 +234,7 @@ lazily.** The write path:
       <text x="370" y="334" font-size="9.5">an SSTable: sorted, IMMUTABLE, never edited</text>
     </g>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.8">
+    <g fill="none" stroke="#c94a12" stroke-width="1.8">
       <path d="M380 90 L240 130" marker-end="url(#p4l4b-arb)"/>
       <path d="M520 90 L670 130" marker-end="url(#p4l4b-arb)"/>
     </g>

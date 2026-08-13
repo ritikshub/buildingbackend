@@ -163,16 +163,16 @@ That longest path is the **critical path**, and every stage on it has zero **sla
     <rect x="252" y="70" width="196" height="180" rx="9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="5 4" opacity="0.38"/><text x="352" y="264" font-size="8.5" text-anchor="middle" fill="currentColor" opacity="0.75">4 runners busy — the graph decided that, not the config</text>
 
     <g stroke-width="2.4" stroke-linejoin="round">
-      <rect x="128" y="76" width="130" height="34" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#3553ff"/><rect x="258" y="76" width="187" height="34" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#3553ff"/><rect x="445" y="76" width="216" height="34" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#3553ff"/>
-      <rect x="661" y="76" width="29" height="34" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="128" y="76" width="130" height="34" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#c94a12"/><rect x="258" y="76" width="187" height="34" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#c94a12"/><rect x="445" y="76" width="216" height="34" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#c94a12"/>
+      <rect x="661" y="76" width="29" height="34" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#c94a12"/>
     </g>
-    <path d="M128 114 L 690 114" fill="none" stroke="#3553ff" stroke-width="3"/>
+    <path d="M128 114 L 690 114" fill="none" stroke="#c94a12" stroke-width="3"/>
 
     <g fill="currentColor" font-size="9.5">
       <text x="138" y="91">deps-install</text><text x="138" y="104" font-size="8.5" opacity="0.8">180s</text><text x="268" y="91">build-image</text><text x="268" y="104" font-size="8.5" opacity="0.8">260s</text>
       <text x="455" y="91">integration-tests</text><text x="455" y="104" font-size="8.5" opacity="0.8">300s</text><text x="698" y="91" font-size="9">push-artifact</text><text x="698" y="104" font-size="8.5" opacity="0.8">40s</text>
     </g>
-    <text x="12" y="97" font-size="9.5" font-weight="700" fill="#3553ff">CRITICAL</text><text x="12" y="109" font-size="8" fill="#3553ff" opacity="0.85">0 slack</text>
+    <text x="12" y="97" font-size="9.5" font-weight="700" fill="#c94a12">CRITICAL</text><text x="12" y="109" font-size="8" fill="#c94a12" opacity="0.85">0 slack</text>
 
     <g stroke-width="1.6" stroke-linejoin="round">
       <rect x="258" y="132" width="32" height="24" rx="5" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/><rect x="258" y="164" width="68" height="24" rx="5" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/><rect x="258" y="196" width="151" height="24" rx="5" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
@@ -336,9 +336,9 @@ The security consequence is the bigger one, and it turns on the direction of the
     </g>
     <text x="224" y="66" font-size="12.5" font-weight="700" text-anchor="middle" fill="#d64545">PUSH — CI deploys into the cluster</text><text x="656" y="66" font-size="12.5" font-weight="700" text-anchor="middle" fill="#0fa07f">PULL (GitOps) — the cluster deploys itself</text>
 
-    <rect x="34" y="82" width="150" height="40" rx="7" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff" stroke-width="1.8"/><text x="109" y="100" font-size="9.5" font-weight="700" text-anchor="middle" fill="currentColor">developer</text><text x="109" y="113" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.85">merges to trunk</text>
+    <rect x="34" y="82" width="150" height="40" rx="7" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12" stroke-width="1.8"/><text x="109" y="100" font-size="9.5" font-weight="700" text-anchor="middle" fill="currentColor">developer</text><text x="109" y="113" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.85">merges to trunk</text>
 
-    <rect x="466" y="82" width="150" height="40" rx="7" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff" stroke-width="1.8"/><text x="541" y="100" font-size="9.5" font-weight="700" text-anchor="middle" fill="currentColor">developer</text><text x="541" y="113" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.85">merges to trunk</text>
+    <rect x="466" y="82" width="150" height="40" rx="7" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12" stroke-width="1.8"/><text x="541" y="100" font-size="9.5" font-weight="700" text-anchor="middle" fill="currentColor">developer</text><text x="541" y="113" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.85">merges to trunk</text>
 
     <rect x="34" y="164" width="150" height="52" rx="7" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="1.8"/><text x="109" y="182" font-size="9.5" font-weight="700" text-anchor="middle" fill="currentColor">CI runner</text><text x="109" y="195" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.85">builds, tests, pushes</text>
     <text x="109" y="208" font-size="8" text-anchor="middle" fill="currentColor" opacity="0.85">then runs kubectl apply</text>

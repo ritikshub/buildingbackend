@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why is a breaking schema change harder to manage for an event on a retained log than for a REST endpoint?",
-    "options": [
-      "It is not harder; both require every client to upgrade before the change is safe",
-      "Events use binary formats and REST uses JSON, so events are inherently more brittle",
-      "Because old events live forever in the log, so the schema is a contract with the PAST as well as the future. A REST breaking change stops hurting once every client upgrades, since old requests are not retained anywhere; but a log still holds records written under every schema you ever published, and you cannot rewrite them",
-      "Because message brokers do not support content negotiation the way HTTP does"
-    ],
-    "correct": 2,
-    "explanation": "Time heals a REST versioning problem: once the last client upgrades, the old shape is gone. Time does nothing for a log, because the bytes are still there. That is what makes replay across schema generations a first-class problem, and it is why the measured run has a consumer that understands only v4 processing 0 of 9,000 records until upcasters are added."
-  },
-  {
     "stage": "check",
     "question": "Your consumer team wants to deploy a new consumer BEFORE the producer ships the corresponding schema change, and they also want to be able to replay the topic from the beginning. Which compatibility guarantee do they need?",
     "options": [

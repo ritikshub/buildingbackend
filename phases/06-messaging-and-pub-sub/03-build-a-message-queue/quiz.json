@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A worker calls jobs.pop(), receives a refund job, and the process is SIGKILLed a millisecond later, before the refund is issued. What has happened to that job?",
-    "options": [
-      "It stays in the queue until a worker acknowledges it, so another worker will pick it up",
-      "It is moved to a dead-letter queue automatically, because the process exited non-zero",
-      "It is gone. pop() removed it at delivery time and the worker's memory died with the worker, so no record of it exists anywhere. This is at-most-once delivery, and its defining property is that the loss is silent: no error is raised, no counter moves, and a lost job is indistinguishable from a completed one",
-      "It is recovered on the next restart, because Python flushes list state to disk on exit"
-    ],
-    "correct": 2,
-    "explanation": "Deleting a message when you deliver it is a choice of delivery semantics, and the choice is at-most-once. The measured run in this lesson lost exactly 1 refund out of 60 this way, with zero errors logged. The fix is to make the broker keep the message after delivery and delete it only when the consumer acknowledges that the work is finished."
-  },
-  {
     "stage": "check",
     "question": "Your consumers process a job in 200 ms at p50 but 45 seconds at p99.9. The visibility timeout is set to 30 seconds. Consumers never crash. What do you observe in production?",
     "options": [

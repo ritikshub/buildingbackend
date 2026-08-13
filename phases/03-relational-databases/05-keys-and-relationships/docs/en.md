@@ -122,9 +122,9 @@ silently break, because the database won't allow the state where it's broken.
   <path d="M470.0 200 L 469.5 252" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#l05a-ah)"/>
   </g>
   <g>
-  <rect x="95" y="54" width="160" height="48" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="95" y="54" width="160" height="48" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="400" y="54" width="140" height="48" rx="9" fill="#12a05a" fill-opacity="0.14" stroke="#12a05a" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="87" y="152" width="176" height="48" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="87" y="152" width="176" height="48" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="395" y="152" width="150" height="48" rx="9" fill="#e0564f" fill-opacity="0.14" stroke="#e0564f" stroke-width="2" stroke-dasharray="7 6" stroke-linejoin="round"/>
   <rect x="344" y="252" width="251" height="52" rx="9" fill="#e0564f" fill-opacity="0.14" stroke="#e0564f" stroke-width="2" stroke-linejoin="round"/>
   </g>
@@ -205,7 +205,7 @@ small e-commerce model tying the shapes together:
   <path d="M280 310.0 L 480 310.0" fill="none" stroke="currentColor" stroke-width="1.6"/>
   </g>
   <g>
-  <rect x="70" y="54" width="210" height="100" rx="10" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="70" y="54" width="210" height="100" rx="10" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="480" y="54" width="210" height="100" rx="10" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="70" y="260" width="210" height="100" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="480" y="260" width="210" height="100" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>

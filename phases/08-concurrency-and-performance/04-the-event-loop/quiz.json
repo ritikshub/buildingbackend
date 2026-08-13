@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A single-threaded event-loop server is handling 24 concurrent connections at a p99 of about 11 ms. One request hits a handler that calls `time.sleep(0.5)`. What happens to the other 23 connections, which never touch that route?",
-    "options": ["Nothing — each connection has its own state in the loop, so a slow handler only delays its own request", "They slow down slightly, roughly in proportion to the extra load one blocked request adds to the server", "They freeze completely for the full 500 ms: there is one thread, and it is inside the sleeping handler, so the loop cannot reach select() to notice anyone else. Measured, p99 for those connections went from 11.36 ms to 485.00 ms — 43x — with 23 requests crossing 100 ms where none had before", "The kernel migrates the blocked handler to another core, so throughput drops but latency is unaffected"],
-    "correct": 2,
-    "explanation": "An event loop has exactly one thread of execution, and every callback runs to completion on it. A blocking call in any handler is not 'that request being slow' — it is the entire server being stopped, including connections on completely unrelated endpoints. The tempting answer is the first: per-connection state in the loop makes it feel like connections are isolated, but the state is isolated while the *execution* is not."
-  },
-  {
     "stage": "check",
     "question": "Step 5 of the iteration takes `n = len(ready)` and runs exactly `n` callbacks, rather than looping `while ready: run(ready.popleft())`. Why does this matter?",
     "options": ["Because a callback that schedules another callback via call_soon would otherwise append into the queue being drained, so the drain never ends. The loop would never reach select() again: sockets stay unread, the accept backlog overflows, and the server hangs at 100% CPU while looking perfectly busy in every profiler", "Because deques are not safe to pop from while another thread appends to them, and the length snapshot acts as a lock", "Because the callbacks must run in deadline order, and taking the length first is what sorts them", "Because len() on a deque is O(1) while checking emptiness in a loop condition is O(n), so the snapshot is a performance optimization"],

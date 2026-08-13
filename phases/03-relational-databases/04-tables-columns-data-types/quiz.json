@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is a column's data type, fundamentally?",
-    "options": ["A hint the database ignores", "An enforced contract on every value: what's allowed in, its size, how it sorts/compares, and valid operations", "The column's display name", "A performance setting only"],
-    "correct": 1,
-    "explanation": "The type is a guarantee the database enforces on every value the column will ever hold. It controls what can be stored, storage size, sorting/comparison, and which operations are valid."
-  },
-  {
     "stage": "check",
     "question": "Why should money be stored as NUMERIC/DECIMAL (or integer cents), never as a float?",
     "options": ["Floats are slower", "Floats store an approximation in binary, so values like 0.1 + 0.2 don't come out exact — fractions of a cent won't reconcile", "NUMERIC uses less space", "Floats can't be negative"],

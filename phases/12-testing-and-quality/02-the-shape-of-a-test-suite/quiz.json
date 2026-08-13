@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A team has 4,000 unit tests, 94% line coverage, and a 40-second suite — and still ships a defect every sprint where two individually-correct components disagree at their boundary. What is the most accurate diagnosis?",
-    "options": [
-      "Their coverage target is too low. At 94% there are still uncovered lines, and defects concentrate in uncovered code — pushing the gate to 100% would close the gap",
-      "Their unit tests are badly written. Better assertions, more boundary cases and less mocking would let the same 4,000 tests catch these defects",
-      "It is a ceiling, not a shortfall. Measured on this service's defect population, the unit level can reach 34.0% of it at INFINITE test count — 'wiring' defects are a hard zero at that level because a unit test's scope is one function and a wiring defect lives on the edge between two",
-      "They need more unit tests. 4,000 sounds like a lot but the marginal test still adds detection, so the answer is to keep going until the incidents stop"
-    ],
-    "correct": 2,
-    "explanation": "All three tempting answers assume the gap is a matter of degree — more tests, better tests, higher coverage. It is a matter of kind. A test detects a defect only if its environment can express the defect (capability), it executes the site (scope), and its assertion notices (oracle). A unit test's scope is a single function, so an edge between two functions is never inside it, at any test count and any assertion quality. The same argument makes schema, migration, config, contract, auth, serialization, concurrency, duplicate-delivery and N+1 defects hard zeros at the unit level: there is no database, no real config and no queue in the process. Measured, that leaves a 34.0% ceiling. Coverage does not contradict this — 94% coverage and a 34% reachable share measure different things, since coverage says which lines ran, not which defect classes the environment can produce."
-  },
-  {
     "stage": "check",
     "question": "Solving the allocation numerically — maximise expected defects caught subject to a fixed CI budget — the optimum at 30 seconds is 91.7% unit tests by count, and at 600 seconds it is 6.1% unit tests by count. What do those same two optima look like measured in CI seconds?",
     "options": [

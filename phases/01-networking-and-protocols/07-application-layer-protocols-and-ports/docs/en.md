@@ -160,11 +160,11 @@ lines are commands; the server answers each with a **three-digit status code** â
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="75" y="40" width="130" height="36" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="75" y="40" width="130" height="36" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="615" y="40" width="130" height="36" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
-    <text x="140" y="57" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Client</text>
-    <text x="140" y="69" text-anchor="middle" font-size="8" fill="#3553ff" opacity="0.75">sender</text>
+    <text x="140" y="57" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Client</text>
+    <text x="140" y="69" text-anchor="middle" font-size="8" fill="#c94a12" opacity="0.75">sender</text>
     <text x="680" y="57" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Server</text>
     <text x="680" y="69" text-anchor="middle" font-size="8" fill="#0fa07f" opacity="0.75">mail host</text>
     <!-- lifelines -->

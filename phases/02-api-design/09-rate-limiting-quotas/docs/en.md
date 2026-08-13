@@ -139,7 +139,7 @@ token bucket is the mental model worth keeping:
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 612" width="100%" style="max-width:880px" role="img" aria-label="The token bucket algorithm drawn as a real bucket. Tokens drip in at rate equals 10 tokens per second, and the bucket's rim is its capacity of 10 tokens, so it can never hold more than 10; the drawing shows it full with 10 countable tokens. A request arrives costing cost tokens, one by default, though an expensive operation can charge more. One decision is asked: are there at least cost tokens, counted after the lazy refill? On the yes branch the request is allowed, the tokens are spent, and the response is 200 OK carrying X-RateLimit-Remaining 9. On the no branch it is rejected with 429 Too Many Requests from RFC 6585, a Retry-After header from RFC 9110, and the de facto trio X-RateLimit-Limit 10, X-RateLimit-Remaining 0 and X-RateLimit-Reset; rejecting silently instead trains clients to hammer harder, and GitHub and Stripe are the reference implementations of that contract. There is no background timer: tokens are recomputed lazily on every check as tokens equals min of capacity and tokens plus elapsed time times rate, which is exactly what lets the Redis version be a single atomic script. The bottom timeline replays the lesson's own run with rate 10 per second and capacity 10. At t equals 0.0, 15 requests arrive at one instant; the first 10 are allowed because the bucket held 10, and 5 are denied, leaving the bucket empty. One second of drip refills 10 tokens, capped at capacity. At t equals 1.0 the same 15 requests again get 10 allowed and 5 denied, so sustained throughput settles at the rate while capacity alone paid for the burst.">
   <defs>
-    <marker id="p2l09a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p2l09a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p2l09a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
     <marker id="p2l09a-arm" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
     <marker id="p2l09a-arp" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
@@ -183,11 +183,11 @@ token bucket is the mental model worth keeping:
     </g>
 
     <g fill="none" stroke-linejoin="round" stroke-width="2">
-      <rect x="400" y="52" width="214" height="54" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="400" y="52" width="214" height="54" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <path d="M507 122 L614 176 L507 230 L400 176 Z" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.6"/>
     </g>
     <g text-anchor="middle" fill="currentColor">
-      <text x="507" y="73" font-size="11" font-weight="700" fill="#3553ff">REQUEST arrives</text>
+      <text x="507" y="73" font-size="11" font-weight="700" fill="#c94a12">REQUEST arrives</text>
       <text x="507" y="88" font-size="8.5">it costs `cost` tokens — default 1</text>
       <text x="507" y="100" font-size="7.5" opacity="0.75">an expensive op can charge more</text>
       <text x="507" y="172" font-size="11" font-weight="700">tokens ≥ cost?</text>
@@ -197,7 +197,7 @@ token bucket is the mental model worth keeping:
       <text x="507" y="280" font-size="8" opacity="0.7">API key or tenant — IP only for anonymous</text>
     </g>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.8">
+    <g fill="none" stroke="#c94a12" stroke-width="1.8">
       <path d="M507 106 L507 118" marker-end="url(#p2l09a-arb)"/>
     </g>
     <g fill="none" stroke="#7c5cff" stroke-width="1.8">

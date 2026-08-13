@@ -53,13 +53,13 @@ Almost everyone starts with a two-box mental model: my code, and the cloud. That
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Three states, not two — and the tool only ever compares a pair at a time</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-width="2.2" stroke-linejoin="round">
-      <rect x="278" y="50" width="324" height="92" rx="12" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="278" y="50" width="324" height="92" rx="12" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="24" y="252" width="252" height="110" rx="12" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="604" y="252" width="252" height="110" rx="12" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
 
     <g fill="currentColor">
-      <text x="440" y="74" font-size="12.5" font-weight="700" text-anchor="middle" fill="#3553ff">DESIRED — your declaration</text>
+      <text x="440" y="74" font-size="12.5" font-weight="700" text-anchor="middle" fill="#c94a12">DESIRED — your declaration</text>
       <text x="440" y="94" font-size="10" text-anchor="middle" opacity="0.9">main.tf, in git, reviewed in a pull request</text>
       <text x="440" y="112" font-size="9.5" text-anchor="middle" opacity="0.85">resource "database" "main" { engine = "postgres-16" }</text>
       <text x="440" y="130" font-size="9.5" text-anchor="middle" opacity="0.85">it names WHAT, never HOW or IN WHAT ORDER</text>
@@ -84,10 +84,10 @@ Almost everyone starts with a two-box mental model: my code, and the cloud. That
     <path d="M284 286 L 596 286" fill="none" stroke="#d64545" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#l06-a1r)" marker-start="url(#l06-a1rs)"/>
 
     <g fill="currentColor">
-      <text x="40" y="180" font-size="10.5" font-weight="700" fill="#3553ff">PLAN</text>
+      <text x="40" y="180" font-size="10.5" font-weight="700" fill="#c94a12">PLAN</text>
       <text x="40" y="196" font-size="9.5" opacity="0.9">diff desired vs actual,</text>
       <text x="40" y="211" font-size="9.5" opacity="0.9">taking identity from state</text>
-      <text x="840" y="180" font-size="10.5" font-weight="700" fill="#3553ff" text-anchor="end">APPLY</text>
+      <text x="840" y="180" font-size="10.5" font-weight="700" fill="#c94a12" text-anchor="end">APPLY</text>
       <text x="840" y="196" font-size="9.5" opacity="0.9" text-anchor="end">create / update / replace /</text>
       <text x="840" y="211" font-size="9.5" opacity="0.9" text-anchor="end">destroy — then rewrite state</text>
       <text x="440" y="272" font-size="10.5" font-weight="700" text-anchor="middle" fill="#d64545">REFRESH</text>
@@ -131,14 +131,14 @@ A **plan** is a diff between desired and actual, expressed as operations. There 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 510" width="100%" style="max-width:840px" role="img" aria-label="The four verbs a plan can produce. Create makes a new object with a new identifier. Update in place edits a mutable attribute and keeps the same identifier and the data. Replace is triggered by changing an immutable attribute and expands to destroy followed by create, so the identifier changes and the data does not survive. Destroy removes a resource that is in state but no longer in the declaration, and runs in reverse dependency order. Below, the measured replacement cascade: editing one immutable attribute on the graph root replaced six of seven resources including the database, while only the load balancer could absorb the change as an in-place update, and a prevent destroy lifecycle rule refused the whole plan.">
   <defs>
-    <marker id="l06-a2" markerWidth="10" markerHeight="10" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="l06-a2" markerWidth="10" markerHeight="10" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="l06-a2r" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#d64545"/></marker>
   </defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Four verbs. One of them is how people delete databases.</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-width="2" stroke-linejoin="round">
       <rect x="24" y="46" width="200" height="164" rx="11" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
-      <rect x="232" y="46" width="200" height="164" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="232" y="46" width="200" height="164" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="440" y="46" width="200" height="164" rx="11" fill="#d64545" fill-opacity="0.13" stroke="#d64545"/>
       <rect x="648" y="46" width="200" height="164" rx="11" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     </g>
@@ -152,13 +152,13 @@ A **plan** is a diff between desired and actual, expressed as operations. There 
       <text x="40" y="158" font-size="9.5">until the apply ends</text>
       <text x="40" y="194" font-size="9.5" font-weight="700" fill="#0fa07f">data: none to lose</text>
 
-      <text x="248" y="70" font-size="14" font-weight="700" fill="#3553ff">~ update</text>
+      <text x="248" y="70" font-size="14" font-weight="700" fill="#c94a12">~ update</text>
       <text x="248" y="92" font-size="9" opacity="0.6">WHEN</text>
       <text x="248" y="107" font-size="9.5">a MUTABLE attribute</text>
       <text x="248" y="121" font-size="9.5">changed (tag, size)</text>
       <text x="248" y="143" font-size="9" opacity="0.6">IDENTITY</text>
       <text x="248" y="158" font-size="9.5">same id: srv-25165e</text>
-      <text x="248" y="194" font-size="9.5" font-weight="700" fill="#3553ff">data: survives</text>
+      <text x="248" y="194" font-size="9.5" font-weight="700" fill="#c94a12">data: survives</text>
 
       <text x="456" y="70" font-size="14" font-weight="700" fill="#d64545">-/+ replace</text>
       <text x="456" y="92" font-size="9" opacity="0.6">WHEN</text>
@@ -192,7 +192,7 @@ A **plan** is a diff between desired and actual, expressed as operations. There 
       <rect x="414" y="298" width="146" height="30" rx="8" fill="#d64545" fill-opacity="0.14" stroke="#d64545"/>
       <rect x="414" y="342" width="146" height="30" rx="8" fill="#d64545" fill-opacity="0.14" stroke="#d64545"/>
       <rect x="414" y="386" width="146" height="30" rx="8" fill="#d64545" fill-opacity="0.30" stroke="#d64545" stroke-width="2.4"/>
-      <rect x="620" y="342" width="132" height="30" rx="8" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="620" y="342" width="132" height="30" rx="8" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
     </g>
     <g fill="none" stroke="#d64545" stroke-width="1.5">
       <path d="M172 351 L 220 337" marker-end="url(#l06-a2r)"/>
@@ -201,7 +201,7 @@ A **plan** is a diff between desired and actual, expressed as operations. There 
       <path d="M360 336 L 408 356" marker-end="url(#l06-a2r)"/>
       <path d="M360 382 L 408 398" marker-end="url(#l06-a2r)"/>
     </g>
-    <g fill="none" stroke="#3553ff" stroke-width="1.5">
+    <g fill="none" stroke="#c94a12" stroke-width="1.5">
       <path d="M562 315 L 614 350" marker-end="url(#l06-a2)"/>
       <path d="M562 357 L 614 357" marker-end="url(#l06-a2)"/>
     </g>
@@ -219,14 +219,14 @@ A **plan** is a diff between desired and actual, expressed as operations. There 
       <text x="487" y="367" font-size="8" opacity="0.85">subnet_id immutable</text>
       <text x="487" y="400" font-size="9.5" font-weight="700" fill="#d64545">database.main</text>
       <text x="487" y="411" font-size="8" font-weight="700" fill="#d64545">100 GB, replaced</text>
-      <text x="686" y="356" font-size="9.5" font-weight="700" fill="#3553ff">lb.public</text>
+      <text x="686" y="356" font-size="9.5" font-weight="700" fill="#c94a12">lb.public</text>
       <text x="686" y="367" font-size="8" opacity="0.85">targets are MUTABLE</text>
     </g>
 
     <g fill="currentColor">
       <text x="38" y="294" font-size="9" font-weight="700" opacity="0.65">EDITED BY A HUMAN</text>
       <text x="226" y="294" font-size="9" font-weight="700" fill="#d64545" opacity="0.9">DRAGGED IN — nobody asked</text>
-      <text x="620" y="294" font-size="9" font-weight="700" fill="#3553ff" opacity="0.9">CASCADE STOPS HERE</text>
+      <text x="620" y="294" font-size="9" font-weight="700" fill="#c94a12" opacity="0.9">CASCADE STOPS HERE</text>
       <text x="620" y="392" font-size="8.5" opacity="0.9">a mutable attribute can</text>
       <text x="620" y="404" font-size="8.5" opacity="0.9">absorb the new ids:</text>
       <text x="620" y="416" font-size="8.5" opacity="0.9">1 update, not a replace</text>

@@ -85,7 +85,7 @@ Every cache access ends one of two ways:
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Every cache access ends one of two ways — a hit or a miss</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="2">
-      <rect x="340" y="46" width="220" height="44" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="340" y="46" width="220" height="44" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <path d="M450 124 L562 172 L450 220 L338 172 Z" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.6"/>
       <rect x="620" y="138" width="258" height="70" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
       <rect x="22" y="138" width="258" height="70" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
@@ -94,7 +94,7 @@ Every cache access ends one of two ways:
     </g>
 
     <g text-anchor="middle" fill="currentColor">
-      <text x="450" y="66" font-size="11.5" font-weight="700" fill="#3553ff">Request for key K</text>
+      <text x="450" y="66" font-size="11.5" font-weight="700" fill="#c94a12">Request for key K</text>
       <text x="450" y="82" font-size="8.5" opacity="0.75">e.g. product:42</text>
 
       <text x="450" y="170" font-size="12" font-weight="700">In cache?</text>
@@ -198,7 +198,7 @@ trip you skip.
     </g>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-      <rect x="15" y="72" width="114" height="138" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="15" y="72" width="114" height="138" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="141" y="72" width="114" height="138" rx="10" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
       <rect x="267" y="72" width="114" height="138" rx="10" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
       <rect x="393" y="72" width="114" height="138" rx="10" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
@@ -216,7 +216,7 @@ trip you skip.
     </g>
 
     <g text-anchor="middle" font-size="9.5" font-weight="700">
-      <text x="72" y="109" fill="#3553ff">Browser</text><text x="72" y="122" fill="#3553ff">cache</text>
+      <text x="72" y="109" fill="#c94a12">Browser</text><text x="72" y="122" fill="#c94a12">cache</text>
       <text x="198" y="109" fill="#7c5cff">CDN /</text><text x="198" y="122" fill="#7c5cff">edge</text>
       <text x="324" y="109" fill="#7c5cff">Gateway /</text><text x="324" y="122" fill="#7c5cff">reverse proxy</text>
       <text x="450" y="109" fill="#7c5cff">In-process</text><text x="450" y="122" fill="#7c5cff">app cache</text>
@@ -240,7 +240,7 @@ trip you skip.
     </g>
 
     <g text-anchor="middle" font-size="8" font-weight="700">
-      <text x="72" y="192" fill="#3553ff">HTTP headers rule it</text>
+      <text x="72" y="192" fill="#c94a12">HTTP headers rule it</text>
       <text x="198" y="192" fill="#7c5cff">one copy, many users</text>
       <text x="324" y="192" fill="#7c5cff">first hop inside</text>
       <text x="450" y="192" fill="#7c5cff">dies on restart</text>

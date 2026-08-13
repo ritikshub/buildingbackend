@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is a primary key?",
-    "options": ["The first column in a table", "One or more columns that uniquely identify each row — guaranteed unique and never NULL", "The fastest column to query", "A column that references another table"],
-    "correct": 1,
-    "explanation": "A primary key uniquely identifies each row. The database enforces that it's unique (no two rows share it) and not NULL (every row has one). A table has exactly one."
-  },
-  {
     "stage": "check",
     "question": "Why is a surrogate key (auto-increment integer or UUID) usually preferred over a natural key (like email) as the primary key?",
     "options": ["Surrogate keys are faster to type", "Natural keys change (emails change, 'unique' IDs get reissued), and when a primary key changes every foreign key pointing at it must change too", "Natural keys can't be indexed", "Surrogate keys are more meaningful"],

@@ -100,8 +100,8 @@ The arithmetic is not subtle, because the round trip is physics. The Build It me
     <g fill="none" stroke="currentColor" stroke-width="1" opacity="0.16">
       <path d="M228.3 58 L228.3 340"/><path d="M306.7 58 L306.7 340"/><path d="M385 58 L385 340"/><path d="M463.3 58 L463.3 340"/><path d="M541.7 58 L541.7 340"/><path d="M620 58 L620 340"/>
     </g>
-    <path d="M150 58 L150 348" fill="none" stroke="#3553ff" stroke-width="1.8" stroke-dasharray="5 4" opacity="0.85"/>
-    <text x="150" y="54" font-size="9.5" font-weight="700" text-anchor="middle" fill="#3553ff">COMMIT</text>
+    <path d="M150 58 L150 348" fill="none" stroke="#c94a12" stroke-width="1.8" stroke-dasharray="5 4" opacity="0.85"/>
+    <text x="150" y="54" font-size="9.5" font-weight="700" text-anchor="middle" fill="#c94a12">COMMIT</text>
 
     <!-- lane 1: async -->
     <rect x="182.9" y="72" width="303.9" height="26" fill="#d64545" fill-opacity="0.14" stroke="#d64545" stroke-width="1.4" stroke-dasharray="4 3"/>
@@ -224,7 +224,7 @@ They come apart, and the case where they come apart is the one that will page yo
 
     <path d="M116.0 321.9 L124.0 321.7 L132.1 321.9 L140.1 321.9 L148.1 321.7 L156.1 321.7 L164.2 321.1 L172.2 321.9 L180.2 321.9 L188.2 321.4 L196.2 322.0 L204.3 321.7 L212.3 321.8 L220.3 311.8 L228.3 302.5 L236.4 293.3 L244.4 282.8 L252.4 273.5 L260.5 264.7 L268.5 255.6 L276.5 246.6 L284.5 237.9 L292.6 227.3 L300.6 217.1 L308.6 207.1 L316.6 198.1 L324.6 190.6 L332.7 180.9 L340.7 173.2 L348.7 165.0 L356.8 154.0 L364.8 146.3 L372.8 135.0 L380.8 125.2 L388.8 117.6 L396.9 109.0 L404.9 100.9 L412.9 203.4 L420.9 305.6 L429.0 320.8 L437.0 321.8 L445.0 321.9 L453.1 321.5 L461.1 321.9 L469.1 321.4 L477.1 320.8 L485.1 321.4 L493.2 321.9 L501.2 321.6 L509.2 321.9 L517.2 321.2 L525.3 321.8 L533.3 321.8 L541.3 321.7 L549.4 321.7 L557.4 321.8 L565.4 321.9 L573.4 321.4 L581.5 321.9 L589.5 321.0 L597.5 321.9 L605.5 320.6 L613.5 321.3 L621.6 321.8 L629.6 321.6 L637.6 320.6 L645.6 321.9 L653.7 321.4 L661.7 321.3 L669.7 321.7 L677.8 321.8 L685.8 321.9 L693.8 321.9 L701.8 321.9 L709.9 321.6 L717.9 322.0 L725.9 321.3 L733.9 321.9 L741.9 321.7 L750.0 321.8 L758.0 321.8" fill="none" stroke="#d64545" stroke-width="2.8" stroke-linejoin="round"/>
     <path d="M116.0 321.9 L124.0 321.7 L132.1 321.9 L140.1 321.9 L148.1 321.7 L156.1 321.7 L164.2 321.8 L172.2 321.9 L180.2 321.9 L188.2 322.0 L196.2 322.0 L204.3 321.9 L212.3 321.9 L220.3 321.8 L228.3 321.9 L236.4 321.9 L244.4 321.9 L252.4 321.9 L260.5 322.0 L268.5 322.0 L276.5 321.9 L284.5 321.8 L292.6 322.0 L300.6 321.7 L308.6 322.0 L316.6 321.9 L324.6 322.0 L332.7 321.9 L340.7 322.0 L348.7 321.8 L356.8 321.9 L364.8 321.9 L372.8 321.8 L380.8 321.6 L388.8 321.9 L396.9 322.0 L404.9 322.0 L412.9 322.0 L420.9 322.0 L429.0 321.9 L437.0 321.8 L445.0 321.9 L453.1 321.9 L461.1 321.9 L469.1 322.0 L477.1 322.0 L485.1 321.7 L493.2 322.0 L501.2 322.0 L509.2 321.9 L517.2 322.0 L525.3 321.9 L533.3 321.8 L541.3 321.7 L549.4 321.7 L557.4 321.8 L565.4 321.9 L573.4 321.7 L581.5 321.9 L589.5 321.9 L597.5 321.9 L605.5 321.6 L613.5 321.8 L621.6 321.8 L629.6 322.0 L637.6 321.9 L645.6 322.0 L653.7 321.9 L661.7 321.9 L669.7 321.7 L677.8 321.8 L685.8 321.9 L693.8 322.0 L701.8 321.9 L709.9 321.9 L717.9 322.0 L725.9 321.7 L733.9 321.9 L741.9 321.9 L750.0 321.8 L758.0 321.8" fill="none" stroke="#0fa07f" stroke-width="2.4" stroke-linejoin="round"/>
-    <path d="M116.0 322.0 L124.0 321.9 L132.1 322.0 L140.1 322.0 L148.1 322.0 L156.1 321.9 L164.2 322.0 L172.2 321.9 L180.2 322.0 L188.2 322.0 L196.2 322.0 L204.3 321.9 L212.3 321.9 L220.3 321.9 L228.3 322.0 L236.4 321.9 L244.4 321.9 L252.4 321.9 L260.5 322.0 L268.5 322.0 L276.5 321.9 L284.5 322.0 L292.6 322.0 L300.6 321.9 L308.6 322.0 L316.6 322.0 L324.6 322.0 L332.7 321.9 L340.7 322.0 L348.7 321.9 L356.8 322.0 L364.8 322.0 L372.8 321.9 L380.8 321.9 L388.8 322.0 L396.9 322.0 L404.9 322.0 L412.9 322.0 L420.9 322.0 L429.0 321.9 L437.0 322.0 L445.0 322.0 L453.1 321.9 L461.1 321.9 L469.1 322.0 L477.1 322.0 L485.1 321.9 L493.2 322.0 L501.2 322.0 L509.2 322.0 L517.2 322.0 L525.3 322.0 L533.3 322.0 L541.3 321.9 L549.4 322.0 L557.4 321.9 L565.4 322.0 L573.4 322.0 L581.5 322.0 L589.5 322.0 L597.5 322.0 L605.5 321.9 L613.5 321.9 L621.6 321.9 L629.6 322.0 L637.6 321.9 L645.6 322.0 L653.7 322.0 L661.7 321.9 L669.7 322.0 L677.8 322.0 L685.8 321.9 L693.8 322.0 L701.8 322.0 L709.9 322.0 L717.9 322.0 L725.9 322.0 L733.9 321.9 L741.9 322.0 L750.0 322.0 L758.0 321.9" fill="none" stroke="#3553ff" stroke-width="1.8" stroke-dasharray="5 3" stroke-linejoin="round"/>
+    <path d="M116.0 322.0 L124.0 321.9 L132.1 322.0 L140.1 322.0 L148.1 322.0 L156.1 321.9 L164.2 322.0 L172.2 321.9 L180.2 322.0 L188.2 322.0 L196.2 322.0 L204.3 321.9 L212.3 321.9 L220.3 321.9 L228.3 322.0 L236.4 321.9 L244.4 321.9 L252.4 321.9 L260.5 322.0 L268.5 322.0 L276.5 321.9 L284.5 322.0 L292.6 322.0 L300.6 321.9 L308.6 322.0 L316.6 322.0 L324.6 322.0 L332.7 321.9 L340.7 322.0 L348.7 321.9 L356.8 322.0 L364.8 322.0 L372.8 321.9 L380.8 321.9 L388.8 322.0 L396.9 322.0 L404.9 322.0 L412.9 322.0 L420.9 322.0 L429.0 321.9 L437.0 322.0 L445.0 322.0 L453.1 321.9 L461.1 321.9 L469.1 322.0 L477.1 322.0 L485.1 321.9 L493.2 322.0 L501.2 322.0 L509.2 322.0 L517.2 322.0 L525.3 322.0 L533.3 322.0 L541.3 321.9 L549.4 322.0 L557.4 321.9 L565.4 322.0 L573.4 322.0 L581.5 322.0 L589.5 322.0 L597.5 322.0 L605.5 321.9 L613.5 321.9 L621.6 321.9 L629.6 322.0 L637.6 321.9 L645.6 322.0 L653.7 322.0 L661.7 321.9 L669.7 322.0 L677.8 322.0 L685.8 321.9 L693.8 322.0 L701.8 322.0 L709.9 322.0 L717.9 322.0 L725.9 322.0 L733.9 321.9 L741.9 322.0 L750.0 322.0 L758.0 321.9" fill="none" stroke="#c94a12" stroke-width="1.8" stroke-dasharray="5 3" stroke-linejoin="round"/>
 
     <circle cx="404.9" cy="100.9" r="5" fill="none" stroke="#d64545" stroke-width="2.2"/>
     <path d="M398.9 96.9 L 539 118" fill="none" stroke="#d64545" stroke-width="1.2" stroke-dasharray="4 3"/>
@@ -248,7 +248,7 @@ They come apart, and the case where they come apart is the one that will page yo
     <g fill="currentColor" font-size="10" font-weight="700">
       <text x="468" y="206" fill="#d64545">— replay_lsn  (what a read here actually sees)</text>
       <text x="468" y="222" fill="#0fa07f">— flush_lsn   (what survives a failover)</text>
-      <text x="468" y="238" fill="#3553ff">- - sent_lsn   (what left the primary)</text>
+      <text x="468" y="238" fill="#c94a12">- - sent_lsn   (what left the primary)</text>
     </g>
 
     <text x="116" y="360" font-size="10.5" font-weight="700" fill="currentColor">the same window, send and flush lag only — nothing happened to either</text>
@@ -256,7 +256,7 @@ They come apart, and the case where they come apart is the one that will page yo
     <g fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"><path d="M132.1 428 L132.1 432"/><path d="M212.3 428 L212.3 432"/><path d="M292.6 428 L292.6 432"/><path d="M372.8 428 L372.8 432"/><path d="M453.1 428 L453.1 432"/><path d="M533.3 428 L533.3 432"/><path d="M613.5 428 L613.5 432"/><path d="M693.8 428 L693.8 432"/></g>
     <rect x="212.3" y="366" width="192.6" height="62" fill="#e0930f" fill-opacity="0.10" stroke="none"/>
     <path d="M116.0 418.0 L124.0 410.9 L132.1 418.7 L140.1 375.3 L148.1 403.0 L156.1 411.6 L164.2 405.0 L172.2 413.9 L180.2 403.8 L188.2 422.2 L196.2 411.6 L204.3 412.5 L212.3 407.7 L220.3 394.4 L228.3 393.0 L236.4 421.4 L244.4 405.9 L252.4 409.3 L260.5 420.9 L268.5 382.7 L276.5 410.8 L284.5 400.5 L292.6 416.7 L300.6 403.6 L308.6 420.6 L316.6 396.7 L324.6 410.3 L332.7 412.5 L340.7 417.8 L348.7 410.2 L356.8 418.8 L364.8 415.3 L372.8 404.7 L380.8 390.7 L388.8 402.3 L396.9 421.5 L404.9 418.4 L412.9 424.1 L420.9 411.2 L429.0 418.9 L437.0 408.3 L445.0 402.2 L453.1 424.7 L461.1 420.3 L469.1 420.1 L477.1 421.0 L485.1 385.3 L493.2 424.1 L501.2 410.4 L509.2 397.1 L517.2 409.6 L525.3 392.5 L533.3 407.9 L541.3 394.7 L549.4 414.3 L557.4 414.5 L565.4 381.4 L573.4 410.9 L581.5 415.0 L589.5 411.7 L597.5 410.2 L605.5 394.9 L613.5 398.8 L621.6 402.5 L629.6 413.5 L637.6 416.5 L645.6 411.1 L653.7 415.2 L661.7 408.8 L669.7 395.2 L677.8 405.9 L685.8 415.3 L693.8 420.7 L701.8 424.2 L709.9 396.1 L717.9 419.0 L725.9 403.9 L733.9 403.8 L741.9 402.4 L750.0 395.4 L758.0 408.6" fill="none" stroke="#0fa07f" stroke-width="1.8"/>
-    <path d="M116.0 422.2 L124.0 423.8 L132.1 425.5 L140.1 424.3 L148.1 424.0 L156.1 425.0 L164.2 423.0 L172.2 413.9 L180.2 422.8 L188.2 422.2 L196.2 411.6 L204.3 412.5 L212.3 407.7 L220.3 415.5 L228.3 424.4 L236.4 421.4 L244.4 405.9 L252.4 409.3 L260.5 420.9 L268.5 382.7 L276.5 410.8 L284.5 414.7 L292.6 416.7 L300.6 424.6 L308.6 420.6 L316.6 407.9 L324.6 410.3 L332.7 417.6 L340.7 417.8 L348.7 422.2 L356.8 421.8 L364.8 423.6 L372.8 421.1 L380.8 422.7 L388.8 423.3 L396.9 421.5 L404.9 418.4 L412.9 424.1 L420.9 411.2 L429.0 424.3 L437.0 425.5 L445.0 421.2 L453.1 424.7 L461.1 420.3 L469.1 420.1 L477.1 421.0 L485.1 409.4 L493.2 424.1 L501.2 410.4 L509.2 423.1 L517.2 409.6 L525.3 419.8 L533.3 426.7 L541.3 418.6 L549.4 425.6 L557.4 416.0 L565.4 425.3 L573.4 424.0 L581.5 425.7 L589.5 418.2 L597.5 419.4 L605.5 419.7 L613.5 424.2 L621.6 411.3 L629.6 413.5 L637.6 419.8 L645.6 411.1 L653.7 422.6 L661.7 408.8 L669.7 415.4 L677.8 423.8 L685.8 415.3 L693.8 420.7 L701.8 425.1 L709.9 421.1 L717.9 419.0 L725.9 418.5 L733.9 403.8 L741.9 417.9 L750.0 420.8 L758.0 423.0" fill="none" stroke="#3553ff" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <path d="M116.0 422.2 L124.0 423.8 L132.1 425.5 L140.1 424.3 L148.1 424.0 L156.1 425.0 L164.2 423.0 L172.2 413.9 L180.2 422.8 L188.2 422.2 L196.2 411.6 L204.3 412.5 L212.3 407.7 L220.3 415.5 L228.3 424.4 L236.4 421.4 L244.4 405.9 L252.4 409.3 L260.5 420.9 L268.5 382.7 L276.5 410.8 L284.5 414.7 L292.6 416.7 L300.6 424.6 L308.6 420.6 L316.6 407.9 L324.6 410.3 L332.7 417.6 L340.7 417.8 L348.7 422.2 L356.8 421.8 L364.8 423.6 L372.8 421.1 L380.8 422.7 L388.8 423.3 L396.9 421.5 L404.9 418.4 L412.9 424.1 L420.9 411.2 L429.0 424.3 L437.0 425.5 L445.0 421.2 L453.1 424.7 L461.1 420.3 L469.1 420.1 L477.1 421.0 L485.1 409.4 L493.2 424.1 L501.2 410.4 L509.2 423.1 L517.2 409.6 L525.3 419.8 L533.3 426.7 L541.3 418.6 L549.4 425.6 L557.4 416.0 L565.4 425.3 L573.4 424.0 L581.5 425.7 L589.5 418.2 L597.5 419.4 L605.5 419.7 L613.5 424.2 L621.6 411.3 L629.6 413.5 L637.6 419.8 L645.6 411.1 L653.7 422.6 L661.7 408.8 L669.7 415.4 L677.8 423.8 L685.8 415.3 L693.8 420.7 L701.8 425.1 L709.9 421.1 L717.9 419.0 L725.9 418.5 L733.9 403.8 L741.9 417.9 L750.0 420.8 L758.0 423.0" fill="none" stroke="#c94a12" stroke-width="1.5" stroke-dasharray="4 3"/>
     <g fill="currentColor" font-size="9" text-anchor="end" opacity="0.7">
       <text x="108" y="431">0</text><text x="108" y="373">22 ms</text>
     </g>
@@ -301,7 +301,7 @@ Now the consistency models. These are usually taught as a taxonomy, which is the
       <path d="M62 112 L62 330"/><path d="M200 112 L200 330"/><path d="M338 112 L338 330"/>
     </g>
     <g fill="none" stroke-width="1.7">
-      <rect x="26" y="88" width="72" height="24" rx="6" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="26" y="88" width="72" height="24" rx="6" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="158" y="88" width="84" height="24" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
       <rect x="290" y="88" width="96" height="24" rx="6" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     </g>
@@ -351,7 +351,7 @@ Now the consistency models. These are usually taught as a taxonomy, which is the
       <path d="M496 112 L496 330"/><path d="M634 112 L634 330"/><path d="M772 112 L772 254"/>
     </g>
     <g fill="none" stroke-width="1.7">
-      <rect x="460" y="88" width="72" height="24" rx="6" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="460" y="88" width="72" height="24" rx="6" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="592" y="88" width="84" height="24" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
       <rect x="716" y="88" width="112" height="24" rx="6" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     </g>
@@ -370,7 +370,7 @@ Now the consistency models. These are usually taught as a taxonomy, which is the
       <text x="562" y="134" text-anchor="middle" font-weight="700">POST /profile  name="Ada"</text>
       <text x="638" y="160" font-size="9.5" font-weight="700" fill="#0fa07f">COMMIT → LSN 0/1A2B3C8</text>
       <text x="638" y="173" opacity="0.85">pg_current_wal_lsn()</text>
-      <text x="568" y="180" text-anchor="middle" font-weight="700" fill="#3553ff">302 + X-Read-LSN: 0/1A2B3C8</text>
+      <text x="568" y="180" text-anchor="middle" font-weight="700" fill="#c94a12">302 + X-Read-LSN: 0/1A2B3C8</text>
       <text x="576" y="200" text-anchor="middle" opacity="0.8">the position, in a cookie or a header</text>
       <text x="631" y="244" text-anchor="middle" font-weight="700">GET /profile   X-Read-LSN: 0/1A2B3C8</text>
       <text x="631" y="226" text-anchor="middle" font-size="8.5" opacity="0.75">router: "a replica that has reached this"</text>
@@ -538,7 +538,7 @@ Then there is the failure mode that is worse than losing 387 rows.
     <text x="464" y="128" font-size="11" font-weight="700" text-anchor="middle" fill="#d64545">TWO PRIMARIES · 20 s · both returning 200 OK</text>
 
     <rect x="60" y="140" width="604" height="26" rx="5" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f" stroke-width="1.6"/>
-    <rect x="264" y="176" width="400" height="26" rx="5" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff" stroke-width="1.6"/>
+    <rect x="264" y="176" width="400" height="26" rx="5" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12" stroke-width="1.6"/>
     <g fill="currentColor" font-size="9.5">
       <text x="70" y="157" font-weight="700">OLD primary — still accepting writes, still fsyncing them</text>
       <text x="274" y="193" font-weight="700">NEW primary — accepting writes on a fresh timeline</text>
@@ -572,7 +572,7 @@ Then there is the failure mode that is worse than losing 387 rows.
     <text x="234" y="363" font-size="8.5" font-weight="700" text-anchor="middle" fill="#0fa07f">writes</text>
 
     <rect x="60" y="336" width="144" height="26" rx="5" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f" stroke-width="1.6"/>
-    <rect x="264" y="372" width="400" height="26" rx="5" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff" stroke-width="1.6"/>
+    <rect x="264" y="372" width="400" height="26" rx="5" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12" stroke-width="1.6"/>
     <g fill="currentColor" font-size="9.5">
       <text x="70" y="353" font-weight="700">OLD primary</text>
       <text x="274" y="389" font-weight="700">NEW primary — the only writer, and provably so</text>
@@ -647,7 +647,7 @@ Whichever you choose, the rule that matters is about the **default**:
     <g fill="none" stroke-width="1.6">
       <rect x="20" y="84" width="212" height="36" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
       <rect x="20" y="126" width="212" height="36" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
-      <rect x="20" y="168" width="212" height="36" rx="6" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="20" y="168" width="212" height="36" rx="6" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="20" y="210" width="212" height="36" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
       <rect x="20" y="252" width="212" height="36" rx="6" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="20" y="294" width="212" height="36" rx="6" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
@@ -669,7 +669,7 @@ Whichever you choose, the rule that matters is about the **default**:
     <g font-size="10" font-weight="700">
       <text x="242" y="106" fill="#0fa07f">PRIMARY</text>
       <text x="242" y="148" fill="#0fa07f">PRIMARY</text>
-      <text x="242" y="184" fill="#3553ff">REPLICA, LSN-PINNED</text><text x="242" y="197" font-size="8.5" font-weight="400" fill="currentColor" opacity="0.75">primary if none has caught up</text>
+      <text x="242" y="184" fill="#c94a12">REPLICA, LSN-PINNED</text><text x="242" y="197" font-size="8.5" font-weight="400" fill="currentColor" opacity="0.75">primary if none has caught up</text>
       <text x="242" y="232" fill="#0fa07f">PRIMARY</text>
       <text x="242" y="268" fill="#7c5cff">REPLICA, SESSION-PINNED</text><text x="242" y="281" font-size="8.5" font-weight="400" fill="currentColor" opacity="0.75">hash(user_id) → one replica</text>
       <text x="242" y="316" fill="#7c5cff">ANY REPLICA</text>

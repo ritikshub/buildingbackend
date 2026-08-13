@@ -278,7 +278,7 @@ The fix is one line: replace the coin flip with a **deterministic hash of a stab
       <rect x="196" y="434" width="434" height="16" rx="4"/><rect x="196" y="464" width="434" height="16" rx="4"/>
     </g>
 
-    <g stroke="#3553ff" stroke-width="3.4">
+    <g stroke="#c94a12" stroke-width="3.4">
       <path d="M212 349 L 212 363"/><path d="M240 349 L 240 363"/><path d="M272 349 L 272 363"/><path d="M296 349 L 296 363"/><path d="M330 349 L 330 363"/>
       <path d="M356 349 L 356 363"/><path d="M388 349 L 388 363"/><path d="M414 349 L 414 363"/><path d="M448 349 L 448 363"/>
       <path d="M502 349 L 502 363"/><path d="M530 349 L 530 363"/><path d="M560 349 L 560 363"/><path d="M590 349 L 590 363"/>
@@ -369,7 +369,7 @@ Everything above converges on one number: how long between deciding to mitigate 
     <text x="142" y="83" font-size="9" fill="currentColor" opacity="0.85">4.3 s &#183; 3,655 bad requests &#183; 149 errors  (magnified below)</text>
 
     <g stroke-width="1.6">
-      <rect x="120" y="96" width="4.7" height="24" rx="2" fill="#3553ff" fill-opacity="0.35" stroke="#3553ff"/>
+      <rect x="120" y="96" width="4.7" height="24" rx="2" fill="#c94a12" fill-opacity="0.35" stroke="#c94a12"/>
       <rect x="125.7" y="96" width="70.8" height="24" rx="2" fill="#e0930f" fill-opacity="0.30" stroke="#e0930f"/>
     </g>
     <text x="210" y="108" font-size="10.5" font-weight="700" fill="#e0930f">B · the same flip, 30 s polling SDK</text>
@@ -377,7 +377,7 @@ Everything above converges on one number: how long between deciding to mitigate 
 
     <text x="120" y="144" font-size="10.5" font-weight="700" fill="#7c5cff">C · roll back the deploy — 12 instances, 4 batches of 3</text>
     <g stroke-width="1.5">
-      <rect x="120" y="150" width="106.2" height="26" rx="3" fill="#3553ff" fill-opacity="0.32" stroke="#3553ff"/>
+      <rect x="120" y="150" width="106.2" height="26" rx="3" fill="#c94a12" fill-opacity="0.32" stroke="#c94a12"/>
       <rect x="226.2" y="150" width="23.6" height="26" rx="3" fill="#7c5cff" fill-opacity="0.30" stroke="#7c5cff"/>
       <rect x="249.8" y="150" width="113.3" height="26" rx="3" fill="#7c5cff" fill-opacity="0.30" stroke="#7c5cff"/>
       <rect x="363.1" y="150" width="70.8" height="26" rx="3" fill="#e0930f" fill-opacity="0.28" stroke="#e0930f"/>
@@ -389,7 +389,7 @@ Everything above converges on one number: how long between deciding to mitigate 
       <rect x="766.6" y="150" width="70.8" height="26" rx="3" fill="#e0930f" fill-opacity="0.28" stroke="#e0930f"/>
     </g>
     <g font-size="8.5" font-weight="700" text-anchor="middle">
-      <text x="173" y="167" fill="#3553ff">human</text>
+      <text x="173" y="167" fill="#c94a12">human</text>
       <text x="306" y="167" fill="#7c5cff">batch 1</text>
       <text x="398" y="167" fill="#e0930f">drain</text>
       <text x="465" y="167" fill="#7c5cff">batch 2</text>
@@ -418,13 +418,13 @@ Everything above converges on one number: how long between deciding to mitigate 
     <text x="36" y="290" font-size="11.5" font-weight="700" fill="#0fa07f">bar A, magnified 24x — the whole flag flip, stage by stage</text>
 
     <g stroke-width="1.6">
-      <rect x="140" y="304" width="279" height="30" rx="4" fill="#3553ff" fill-opacity="0.32" stroke="#3553ff"/>
+      <rect x="140" y="304" width="279" height="30" rx="4" fill="#c94a12" fill-opacity="0.32" stroke="#c94a12"/>
       <rect x="419" y="304" width="55.8" height="30" rx="4" fill="#7c5cff" fill-opacity="0.30" stroke="#7c5cff"/>
       <rect x="474.8" y="304" width="125.6" height="30" rx="4" fill="#7c5cff" fill-opacity="0.30" stroke="#7c5cff"/>
       <rect x="600.4" y="304" width="139.5" height="30" rx="4" fill="#e0930f" fill-opacity="0.28" stroke="#e0930f"/>
     </g>
     <g text-anchor="middle">
-      <text x="279" y="323" font-size="9.5" font-weight="700" fill="#3553ff">operator decides + flips</text>
+      <text x="279" y="323" font-size="9.5" font-weight="700" fill="#c94a12">operator decides + flips</text>
       <text x="447" y="319" font-size="8" font-weight="700" fill="#7c5cff">control</text>
       <text x="447" y="329" font-size="8" font-weight="700" fill="#7c5cff">plane</text>
       <text x="537" y="323" font-size="9.5" font-weight="700" fill="#7c5cff">streaming push</text>

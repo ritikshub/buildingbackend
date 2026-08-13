@@ -146,27 +146,27 @@ per operation. That trade is usually described by swapping ACID for its delibera
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Two bets a database can make — and a network partition is where they part ways</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="42" width="414" height="362" rx="12" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.8"/>
+    <rect x="16" y="42" width="414" height="362" rx="12" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.8"/>
     <rect x="470" y="42" width="414" height="362" rx="12" fill="#0fa07f" fill-opacity="0.06" stroke="#0fa07f" stroke-opacity="0.8"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="223" y="68" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3553ff">ACID — the relational bet</text>
+    <text x="223" y="68" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c94a12">ACID — the relational bet</text>
     <text x="223" y="86" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.75">one machine owns the truth</text>
     <text x="677" y="68" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0fa07f">BASE — the distributed bet</text>
     <text x="677" y="86" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.75">many machines, no single owner</text>
 
     <g fill="none" stroke-width="1.2">
-      <rect x="28" y="96" width="390" height="146" rx="9" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.35"/>
+      <rect x="28" y="96" width="390" height="146" rx="9" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.35"/>
       <rect x="482" y="96" width="390" height="146" rx="9" fill="#0fa07f" fill-opacity="0.05" stroke="#0fa07f" stroke-opacity="0.35"/>
     </g>
 
-    <text x="42" y="118"><tspan font-size="15" font-weight="700" fill="#3553ff">A</tspan><tspan font-size="11" font-weight="700" fill="currentColor">tomic</tspan></text>
+    <text x="42" y="118"><tspan font-size="15" font-weight="700" fill="#c94a12">A</tspan><tspan font-size="11" font-weight="700" fill="currentColor">tomic</tspan></text>
     <text x="42" y="131" font-size="8.5" fill="currentColor" opacity="0.75">all of the change lands, or none of it does</text>
-    <text x="42" y="152"><tspan font-size="15" font-weight="700" fill="#3553ff">C</tspan><tspan font-size="11" font-weight="700" fill="currentColor">onsistent</tspan></text>
+    <text x="42" y="152"><tspan font-size="15" font-weight="700" fill="#c94a12">C</tspan><tspan font-size="11" font-weight="700" fill="currentColor">onsistent</tspan></text>
     <text x="42" y="165" font-size="8.5" fill="currentColor" opacity="0.75">the database never ends up breaking its own rules</text>
-    <text x="42" y="186"><tspan font-size="15" font-weight="700" fill="#3553ff">I</tspan><tspan font-size="11" font-weight="700" fill="currentColor">solated</tspan></text>
+    <text x="42" y="186"><tspan font-size="15" font-weight="700" fill="#c94a12">I</tspan><tspan font-size="11" font-weight="700" fill="currentColor">solated</tspan></text>
     <text x="42" y="199" font-size="8.5" fill="currentColor" opacity="0.75">concurrent transactions can't see each other's half-work</text>
-    <text x="42" y="220"><tspan font-size="15" font-weight="700" fill="#3553ff">D</tspan><tspan font-size="11" font-weight="700" fill="currentColor">urable</tspan></text>
+    <text x="42" y="220"><tspan font-size="15" font-weight="700" fill="#c94a12">D</tspan><tspan font-size="11" font-weight="700" fill="currentColor">urable</tspan></text>
     <text x="42" y="233" font-size="8.5" fill="currentColor" opacity="0.75">once it says committed, a crash cannot undo it</text>
 
     <text x="496" y="118"><tspan font-size="15" font-weight="700" fill="#0fa07f">B</tspan><tspan font-size="11" font-weight="700" fill="currentColor">asically </tspan><tspan font-size="15" font-weight="700" fill="#0fa07f">A</tspan><tspan font-size="11" font-weight="700" fill="currentColor">vailable</tspan></text>
@@ -184,7 +184,7 @@ per operation. That trade is usually described by swapping ACID for its delibera
       <path d="M486 252 H868"/>
     </g>
 
-    <text x="223" y="266" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">The promise: strong consistency</text>
+    <text x="223" y="266" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">The promise: strong consistency</text>
     <text x="223" y="281" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">every read sees the last write, always</text>
     <text x="677" y="266" text-anchor="middle" font-size="10" font-weight="700" fill="#0fa07f">The promise: eventual consistency</text>
     <text x="677" y="281" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">if writes stop, every replica converges</text>
@@ -212,7 +212,7 @@ per operation. That trade is usually described by swapping ACID for its delibera
     <text x="677" y="392" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.85">must be written to tolerate it.</text>
 
     <rect x="16" y="418" width="868" height="56" rx="11" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.5"/>
-    <text x="450" y="440" text-anchor="middle" font-size="10" fill="currentColor"><tspan font-weight="700" fill="#3553ff">ACID</tspan> buys correctness by giving up availability. <tspan font-weight="700" fill="#0fa07f">BASE</tspan> buys availability by giving up freshness.</text>
+    <text x="450" y="440" text-anchor="middle" font-size="10" fill="currentColor"><tspan font-weight="700" fill="#c94a12">ACID</tspan> buys correctness by giving up availability. <tspan font-weight="700" fill="#0fa07f">BASE</tspan> buys availability by giving up freshness.</text>
     <text x="450" y="458" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">Neither is "better" — you choose per dataset, not per company: strong for money, eventual for a feed.</text>
   </g>
   <text x="450" y="496" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">A single-node relational database dodges the choice by not being distributed — which is exactly why it can't scale out.</text>

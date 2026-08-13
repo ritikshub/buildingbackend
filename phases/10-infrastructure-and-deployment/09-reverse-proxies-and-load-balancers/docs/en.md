@@ -63,10 +63,10 @@ Phase 1's [OSI and TCP/IP models](../../01-networking-and-protocols/01-osi-and-t
 
     <rect x="112" y="115" width="202" height="14" rx="7" fill="#7f7f7f" fill-opacity="0.34" stroke="#7f7f7f" stroke-width="1.1"/>
     <g fill="none" stroke-width="1.9" stroke-linejoin="round">
-      <rect x="32" y="100" width="86" height="44" rx="8" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="32" y="100" width="86" height="44" rx="8" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="152" y="100" width="122" height="44" rx="8" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="308" y="100" width="86" height="44" rx="8" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
-      <rect x="466" y="100" width="86" height="44" rx="8" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="466" y="100" width="86" height="44" rx="8" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="586" y="100" width="122" height="44" rx="8" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff"/>
       <rect x="742" y="100" width="86" height="44" rx="8" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
     </g>
@@ -77,13 +77,13 @@ Phase 1's [OSI and TCP/IP models](../../01-networking-and-protocols/01-osi-and-t
     </g>
 
     <g fill="currentColor" text-anchor="middle">
-      <text x="75" y="120" font-size="10.5" font-weight="700" fill="#3553ff">client</text>
+      <text x="75" y="120" font-size="10.5" font-weight="700" fill="#c94a12">client</text>
       <text x="75" y="134" font-size="8.5" opacity="0.8">one IP</text>
       <text x="213" y="120" font-size="10.5" font-weight="700" fill="#7c5cff">L4 proxy</text>
       <text x="213" y="134" font-size="8.5" opacity="0.8">relays bytes</text>
       <text x="351" y="120" font-size="10.5" font-weight="700" fill="#0fa07f">backend</text>
       <text x="351" y="134" font-size="8.5" opacity="0.8">TLS ends here</text>
-      <text x="509" y="120" font-size="10.5" font-weight="700" fill="#3553ff">client</text>
+      <text x="509" y="120" font-size="10.5" font-weight="700" fill="#c94a12">client</text>
       <text x="509" y="134" font-size="8.5" opacity="0.8">one IP</text>
       <text x="647" y="120" font-size="10.5" font-weight="700" fill="#7c5cff">L7 proxy</text>
       <text x="647" y="134" font-size="8.5" opacity="0.8">parses HTTP</text>
@@ -231,7 +231,7 @@ Every hop in the chain has its own timeout, and the failure mode you must engine
 
     <text x="30" y="56" font-size="9" font-weight="700" fill="currentColor" opacity="0.6">TIMEOUT BUDGETS — each one strictly INSIDE the one outside it</text>
     <g stroke-width="1.6" stroke-linejoin="round">
-      <rect x="30" y="64" width="810" height="17" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="30" y="64" width="810" height="17" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="196" y="85" width="644" height="17" rx="6" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="404" y="106" width="436" height="17" rx="6" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff"/>
       <rect x="572" y="127" width="268" height="17" rx="6" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
@@ -246,7 +246,7 @@ Every hop in the chain has its own timeout, and the failure mode you must engine
     </g>
 
     <g fill="none" stroke-width="2" stroke-linejoin="round">
-      <rect x="30" y="176" width="150" height="52" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="30" y="176" width="150" height="52" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="238" y="176" width="150" height="52" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="446" y="176" width="150" height="52" rx="9" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff"/>
       <rect x="654" y="176" width="186" height="52" rx="9" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
@@ -257,7 +257,7 @@ Every hop in the chain has its own timeout, and the failure mode you must engine
       <path d="M596 202 L 648 202" marker-end="url(#l09-a2)"/>
     </g>
     <g fill="currentColor" text-anchor="middle">
-      <text x="105" y="199" font-size="11.5" font-weight="700" fill="#3553ff">client</text>
+      <text x="105" y="199" font-size="11.5" font-weight="700" fill="#c94a12">client</text>
       <text x="105" y="216" font-size="9" opacity="0.85">peer 127.0.0.9</text>
       <text x="313" y="199" font-size="11.5" font-weight="700" fill="#7c5cff">edge proxy</text>
       <text x="313" y="216" font-size="9" opacity="0.85">TLS ends &#8226; peer 127.0.0.2</text>
@@ -628,15 +628,15 @@ Then the bill. On the backend side, the timed-out run shows **20 accepted, 20 fi
     </g>
 
     <g stroke-width="1.5">
-      <rect x="204" y="140" width="96" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
-      <rect x="228" y="152" width="72" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
-      <rect x="252" y="164" width="48" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
-      <rect x="204" y="250" width="96" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
-      <rect x="228" y="262" width="72" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
-      <rect x="252" y="274" width="48" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
-      <rect x="204" y="360" width="96" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
-      <rect x="228" y="372" width="72" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
-      <rect x="252" y="384" width="48" height="8" rx="4" fill="#3553ff" fill-opacity="0.5" stroke="#3553ff"/>
+      <rect x="204" y="140" width="96" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
+      <rect x="228" y="152" width="72" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
+      <rect x="252" y="164" width="48" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
+      <rect x="204" y="250" width="96" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
+      <rect x="228" y="262" width="72" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
+      <rect x="252" y="274" width="48" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
+      <rect x="204" y="360" width="96" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
+      <rect x="228" y="372" width="72" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
+      <rect x="252" y="384" width="48" height="8" rx="4" fill="#c94a12" fill-opacity="0.5" stroke="#c94a12"/>
     </g>
 
     <g stroke-width="1.5">

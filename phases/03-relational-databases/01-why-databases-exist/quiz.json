@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your program creates a user in a variable and then exits. What happens to that user?",
-    "options": ["It is automatically saved to disk", "It vanishes — it lived in volatile RAM, which forgets on exit", "It moves to the database", "It stays in memory until the computer restarts"],
-    "correct": 1,
-    "explanation": "Program variables live in volatile RAM, which loses everything when the process ends or power is cut. Keeping data means deliberately persisting it to non-volatile storage (disk)."
-  },
-  {
     "stage": "check",
     "question": "Why does looking up one record in a large flat file get slow as the file grows?",
     "options": ["Disks get slower when files are bigger", "You must scan line by line until you find it — an O(n) full scan", "Text files can't hold many rows", "The operating system limits file reads"],

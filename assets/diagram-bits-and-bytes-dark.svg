@@ -9,7 +9,7 @@
     <text x="34" y="60" font-size="11.5" font-weight="700" fill="#7f7f7f">1 · ONE BYTE, DRAWN OUT</text>
     <text x="205" y="60" font-size="9" fill="currentColor" opacity="0.85">eight switches side by side — this one holds the lesson's own example, binary 1011</text>
 
-    <g text-anchor="middle" font-size="10" fill="#3553ff" opacity="0.75">
+    <g text-anchor="middle" font-size="10" fill="#ff8c42" opacity="0.75">
       <text x="205" y="84">2<tspan font-size="7" dy="-3">7</tspan></text>
       <text x="275" y="84">2<tspan font-size="7" dy="-3">6</tspan></text>
       <text x="345" y="84">2<tspan font-size="7" dy="-3">5</tspan></text>
@@ -19,7 +19,7 @@
       <text x="625" y="84">2<tspan font-size="7" dy="-3">1</tspan></text>
       <text x="695" y="84">2<tspan font-size="7" dy="-3">0</tspan></text>
     </g>
-    <g text-anchor="middle" font-size="13.5" font-weight="700" fill="#3553ff">
+    <g text-anchor="middle" font-size="13.5" font-weight="700" fill="#ff8c42">
       <text x="205" y="101">128</text><text x="275" y="101">64</text><text x="345" y="101">32</text><text x="415" y="101">16</text>
       <text x="485" y="101">8</text><text x="555" y="101">4</text><text x="625" y="101">2</text><text x="695" y="101">1</text>
     </g>
@@ -56,7 +56,7 @@
     </g>
 
     <g text-anchor="end" font-size="9">
-      <text x="165" y="101" fill="#3553ff">place value →</text>
+      <text x="165" y="101" fill="#ff8c42">place value →</text>
       <text x="165" y="141" fill="currentColor" opacity="0.85">the 8 bits →</text>
       <text x="165" y="178" fill="#0fa07f">each adds →</text>
     </g>
@@ -75,9 +75,9 @@
       <text x="231" y="389" font-size="8.5" fill="currentColor" opacity="0.75">so one byte runs 0 (all off) to 255 (all on)</text>
     </g>
 
-    <rect x="458" y="270" width="426" height="130" rx="11" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.55" stroke-width="1.8"/>
+    <rect x="458" y="270" width="426" height="130" rx="11" fill="#ff8c42" fill-opacity="0.05" stroke="#ff8c42" stroke-opacity="0.55" stroke-width="1.8"/>
     <g text-anchor="middle">
-      <text x="671" y="292" font-size="10.5" font-weight="700" fill="#3553ff">HOW MANY PATTERNS FIT IN 8 SWITCHES?</text>
+      <text x="671" y="292" font-size="10.5" font-weight="700" fill="#ff8c42">HOW MANY PATTERNS FIT IN 8 SWITCHES?</text>
       <text x="671" y="320" font-size="11.5" fill="currentColor"><tspan>2 × 2 × 2 × 2 × 2 × 2 × 2 × 2 = </tspan><tspan font-weight="700" fill="#0fa07f">256</tspan></text>
       <text x="671" y="344" font-size="9" fill="currentColor" opacity="0.85">each extra switch doubles the count — that is 2<tspan font-size="7" dy="-3">8</tspan></text>
       <text x="671" y="368" font-size="9.5" fill="currentColor"><tspan>256 patterns, one of them zero → a byte holds </tspan><tspan font-weight="700" fill="#0fa07f">0 to 255</tspan></text>

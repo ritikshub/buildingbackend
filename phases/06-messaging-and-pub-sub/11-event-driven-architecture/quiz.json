@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A team renames its `SendEmail` message to `SendEmailRequested`, moves it from a queue onto a topic, and records the migration as 'event-driven'. What have they actually changed?",
-    "options": ["They have converted a command into an event, because past-tense naming and a topic are what define an event", "Almost nothing architecturally. The message still has exactly one intended handler chosen by the producer, so it is still a command: the broker breaks temporal and load coupling but leaves spatial coupling fully intact, and the dependency graph is identical to the one they started with, now with a broker to operate", "They have made the system less decoupled, because topics deliver to every subscriber and the email service will now receive duplicates", "Nothing at all - a topic with one subscriber is functionally identical to a queue in every broker"],
-    "correct": 1,
-    "explanation": "Intent, not naming or transport, decides whether a message is an event or a command. The test: could the producer have written this message without knowing the consumer exists? 'SendEmailRequested' fails it - the producer decided what should happen and to whom. Commands over a broker are legitimate and buy durability, buffering and retries, but they never break spatial coupling. Mislabelling a command as an event is the mechanism that produces a distributed monolith."
-  },
-  {
     "stage": "check",
     "question": "Why does publishing an event invert the dependency arrow, and what concretely follows from that?",
     "options": ["It does not invert anything; the producer still depends on the broker, which is the same coupling with an extra hop", "Because the producer declares a fact and names no consumer, each consumer independently depends on the published event contract rather than the producer depending on them - so a fourth interested service subscribes with zero changes to the producer's code or deploy", "Because topics deliver asynchronously, the consumer no longer needs the producer to be running, which is the only coupling that ever mattered", "Because the broker owns the schema, neither side depends on the other and the contract can change freely"],

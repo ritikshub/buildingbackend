@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service opens a fresh database connection for every request. Which cost actually dominates, and why does it stay invisible in local development?",
-    "options": [
-      "The database has to re-parse and re-plan every query on a new connection, costing several milliseconds of CPU per statement; it hides locally because a development database has tiny tables and trivial plans to compile.",
-      "Serializing the wire protocol handshake burns CPU in the client driver; it hides locally because your laptop has spare cores that a CPU-limited production container does not.",
-      "Round trips and server-side allocation: a TCP handshake, one or two TLS round trips, an authentication exchange, and the database forking a multi-megabyte backend process — roughly 6 ms of setup for a 1 ms query. It hides locally because a loopback round trip is microseconds and one developer never approaches max_connections.",
-      "Memory churn in the client driver's buffer allocator; it hides locally because CPython keeps freed arenas warm across a single-threaded test run."
-    ],
-    "correct": 2,
-    "explanation": "The cost is latency (round trips) plus server-side resources (a forked backend with its own memory), not client CPU. In the lesson's measurement, 100 operations took 842.7 ms unpooled and 137.0 ms pooled — a 6.15x speedup, with 83.7% of the original wall clock being pure handshake. Query re-planning is a real cost but a much smaller one, and it is the tempting wrong answer because prepared-statement caching is genuinely connection-scoped."
-  },
-  {
     "stage": "check",
     "question": "You sweep your pool's sizing curve. At pool_size=12 you get 1,785 ops/s with a database-side p99 of 8.4 ms and a pool wait p99 of 34 ms. At pool_size=64 you get 1,394 ops/s, a database-side p99 of 48.8 ms, and a pool wait p99 of 0 ms. What did widening the pool actually accomplish?",
     "options": [

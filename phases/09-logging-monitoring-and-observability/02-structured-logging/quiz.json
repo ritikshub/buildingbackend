@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service logs `Failed to process order for user 8842 after 3 retries`. Your manager asks how many order failures hit premium-tier users in eu-west in the last hour, grouped by error kind. Why is this hard?",
-    "options": [
-      "The log file is too large to search quickly",
-      "Log files are compressed, so text search doesn't work on them",
-      "Every fact you need is either trapped inside an English sentence (the user ID, the retry count) or was never written down at all (tier, region, error kind). Extracting the first group means a regex against prose that breaks the moment someone rewords the message; the second group cannot be recovered by any tool, because the data never left the process",
-      "You need a faster log storage backend"
-    ],
-    "correct": 2,
-    "explanation": "There are two distinct failures here and only one of them is about tooling. Facts embedded in a sentence can be parsed, but only by a regex that silently returns zero the day the message is reworded — you've made an English string load-bearing without telling anyone. Facts that were never emitted, like tier and region, are simply gone: no backend, index, or query language recovers a field the program never wrote."
-  },
-  {
     "stage": "check",
     "question": "Why must a log timestamp be ISO 8601 in UTC with millisecond precision, rather than local time or a raw epoch float?",
     "options": [

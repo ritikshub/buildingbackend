@@ -43,47 +43,47 @@ diverge in one decisive way:
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="100%" style="max-width:880px" role="img" aria-label="The same order, modeled two ways. On the left, the relational model: the one order object is shredded across three tables — orders holding id, customer_id and total; addresses holding id, order_id and city, zip, country; and order_items holding id, order_id, sku and qty. The child rows point back at the parent with an order_id foreign key, so one application object becomes four rows across three tables. Reading it back means a SELECT that joins all three tables. The cost is a join on every read and several inserts on every write, but each fact is stored exactly once, so changing the shipping city touches one row. On the right, the document model: the same order is one JSON document containing _id, customer, a nested address object with city and zip, an items array of two sub-documents each with sku and qty, and total. The nested address object is the addresses table inlined; the items array is the order_items table inlined. Reading it back is a single fetch by _id — one seek, nothing to join and nothing to reassemble, and the whole write is atomic. The cost is duplication: embedded data that is shared across many parents, unbounded in size, or updated on its own goes stale in every copy. Both paths converge on the identical order object the application wanted, which is the point: same result, different cost to assemble it.">
   <defs>
-    <marker id="p4l3a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p4l3a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p4l3a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">One order, modeled two ways — same object out, very different cost to assemble it</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="42" width="424" height="354" rx="12" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.8"/>
+    <rect x="16" y="42" width="424" height="354" rx="12" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.8"/>
     <rect x="460" y="42" width="424" height="354" rx="12" fill="#0fa07f" fill-opacity="0.05" stroke="#0fa07f" stroke-opacity="0.8"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="228" y="66" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3553ff">RELATIONAL — shredded across 3 tables</text>
+    <text x="228" y="66" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c94a12">RELATIONAL — shredded across 3 tables</text>
     <text x="228" y="84" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">the app's one object, cut up to fit flat tables</text>
     <text x="672" y="66" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0fa07f">DOCUMENT — one order, one document</text>
     <text x="672" y="84" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">the app's one object, stored exactly as it is</text>
 
-    <g fill="#3553ff" fill-opacity="0.09" stroke="#3553ff" stroke-width="1.6">
+    <g fill="#c94a12" fill-opacity="0.09" stroke="#c94a12" stroke-width="1.6">
       <rect x="126" y="100" width="196" height="50" rx="8"/>
       <rect x="30" y="194" width="186" height="66" rx="8"/>
       <rect x="238" y="194" width="190" height="66" rx="8"/>
     </g>
-    <text x="224" y="120" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">orders</text>
+    <text x="224" y="120" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">orders</text>
     <text x="224" y="137" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">id · customer_id · total</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.5" stroke-opacity="0.8">
+    <g fill="none" stroke="#c94a12" stroke-width="1.5" stroke-opacity="0.8">
       <path d="M182 150 L128 194"/>
       <path d="M266 150 L330 194"/>
     </g>
-    <text x="168" y="178" text-anchor="middle" font-size="8" fill="#3553ff">1:N</text>
-    <text x="288" y="178" text-anchor="middle" font-size="8" fill="#3553ff">1:N</text>
+    <text x="168" y="178" text-anchor="middle" font-size="8" fill="#c94a12">1:N</text>
+    <text x="288" y="178" text-anchor="middle" font-size="8" fill="#c94a12">1:N</text>
 
-    <text x="123" y="214" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">addresses</text>
+    <text x="123" y="214" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">addresses</text>
     <text x="123" y="231" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">id · order_id (FK)</text>
     <text x="123" y="246" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">city · zip · country</text>
 
-    <text x="333" y="214" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">order_items</text>
+    <text x="333" y="214" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">order_items</text>
     <text x="333" y="231" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">id · order_id (FK)</text>
     <text x="333" y="246" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">sku · qty · one row per item</text>
 
     <text x="228" y="280" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">one object → 4 rows across 3 tables, glued by foreign keys</text>
 
-    <rect x="30" y="290" width="398" height="58" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-opacity="0.55" stroke-width="1.4"/>
-    <text x="229" y="309" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3553ff">read it back = JOIN 3 TABLES</text>
+    <rect x="30" y="290" width="398" height="58" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-opacity="0.55" stroke-width="1.4"/>
+    <text x="229" y="309" text-anchor="middle" font-size="9.5" font-weight="700" fill="#c94a12">read it back = JOIN 3 TABLES</text>
     <text x="229" y="326" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.9">SELECT … FROM orders o JOIN addresses a</text>
     <text x="229" y="339" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.9">ON a.order_id=o.id JOIN order_items i ON i.order_id=o.id</text>
 
@@ -126,10 +126,10 @@ diverge in one decisive way:
     <text x="672" y="383" text-anchor="middle" font-size="8.5" fill="#e0930f" opacity="0.9">shared, unbounded, or updated on its own, copies go stale.</text>
   </g>
   <g fill="none" stroke-width="1.7">
-    <path d="M228 404 L228 430 L396 430 L396 438" stroke="#3553ff" marker-end="url(#p4l3a-arb)"/>
+    <path d="M228 404 L228 430 L396 430 L396 438" stroke="#c94a12" marker-end="url(#p4l3a-arb)"/>
     <path d="M672 404 L672 430 L504 430 L504 438" stroke="#0fa07f" marker-end="url(#p4l3a-arg)"/>
   </g>
-  <text x="302" y="419" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" font-weight="700" fill="#3553ff">read = JOIN 3 tables</text>
+  <text x="302" y="419" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" font-weight="700" fill="#c94a12">read = JOIN 3 tables</text>
   <text x="598" y="419" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" font-weight="700" fill="#0fa07f">read = fetch 1 document</text>
   <rect x="300" y="442" width="300" height="46" rx="10" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.6"/>
   <text x="450" y="463" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="11" font-weight="700" fill="currentColor">the SAME order object</text>

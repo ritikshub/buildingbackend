@@ -34,7 +34,7 @@ Everything on that list is a **hidden input** — an argument the test never pas
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 452" width="100%" style="max-width:840px" role="img" aria-label="Two versions of the same pricing function. The top version is passed only the items and reads five further inputs on its own: the clock, the environment, a random number generator, set iteration order and a module-level counter. Run in six ordinary machine states it produces six different results. The bottom version takes all five as arguments; run in the same six machine states it produces one result. The takeaway is that determinism is a property of how much of the world a function is allowed to read, not of the code itself.">
   <defs>
-    <marker id="p12-08-a1" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p12-08-a1" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p12-08-a2" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#d64545"/></marker>
   </defs>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
@@ -43,10 +43,10 @@ Everything on that list is a **hidden input** — an argument the test never pas
 
     <text x="30" y="72" font-size="11.5" font-weight="700" fill="#d64545">1 · the version everyone writes — 1 argument, 5 hidden inputs</text>
 
-    <rect x="30" y="88" width="168" height="52" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="114" y="108" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">the test</text>
+    <rect x="30" y="88" width="168" height="52" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="114" y="108" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">the test</text>
     <text x="114" y="126" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">sets: items</text>
-    <path d="M198 114 L 292 114" fill="none" stroke="#3553ff" stroke-width="1.8" marker-end="url(#p12-08-a1)"/>
+    <path d="M198 114 L 292 114" fill="none" stroke="#c94a12" stroke-width="1.8" marker-end="url(#p12-08-a1)"/>
 
     <rect x="298" y="82" width="182" height="64" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff" stroke-width="1.9"/>
     <text x="389" y="104" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7c5cff">price_order(items)</text>
@@ -79,11 +79,11 @@ Everything on that list is a **hidden input** — an argument the test never pas
 
     <text x="30" y="274" font-size="11.5" font-weight="700" fill="#0fa07f">2 · the same arithmetic with every hidden input promoted to an argument</text>
 
-    <rect x="30" y="290" width="168" height="70" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="114" y="310" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">the test</text>
+    <rect x="30" y="290" width="168" height="70" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="114" y="310" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">the test</text>
     <text x="114" y="328" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.9">sets: items, now, promo,</text>
     <text x="114" y="342" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.9">order_id, seq, tags</text>
-    <path d="M198 325 L 292 325" fill="none" stroke="#3553ff" stroke-width="1.8" marker-end="url(#p12-08-a1)"/>
+    <path d="M198 325 L 292 325" fill="none" stroke="#c94a12" stroke-width="1.8" marker-end="url(#p12-08-a1)"/>
 
     <rect x="298" y="293" width="182" height="64" rx="9" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f" stroke-width="1.9"/>
     <text x="389" y="315" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0fa07f">price_order(...)</text>
@@ -211,7 +211,7 @@ The server is in Berlin — UTC+1 in winter, UTC+2 in summer, transitions at 01:
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">"It only fails at 23:00" is not a coincidence. It is an offset.</text>
     <text x="440" y="45" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.8">every one of the 8,784 hours of 2024 as a subscription start, Berlin server (UTC+1 / UTC+2)</text>
 
-    <text x="40" y="72" font-size="11" font-weight="700" fill="#3553ff">test_renewal_lands_on_the_same_day_of_month()</text>
+    <text x="40" y="72" font-size="11" font-weight="700" fill="#c94a12">test_renewal_lands_on_the_same_day_of_month()</text>
     <text x="40" y="88" font-size="8.5" fill="currentColor" opacity="0.8">by the UTC hour at which CI happened to run it</text>
 
     <g fill="none" stroke="currentColor" stroke-width="1.3">
@@ -240,7 +240,7 @@ The server is in Berlin — UTC+1 in winter, UTC+2 in summer, transitions at 01:
       <text x="68" y="276">00</text><text x="188" y="276">06</text><text x="308" y="276">12</text><text x="428" y="276">18</text><text x="508" y="276" font-weight="700" fill="#e0930f">22</text><text x="528" y="276" font-weight="700" fill="#d64545">23</text>
     </g>
     <text x="301" y="292" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.75">UTC hour at which the test ran</text>
-    <text x="301" y="310" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3553ff">704 of 8,784 hours fail — 8.0% — and 572 of them are these two bars</text>
+    <text x="301" y="310" text-anchor="middle" font-size="9.5" font-weight="700" fill="#c94a12">704 of 8,784 hours fail — 8.0% — and 572 of them are these two bars</text>
 
     <path d="M566 62 L 566 320" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.28"/>
 
@@ -513,7 +513,7 @@ The program builds a 200-test suite with three real order dependencies, arranged
       <rect x="486" y="83" width="79" height="14" fill="#0fa07f" fill-opacity="0.45" stroke="#0fa07f" stroke-width="1.2"/>
       <rect x="486" y="119" width="106" height="14" fill="#0fa07f" fill-opacity="0.45" stroke="#0fa07f" stroke-width="1.2"/>
       <rect x="486" y="155" width="4" height="14" fill="#d64545" fill-opacity="0.55" stroke="#d64545" stroke-width="1.2"/>
-      <rect x="486" y="191" width="134" height="14" fill="#3553ff" fill-opacity="0.40" stroke="#3553ff" stroke-width="1.2"/>
+      <rect x="486" y="191" width="134" height="14" fill="#c94a12" fill-opacity="0.40" stroke="#c94a12" stroke-width="1.2"/>
     </g>
     <path d="M486 78 L 486 212" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
     <path d="M646 78 L 646 212" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.3"/>
@@ -524,9 +524,9 @@ The program builds a 200-test suite with three real order dependencies, arranged
       <text x="700" y="94">0.4928</text><text x="772" y="94" fill="currentColor" opacity="0.75">0.5000</text><text x="838" y="94" text-anchor="end">7</text>
       <text x="700" y="130">0.6645</text><text x="772" y="130" fill="currentColor" opacity="0.75">0.6667</text><text x="838" y="130" text-anchor="end">5</text>
       <text x="700" y="166" fill="#d64545">0.0265</text><text x="772" y="166" fill="currentColor" opacity="0.75">0.0250</text><text x="838" y="166" text-anchor="end" fill="#d64545">182</text>
-      <text x="700" y="202" fill="#3553ff">0.8353</text><text x="772" y="202" fill="currentColor" opacity="0.75">0.8375</text><text x="838" y="202" text-anchor="end" fill="#3553ff">3</text>
+      <text x="700" y="202" fill="#c94a12">0.8353</text><text x="772" y="202" fill="currentColor" opacity="0.75">0.8375</text><text x="838" y="202" text-anchor="end" fill="#c94a12">3</text>
     </g>
-    <text x="38" y="202" font-size="9.5" font-weight="700" fill="#3553ff">ANY of the three detected</text>
+    <text x="38" y="202" font-size="9.5" font-weight="700" fill="#c94a12">ANY of the three detected</text>
     <text x="290" y="202" font-size="8.5" fill="currentColor" opacity="0.9">the question CI actually asks</text>
 
     <text x="440" y="240" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">simulation and closed form agree to within 0.008 on every row — combinatorics, not weather</text>
@@ -561,18 +561,18 @@ The program builds a 200-test suite with three real order dependencies, arranged
       <text x="466" y="303">100%</text><text x="466" y="343">10%</text><text x="466" y="383">1%</text><text x="466" y="423">0.1%</text>
     </g>
 
-    <path d="M470 300 L 472 332 L 474 363 L 476 395 L 477 420" fill="none" stroke="#3553ff" stroke-width="2.6"/>
+    <path d="M470 300 L 472 332 L 474 363 L 476 395 L 477 420" fill="none" stroke="#c94a12" stroke-width="2.6"/>
     <path d="M470 300 L 516 311 L 563 322 L 609 333 L 655 344 L 690 352 L 748 366 L 807 380 L 840 388" fill="none" stroke="#d64545" stroke-width="2.6"/>
 
-    <circle cx="476" cy="380" r="4" fill="#3553ff"/><circle cx="807" cy="380" r="4" fill="#d64545"/>
-    <text x="486" y="373" font-size="9" font-weight="700" fill="#3553ff">N = 3</text>
+    <circle cx="476" cy="380" r="4" fill="#c94a12"/><circle cx="807" cy="380" r="4" fill="#d64545"/>
+    <text x="486" y="373" font-size="9" font-weight="700" fill="#c94a12">N = 3</text>
     <text x="803" y="373" text-anchor="end" font-size="9" font-weight="700" fill="#d64545">N = 182</text>
 
     <g fill="currentColor" font-size="8" text-anchor="middle" opacity="0.7">
       <text x="470" y="434">0</text><text x="563" y="434">50</text><text x="655" y="434">100</text><text x="748" y="434">150</text><text x="840" y="434">200</text>
     </g>
     <text x="660" y="447" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.75">shuffled runs (pytest-randomly reshuffles once per run)</text>
-    <text x="500" y="308" font-size="8.5" font-weight="700" fill="#3553ff">any dependency</text>
+    <text x="500" y="308" font-size="8.5" font-weight="700" fill="#c94a12">any dependency</text>
     <text x="700" y="336" font-size="8.5" font-weight="700" fill="#d64545">the rare one, p = 1/40</text>
 
     <text x="440" y="468" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">"Is this suite order-independent?" is a cheap question. "Have I found them all?" is priced by the rarest one.</text>

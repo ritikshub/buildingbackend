@@ -62,7 +62,7 @@ once, without ever leaving the data half-written or wrong.
   </g>
   <g>
   <rect x="18" y="60" width="264" height="130" rx="14" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-dasharray="7 6" stroke-opacity="0.55" stroke-linejoin="round"/>
-  <rect x="30" y="100" width="140" height="54" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="30" y="100" width="140" height="54" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="188" y="100" width="82" height="54" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>
   <rect x="420" y="60" width="242" height="130" rx="14" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-dasharray="7 6" stroke-opacity="0.55" stroke-linejoin="round"/>
   <rect x="470" y="100" width="142" height="54" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
@@ -174,9 +174,9 @@ hardened package, what every serious application needs and no flat file gives:
   <path d="M300 320 L 300 352" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l01b-ah)"/>
   </g>
   <g>
-  <rect x="218" y="50" width="164" height="46" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="218" y="50" width="164" height="46" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="34" y="130" width="532" height="190" rx="14" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-dasharray="7 6" stroke-opacity="0.55" stroke-linejoin="round"/>
-  <rect x="58" y="168" width="230" height="58" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="58" y="168" width="230" height="58" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="312" y="168" width="230" height="58" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>
   <rect x="58" y="244" width="230" height="58" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="312" y="244" width="230" height="58" rx="9" fill="#12a05a" fill-opacity="0.14" stroke="#12a05a" stroke-width="2" stroke-linejoin="round"/>

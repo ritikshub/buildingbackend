@@ -48,8 +48,8 @@ Here is the whole system, with the measured numbers from the run at the end of t
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="18" y="76" width="176" height="128" rx="12" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f" stroke-dasharray="7 5"/>
-    <rect x="34" y="112" width="144" height="34" rx="7" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-    <rect x="34" y="154" width="144" height="34" rx="7" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="34" y="112" width="144" height="34" rx="7" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+    <rect x="34" y="154" width="144" height="34" rx="7" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="222" y="98" width="122" height="84" rx="11" fill="#7f7f7f" fill-opacity="0.09" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="372" y="70" width="150" height="140" rx="11" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
   </g>
@@ -64,7 +64,7 @@ Here is the whole system, with the measured numbers from the run at the end of t
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="562" y="60" width="212" height="58" rx="10" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="562" y="128" width="212" height="58" rx="10" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
-    <rect x="562" y="196" width="212" height="58" rx="10" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="562" y="196" width="212" height="58" rx="10" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
   </g>
 
   <g fill="none" stroke="currentColor" stroke-width="1.6">
@@ -79,7 +79,7 @@ Here is the whole system, with the measured numbers from the run at the end of t
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="18" y="290" width="404" height="112" rx="12" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
     <rect x="452" y="290" width="404" height="112" rx="12" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
-    <rect x="18" y="422" width="838" height="118" rx="12" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff"/>
+    <rect x="18" y="422" width="838" height="118" rx="12" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12"/>
   </g>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
@@ -105,7 +105,7 @@ Here is the whole system, with the measured numbers from the run at the end of t
     <text x="580" y="148" font-size="10.5" font-weight="700" fill="#e0930f">email — the effect you cannot undo</text>
     <text x="580" y="164" font-size="8.5" opacity="0.9">provider Idempotency-Key, 30 s TTL · retry lane</text>
     <text x="580" y="178" font-size="8.5" font-weight="700">600 sent · 116 key-suppressed · 198 retries</text>
-    <text x="580" y="216" font-size="10.5" font-weight="700" fill="#3553ff">analytics — fast and tolerant</text>
+    <text x="580" y="216" font-size="10.5" font-weight="700" fill="#c94a12">analytics — fast and tolerant</text>
     <text x="580" y="232" font-size="8.5" opacity="0.9">reads v1 and v2 through upcasters · sheds under lag</text>
     <text x="580" y="246" font-size="8.5" font-weight="700">600 counted · 400 upcast hops · 74 shed</text>
 
@@ -121,11 +121,11 @@ Here is the whole system, with the measured numbers from the run at the end of t
     <text x="470" y="374" font-size="9.5" font-weight="700">12 entries · 0 redeliveries wasted on them</text>
     <text x="470" y="390" font-size="9.5" font-weight="700">their partition ran at 2.00 rec/s; peers at 2.02</text>
 
-    <text x="36" y="446" font-size="11" font-weight="700" fill="#3553ff">WHAT MAKES IT ONE SYSTEM RATHER THAN THREE</text>
+    <text x="36" y="446" font-size="11" font-weight="700" fill="#c94a12">WHAT MAKES IT ONE SYSTEM RATHER THAN THREE</text>
     <text x="36" y="468" font-size="9.5" opacity="0.95">The message_id is generated ONCE, in the outbox row, inside the business transaction. Every retry, every re-publish and</text>
     <text x="36" y="485" font-size="9.5" opacity="0.95">every replay carries the same id — so the dedup store, the DLQ, the trace and the email provider's key all agree on identity.</text>
     <text x="36" y="506" font-size="9.5" opacity="0.95">The partition key is the customer id, so every mechanism downstream inherits per-customer ordering without asking for it.</text>
-    <text x="36" y="527" font-size="9.5" font-weight="700" fill="#3553ff">Two fields in the envelope carry the whole architecture. Get either wrong and no downstream mechanism can recover.</text>
+    <text x="36" y="527" font-size="9.5" font-weight="700" fill="#c94a12">Two fields in the envelope carry the whole architecture. Get either wrong and no downstream mechanism can recover.</text>
   </g>
 </svg>
 ```
@@ -191,7 +191,7 @@ Two diagnostics fall out, and both are worth wiring into alerts. **Independent c
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="16" y="44" width="416" height="206" rx="13" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f"/>
     <rect x="448" y="44" width="416" height="206" rx="13" fill="#7c5cff" fill-opacity="0.08" stroke="#7c5cff"/>
-    <rect x="16" y="264" width="416" height="206" rx="13" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff"/>
+    <rect x="16" y="264" width="416" height="206" rx="13" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12"/>
     <rect x="448" y="264" width="416" height="206" rx="13" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f"/>
   </g>
 
@@ -212,7 +212,7 @@ Two diagnostics fall out, and both are worth wiring into alerts. **Independent c
     <path d="M44 400 L 410 400"/>
     <path d="M476 400 L 842 400"/>
   </g>
-  <path d="M44 396 L 110 392 L 176 382 L 240 356 L 300 330 L 340 320 L 380 350 L 410 386" fill="none" stroke="#3553ff" stroke-width="2.6"/>
+  <path d="M44 396 L 110 392 L 176 382 L 240 356 L 300 330 L 340 320 L 380 350 L 410 386" fill="none" stroke="#c94a12" stroke-width="2.6"/>
   <g fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="5 4" opacity="0.6">
     <path d="M340 320 L 340 400"/>
   </g>
@@ -241,13 +241,13 @@ Two diagnostics fall out, and both are worth wiring into alerts. **Independent c
     <text x="468" y="208" font-size="10" font-weight="700" fill="#7c5cff">Two streams, two failure strategies, in the same service.</text>
     <text x="468" y="228" font-size="9.5" opacity="0.9">"Use a retry topic" is a rule about a stream, not about a system.</text>
 
-    <text x="36" y="292" font-size="11.5" font-weight="700" fill="#3553ff">3 · SCALING STOPS AT THE PARTITION COUNT</text>
+    <text x="36" y="292" font-size="11.5" font-weight="700" fill="#c94a12">3 · SCALING STOPS AT THE PARTITION COUNT</text>
     <text x="36" y="310" font-size="9" opacity="0.85">payments time lag, 1 s samples, peak 13.70 s at t=49</text>
-    <text x="344" y="312" font-size="8.5" text-anchor="middle" font-weight="700" fill="#3553ff">8 members</text>
+    <text x="344" y="312" font-size="8.5" text-anchor="middle" font-weight="700" fill="#c94a12">8 members</text>
     <text x="344" y="325" font-size="8" text-anchor="middle" opacity="0.8">ceiling</text>
     <text x="36" y="424" font-size="9.5" opacity="0.95">2 -&gt; 8 members and no further: a 9th consumer would idle.</text>
     <text x="36" y="440" font-size="9.5" opacity="0.95">Analytics had no scaling left and shed 74 order.enriched records.</text>
-    <text x="36" y="460" font-size="10" font-weight="700" fill="#3553ff">Scale out · speed up · shed. The first rung is fixed at design time.</text>
+    <text x="36" y="460" font-size="10" font-weight="700" fill="#c94a12">Scale out · speed up · shed. The first rung is fixed at design time.</text>
 
     <text x="468" y="292" font-size="11.5" font-weight="700" fill="#0fa07f">4 · SAME GRAPH, OPPOSITE RESPONSES</text>
     <text x="468" y="310" font-size="9" opacity="0.85">the relay dies at t=50 and returns at t=58</text>

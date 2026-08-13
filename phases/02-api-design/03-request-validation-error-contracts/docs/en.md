@@ -72,7 +72,7 @@ one envelope by hand.
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 886" width="100%" style="max-width:880px" role="img" aria-label="How one request body becomes one error envelope. A POST to /v1/orders reaches a validator at the edge, before any business logic runs. The validator collects ALL errors rather than returning on the first one. On the clean branch the business logic runs and returns 200 or 201. On the errors branch the API returns 422 Unprocessable Content carrying one application/problem+json envelope. A side note contrasts 400, which is for malformed syntax or shape, with 422, which is for well-formed but semantically invalid input; the split is convention, not law, and consistency within your API is what matters. The middle band shows the accumulator: the helper bad(field, code, message) appends to a list, and one bad payload yields four entries at once: customer_id with code required, currency with code enum, items[0].quantity with code min_value, and items[1].menu_item_id with code required. Beside it, the fail-fast alternative is shown costing four round trips for the same payload instead of one. The third band decomposes the RFC 9457 envelope sent with media type application/problem+json: the five standard members type, title, status, detail and instance, plus the extension members code and errors. The members are tagged: status, type, code and each errors entry's code are FROZEN, the machine contract clients branch on; title, detail and each errors entry's message are disposable prose that may be rewritten freely and must never be branched on. The bottom band draws the 500 path as a real trust boundary: the server side holds the log line with the request_id, the full traceback, the failing SQL, hostnames and file paths, and none of it ever leaves the server; the client side receives only HTTP 500 with a generic message and the request_id. Two arrows cross the boundary, the response carrying 500 plus the request_id outward, and the same id quoted back inward so support can find that exact log line.">
   <defs>
-    <marker id="p2l03a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p2l03a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p2l03a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
     <marker id="p2l03a-arm" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
     <marker id="p2l03a-arr" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#d64545"/></marker>
@@ -81,7 +81,7 @@ one envelope by hand.
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
     <g fill="none" stroke-linejoin="round" stroke-width="2">
-      <rect x="16" y="78" width="132" height="58" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="16" y="78" width="132" height="58" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <path d="M282 55 L380 107 L282 159 L184 107 Z" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.6"/>
       <rect x="442" y="58" width="176" height="48" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
       <rect x="442" y="146" width="262" height="54" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
@@ -90,7 +90,7 @@ one envelope by hand.
     </g>
 
     <g text-anchor="middle" fill="currentColor">
-      <text x="82" y="102" font-size="10.5" font-weight="700" fill="#3553ff">request body</text>
+      <text x="82" y="102" font-size="10.5" font-weight="700" fill="#c94a12">request body</text>
       <text x="82" y="117" font-size="8.5">POST /v1/orders</text>
       <text x="82" y="130" font-size="8.5" opacity="0.8">application/json</text>
 
@@ -109,7 +109,7 @@ one envelope by hand.
       <text x="797" y="94" font-size="8.5">request_id ONLY on the wire</text>
     </g>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.8"><path d="M150 107 L180 107" marker-end="url(#p2l03a-arb)"/></g>
+    <g fill="none" stroke="#c94a12" stroke-width="1.8"><path d="M150 107 L180 107" marker-end="url(#p2l03a-arb)"/></g>
     <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-opacity="0.6"><path d="M382 107 L412 107"/></g>
     <g fill="none" stroke="#0fa07f" stroke-width="1.8"><path d="M412 107 L412 82 L440 82" marker-end="url(#p2l03a-arg)"/></g>
     <g fill="none" stroke="#e0930f" stroke-width="1.8"><path d="M412 107 L412 173 L440 173" marker-end="url(#p2l03a-arm)"/></g>
@@ -231,8 +231,8 @@ one envelope by hand.
 
     <g fill="none" stroke="#d64545" stroke-width="1.7"><path d="M470 732 L470 762" marker-end="url(#p2l03a-arr)"/></g>
     <text x="480" y="740" font-size="8.5" font-weight="700" fill="#d64545">500 + request_id</text>
-    <g fill="none" stroke="#3553ff" stroke-width="1.7"><path d="M700 762 L700 732" marker-end="url(#p2l03a-arb)"/></g>
-    <text x="710" y="740" font-size="8.5" font-weight="700" fill="#3553ff">the same id, quoted back</text>
+    <g fill="none" stroke="#c94a12" stroke-width="1.7"><path d="M700 762 L700 732" marker-end="url(#p2l03a-arb)"/></g>
+    <text x="710" y="740" font-size="8.5" font-weight="700" fill="#c94a12">the same id, quoted back</text>
 
     <text x="34" y="782" font-size="9.5" font-weight="700" fill="#d64545">CLIENT SIDE — the whole response</text>
     <text x="34" y="798" font-size="8.5" fill="currentColor">HTTP 500 · application/problem+json · a generic message + the request_id</text>

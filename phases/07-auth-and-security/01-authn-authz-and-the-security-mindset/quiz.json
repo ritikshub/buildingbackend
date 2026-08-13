@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "An API returns any user's note for `GET /notes/{id}` as long as the caller sends a valid login token — change the id and you read someone else's data. The team already requires a token on every endpoint. What is still broken?",
-    "options": [
-      "Authentication — the token must not be getting verified correctly",
-      "Nothing security-related; this is a caching bug",
-      "Authorization — the token proves who the caller is, but nothing checks whether this caller may read this specific note. Requiring a login (authentication) cannot fix it, because it was never an authentication problem. The correct response for a valid-but-unpermitted caller is 403 Forbidden",
-      "The token should be encrypted so users can't read the id inside it"
-    ],
-    "correct": 2,
-    "explanation": "This is IDOR (Insecure Direct Object Reference), the textbook authorization bug. Authentication succeeded — the server knows exactly who is calling. What is missing is the per-resource check: does this identity own, or have permission on, note {id}? Adding more authentication does nothing, which is the whole point of separating the two questions. A valid caller asking for a forbidden resource gets 403, not 401."
-  },
-  {
     "stage": "check",
     "question": "Why do HTTP 401 and 403 point you at different halves of the system when debugging?",
     "options": [

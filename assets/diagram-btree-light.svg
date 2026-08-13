@@ -10,10 +10,10 @@
   <path d="M672.0 202 L 672.0 272" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l09b-ah)"/>
   </g>
   <g>
-  <rect x="340.0" y="44" width="140" height="50" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="85.0" y="152" width="130" height="50" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="345.0" y="152" width="130" height="50" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="600.0" y="152" width="144" height="50" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="340.0" y="44" width="140" height="50" rx="9" fill="#b53707" fill-opacity="0.14" stroke="#b53707" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="85.0" y="152" width="130" height="50" rx="9" fill="#b53707" fill-opacity="0.14" stroke="#b53707" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="345.0" y="152" width="130" height="50" rx="9" fill="#b53707" fill-opacity="0.14" stroke="#b53707" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="600.0" y="152" width="144" height="50" rx="9" fill="#b53707" fill-opacity="0.14" stroke="#b53707" stroke-width="2" stroke-linejoin="round"/>
   <rect x="75.0" y="272" width="150" height="50" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="335.0" y="272" width="150" height="50" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="597.0" y="272" width="150" height="50" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>

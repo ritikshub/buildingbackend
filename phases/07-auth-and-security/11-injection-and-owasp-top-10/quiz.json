@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A search endpoint runs `execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")` and a user searches for `' OR '1'='1`. What happens, and what's the fix?",
-    "options": [
-      "It returns an error; fix it by validating the input length",
-      "The input becomes part of the SQL, so the database runs `WHERE name = '' OR '1'='1'`, which is always true and returns every row (variants can DROP tables or exfiltrate other columns). The fix is a parameterized query: `execute(\"... WHERE name = ?\", (name,))`, where the template is compiled first and the input is bound as a data value that can never change the query's structure",
-      "Nothing happens because SQL ignores quotes",
-      "The fix is to escape the single quotes in the input before concatenating"
-    ],
-    "correct": 1,
-    "explanation": "This is SQL injection: concatenation mixes attacker data into the query string, so the interpreter parses the injected `OR '1'='1'` as code. Parameterized queries send the query template and the data on separate channels — the database fixes the query's structure before the input arrives, so the input is looked up as a literal value (matching no one) rather than executed. That structural separation, not escaping, is the fix."
-  },
-  {
     "stage": "check",
     "question": "Why is escaping user input the wrong primary defense against SQL injection, compared to parameterized queries?",
     "options": [

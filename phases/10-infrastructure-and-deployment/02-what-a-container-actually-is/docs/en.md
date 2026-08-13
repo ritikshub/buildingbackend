@@ -51,9 +51,9 @@ That is the whole idea, and everything else in this lesson is detail:
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">A container is a process the kernel tells three lies to</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
-    <rect x="330" y="176" width="220" height="96" rx="12" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2.2"/>
-    <text x="440" y="206" font-size="13" font-weight="700" text-anchor="middle" fill="#3553ff">ONE ORDINARY</text>
-    <text x="440" y="224" font-size="13" font-weight="700" text-anchor="middle" fill="#3553ff">LINUX PROCESS</text>
+    <rect x="330" y="176" width="220" height="96" rx="12" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2.2"/>
+    <text x="440" y="206" font-size="13" font-weight="700" text-anchor="middle" fill="#c94a12">ONE ORDINARY</text>
+    <text x="440" y="224" font-size="13" font-weight="700" text-anchor="middle" fill="#c94a12">LINUX PROCESS</text>
     <text x="440" y="245" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="0.9">pid 1 in its namespace</text>
     <text x="440" y="259" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="0.9">uid 0, 14 of 41 capabilities</text>
 
@@ -222,8 +222,8 @@ Three operations define the behaviour, and each has a consequence people meet in
     <text x="34" y="336" font-size="8.5" fill="currentColor" opacity="0.75">upper: 1 per container.  lower: shared,</text>
     <text x="34" y="348" font-size="8.5" fill="currentColor" opacity="0.75">read-only, immutable, deduplicated.</text>
 
-    <rect x="384" y="56" width="472" height="118" rx="10" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="400" y="76" font-size="11" font-weight="700" fill="#3553ff">1 · READ   open("os-release")</text>
+    <rect x="384" y="56" width="472" height="118" rx="10" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="400" y="76" font-size="11" font-weight="700" fill="#c94a12">1 · READ   open("os-release")</text>
     <path d="M404 86 L 404 130" fill="none" stroke="currentColor" stroke-width="1.7" marker-end="url(#l02-a2)" opacity="0.8"/>
     <g fill="currentColor" font-size="9.5">
       <text x="422" y="96">upper?     miss</text>
@@ -261,7 +261,7 @@ Three operations define the behaviour, and each has a consequence people meet in
     </g>
 
     <g fill="none" stroke-width="1.8">
-      <path d="M304 90 C 340 90, 350 100, 378 106" stroke="#3553ff" marker-end="url(#l02-a2)" stroke-opacity="0.8"/>
+      <path d="M304 90 C 340 90, 350 100, 378 106" stroke="#c94a12" marker-end="url(#l02-a2)" stroke-opacity="0.8"/>
       <path d="M304 198 C 336 210, 350 226, 378 240" stroke="#e0930f" marker-end="url(#l02-a2o)"/>
       <path d="M304 298 C 336 330, 350 380, 378 404" stroke="#d64545" marker-end="url(#l02-a2r)"/>
     </g>
@@ -365,7 +365,7 @@ Being PID 1 changes your process's contract with the kernel in two ways that not
       <path d="M470 66 L 470 300"/>
       <path d="M836 66 L 836 300"/>
     </g>
-    <text x="470" y="78" font-size="9" font-weight="700" text-anchor="middle" fill="#3553ff">SIGTERM</text>
+    <text x="470" y="78" font-size="9" font-weight="700" text-anchor="middle" fill="#c94a12">SIGTERM</text>
     <text x="828" y="78" font-size="9" font-weight="700" text-anchor="end" fill="#d64545">SIGKILL — grace ends, 1.0 s</text>
 
     <g stroke-width="2">

@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is the core structural difference between a CPU and a GPU?",
-    "options": ["A GPU is just a faster CPU", "A CPU has a few powerful general cores; a GPU has thousands of small simple cores working at once", "A GPU has no cores", "They are identical"],
-    "correct": 1,
-    "explanation": "A CPU packs a few large, flexible cores for fast complex work; a GPU packs thousands of small, simple cores that run in parallel on many similar tasks. Same building blocks, opposite arrangement."
-  },
-  {
     "stage": "check",
     "question": "A CPU optimizes for latency; what does a GPU optimize for?",
     "options": ["Lower power only", "Throughput — finishing a huge pile of similar tasks per second", "Smaller size", "Persistence"],

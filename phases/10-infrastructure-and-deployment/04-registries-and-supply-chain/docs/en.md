@@ -62,8 +62,8 @@ The difference is where trust lives:
     <g fill="none" stroke-width="2" stroke-linejoin="round">
       <rect x="16" y="44" width="414" height="356" rx="14" fill="#d64545" fill-opacity="0.07" stroke="#d64545"/>
       <rect x="450" y="44" width="414" height="356" rx="14" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f"/>
-      <rect x="46" y="100" width="354" height="44" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
-      <rect x="480" y="100" width="354" height="44" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="46" y="100" width="354" height="44" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
+      <rect x="480" y="100" width="354" height="44" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="40" y="252" width="178" height="98" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
       <rect x="228" y="252" width="178" height="98" rx="10" fill="#d64545" fill-opacity="0.13" stroke="#d64545"/>
       <rect x="474" y="252" width="178" height="98" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
@@ -273,8 +273,8 @@ Pinning by digest answers "did I get the bytes I asked for?" It does not answer 
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Source to pod: every hop needs an answer to "who made this, and from what?"</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-width="2" stroke-linejoin="round">
-      <rect x="15" y="52" width="130" height="76" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="159" y="52" width="130" height="76" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="15" y="52" width="130" height="76" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="159" y="52" width="130" height="76" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="303" y="52" width="130" height="76" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
       <rect x="447" y="52" width="130" height="76" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
       <rect x="591" y="52" width="130" height="76" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
@@ -288,10 +288,10 @@ Pinning by digest answers "did I get the bytes I asked for?" It does not answer 
       <path d="M721 90 L 729 90" marker-end="url(#l04-a3)"/>
     </g>
     <g fill="currentColor" text-anchor="middle">
-      <text x="80" y="78" font-size="10.5" font-weight="700" fill="#3553ff">SOURCE</text>
+      <text x="80" y="78" font-size="10.5" font-weight="700" fill="#c94a12">SOURCE</text>
       <text x="80" y="96" font-size="8.5" opacity="0.9">a git commit</text>
       <text x="80" y="112" font-size="8.5" opacity="0.75">what a human wrote</text>
-      <text x="224" y="78" font-size="10.5" font-weight="700" fill="#3553ff">BUILD</text>
+      <text x="224" y="78" font-size="10.5" font-weight="700" fill="#c94a12">BUILD</text>
       <text x="224" y="96" font-size="8.5" opacity="0.9">CI turns it into</text>
       <text x="224" y="112" font-size="8.5" opacity="0.75">layers + a manifest</text>
       <text x="368" y="78" font-size="10.5" font-weight="700" fill="#7c5cff">SIGN + ATTEST</text>

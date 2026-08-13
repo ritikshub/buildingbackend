@@ -134,7 +134,7 @@ one home:
   <path d="M573.0 170 L 573.0 300" fill="none" stroke="currentColor" stroke-width="1.6"/>
   </g>
   <g>
-  <rect x="38" y="62" width="218" height="108" rx="10" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="38" y="62" width="218" height="108" rx="10" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="464" y="62" width="218" height="108" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="38" y="300" width="218" height="108" rx="10" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="464" y="300" width="218" height="108" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>

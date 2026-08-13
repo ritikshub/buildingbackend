@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service has a 300-second cache TTL, a retry with exponential backoff, and a 30-second timeout. You wrap the tests in `@freeze_time(\"2026-07-18\")` so they stop depending on the wall clock. What have you actually made testable?",
-    "options": [
-      "All of it. Freezing the clock removes time as a hidden input, so every time-dependent behaviour is now deterministic and fast.",
-      "Only the behaviours that ask what is true AT an instant. Measured over six behaviours, freezing reached 4 of 6: the backoff schedule and the timeout became unreachable, because a frozen clock cannot let time pass inside a single call. Worse, `wait_for` returned the expected `False` having advanced 0.0 s — it never reached a deadline at all.",
-      "All of it, but slowly — the frozen clock still has to wait out the 300-second TTL, so the suite gains about 937 s of runtime.",
-      "None of it. Freezing only affects `datetime.now()`, so any code using `time.monotonic()` for its TTL is completely unaffected and the tests are unchanged."
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer is right about the half of the problem freezing does solve, and that is exactly why the other half hides. A frozen clock can be re-frozen at any instant between calls, so 'is this key expired 1 s before, exactly at, and 1 s after the 300 s boundary' all work — and the exact-boundary case is actually easier than with a real clock. What breaks is any behaviour where the code under test observes time PASSING within one call: a retry loop reading the clock between its own sleeps, or a poll loop comparing against a deadline it computed itself. Those did not get slow, they became unreachable (4 of 6). The dangerous part is the failure mode: `wait_for` under a frozen clock returned False, which is the answer the assertion wanted, having moved the clock 0.0 s — it exhausted an iteration guard rather than reaching a timeout. That test would pass just as happily if you deleted the timeout logic entirely. Option 3 has it backwards: freezing costs 0 s; it was the REAL clock that billed 937 s (15.6 min) for six assertions. The fix is a controllable clock — one extra method, `advance()` — which reached 6 of 6 for 0 s."
-  },
-  {
     "stage": "check",
     "question": "A subscription-renewal test fails on the 23:00 UTC nightly build and passes on every daytime run. The build servers are in Berlin (UTC+1 / UTC+2). Evaluated at all 8,784 hours of 2024, what does the measurement show?",
     "options": [

@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "RAM is wiped when the power goes out. So where does a computer keep data that must survive a reboot?",
-    "options": ["In the CPU", "In files on persistent storage (disk/SSD)", "In the network", "Nowhere — it can't"],
-    "correct": 1,
-    "explanation": "Persistent storage (disk/SSD) keeps its bytes with the power off. Data that must survive is written to files there; RAM only holds what a program is actively working on."
-  },
-  {
     "stage": "check",
     "question": "What, fundamentally, is a file?",
     "options": ["A picture or document only", "A named sequence of bytes stored on persistent storage", "A block of RAM", "A running program"],

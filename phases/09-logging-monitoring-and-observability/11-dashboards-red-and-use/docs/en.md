@@ -77,21 +77,21 @@ Google's SRE book proposes a third list — the **Four Golden Signals**: **laten
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" width="100%" style="max-width:790px" role="img" aria-label="A coverage matrix of six signals against three monitoring frameworks. RED covers traffic, errors and duration for services. USE covers utilization, saturation and errors for resources. The Four Golden Signals cover the three service signals plus saturation, which is the only signal appearing in both a resource framework and the golden signals.">
   <text x="410" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Three frameworks, one coverage map — what each is actually for</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="20" y="106" width="290" height="104" rx="11" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+    <rect x="20" y="106" width="290" height="104" rx="11" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     <rect x="20" y="226" width="290" height="104" rx="11" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/>
     <rect x="318" y="262" width="480" height="34" rx="8" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.6"/>
-    <rect x="322" y="50" width="142" height="42" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="322" y="50" width="142" height="42" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="478" y="50" width="142" height="42" rx="9" fill="#e0930f" fill-opacity="0.15" stroke="#e0930f"/>
     <rect x="634" y="50" width="160" height="42" rx="9" fill="#0fa07f" fill-opacity="0.15" stroke="#0fa07f"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="393" y="70" font-size="12.5" font-weight="700" text-anchor="middle" fill="#3553ff">RED</text>
+    <text x="393" y="70" font-size="12.5" font-weight="700" text-anchor="middle" fill="#c94a12">RED</text>
     <text x="393" y="85" font-size="8.5" text-anchor="middle" opacity="0.85">Wilkie · services</text>
     <text x="549" y="70" font-size="12.5" font-weight="700" text-anchor="middle" fill="#e0930f">USE</text>
     <text x="549" y="85" font-size="8.5" text-anchor="middle" opacity="0.85">Gregg · resources</text>
     <text x="714" y="70" font-size="12.5" font-weight="700" text-anchor="middle" fill="#0fa07f">GOLDEN</text>
     <text x="714" y="85" font-size="8.5" text-anchor="middle" opacity="0.85">Google SRE · users</text>
-    <text x="34" y="128" font-size="10" font-weight="700" fill="#3553ff">WHAT YOU WRITE — services</text>
+    <text x="34" y="128" font-size="10" font-weight="700" fill="#c94a12">WHAT YOU WRITE — services</text>
     <text x="34" y="152" font-size="11">Rate / Traffic</text>
     <text x="34" y="176" font-size="11">Errors of requests</text>
     <text x="34" y="200" font-size="11">Duration / Latency</text>
@@ -100,9 +100,9 @@ Google's SRE book proposes a third list — the **Four Golden Signals**: **laten
     <text x="34" y="296" font-size="11">Utilization</text>
     <text x="34" y="320" font-size="11">Errors of the resource</text>
     <g text-anchor="middle" font-size="11" font-weight="700">
-      <text x="393" y="156" fill="#3553ff">yes</text>
-      <text x="393" y="180" fill="#3553ff">yes</text>
-      <text x="393" y="204" fill="#3553ff">yes</text>
+      <text x="393" y="156" fill="#c94a12">yes</text>
+      <text x="393" y="180" fill="#c94a12">yes</text>
+      <text x="393" y="204" fill="#c94a12">yes</text>
       <text x="393" y="276" opacity="0.35">—</text>
       <text x="393" y="300" opacity="0.35">—</text>
       <text x="393" y="324" opacity="0.35">—</text>
@@ -165,7 +165,7 @@ Three dashboards, three audiences, three questions. Most organisations have the 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="150" y="46" width="470" height="46" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.6" stroke-dasharray="6 5"/>
     <rect x="150" y="108" width="470" height="72" rx="11" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
-    <rect x="150" y="196" width="470" height="72" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="150" y="196" width="470" height="72" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="150" y="284" width="470" height="72" rx="11" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
     <rect x="150" y="372" width="470" height="72" rx="11" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
   </g>
@@ -175,7 +175,7 @@ Three dashboards, three audiences, three questions. Most organisations have the 
     <text x="166" y="130" font-size="11.5" font-weight="700" fill="#0fa07f">1 · BUSINESS / JOURNEY</text>
     <text x="166" y="148" font-size="10" opacity="0.92">"Is the product working?"</text>
     <text x="166" y="166" font-size="9.5" opacity="0.75">checkouts/min · signups · revenue · payment success rate</text>
-    <text x="166" y="218" font-size="11.5" font-weight="700" fill="#3553ff">2 · SERVICE</text>
+    <text x="166" y="218" font-size="11.5" font-weight="700" fill="#c94a12">2 · SERVICE</text>
     <text x="166" y="236" font-size="10" opacity="0.92">"Which service, which route, and how bad?"</text>
     <text x="166" y="254" font-size="9.5" opacity="0.75">RED per route + SLO / error-budget status</text>
     <text x="166" y="306" font-size="11.5" font-weight="700" fill="#e0930f">3 · RESOURCE</text>
@@ -225,10 +225,10 @@ Here is what those rules look like assembled:
     <rect x="150" y="58" width="88" height="24" rx="7" fill="#7c5cff" fill-opacity="0.15" stroke="#7c5cff" stroke-width="1.5"/>
     <rect x="462" y="58" width="114" height="24" rx="7" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.5"/>
     <rect x="38" y="106" width="124" height="118" rx="9" fill="#0fa07f" fill-opacity="0.15" stroke="#0fa07f"/>
-    <rect x="170" y="106" width="190" height="118" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-    <rect x="368" y="106" width="208" height="118" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-    <rect x="38" y="252" width="256" height="100" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-    <rect x="302" y="252" width="274" height="100" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="170" y="106" width="190" height="118" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+    <rect x="368" y="106" width="208" height="118" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+    <rect x="38" y="252" width="256" height="100" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+    <rect x="302" y="252" width="274" height="100" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="38" y="380" width="172" height="36" rx="8" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
     <rect x="218" y="380" width="172" height="36" rx="8" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
     <rect x="404" y="380" width="172" height="36" rx="8" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
@@ -242,16 +242,16 @@ Here is what those rules look like assembled:
     <path d="M178 196 L 352 196" stroke="#e0930f" stroke-dasharray="5 4" opacity="0.9"/>
   </g>
   <g fill="none" stroke-width="1.6" opacity="0.9">
-    <circle cx="52" cy="70" r="9" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-    <circle cx="52" cy="120" r="9" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-    <circle cx="184" cy="120" r="9" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-    <circle cx="382" cy="120" r="9" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-    <circle cx="482" cy="232" r="9" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-    <circle cx="316" cy="266" r="9" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-    <circle cx="52" cy="394" r="9" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+    <circle cx="52" cy="70" r="9" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+    <circle cx="52" cy="120" r="9" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+    <circle cx="184" cy="120" r="9" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+    <circle cx="382" cy="120" r="9" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+    <circle cx="482" cy="232" r="9" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+    <circle cx="316" cy="266" r="9" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+    <circle cx="52" cy="394" r="9" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <g text-anchor="middle" font-size="9.5" font-weight="700" fill="#3553ff">
+    <g text-anchor="middle" font-size="9.5" font-weight="700" fill="#c94a12">
       <text x="52" y="74">1</text><text x="52" y="124">2</text><text x="184" y="124">3</text>
       <text x="382" y="124">4</text><text x="482" y="236">5</text><text x="316" y="270">6</text>
       <text x="52" y="398">7</text>

@@ -122,7 +122,7 @@ A 7× reduction in the peak load a recovering dependency sees, from one call to 
     <path d="M74 196 L 846 196"/>
     <path d="M74 394 L 846 394"/>
   </g>
-  <g fill="none" stroke="#3553ff" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.9">
+  <g fill="none" stroke="#c94a12" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.9">
     <path d="M74 148 L 846 148"/>
     <path d="M74 346 L 846 346"/>
   </g>
@@ -159,7 +159,7 @@ A 7× reduction in the peak load a recovering dependency sees, from one call to 
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="34" y="68" font-size="12.5" font-weight="700" fill="#e0930f">EXPONENTIAL, NO JITTER — every client computes the same delay</text>
     <text x="34" y="88" font-size="9.5" opacity="0.85">the fleet failed together at t=0, so it retries together forever: backoff spreads retries in TIME, not across CLIENTS</text>
-    <text x="850" y="144" font-size="9" text-anchor="end" fill="#3553ff" font-weight="700">capacity cliff — 60 req/s</text>
+    <text x="850" y="144" font-size="9" text-anchor="end" fill="#c94a12" font-weight="700">capacity cliff — 60 req/s</text>
     <text x="99" y="100" font-size="9" text-anchor="middle" font-weight="700" fill="#e0930f">112/s</text>
     <text x="470" y="70" font-size="9" text-anchor="middle" font-weight="700">RECOVERS t=45s</text>
     <text x="560" y="128" font-size="9.5" font-weight="700" fill="#e0930f">the whole backlog lands in one second</text>
@@ -168,7 +168,7 @@ A 7× reduction in the peak load a recovering dependency sees, from one call to 
 
     <text x="34" y="266" font-size="12.5" font-weight="700" fill="#0fa07f">EXPONENTIAL + FULL JITTER — sleep = random(0, b)</text>
     <text x="34" y="286" font-size="9.5" opacity="0.85">the same 200 clients, the same backoff ceiling, decorrelated: each one picks a different point inside the window</text>
-    <text x="850" y="342" font-size="9" text-anchor="end" fill="#3553ff" font-weight="700">capacity cliff — 60 req/s</text>
+    <text x="850" y="342" font-size="9" text-anchor="end" fill="#c94a12" font-weight="700">capacity cliff — 60 req/s</text>
     <text x="470" y="268" font-size="9" text-anchor="middle" font-weight="700">RECOVERS t=45s</text>
     <text x="620" y="366" font-size="9.5" font-weight="700" fill="#0fa07f">15/s — arrives underneath the cliff, so it gets through</text>
     <text x="440" y="414" font-size="10" text-anchor="middle" opacity="0.95">measured: 1,494 calls · peak 15/s after recovery · 74.7s to drain</text>
@@ -613,14 +613,14 @@ The whole path a failing message walks — and the two constraints that make it 
   <text x="440" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">One failing message, end to end</text>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="18" y="86" width="118" height="56" rx="10" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="18" y="86" width="118" height="56" rx="10" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="176" y="86" width="128" height="56" rx="10" fill="#7c5cff" fill-opacity="0.15" stroke="#7c5cff"/>
     <rect x="344" y="86" width="150" height="56" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="534" y="86" width="150" height="56" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="724" y="86" width="138" height="56" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
     <rect x="344" y="228" width="340" height="60" rx="11" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f" stroke-width="2.4"/>
     <rect x="724" y="228" width="138" height="60" rx="11" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
-    <rect x="18" y="228" width="290" height="60" rx="11" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="18" y="228" width="290" height="60" rx="11" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="18" y="322" width="844" height="84" rx="12" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f" stroke-dasharray="7 6"/>
   </g>
 

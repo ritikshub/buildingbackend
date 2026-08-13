@@ -4,22 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Building Backend</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>BE</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23b53707' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23b53707'>BE</text></svg>">
   <meta name="description" content="Building Backend is a free, open-source curriculum that builds every core backend primitive by hand. 164 lessons across 13 phases. Sockets, an HTTP server, a B-tree, a message queue, a cache, a container, an orchestrator. Once, by hand.">
   <link rel="canonical" href="https://buildingbackend.vercel.app/">
   <meta property="og:title" content="Building Backend">
   <meta property="og:description" content="164 lessons across 13 phases. Build every backend primitive by hand: sockets, an HTTP server, a B-tree, a message queue, a cache, a container, an orchestrator. All before any framework gets imported. Python, standard library only.">
-  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
   <meta property="og:url" content="https://buildingbackend.vercel.app">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Building Backend">
   <meta name="twitter:description" content="164 lessons across 13 phases. Build every backend primitive by hand, from a raw socket to a deployed fleet.">
-  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=3">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260719p">
+  <link rel="stylesheet" href="style.css?v=20260813d">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -87,7 +87,7 @@
     }
 
     .manual-meta-row .right {
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     .manual-title {
@@ -97,16 +97,164 @@
       line-height: 0.86;
       letter-spacing: 0.02em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      /* Display size only: the vivid sunset tone clears the 3:1 large-text
+         bar here, where the deeper --ember would read as brown at this scale. */
+      color: var(--ember-bright);
     }
 
-    .manual-tagline {
+    /* ── Topic finder ──────────────────────────────────────────────────
+       At rest this is just a search box. Focusing it drops the full
+       curriculum open — every topic, grouped by phase — so the list is
+       browsable without typing but does not sit on the page uninvited.
+       Typing filters it. It is height-capped and scrolls internally, and
+       is absolutely positioned so opening it never shifts the page. */
+    .topicfind {
+      position: relative;
       max-width: 720px;
       margin: 28px 0 8px;
-      font-family: var(--font-body);
-      font-size: clamp(1.05rem, 1.7vw, 1.25rem);
-      line-height: 1.55;
+      z-index: 20;
+    }
+
+    .topicfind-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border: 1px solid var(--ink);
+      background: var(--bg);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .topicfind-box:focus-within {
+      border-color: var(--ember);
+      box-shadow: var(--shadow-hard);
+    }
+
+    .topicfind-icon {
+      flex: none;
+      color: var(--ink-mute);
+    }
+
+    .topicfind-box:focus-within .topicfind-icon { color: var(--ember); }
+
+    .topicfind-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      border: 0;
+      background: transparent;
       color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .topicfind-input:focus { outline: none; }
+    .topicfind-input::placeholder { color: var(--ink-mute); }
+
+    .topicfind-clear {
+      flex: none;
+      border: 0;
+      background: transparent;
+      color: var(--ink-mute);
+      cursor: pointer;
+      font-size: 0.85rem;
+      line-height: 1;
+      padding: 4px;
+    }
+
+    .topicfind-clear:hover,
+    .topicfind-clear:focus-visible { color: var(--ember); }
+
+    .topicfind-list {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      max-height: 320px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      list-style: none;
+      border: 1px solid var(--ink);
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-hard);
+    }
+
+    .topicfind-list[hidden] { display: none; }
+
+    .topicfind-group {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: 7px 14px;
+      background: var(--bg-surface-hover);
+      border-bottom: 1px solid var(--rule-soft);
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .topicfind-item {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 9px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--paper-rule);
+    }
+
+    .topicfind-item:last-child { border-bottom: 0; }
+
+    .topicfind-item:hover,
+    .topicfind-item[aria-selected="true"] {
+      background: var(--ember-tint);
+    }
+
+    .topicfind-item[aria-selected="true"] .topicfind-name { color: var(--ember); }
+
+    .topicfind-num {
+      flex: none;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--ink-mute);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .topicfind-name {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+
+    .topicfind-name mark {
+      background: var(--ember-tint-strong);
+      color: inherit;
+      padding: 0 1px;
+    }
+
+    .topicfind-kind {
+      margin-left: auto;
+      flex: none;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    .topicfind-empty {
+      padding: 18px 14px;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    @media (max-width: 640px) {
+      .topicfind-list { max-height: 260px; }
+      .topicfind-input { font-size: 16px; } /* iOS zooms anything under 16px */
     }
 
     .manual-attribution {
@@ -120,7 +268,7 @@
     /* The second line is a statement of intent, not attribution. Given a
        little more weight so it does not read as a footnote to the first. */
     .manual-creed {
-      color: var(--blueprint);
+      color: var(--ember);
       font-style: normal;
       font-family: var(--font-mono);
       font-size: 0.82rem;
@@ -156,13 +304,13 @@
     }
 
     .masthead-btn--primary {
-      border-color: var(--blueprint);
-      color: var(--blueprint);
+      border-color: var(--ember);
+      color: var(--ember);
     }
 
     .masthead-btn--primary:hover,
     .masthead-btn--primary:focus-visible {
-      background: var(--blueprint);
+      background: var(--ember);
       color: var(--bg);
     }
 
@@ -197,7 +345,7 @@
       font-size: 0.74rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     /* Field note: the proverb that sets the tone for the manual. */
@@ -216,9 +364,9 @@
       text-wrap: balance;
     }
 
-    /* Oversized opening mark, echoing the blueprint drop cap used elsewhere. */
+    /* Oversized opening mark, echoing the ember drop cap used elsewhere. */
     .note-mark {
-      color: var(--blueprint);
+      color: var(--ember);
       font-size: 1.5em;
       line-height: 0;
       vertical-align: -0.2em;
@@ -235,7 +383,7 @@
     .note-close {
       margin-top: 26px;
       padding-left: 18px;
-      border-left: 2px solid var(--blueprint);
+      border-left: 2px solid var(--ember);
       font-family: var(--font-body);
       font-style: italic;
       font-size: 1.05rem;
@@ -257,13 +405,13 @@
     }
 
     .note-fig-ink    { stroke: var(--ink); }
-    .note-fig-net    { stroke: var(--blueprint); }
-    .note-fig-mesh-line { stroke: var(--blueprint); opacity: 0.5; }
+    .note-fig-net    { stroke: var(--ember); }
+    .note-fig-mesh-line { stroke: var(--ember); opacity: 0.5; }
     /* The tear and the hull both punch out what sits behind them, so they carry the page background. */
-    .note-fig-hole   { stroke: var(--blueprint); fill: var(--bg); }
+    .note-fig-hole   { stroke: var(--ember); fill: var(--bg); }
     .note-fig-hull   { fill: var(--bg); }
     .note-fig-sand   { stroke: var(--ink-mute); }
-    .note-fig-motion { stroke: var(--blueprint); opacity: 0.38; }
+    .note-fig-motion { stroke: var(--ember); opacity: 0.38; }
     /* Hatching for the pool of shade the palm throws on the sand. */
     .note-fig-shade-line { stroke: var(--ink-mute); opacity: 0.28; }
 
@@ -287,7 +435,7 @@
       font-size: 0.74rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
       margin-bottom: 6px;
     }
 
@@ -327,7 +475,7 @@
       font-size: 0.78rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
       margin-bottom: 24px;
     }
 
@@ -369,7 +517,7 @@
       position: absolute;
       inset: 0;
       width: var(--bar-pct, 0%);
-      background: var(--blueprint);
+      background: var(--ember);
       transition: width 0.6s ease;
     }
 
@@ -392,7 +540,7 @@
       font-size: 0.78rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
       margin-bottom: 8px;
     }
 
@@ -422,14 +570,14 @@
     }
 
     .toc-row:hover {
-      background: var(--blueprint-tint);
+      background: var(--ember-tint);
     }
 
     .toc-num {
       font-family: var(--font-mono);
       font-size: 0.78rem;
       letter-spacing: 0.1em;
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     .toc-name {
@@ -469,13 +617,13 @@
     }
 
     .toc-status.complete {
-      background: var(--blueprint);
-      border-color: var(--blueprint);
+      background: var(--ember);
+      border-color: var(--ember);
     }
 
     .toc-status.in-progress {
-      background: linear-gradient(135deg, var(--blueprint) 0%, var(--blueprint) 50%, transparent 50%, transparent 100%);
-      border-color: var(--blueprint);
+      background: linear-gradient(135deg, var(--ember) 0%, var(--ember) 50%, transparent 50%, transparent 100%);
+      border-color: var(--ember);
     }
 
     .toc-status.planned {
@@ -527,7 +675,7 @@
       font-size: 0.74rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blueprint);
+      color: var(--ember);
     }
 
     .colophon-cmd {
@@ -540,7 +688,7 @@
       border: 1px solid var(--rule-soft);
       font-family: var(--font-mono);
       font-size: 0.85rem;
-      color: var(--blueprint);
+      color: var(--ember);
       max-width: 100%;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -566,7 +714,7 @@
       .colophon { padding-top: 32px; padding-bottom: 32px; }
 
       .manual-meta-row { margin-bottom: 20px; }
-      .manual-tagline { margin: 20px 0 6px; font-size: 1rem; }
+      .topicfind { margin: 20px 0 6px; }
       .manual-attribution { font-size: 0.9rem; }
 
       .preface-grid,
@@ -646,8 +794,7 @@
         gap: 8px;
       }
 
-      .manual-tagline {
-        font-size: 0.96rem;
+      .topicfind {
         margin: 16px 0 4px;
       }
 
@@ -723,13 +870,13 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
-    .figure-head .left { color: var(--blueprint); }
+    .figure-head .left { color: var(--ember); }
     .figure-head .right { color: var(--ink-mute); }
     .figure-body {
       padding: 32px 24px;
       overflow-x: auto;
     }
-    .figure-body svg { display: block; width: 100%; height: auto; max-width: 1100px; margin: 0 auto; color: var(--blueprint); }
+    .figure-body svg { display: block; width: 100%; height: auto; max-width: 1100px; margin: 0 auto; color: var(--ember); }
     .figure-foot {
       padding: 14px 24px;
       border-top: 1px solid var(--rule-soft);
@@ -774,7 +921,29 @@
         <span class="right">open source · MIT</span>
       </div>
       <h1 class="manual-title">Building Backend</h1>
-      <p class="manual-tagline reveal">164 lessons across 13 phases. Every backend primitive built by hand: socket, HTTP server, B-tree, queue, cache, container. All before a single framework gets imported.</p>
+      <!-- Topic finder. Replaces the old static tagline: the same "164 lessons
+           across 13 phases" fact is now something you can act on rather than
+           read. Every topic is listed before a single key is pressed, so the
+           box doubles as a browsable table of contents. -->
+      <div class="topicfind reveal" id="topicFind">
+        <div class="topicfind-box">
+          <svg class="topicfind-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="text"
+            id="topicFindInput"
+            class="topicfind-input"
+            placeholder="Search any topic — sockets, B-trees, consensus…"
+            autocomplete="off"
+            spellcheck="false"
+            role="combobox"
+            aria-expanded="false"
+            aria-controls="topicFindList"
+            aria-autocomplete="list"
+            aria-label="Search lessons, outputs, and jargon">
+          <button type="button" class="topicfind-clear" id="topicFindClear" aria-label="Clear search" hidden>&#10005;</button>
+        </div>
+        <ul class="topicfind-list" id="topicFindList" role="listbox" aria-label="Topics" hidden></ul>
+      </div>
       <p class="manual-attribution reveal" style="--stagger-delay: 80ms;">Maintained by @ritikshub. Free forever.<br><span class="manual-creed">Free education for all. Long live the revolution.</span></p>
       <div class="masthead-cta reveal" style="--stagger-delay: 140ms;">
         <a class="masthead-btn masthead-btn--primary" href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener" aria-label="Star buildingbackend on GitHub">
@@ -979,11 +1148,245 @@
     </div>
   </footer>
 
-  <script src="data.js?v=20260719p"></script>
-  <script src="progress.js?v=20260719p"></script>
-  <script src="header.js?v=20260719p" defer></script>
-  <script src="cmdpalette.js?v=20260719p" defer></script>
-  <script src="app.js?v=20260719p"></script>
+  <script src="data.js?v=20260813d"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script src="app.js?v=20260813d"></script>
+  <script>
+  /**
+   * Homepage topic finder.
+   *
+   * Deliberately does NOT build its own index or scoring: it borrows both from
+   * cmdpalette.js via window.CmdPalette so the homepage and Cmd+K can never
+   * rank or link the same query differently.
+   *
+   * Empty query renders every lesson grouped by phase — the ask was that the
+   * topics be visible before typing, so the control is a table of contents
+   * that happens to filter, not a box that hides its options until prompted.
+   */
+  (function () {
+    'use strict';
+
+    var input    = document.getElementById('topicFindInput');
+    var list     = document.getElementById('topicFindList');
+    var clearBtn = document.getElementById('topicFindClear');
+    if (!input || !list) return;
+
+    var MAX_RESULTS = 40;
+    var rows   = [];   // flat [{href}] parallel to the rendered .topicfind-item nodes
+    var active = -1;
+
+    function escHtml(str) {
+      var d = document.createElement('div');
+      d.textContent = (str == null) ? '' : String(str);
+      return d.innerHTML;
+    }
+
+    function highlight(text, query) {
+      if (!query) return escHtml(text);
+      var lower = String(text).toLowerCase();
+      var q     = query.trim().toLowerCase();
+      var idx   = lower.indexOf(q);
+      var len   = q.length;
+      if (idx === -1) {
+        var words = q.split(/\s+/).filter(Boolean);
+        for (var i = 0; i < words.length; i++) {
+          idx = lower.indexOf(words[i]);
+          if (idx !== -1) { len = words[i].length; break; }
+        }
+      }
+      if (idx === -1) return escHtml(text);
+      return escHtml(text.slice(0, idx)) +
+             '<mark>' + escHtml(text.slice(idx, idx + len)) + '</mark>' +
+             escHtml(text.slice(idx + len));
+    }
+
+    // phase.chapter labels, matching the catalog's numbering.
+    var chapterByPath = {};
+    (function () {
+      if (typeof PHASES === 'undefined' || !Array.isArray(PHASES)) return;
+      for (var i = 0; i < PHASES.length; i++) {
+        var p = PHASES[i];
+        for (var j = 0; j < p.lessons.length; j++) {
+          var m = String(p.lessons[j].url || '').match(/(phases\/[^/?#]+\/[^/?#]+)/);
+          if (m) chapterByPath[m[1]] = p.id + '.' + (j + 1);
+        }
+      }
+    }());
+
+    function itemHtml(label, name, query, kind) {
+      return '<li class="topicfind-item" role="option" aria-selected="false">' +
+               '<span class="topicfind-num">' + escHtml(label) + '</span>' +
+               '<span class="topicfind-name">' + highlight(name, query) + '</span>' +
+               (kind ? '<span class="topicfind-kind">' + escHtml(kind) + '</span>' : '') +
+             '</li>';
+    }
+
+    /* Every lesson, grouped by phase. */
+    function renderAll() {
+      if (typeof PHASES === 'undefined' || !Array.isArray(PHASES)) return;
+      var html = '';
+      rows = [];
+      for (var i = 0; i < PHASES.length; i++) {
+        var p = PHASES[i];
+        if (!p.lessons || !p.lessons.length) continue;
+        html += '<li class="topicfind-group" role="presentation">' +
+                'Phase ' + String(p.id).padStart(2, '0') + ' &middot; ' + escHtml(p.name) +
+                '</li>';
+        for (var j = 0; j < p.lessons.length; j++) {
+          var l = p.lessons[j];
+          var m = String(l.url || '').match(/(phases\/[^/?#]+\/[^/?#]+)/);
+          var href = m ? 'lesson.html?path=' + encodeURIComponent(m[1]) : (l.url || '');
+          if (!href) continue;
+          rows.push({ href: href });
+          html += itemHtml(p.id + '.' + (j + 1), l.name || '', '', '');
+        }
+      }
+      list.innerHTML = html;
+      active = -1;
+    }
+
+    function renderResults(query) {
+      var results = (window.CmdPalette && CmdPalette.search)
+        ? CmdPalette.search(query, MAX_RESULTS)
+        : [];
+      rows = [];
+
+      if (!results.length) {
+        list.innerHTML = '<li class="topicfind-empty" role="option" aria-disabled="true">' +
+                         'Nothing matches &ldquo;' + escHtml(query) + '&rdquo;. Try a broader word.' +
+                         '</li>';
+        active = -1;
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < results.length; i++) {
+        var r = results[i];
+        var href = CmdPalette.hrefFor(r);
+        if (!href) continue;
+        var label = '', kind = '';
+        if (r.kind === 'lesson') {
+          label = chapterByPath[r.lessonPath] || String(r.phaseId);
+        } else if (r.kind === 'artifact') {
+          label = '—';
+          kind  = r.artKind || 'output';
+        } else {
+          label = '—';
+          kind  = 'jargon';
+        }
+        rows.push({ href: href });
+        html += itemHtml(label, r.name || '', query, kind);
+      }
+      list.innerHTML = html;
+      active = -1;
+    }
+
+    function paintActive() {
+      var nodes = list.querySelectorAll('.topicfind-item');
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].setAttribute('aria-selected', i === active ? 'true' : 'false');
+      }
+      if (active >= 0 && nodes[active]) {
+        nodes[active].scrollIntoView({ block: 'nearest' });
+      }
+    }
+
+    function move(delta) {
+      if (!rows.length) return;
+      active = (active + delta + rows.length) % rows.length;
+      paintActive();
+    }
+
+    function go(i) {
+      if (i < 0 || i >= rows.length) return;
+      window.location.href = rows[i].href;
+    }
+
+    function setOpen(open) {
+      list.hidden = !open;
+      input.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (!open) { active = -1; }
+    }
+
+    function update() {
+      var q = input.value.trim();
+      if (clearBtn) clearBtn.hidden = !q;
+      if (!q) renderAll();
+      else renderResults(q);
+      setOpen(true);
+    }
+
+    input.addEventListener('input', update);
+    input.addEventListener('focus', update);
+
+    // Close when focus or a click leaves the component, so the list behaves
+    // like a menu rather than a permanent fixture of the page.
+    document.addEventListener('click', function (e) {
+      var root = document.getElementById('topicFind');
+      if (root && !root.contains(e.target)) setOpen(false);
+    });
+
+    document.addEventListener('focusin', function (e) {
+      var root = document.getElementById('topicFind');
+      if (root && !root.contains(e.target)) setOpen(false);
+    });
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown')      { e.preventDefault(); move(1); }
+      else if (e.key === 'ArrowUp')   { e.preventDefault(); move(-1); }
+      else if (e.key === 'Enter')     { e.preventDefault(); go(active >= 0 ? active : 0); }
+      else if (e.key === 'Escape')    {
+        if (input.value) { input.value = ''; update(); }
+        else { setOpen(false); input.blur(); }
+      }
+    });
+
+    list.addEventListener('click', function (e) {
+      var li = e.target.closest ? e.target.closest('.topicfind-item') : null;
+      if (!li) return;
+      var nodes = list.querySelectorAll('.topicfind-item');
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i] === li) { go(i); return; }
+      }
+    });
+
+    list.addEventListener('mousemove', function (e) {
+      var li = e.target.closest ? e.target.closest('.topicfind-item') : null;
+      if (!li) return;
+      var nodes = list.querySelectorAll('.topicfind-item');
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i] === li) {
+          if (active !== i) { active = i; paintActive(); }
+          return;
+        }
+      }
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        update();
+        input.focus();
+      });
+    }
+
+    // Pre-render the full list so the first focus is instant, but leave it
+    // closed: at rest the masthead is a search box, not a table of contents.
+    // cmdpalette.js is deferred, so it has already run by DOMContentLoaded.
+    function init() {
+      renderAll();
+      setOpen(false);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  }());
+  </script>
   <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 </body>
 </html>

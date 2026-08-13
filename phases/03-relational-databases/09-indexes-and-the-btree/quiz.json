@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is a database index, fundamentally?",
-    "options": ["A faster copy of the whole table", "A separate, sorted structure mapping a key to a row's location, so lookups jump instead of scanning the heap", "A cache of query results", "A backup of the table"],
-    "correct": 1,
-    "explanation": "An index is a redundant side-structure that keeps a key in sorted order with a pointer to where the row lives. It exists purely to make lookups fast — every answer it gives could also be found by scanning the heap."
-  },
-  {
     "stage": "check",
     "question": "Why is a B-tree a better index structure than a sorted array or a plain binary search tree?",
     "options": ["It uses less memory", "It's balanced and high-fanout: each node holds many keys (one page), full nodes split to keep every leaf at the same depth, so it never degenerates and inserts stay cheap", "It doesn't need to be sorted", "It only works in RAM"],

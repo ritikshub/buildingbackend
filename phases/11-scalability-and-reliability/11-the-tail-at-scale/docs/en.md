@@ -104,16 +104,16 @@ Run the same logic the other way and you get the most useful sentence in this se
     <text x="62" y="318" font-size="9.5" fill="currentColor" opacity="0.7">shard 1</text> <text x="524" y="318" font-size="9.5" text-anchor="end" fill="currentColor" opacity="0.7">shard 100</text>
 
     <g fill="none" stroke-width="1.8" stroke-linejoin="round">
-      <rect x="612" y="44" width="254" height="276" rx="10" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff"/>
+      <rect x="612" y="44" width="254" height="276" rx="10" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12"/>
     </g>
     <g fill="currentColor">
-      <text x="628" y="64" font-size="10.5" font-weight="700" fill="#3553ff">MEASURED, 200k samples</text> <text x="628" y="84" font-size="9" font-weight="700" opacity="0.7">N</text> <text x="704" y="84" font-size="9" font-weight="700" opacity="0.7" text-anchor="end">user p50</text> <text x="856" y="84" font-size="9" font-weight="700" opacity="0.7" text-anchor="end">P(&#8805;1 over p99)</text>
+      <text x="628" y="64" font-size="10.5" font-weight="700" fill="#c94a12">MEASURED, 200k samples</text> <text x="628" y="84" font-size="9" font-weight="700" opacity="0.7">N</text> <text x="704" y="84" font-size="9" font-weight="700" opacity="0.7" text-anchor="end">user p50</text> <text x="856" y="84" font-size="9" font-weight="700" opacity="0.7" text-anchor="end">P(&#8805;1 over p99)</text>
       <text x="628" y="102" font-size="10">1</text><text x="704" y="102" font-size="10" text-anchor="end">9.1 ms</text><text x="856" y="102" font-size="10" text-anchor="end">0.9%</text> <text x="628" y="120" font-size="10">5</text><text x="704" y="120" font-size="10" text-anchor="end">15.9 ms</text><text x="856" y="120" font-size="10" text-anchor="end">5.0%</text> <text x="628" y="138" font-size="10">20</text><text x="704" y="138" font-size="10" text-anchor="end">29.5 ms</text><text x="856" y="138" font-size="10" text-anchor="end">18.0%</text>
       <text x="628" y="156" font-size="10" font-weight="700" fill="#d64545">100</text><text x="704" y="156" font-size="10" text-anchor="end" font-weight="700" fill="#d64545">129.0 ms</text><text x="856" y="156" font-size="10" text-anchor="end" font-weight="700" fill="#d64545">63.7%</text> <text x="628" y="174" font-size="10">500</text><text x="704" y="174" font-size="10" text-anchor="end">323.0 ms</text><text x="856" y="174" font-size="10" text-anchor="end">99.3%</text>
     </g>
     <path d="M624 188 L 856 188" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
     <g fill="currentColor">
-      <text x="628" y="208" font-size="10" font-weight="700">the arithmetic, exactly:</text> <text x="628" y="226" font-size="10.5" fill="#3553ff" font-weight="700">1 &#8722; (1&#8722;p)&#8319;</text> <text x="628" y="244" font-size="10">1 &#8722; 0.99&#185;&#8304;&#8304; = 63.4%</text> <text x="628" y="258" font-size="9" opacity="0.8">measured: 63.7%</text>
+      <text x="628" y="208" font-size="10" font-weight="700">the arithmetic, exactly:</text> <text x="628" y="226" font-size="10.5" fill="#c94a12" font-weight="700">1 &#8722; (1&#8722;p)&#8319;</text> <text x="628" y="244" font-size="10">1 &#8722; 0.99&#185;&#8304;&#8304; = 63.4%</text> <text x="628" y="258" font-size="9" opacity="0.8">measured: 63.7%</text>
       <text x="628" y="278" font-size="10" opacity="0.95">backend p99 = 105.0 ms</text> <text x="628" y="294" font-size="10" font-weight="700" fill="#d64545">user p50&#8195;&#8195;&#8195;= 129.0 ms</text> <text x="628" y="310" font-size="10" font-weight="700" fill="#d64545">= 1.23&#215; the backend p99</text>
     </g>
 
@@ -191,7 +191,7 @@ The p99 improves **3.05×** and the p99.9 improves **7.35×**, for 5.0% more bac
 
     <text x="96" y="82" font-size="10" font-weight="700" fill="#d64545">WITHOUT HEDGING</text> <rect x="96" y="90" width="558" height="24" rx="5" fill="#d64545" fill-opacity="0.14" stroke="#d64545" stroke-width="1.6"/> <text x="106" y="106" font-size="9.5" fill="currentColor">replica A &#8212; hiccup (GC pause / compaction / co-tenant)</text> <text x="662" y="106" font-size="10" font-weight="700" fill="#d64545">user waits 240 ms</text>
 
-    <text x="96" y="146" font-size="10" font-weight="700" fill="#0fa07f">WITH HEDGING</text> <text x="196" y="146" font-size="9.5" font-weight="700" fill="#0fa07f">35.5 ms &#8212; first response wins, twin cancelled</text> <rect x="96" y="154" width="83" height="24" rx="5" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="1.6"/>
+    <text x="96" y="146" font-size="10" font-weight="700" fill="#0fa07f">WITH HEDGING</text> <text x="196" y="146" font-size="9.5" font-weight="700" fill="#0fa07f">35.5 ms &#8212; first response wins, twin cancelled</text> <rect x="96" y="154" width="83" height="24" rx="5" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="1.6"/>
     <path d="M179 154 L 654 154 L 654 178 L 179 178 Z" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4" stroke-opacity="0.5"/> <text x="106" y="170" font-size="9.5" fill="currentColor">replica A</text> <text x="360" y="170" font-size="9" fill="currentColor" opacity="0.7">cancelled at 35.5 ms &#8212; would have run to 240 ms</text>
 
     <rect x="148" y="190" width="31" height="24" rx="5" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f" stroke-width="1.6"/> <text x="188" y="206" font-size="9.5" fill="currentColor">replica B &#8212; the hedge, answers in 13 ms</text>
@@ -209,9 +209,9 @@ The p99 improves **3.05×** and the p99.9 improves **7.35×**, for 5.0% more bac
     </g>
 
     <g fill="none" stroke-width="1.8" stroke-linejoin="round">
-      <rect x="62" y="276" width="804" height="142" rx="10" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff"/>
+      <rect x="62" y="276" width="804" height="142" rx="10" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12"/>
     </g>
-    <text x="78" y="296" font-size="10.5" font-weight="700" fill="#3553ff">MEASURED &#8212; 200,000 single calls and 20,000 hundred-way fan-outs</text>
+    <text x="78" y="296" font-size="10.5" font-weight="700" fill="#c94a12">MEASURED &#8212; 200,000 single calls and 20,000 hundred-way fan-outs</text>
     <g fill="currentColor" font-size="9" font-weight="700" opacity="0.7">
       <text x="78" y="316">configuration</text> <text x="470" y="316" text-anchor="end">p50</text> <text x="574" y="316" text-anchor="end">p99</text> <text x="678" y="316" text-anchor="end">p99.9</text> <text x="850" y="316" text-anchor="end">extra backend load</text>
     </g>
@@ -266,10 +266,10 @@ The median composed request goes from **128.7 ms to 35.7 ms** — a 3.6× improv
       <path d="M112 251 L 520 251"/><path d="M112 196 L 520 196"/><path d="M112 141 L 520 141"/><path d="M112 86 L 520 86"/>
     </g>
 
-    <polyline points="112.0,93.2 119.8,239.5 151.2,276.1 190.5,282.1 308.2,283.7 503.5,285.2" fill="none" stroke="#e0930f" stroke-width="2.6" stroke-linejoin="round"/> <polyline points="112.0,249.2 119.8,248.1 151.2,287.2 190.5,290.0 308.2,292.1 503.5,293.4" fill="none" stroke="#3553ff" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="7 4"/>
+    <polyline points="112.0,93.2 119.8,239.5 151.2,276.1 190.5,282.1 308.2,283.7 503.5,285.2" fill="none" stroke="#e0930f" stroke-width="2.6" stroke-linejoin="round"/> <polyline points="112.0,249.2 119.8,248.1 151.2,287.2 190.5,290.0 308.2,292.1 503.5,293.4" fill="none" stroke="#c94a12" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="7 4"/>
 
     <g fill="#e0930f"><circle cx="112.0" cy="93.2" r="3.4"/><circle cx="119.8" cy="239.5" r="3.4"/><circle cx="151.2" cy="276.1" r="3.4"/><circle cx="190.5" cy="282.1" r="3.4"/><circle cx="308.2" cy="283.7" r="3.4"/><circle cx="503.5" cy="285.2" r="3.4"/></g>
-    <g fill="#3553ff"><circle cx="112.0" cy="249.2" r="3"/><circle cx="119.8" cy="248.1" r="3"/><circle cx="151.2" cy="287.2" r="3"/><circle cx="190.5" cy="290.0" r="3"/><circle cx="308.2" cy="292.1" r="3"/><circle cx="503.5" cy="293.4" r="3"/></g>
+    <g fill="#c94a12"><circle cx="112.0" cy="249.2" r="3"/><circle cx="119.8" cy="248.1" r="3"/><circle cx="151.2" cy="287.2" r="3"/><circle cx="190.5" cy="290.0" r="3"/><circle cx="308.2" cy="292.1" r="3"/><circle cx="503.5" cy="293.4" r="3"/></g>
 
     <circle cx="151.2" cy="276.1" r="9.5" fill="none" stroke="#0fa07f" stroke-width="2.2"/> <path d="M232 240 L 163 270" fill="none" stroke="#0fa07f" stroke-width="1.5" marker-end="url(#p11-11-a3)"/> <text x="236" y="232" font-size="10.5" font-weight="700" fill="#0fa07f">hedge delay = p95</text> <text x="236" y="245" font-size="9.5" fill="currentColor" opacity="0.9">5.0% load &#8594; p99.9 = 54.3 ms</text>
     <text x="236" y="257" font-size="9.5" font-weight="700" fill="#0fa07f">the operating point</text>
@@ -288,13 +288,13 @@ The median composed request goes from **128.7 ms to 35.7 ms** — a 3.6× improv
     <text x="34" y="194" font-size="10" text-anchor="middle" fill="currentColor" opacity="0.9" transform="rotate(-90 34 194)">tail latency (ms)</text>
 
     <g font-size="10" font-weight="700">
-      <text x="140" y="140" fill="#e0930f">&#8212; p99.9</text> <text x="140" y="156" fill="#3553ff">- - p99</text>
+      <text x="140" y="140" fill="#e0930f">&#8212; p99.9</text> <text x="140" y="156" fill="#c94a12">- - p99</text>
     </g>
 
     <g fill="none" stroke-width="1.8" stroke-linejoin="round">
-      <rect x="548" y="62" width="318" height="248" rx="10" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff"/>
+      <rect x="548" y="62" width="318" height="248" rx="10" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12"/>
     </g>
-    <text x="562" y="82" font-size="10" font-weight="700" fill="#3553ff">THE MEASURED SWEEP</text>
+    <text x="562" y="82" font-size="10" font-weight="700" fill="#c94a12">THE MEASURED SWEEP</text>
     <g fill="currentColor" font-size="9" font-weight="700" opacity="0.7">
       <text x="562" y="104">delay set at</text> <text x="726" y="104" text-anchor="end">load</text> <text x="794" y="104" text-anchor="end">p99</text> <text x="856" y="104" text-anchor="end">p99.9</text>
     </g>
@@ -405,7 +405,7 @@ Same technique, same 8.9% extra load, both times. In the independent case the me
     </g>
     <text x="232" y="70" font-size="12" text-anchor="middle" font-weight="700" fill="#0fa07f">INDEPENDENT SLOWNESS</text> <text x="648" y="70" font-size="12" text-anchor="middle" font-weight="700" fill="#d64545">CORRELATED SLOWNESS</text> <text x="232" y="86" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.85">each replica draws its own luck</text> <text x="648" y="86" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.85">one cause, both replicas</text>
 
-    <circle cx="70" cy="150" r="15" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.8"/> <text x="70" y="154" font-size="9" text-anchor="middle" fill="currentColor" font-weight="700">you</text> <circle cx="486" cy="150" r="15" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.8"/> <text x="486" y="154" font-size="9" text-anchor="middle" fill="currentColor" font-weight="700">you</text>
+    <circle cx="70" cy="150" r="15" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.8"/> <text x="70" y="154" font-size="9" text-anchor="middle" fill="currentColor" font-weight="700">you</text> <circle cx="486" cy="150" r="15" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.8"/> <text x="486" y="154" font-size="9" text-anchor="middle" fill="currentColor" font-weight="700">you</text>
 
     <g stroke-width="1.8">
       <rect x="182" y="104" width="180" height="42" rx="8" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/> <rect x="182" y="170" width="180" height="42" rx="8" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
@@ -426,9 +426,9 @@ Same technique, same 8.9% extra load, both times. In the independent case the me
     <text x="648" y="236" font-size="11" text-anchor="middle" font-weight="700" fill="#d64545">the hedge inherits it &#8594; p50 426.1 &#8594; 419.5 ms</text> <text x="648" y="252" font-size="10" text-anchor="middle" fill="#d64545" font-weight="700">1.02&#215; &#8212; you paid the load and bought nothing</text>
 
     <g fill="none" stroke-width="1.8" stroke-linejoin="round">
-      <rect x="34" y="284" width="812" height="136" rx="10" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff"/>
+      <rect x="34" y="284" width="812" height="136" rx="10" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12"/>
     </g>
-    <text x="50" y="304" font-size="10" font-weight="700" fill="#3553ff">MEASURED &#8212; 8,000 hundred-way fan-outs, 5% of replicas stalled, hedge delay 22.5 ms</text>
+    <text x="50" y="304" font-size="10" font-weight="700" fill="#c94a12">MEASURED &#8212; 8,000 hundred-way fan-outs, 5% of replicas stalled, hedge delay 22.5 ms</text>
     <g fill="currentColor" font-size="9" font-weight="700" opacity="0.7">
       <text x="50" y="324">regime</text> <text x="400" y="324" text-anchor="end">p50</text> <text x="510" y="324" text-anchor="end">p99</text> <text x="620" y="324" text-anchor="end">p99.9</text> <text x="722" y="324" text-anchor="end">extra load</text> <text x="834" y="324" text-anchor="end">p50 gain</text>
     </g>
@@ -515,7 +515,7 @@ propagated         594        1000     1000    0.0%            0.0           6.7
 
     <text x="130" y="108" font-size="10.5" font-weight="700" fill="#d64545">INDEPENDENT TIMEOUTS &#8212; each hop starts its own 1000 ms clock</text>
     <g stroke-width="1.7">
-      <rect x="130" y="118" width="170" height="30" rx="5" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/> <rect x="300" y="118" width="221" height="30" rx="5" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/> <rect x="521" y="118" width="255" height="30" rx="5" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="130" y="118" width="170" height="30" rx="5" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/> <rect x="300" y="118" width="221" height="30" rx="5" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/> <rect x="521" y="118" width="255" height="30" rx="5" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     </g>
     <rect x="555" y="118" width="221" height="30" fill="#d64545" fill-opacity="0.28" stroke="none"/>
     <g fill="currentColor" font-size="9.5" text-anchor="middle">
@@ -544,9 +544,9 @@ propagated         594        1000     1000    0.0%            0.0           6.7
     </g>
 
     <g fill="none" stroke-width="1.8" stroke-linejoin="round">
-      <rect x="40" y="300" width="800" height="106" rx="10" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff"/>
+      <rect x="40" y="300" width="800" height="106" rx="10" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12"/>
     </g>
-    <text x="56" y="320" font-size="10" font-weight="700" fill="#3553ff">MEASURED &#8212; 80,000 three-hop requests</text>
+    <text x="56" y="320" font-size="10" font-weight="700" fill="#c94a12">MEASURED &#8212; 80,000 three-hop requests</text>
     <g fill="currentColor" font-size="9" font-weight="700" opacity="0.7">
       <text x="56" y="340">mode</text> <text x="330" y="340" text-anchor="end">p50</text> <text x="430" y="340" text-anchor="end">p99</text> <text x="530" y="340" text-anchor="end">worst seen</text> <text x="640" y="340" text-anchor="end">past deadline</text> <text x="750" y="340" text-anchor="end">wasted ms/req</text> <text x="828" y="340" text-anchor="end">refused</text>
     </g>

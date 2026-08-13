@@ -45,9 +45,9 @@ There are only two ways telemetry moves. In **push**, the application opens a co
     <path d="M708 400 L 708 414" marker-end="url(#l06-a1)"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="24" y="118" width="186" height="108" rx="12" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="24" y="118" width="186" height="108" rx="12" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="248" y="60" width="300" height="260" rx="14" fill="#7f7f7f" fill-opacity="0.06" stroke="currentColor"/>
-    <rect x="266" y="94" width="264" height="44" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="266" y="94" width="264" height="44" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="266" y="152" width="264" height="44" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
     <rect x="266" y="210" width="264" height="44" rx="9" fill="#e0930f" fill-opacity="0.15" stroke="#e0930f"/>
     <rect x="266" y="268" width="264" height="44" rx="9" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
@@ -123,7 +123,7 @@ The format is deliberately, almost insultingly simple: UTF-8 text, one sample pe
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">The response body of GET /metrics, line by line</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="30" y="52" width="490" height="248" rx="12" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor"/>
-    <rect x="556" y="60" width="292" height="40" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="556" y="60" width="292" height="40" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="556" y="112" width="292" height="40" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
     <rect x="556" y="164" width="292" height="40" rx="9" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="556" y="216" width="292" height="84" rx="9" fill="#e0930f" fill-opacity="0.15" stroke="#e0930f"/>
@@ -159,7 +159,7 @@ The format is deliberately, almost insultingly simple: UTF-8 text, one sample pe
     <text x="568" y="285" opacity="0.85">_sum and _count — for the mean</text>
   </g>
   <g fill="none" stroke-width="2.2">
-    <path d="M60 342 L 208 342" stroke="#3553ff"/>
+    <path d="M60 342 L 208 342" stroke="#c94a12"/>
     <path d="M212 342 L 426 342" stroke="#0fa07f"/>
     <path d="M434 342 L 452 342" stroke="#e0930f"/>
   </g>
@@ -239,7 +239,7 @@ Now the wrinkle. Processes restart, and when they do, the counter goes back to z
   <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 5" opacity="0.35">
     <path d="M325 84 L 325 280"/>
   </g>
-  <g fill="none" stroke="#3553ff" stroke-width="2.6" stroke-linejoin="round">
+  <g fill="none" stroke="#c94a12" stroke-width="2.6" stroke-linejoin="round">
     <path d="M149 163 L 208 127 L 266 108"/>
     <path d="M384 260 L 443 234 L 501 204 L 560 178"/>
   </g>
@@ -247,7 +247,7 @@ Now the wrinkle. Processes restart, and when they do, the counter goes back to z
     <path d="M266 108 L 378 254" marker-end="url(#l06-a3)"/>
     <path d="M149 163 L 552 178" marker-end="url(#l06-a3)"/>
   </g>
-  <g fill="#3553ff">
+  <g fill="#c94a12">
     <circle cx="149" cy="163" r="4"/><circle cx="208" cy="127" r="4"/><circle cx="266" cy="108" r="4"/>
     <circle cx="384" cy="260" r="4"/><circle cx="443" cy="234" r="4"/><circle cx="501" cy="204" r="4"/><circle cx="560" cy="178" r="4"/>
   </g>

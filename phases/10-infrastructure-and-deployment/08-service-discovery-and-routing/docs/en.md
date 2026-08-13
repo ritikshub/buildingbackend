@@ -64,7 +64,7 @@ Unless you deregister. That is the same transition with the clock deleted.
       <rect x="26" y="176" width="150" height="72" rx="11" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.55"/>
       <rect x="300" y="164" width="204" height="96" rx="13" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
       <rect x="646" y="86" width="208" height="80" rx="11" fill="#d64545" fill-opacity="0.13" stroke="#d64545"/>
-      <rect x="646" y="262" width="208" height="80" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="646" y="262" width="208" height="80" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
     <g fill="none" stroke="currentColor" stroke-width="1.8">
       <path d="M176 212 L 292 212" marker-end="url(#l08-a1)"/>
@@ -83,7 +83,7 @@ Unless you deregister. That is the same transition with the clock deleted.
       <text x="750" y="114" font-size="13" font-weight="700" fill="#d64545">EXPIRED</text>
       <text x="750" y="134" font-size="9.5" opacity="0.9">the registry gave up on you</text>
       <text x="750" y="150" font-size="9.5" opacity="0.9">measured: 38.0 s after it wedged</text>
-      <text x="750" y="290" font-size="13" font-weight="700" fill="#3553ff">DEREGISTERED</text>
+      <text x="750" y="290" font-size="13" font-weight="700" fill="#c94a12">DEREGISTERED</text>
       <text x="750" y="310" font-size="9.5" opacity="0.9">you said so, so no clock runs</text>
       <text x="750" y="326" font-size="9.5" opacity="0.9">measured: 0.0 s</text>
     </g>
@@ -96,7 +96,7 @@ Unless you deregister. That is the same transition with the clock deleted.
       <text x="566" y="96" font-size="10" font-weight="700" fill="#d64545">silence &gt; ttl 30 s</text>
       <text x="614" y="196" font-size="8.5" opacity="0.85">+ up to 10 s of sweep granularity:</text>
       <text x="614" y="208" font-size="8.5" opacity="0.85">nothing checks continuously</text>
-      <text x="566" y="338" font-size="10" font-weight="700" fill="#3553ff">deregister</text>
+      <text x="566" y="338" font-size="10" font-weight="700" fill="#c94a12">deregister</text>
       <text x="566" y="352" font-size="8.5" opacity="0.85">removed at once — no TTL,</text>
       <text x="566" y="364" font-size="8.5" opacity="0.85">no sweep, no waiting</text>
     </g>
@@ -173,9 +173,9 @@ Now put the six together. Each is individually reasonable; each was chosen by so
       <text x="820" y="77" font-size="9" opacity="0.8" text-anchor="end">t = 47.25 s</text>
     </g>
 
-    <path d="M542 96 L 542 214" fill="none" stroke="#3553ff" stroke-width="1.8" stroke-dasharray="5 4"/>
-    <text x="536" y="110" font-size="10" font-weight="700" fill="#3553ff" text-anchor="end">what everyone assumes: 30.00 s</text>
-    <text x="536" y="124" font-size="9" fill="#3553ff" opacity="0.9" text-anchor="end">&#8220;it is the lease TTL&#8221; — one term of six</text>
+    <path d="M542 96 L 542 214" fill="none" stroke="#c94a12" stroke-width="1.8" stroke-dasharray="5 4"/>
+    <text x="536" y="110" font-size="10" font-weight="700" fill="#c94a12" text-anchor="end">what everyone assumes: 30.00 s</text>
+    <text x="536" y="124" font-size="9" fill="#c94a12" opacity="0.9" text-anchor="end">&#8220;it is the lease TTL&#8221; — one term of six</text>
 
     <g fill="none" stroke-width="1.8">
       <rect x="60" y="150" width="68" height="44" fill="#e0930f" fill-opacity="0.20" stroke="#e0930f"/>
@@ -226,11 +226,11 @@ Now put the six together. Each is individually reasonable; each was chosen by so
     </g>
 
     <g fill="none" stroke-width="1.8" stroke-linejoin="round">
-      <rect x="60" y="356" width="360" height="62" rx="10" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="60" y="356" width="360" height="62" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
       <rect x="460" y="356" width="360" height="62" rx="10" fill="#d64545" fill-opacity="0.11" stroke="#d64545"/>
     </g>
     <g fill="currentColor">
-      <text x="240" y="378" font-size="10.5" font-weight="700" text-anchor="middle" fill="#3553ff">assumed 30.00 s</text>
+      <text x="240" y="378" font-size="10.5" font-weight="700" text-anchor="middle" fill="#c94a12">assumed 30.00 s</text>
       <text x="240" y="396" font-size="9.5" text-anchor="middle" opacity="0.9">measured 47.25 s this run &#183; mean 48.96 s</text>
       <text x="240" y="411" font-size="9.5" text-anchor="middle" opacity="0.9">p95 62.24 s &#183; worst 69.54 s of 2000 deaths</text>
       <text x="640" y="378" font-size="10.5" font-weight="700" text-anchor="middle" fill="#d64545">with no max connection lifetime</text>
@@ -315,10 +315,10 @@ There is exactly one correct ordering, and it has four steps:
   </defs>
   <text x="440" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Three orderings, one rolling replacement, measured drops</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="326" y="48" font-size="9.5" font-weight="700" fill="#3553ff">t = 2.00 s &#183; an explicit deregistration reaches the caller</text>
+    <text x="326" y="48" font-size="9.5" font-weight="700" fill="#c94a12">t = 2.00 s &#183; an explicit deregistration reaches the caller</text>
     <text x="453" y="64" font-size="9.5" font-weight="700" fill="#e0930f">t = 3.50 s &#183; detection alone, with active health checks</text>
     <g fill="none" stroke-width="1.6" stroke-dasharray="5 4" stroke-opacity="0.75">
-      <path d="M320 72 L 320 84 M320 100 L 320 164 M320 180 L 320 244 M320 260 L 320 316" stroke="#3553ff"/>
+      <path d="M320 72 L 320 84 M320 100 L 320 164 M320 180 L 320 244 M320 260 L 320 316" stroke="#c94a12"/>
       <path d="M448 72 L 448 84 M448 100 L 448 164 M448 180 L 448 244 M448 260 L 448 316" stroke="#e0930f"/>
     </g>
 

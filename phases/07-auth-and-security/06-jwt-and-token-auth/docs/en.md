@@ -87,11 +87,11 @@ How the signature is made determines who can verify — and who can *forge*:
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">How it's signed decides who can verify — and who can forge</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="44" width="424" height="278" rx="12" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.8"/>
+    <rect x="16" y="44" width="424" height="278" rx="12" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.8"/>
     <rect x="460" y="44" width="424" height="278" rx="12" fill="#0fa07f" fill-opacity="0.06" stroke="#0fa07f" stroke-opacity="0.8"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="228" y="70" font-size="12.5" font-weight="700" text-anchor="middle" fill="#3553ff">HS256 — one shared secret</text>
+    <text x="228" y="70" font-size="12.5" font-weight="700" text-anchor="middle" fill="#c94a12">HS256 — one shared secret</text>
     <text x="672" y="70" font-size="12.5" font-weight="700" text-anchor="middle" fill="#0fa07f">RS256 / ES256 — key pair</text>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor" font-size="9.5">

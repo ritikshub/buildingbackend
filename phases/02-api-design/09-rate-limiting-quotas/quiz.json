@@ -1,12 +1,5 @@
 [
   {
-    "question": "A client sends 100 requests at 11:59:58 and 100 more at 12:00:02 against a '100 per minute' fixed-window limiter. What happens?",
-    "options": ["The second 100 are rejected", "All 200 are allowed — the bursts land in different fixed windows (the boundary-burst problem)", "The client is banned", "Only 50 get through"],
-    "correct": 1,
-    "explanation": "Fixed windows align to the clock, not the client. The two bursts fall in different windows, so all 200 pass — effective worst-case is 2x the limit at boundaries. A sliding window (log or counter) or a token bucket would bound it.",
-    "stage": "pre"
-  },
-  {
     "question": "Why does a purely in-process rate limiter break when you scale from 1 to 6 replicas?",
     "options": ["It uses too much memory", "Each replica counts only its own traffic and enforces the full limit, so the effective limit becomes ~6x and drifts with autoscaling", "Redis is required by law", "The counters overflow"],
     "correct": 1,

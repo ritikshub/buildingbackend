@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service sizes its worker pool from os.cpu_count(). It runs fine on your 10-core laptop. In production the container runs on a shared 64-core node with a CPU limit of 2. What does the running service do?",
-    "options": [
-      "It creates 2 workers, because the container runtime makes os.cpu_count() report the limit",
-      "It creates 64 workers competing for 2 CPUs' worth of time, with no error anywhere — throughput does not improve, time to first answer gets several times worse, and memory scales with the worker count",
-      "It fails to start, because the kernel refuses to schedule more threads than the CPU limit allows",
-      "It creates 64 workers and gets 64 CPUs, because a CPU limit is advisory and only applies when the node is saturated"
-    ],
-    "correct": 1,
-    "explanation": "os.cpu_count() reports the machine, not your slice; it is not namespaced and no runtime rewrites it. Nothing errors, because nothing is wrong — you asked about the machine and got a truthful answer about the machine. Measured in this lesson at 10 vs 2 CPUs: 5.0x oversubscription bought 6.3x the time to first answer (119 ms to 748 ms), 5.0x the memory (23.3 MB to 117.0 MB), and 28% LESS throughput. Read /sys/fs/cgroup/cpu.max and os.sched_getaffinity(0) instead."
-  },
-  {
     "stage": "check",
     "question": "A newly disclosed Linux kernel privilege-escalation bug is being exploited in the wild. You run one tenant's untrusted code in a container and another tenant's in a VM, both on the same physical host. What is the difference in exposure?",
     "options": [

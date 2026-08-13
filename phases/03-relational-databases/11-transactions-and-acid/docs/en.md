@@ -65,7 +65,7 @@ already had) stands for **Atomicity, Consistency, Isolation, Durability.**
   <g>
   <rect x="279.0" y="34" width="122" height="46" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>
   <rect x="31.0" y="150" width="130" height="66" rx="9" fill="#12a05a" fill-opacity="0.14" stroke="#12a05a" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="187.0" y="150" width="130" height="66" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="187.0" y="150" width="130" height="66" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="343.0" y="150" width="136" height="66" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="505.0" y="150" width="144" height="66" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   </g>
@@ -130,7 +130,7 @@ either fully happens (and is durable) or hasn't happened at all. There is no tor
   <path d="M475.0 176.0 L 475.0 252" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l11b-ah)"/>
   </g>
   <g>
-  <rect x="10.0" y="128" width="120" height="46" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="10.0" y="128" width="120" height="46" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="147.5" y="128" width="215" height="66" rx="9" fill="#7f7f7f" fill-opacity="0.14" stroke="#7f7f7f" stroke-width="2" stroke-linejoin="round"/>
   <path d="M475 80.0 L550.0 128 L475 176.0 L400.0 128 Z" fill="#7f7f7f" fill-opacity="0.05" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
   <rect x="597.5" y="128" width="165" height="48" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>

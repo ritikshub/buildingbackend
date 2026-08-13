@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A service makes ten independent API calls, each taking 100 ms. The code is `for url in urls: results.append(await fetch(url))`, and every function involved is `async def`. How long does it take, and why?",
-    "options": ["About 100 ms — marking the functions `async` is what makes them run concurrently, so the ten calls overlap automatically", "About 100 ms, because the event loop preempts each coroutine after a few microseconds and round-robins between all ten", "About 1,002.7 ms, because `await` on a bare coroutine delegates into it and runs it to completion before the loop moves on to the next iteration. The lesson measured exactly this: 1,002.7 ms sequentially versus 100.6 ms for the same ten coroutines through `asyncio.gather` — a 9.96x difference with no change inside the coroutine", "About 1,000 ms, because Python's Global Interpreter Lock serialises the ten calls and no async design can overlap them"],
-    "correct": 2,
-    "explanation": "`async` gives a function the ability to suspend; it does not schedule anything. Awaiting a coroutine directly is delegation — the awaiting frame does not continue until that one coroutine finishes — so a `for` loop with an `await` in its body is strictly sequential. Concurrency requires handing several coroutines to the loop before awaiting any of them, which is what `gather` and `create_task` do. The GIL is a red herring here: the ten calls are waiting on I/O, not executing bytecode."
-  },
-  {
     "stage": "check",
     "question": "You write `c = fetch(42)` where `fetch` is an `async def` that writes a row to the database. You never await `c`. What happens?",
     "options": ["Nothing runs at all. Calling a coroutine function executes zero bytes of the body — it just builds a coroutine object, which is a frame that has not started. The row is never written, no exception is raised, and the only signal is a `RuntimeWarning: coroutine 'fetch' was never awaited` emitted on stderr when the object is garbage-collected", "The body runs immediately and synchronously, exactly like a normal function call, and only the `await` points would have been asynchronous", "The coroutine is automatically scheduled on the running event loop as a background Task and completes shortly afterwards", "Python raises `RuntimeError: coroutine was never awaited` at the point of the call, so the bug is caught immediately"],

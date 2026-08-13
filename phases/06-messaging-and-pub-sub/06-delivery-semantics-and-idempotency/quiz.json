@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A broker delivers a message, the consumer processes it and sends an acknowledgement, and the acknowledgement is dropped by the network. The broker's lease expires and it redelivers. Which component malfunctioned?",
-    "options": [
-      "The consumer, because it should have retried the acknowledgement until the broker confirmed receipt",
-      "The broker, because it should have waited longer before assuming the consumer had died",
-      "None of them. The broker cannot distinguish a lost message from a lost ack, and redelivering is the only safe behaviour available to it",
-      "The network, because a correctly provisioned VPC does not drop acknowledgement packets"
-    ],
-    "correct": 2,
-    "explanation": "Every component followed its contract. The broker's only options on silence are to redeliver (risking a duplicate) or to give up (risking a lost payment), and giving up is worse. Retrying the ack does not help, because that retry can also be lost, and so on forever - that infinite regress is the Two Generals Problem. Waiting longer never resolves it either: under asynchrony, 'no reply yet' and 'no reply ever' look identical. Duplicates here are not a defect to fix upstream; they are a property of the medium that the consumer must be built to absorb."
-  },
-  {
     "stage": "check",
     "question": "Why is exactly-once *delivery* over an unreliable network impossible, rather than merely difficult?",
     "options": [

@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You store customer_name and customer_email on every order row. The customer changes their email. What can go wrong?",
-    "options": ["Nothing", "Update anomaly: the email is duplicated across many rows, so if you miss one the data now contradicts itself", "The order is deleted", "The email column disappears"],
-    "correct": 1,
-    "explanation": "A fact about the customer (email) is copied onto every order. Updating it means changing many rows; miss one and the database holds two different emails for the same person — the update anomaly."
-  },
-  {
     "stage": "check",
     "question": "What does the functional dependency X → Y mean, and how does it guide normalization?",
     "options": ["X and Y are unrelated", "'X determines Y' — knowing X gives exactly one Y; normalization arranges tables so every non-key column depends on the key, the whole key, and nothing but the key", "Y comes before X", "X must be indexed"],

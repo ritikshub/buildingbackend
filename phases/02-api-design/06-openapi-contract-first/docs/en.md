@@ -81,28 +81,28 @@ their type hints and emits OpenAPI 3.1:
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-      <rect x="16"  y="46" width="286" height="220" rx="11" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff"/>
+      <rect x="16"  y="46" width="286" height="220" rx="11" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12"/>
       <rect x="336" y="46" width="196" height="220" rx="11" fill="#7c5cff" fill-opacity="0.07" stroke="#7c5cff"/>
       <rect x="566" y="46" width="318" height="220" rx="11" fill="#0fa07f" fill-opacity="0.07" stroke="#0fa07f"/>
     </g>
 
-    <text x="30" y="67" font-size="10.5" font-weight="700" fill="#3553ff">1 · @dataclass Order</text>
+    <text x="30" y="67" font-size="10.5" font-weight="700" fill="#c94a12">1 · @dataclass Order</text>
     <text x="30" y="82" font-size="7.5" fill="currentColor" opacity="0.85">the SAME type hints that validate a request</text>
     <text x="30" y="93" font-size="7.5" fill="currentColor" opacity="0.85">at runtime — the single source of truth</text>
-    <rect x="38" y="141" width="252" height="27" rx="4" fill="#3553ff" fill-opacity="0.12"/>
-    <rect x="38" y="193" width="252" height="14" rx="4" fill="#3553ff" fill-opacity="0.12"/>
+    <rect x="38" y="141" width="252" height="27" rx="4" fill="#c94a12" fill-opacity="0.12"/>
+    <rect x="38" y="193" width="252" height="14" rx="4" fill="#c94a12" fill-opacity="0.12"/>
     <text x="30" y="112" font-size="8" fill="currentColor" opacity="0.7">@dataclass</text>
     <text x="30" y="125" font-size="8" fill="currentColor">class Order:</text>
     <text x="44" y="138" font-size="8" fill="currentColor">id: str</text>
-    <text x="44" y="151" font-size="8" font-weight="700" fill="#3553ff">status: Literal["pending",</text>
-    <text x="121" y="164" font-size="8" font-weight="700" fill="#3553ff">"confirmed","cancelled"]</text>
+    <text x="44" y="151" font-size="8" font-weight="700" fill="#c94a12">status: Literal["pending",</text>
+    <text x="121" y="164" font-size="8" font-weight="700" fill="#c94a12">"confirmed","cancelled"]</text>
     <text x="44" y="177" font-size="8" fill="currentColor">total_amount: int</text>
     <text x="140" y="177" font-size="7" fill="currentColor" opacity="0.6"># minor units</text>
     <text x="44" y="190" font-size="8" fill="currentColor">currency: str</text>
-    <text x="44" y="203" font-size="8" font-weight="700" fill="#3553ff">items: list[LineItem]</text>
+    <text x="44" y="203" font-size="8" font-weight="700" fill="#c94a12">items: list[LineItem]</text>
     <text x="44" y="216" font-size="8" fill="currentColor">created_at: str</text>
     <text x="44" y="229" font-size="8" fill="currentColor">delivery_notes: Optional[str] = None</text>
-    <path d="M30 236 L288 236" fill="none" stroke="#3553ff" stroke-opacity="0.35" stroke-width="1"/>
+    <path d="M30 236 L288 236" fill="none" stroke="#c94a12" stroke-opacity="0.35" stroke-width="1"/>
     <text x="30" y="246" font-size="7" fill="currentColor" opacity="0.8">6 fields have no default → required[]</text>
     <text x="30" y="256" font-size="7" fill="currentColor" opacity="0.8">delivery_notes is Optional → nullable, not required</text>
 
@@ -140,13 +140,13 @@ their type hints and emits OpenAPI 3.1:
     <text x="580" y="94" font-size="7.5" fill="currentColor" opacity="0.85">a nested model becomes a $ref</text>
 
     <text x="580" y="117" font-size="8" font-weight="700" fill="currentColor">status</text>
-    <text x="616" y="117" font-size="7" fill="#3553ff">Literal["pending","confirmed","cancelled"]</text>
+    <text x="616" y="117" font-size="7" fill="#c94a12">Literal["pending","confirmed","cancelled"]</text>
     <text x="586" y="133" font-size="7.5" fill="#0fa07f">→</text>
     <text x="600" y="133" font-size="7.5" fill="#0fa07f">{"type": "string",</text>
     <text x="612" y="145" font-size="7.5" fill="#0fa07f">"enum": ["pending","confirmed","cancelled"]}</text>
 
     <text x="580" y="171" font-size="8" font-weight="700" fill="currentColor">items</text>
-    <text x="616" y="171" font-size="7" fill="#3553ff">list[LineItem]</text>
+    <text x="616" y="171" font-size="7" fill="#c94a12">list[LineItem]</text>
     <text x="586" y="187" font-size="7.5" fill="#0fa07f">→</text>
     <text x="600" y="187" font-size="7.5" fill="#0fa07f">{"type": "array",</text>
     <text x="612" y="199" font-size="7.5" fill="#0fa07f">"items": {"$ref": "#/components/schemas/LineItem"}}</text>
@@ -213,7 +213,7 @@ their type hints and emits OpenAPI 3.1:
     <text x="262" y="511" font-size="7.5" fill="currentColor" opacity="0.85">an operation with only a "200" is rejected</text>
 
     <text x="562" y="443" font-size="8" font-weight="700" fill="currentColor">TWO WORKFLOWS — same document, opposite direction</text>
-    <text x="562" y="460" font-size="8" font-weight="700" fill="#3553ff">code-first</text>
+    <text x="562" y="460" font-size="8" font-weight="700" fill="#c94a12">code-first</text>
     <text x="634" y="460" font-size="7.5" fill="currentColor">write the code, generate the spec —</text>
     <text x="634" y="471" font-size="7" fill="currentColor" opacity="0.8">this pipeline. Fast-moving internal APIs.</text>
     <text x="562" y="490" font-size="8" font-weight="700" fill="currentColor">contract-first</text>

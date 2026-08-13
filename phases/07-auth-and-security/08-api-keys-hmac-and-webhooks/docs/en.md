@@ -43,11 +43,11 @@ An API key is a long, random, high-entropy secret ([Lesson 2](../02-cryptographi
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
-      <rect x="30" y="168" width="250" height="130" rx="10" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff"/>
+      <rect x="30" y="168" width="250" height="130" rx="10" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12"/>
       <rect x="325" y="168" width="250" height="130" rx="10" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f"/>
       <rect x="620" y="168" width="250" height="130" rx="10" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f"/>
     </g>
-    <text x="155" y="190" font-size="11" font-weight="700" text-anchor="middle" fill="#3553ff">CREATE</text>
+    <text x="155" y="190" font-size="11" font-weight="700" text-anchor="middle" fill="#c94a12">CREATE</text>
     <text x="155" y="212" font-size="9" text-anchor="middle">generate random key</text>
     <text x="155" y="228" font-size="9" text-anchor="middle">show FULL key to user</text>
     <text x="155" y="244" font-size="9" text-anchor="middle" font-weight="700">exactly once</text>
@@ -89,17 +89,17 @@ The client and server share a secret. For each request, the client builds a **ca
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">HMAC request signing — the secret never travels; the signature does</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="20" y="46" width="410" height="210" rx="12" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.8"/>
+    <rect x="20" y="46" width="410" height="210" rx="12" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.8"/>
     <rect x="470" y="46" width="410" height="210" rx="12" fill="#0fa07f" fill-opacity="0.06" stroke="#0fa07f" stroke-opacity="0.8"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="225" y="70" font-size="12" font-weight="700" text-anchor="middle" fill="#3553ff">CLIENT (holds secret)</text>
+    <text x="225" y="70" font-size="12" font-weight="700" text-anchor="middle" fill="#c94a12">CLIENT (holds secret)</text>
     <text x="675" y="70" font-size="12" font-weight="700" text-anchor="middle" fill="#0fa07f">SERVER (holds secret)</text>
     <text x="40" y="96" font-size="9" opacity="0.75">canonical string:</text>
     <text x="40" y="114" font-size="9.5">POST\n/v1/charges\n</text>
     <text x="40" y="130" font-size="9.5">1700000000\n</text>
     <text x="40" y="146" font-size="9.5">sha256(body)</text>
-    <text x="40" y="176" font-size="9.5" fill="#3553ff">sig = HMAC-SHA256(secret, canonical)</text>
+    <text x="40" y="176" font-size="9.5" fill="#c94a12">sig = HMAC-SHA256(secret, canonical)</text>
     <text x="40" y="206" font-size="9" opacity="0.85">send headers:</text>
     <text x="40" y="222" font-size="9">X-Timestamp: 1700000000</text>
     <text x="40" y="238" font-size="9">X-Signature: v1=3f9c...  (NOT the secret)</text>
@@ -142,7 +142,7 @@ A webhook flips the direction: instead of you calling an API, a provider calls *
   <g fill="none" stroke-linejoin="round" stroke-width="1.8" font-family="'JetBrains Mono', ui-monospace, monospace">
     <rect x="30" y="60" width="200" height="80" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
     <rect x="360" y="60" width="200" height="80" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
-    <rect x="690" y="40" width="190" height="120" rx="10" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff"/>
+    <rect x="690" y="40" width="190" height="120" rx="10" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12"/>
     <rect x="360" y="200" width="200" height="70" rx="10" fill="#d64545" fill-opacity="0.10" stroke="#d64545"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
@@ -152,7 +152,7 @@ A webhook flips the direction: instead of you calling an API, a provider calls *
     <text x="460" y="86" font-size="11" font-weight="700" text-anchor="middle">YOUR PUBLIC ENDPOINT</text>
     <text x="460" y="108" font-size="8.5" text-anchor="middle">POST /webhooks/stripe</text>
     <text x="460" y="122" font-size="8.5" text-anchor="middle">Stripe-Signature: t=...,v1=...</text>
-    <text x="785" y="66" font-size="11" font-weight="700" text-anchor="middle" fill="#3553ff">VERIFY</text>
+    <text x="785" y="66" font-size="11" font-weight="700" text-anchor="middle" fill="#c94a12">VERIFY</text>
     <text x="785" y="86" font-size="8.5" text-anchor="middle">recompute HMAC over</text>
     <text x="785" y="100" font-size="8.5" text-anchor="middle">t + raw body with</text>
     <text x="785" y="114" font-size="8.5" text-anchor="middle">YOUR secret</text>

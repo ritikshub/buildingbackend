@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A server holds 10,000 mostly-idle WebSocket connections, one blocking thread each. Almost all of those threads are sitting inside recv() waiting for data. What is that costing the machine right now?",
-    "options": ["A great deal of CPU: each thread repeatedly checks whether its socket has data, so 10,000 threads means 10,000 poll loops competing for cores", "Nothing measurable — a thread waiting on I/O is completely free until data arrives, which is exactly why thread-per-connection scales indefinitely", "Almost no CPU but a large amount of memory and scheduling capacity: each parked thread is off the run queue consuming zero cycles, yet still holds 8.0 MiB of reserved stack (78.1 GiB across 10,000) and 16.3 KiB resident, and costs ~16.8 us of scheduler work every time it is woken", "Mostly network bandwidth, because each blocked recv() keeps a TCP keep-alive probe in flight for its socket"],
-    "correct": 2,
-    "explanation": "A blocking recv() on an empty buffer does not spin — the kernel puts the thread on the socket's wait queue, marks it TASK_INTERRUPTIBLE and takes it off the run queue, so it executes no instructions at all until a packet's interrupt handler wakes it. That is why the bill is memory and scheduling rather than cycles, and why 'blocking I/O is slow' is the wrong diagnosis. Option A is the tempting one because it confuses blocking with polling; polling is what you get when you set O_NONBLOCK and retry in a loop."
-  },
-  {
     "stage": "check",
     "question": "You set sock.setblocking(False) and wrap recv() in a retry loop that catches BlockingIOError. Compared to just letting the blocking recv() park, what happens while you wait 250 ms for one message?",
     "options": ["CPU time goes from 0.1 ms to 249.6 ms — 99.7% of a core saturated, a 3,081x increase — issuing 293,323 failed recv() syscalls at ~1.17 million per second, all of them returning 'nothing to do' and producing no result whatsoever", "Latency improves substantially, because the retry loop notices the data microseconds after it lands instead of waiting for the scheduler", "Nothing changes at the machine level; O_NONBLOCK only affects the error code returned, so both versions consume identical resources", "Memory use rises sharply because each retry allocates a fresh receive buffer, but CPU use stays flat"],

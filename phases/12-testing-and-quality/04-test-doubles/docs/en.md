@@ -77,7 +77,7 @@ Implemented by hand against one `PaymentGateway` port, the program prints exactl
     <rect x="24" y="218" width="832" height="36" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f" stroke-width="1.6"/>
 
     <g font-size="11" font-weight="700">
-      <text x="30" y="97" fill="#7f7f7f">dummy</text><text x="30" y="133" fill="#e0930f">stub</text><text x="30" y="169" fill="#e0930f">spy</text><text x="30" y="205" fill="#3553ff">mock</text><text x="30" y="241" fill="#0fa07f">fake</text>
+      <text x="30" y="97" fill="#7f7f7f">dummy</text><text x="30" y="133" fill="#e0930f">stub</text><text x="30" y="169" fill="#e0930f">spy</text><text x="30" y="205" fill="#c94a12">mock</text><text x="30" y="241" fill="#0fa07f">fake</text>
     </g>
     <g font-size="9.5" fill="currentColor" opacity="0.9">
       <text x="130" y="97">fills a parameter; never called</text><text x="130" y="133">a canned answer, no memory, no logic</text><text x="130" y="169">a stub that records every call it received</text><text x="130" y="205">carries the expectation; verified as it happens</text><text x="130" y="241">a working implementation, in memory</text>
@@ -87,12 +87,12 @@ Implemented by hand against one `PaymentGateway` port, the program prints exactl
       <text x="482" y="97" opacity="0.4">—</text><text x="566" y="97" opacity="0.4">—</text><text x="654" y="97" opacity="0.4">—</text><text x="778" y="97" opacity="0.4">n/a</text>
       <text x="482" y="133" opacity="0.4">—</text><text x="566" y="133" font-weight="700" fill="#0fa07f">yes</text><text x="654" y="133" opacity="0.4">—</text><text x="778" y="133" opacity="0.4">no</text>
       <text x="482" y="169" font-weight="700" fill="#0fa07f">after</text><text x="566" y="169" font-weight="700" fill="#0fa07f">yes</text><text x="654" y="169" opacity="0.4">—</text><text x="778" y="169" opacity="0.4">no</text>
-      <text x="482" y="205" font-weight="700" fill="#3553ff">before</text><text x="566" y="205" font-weight="700" fill="#0fa07f">yes</text><text x="654" y="205" opacity="0.4">—</text><text x="778" y="205" font-weight="700" fill="#3553ff">yes</text>
+      <text x="482" y="205" font-weight="700" fill="#c94a12">before</text><text x="566" y="205" font-weight="700" fill="#0fa07f">yes</text><text x="654" y="205" opacity="0.4">—</text><text x="778" y="205" font-weight="700" fill="#c94a12">yes</text>
       <text x="482" y="241" font-weight="700" fill="#0fa07f">after</text><text x="566" y="241" font-weight="700" fill="#0fa07f">yes</text><text x="654" y="241" font-weight="700" fill="#0fa07f">yes</text><text x="778" y="241" opacity="0.4">no</text>
     </g>
 
-    <rect x="24" y="272" width="832" height="56" rx="8" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-opacity="0.5" stroke-width="1.4"/>
-    <text x="36" y="291" font-size="9.5" font-weight="700" fill="#3553ff">the mock reports at the call site, which is the one thing only a mock does:</text>
+    <rect x="24" y="272" width="832" height="56" rx="8" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-opacity="0.5" stroke-width="1.4"/>
+    <text x="36" y="291" font-size="9.5" font-weight="700" fill="#c94a12">the mock reports at the call site, which is the one thing only a mock does:</text>
     <text x="36" y="309" font-size="9" fill="currentColor" opacity="0.92">expected charge('idem-A0001', 9999, 'usd', 'ok'), got charge('idem-A0001', 2500, 'usd', 'ok')</text>
     <text x="36" y="322" font-size="8.5" fill="currentColor" opacity="0.72">a spy would have reported the same mismatch — but only after the code under test had already finished running.</text>
 
@@ -148,7 +148,7 @@ Against that, two things run. The CI suite runs eight scenarios against a hand-w
       <path d="M288 72 L 288 300"/><path d="M416 72 L 416 300"/><path d="M608 72 L 608 300"/><path d="M736 72 L 736 300"/>
     </g>
 
-    <path d="M96 80 L 800 80" fill="none" stroke="#3553ff" stroke-width="3" stroke-dasharray="7 5"/>
+    <path d="M96 80 L 800 80" fill="none" stroke="#c94a12" stroke-width="3" stroke-dasharray="7 5"/>
     <path d="M96 80 L 160 80 L 224 80 L 288 279.5 L 352 279.5 L 416 279.5 L 480 279.5 L 544 279.5 L 608 287.2 L 672 287.2 L 736 289.2 L 800 289.2" fill="none" stroke="#d64545" stroke-width="2.8" stroke-linejoin="round"/>
     <path d="M96 80 L 160 80 L 224 80" fill="none" stroke="#0fa07f" stroke-width="4"/>
     <g fill="#d64545"><circle cx="288" cy="279.5" r="3.8"/><circle cx="608" cy="287.2" r="3.8"/><circle cx="736" cy="289.2" r="3.8"/></g>
@@ -158,7 +158,7 @@ Against that, two things run. The CI suite runs eight scenarios against a hand-w
       <text x="96" y="318">R1</text><text x="160" y="318">R2</text><text x="224" y="318">R3</text><text x="288" y="318">R4</text><text x="352" y="318">R5</text><text x="416" y="318">R6</text><text x="480" y="318">R7</text><text x="544" y="318">R8</text><text x="608" y="318">R9</text><text x="672" y="318">R10</text><text x="736" y="318">R11</text><text x="800" y="318">R12</text>
     </g>
 
-    <text x="440" y="66" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3553ff">what CI reports: 8/8 green, every release</text>
+    <text x="440" y="66" text-anchor="middle" font-size="9.5" font-weight="700" fill="#c94a12">what CI reports: 8/8 green, every release</text>
     <text x="330" y="245" font-size="9.5" font-weight="700" fill="#d64545">what production does</text>
     <text x="330" y="259" font-size="9" fill="#d64545" opacity="0.9">9.3% of orders correct</text>
     <text x="218" y="100" font-size="9" font-weight="700" fill="#0fa07f" text-anchor="end">they agree — 3 releases</text>

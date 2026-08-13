@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A transfer debits Alice then credits Bob as two separate writes, and the system crashes between them. What's the problem, and what fixes it?",
-    "options": ["Nothing is wrong", "$30 vanishes — the two writes needed to be one indivisible unit; a transaction makes them all-or-nothing", "The database is too slow", "Alice's account is deleted"],
-    "correct": 1,
-    "explanation": "Between the debit and credit, money has left one account and arrived nowhere — an impossible state. A transaction groups both writes so they either both commit or neither does."
-  },
-  {
     "stage": "check",
     "question": "What does Atomicity guarantee?",
     "options": ["Data is stored as atoms", "All of a transaction's changes commit, or none do — a crash or rollback mid-way leaves nothing behind, as if BEGIN never happened", "Transactions run one at a time", "Committed data survives crashes"],

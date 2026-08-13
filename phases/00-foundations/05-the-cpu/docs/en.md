@@ -37,7 +37,7 @@ Here's the entire job of a CPU, repeated forever:
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 652" width="100%" style="max-width:880px" role="img" aria-label="The fetch-decode-execute cycle drawn as a closed loop. Three purple stage boxes sit around a ring inside a large box labelled CPU, Central Processing Unit, and purple arrows curve clockwise from each stage to the next so the loop never ends. Stage 1, FETCH, sits at the top: get the next instruction from memory, with a program counter tracking which instruction is next. A blue arrow leaves the CPU to the left carrying the address of the next instruction out to RAM, Random Access Memory, drawn in gray outside the CPU boundary because it is separate and far slower; a second blue arrow brings the instruction bytes back. Stage 2, DECODE, sits at the lower right: figure out what operation it is and what it acts on, while the control unit turns those bytes into control signals for the rest of the chip. Stage 3, EXECUTE, sits at the lower left: the ALU, Arithmetic Logic Unit, does the math or logic, or a value moves. It can add, compare, move a value, or jump somewhere else, and a green arrow carries the result down into the registers. From EXECUTE the ring returns to FETCH, because the program counter now points at the next instruction. In the middle of the ring sits the CLOCK, the metronome that drives the loop: it ticks a fixed number of times per second and each tick pushes the cycle forward. Hz, hertz, means ticks per second, so 3.5 GHz is 3.5 billion ticks per second. A gray panel on the right explains that instructions are just numbers, a few bytes each, and that every CPU understands one fixed vocabulary of them called its instruction set, x86 or ARM, into which your Python or Go is translated before the CPU ever runs it. An amber panel on the left warns that GHz is only one dimension of speed: a CPU can also do more work per tick, called IPC or instructions per cycle, so a well-designed 3 GHz chip can out-run a lazy 4 GHz one. Along the bottom inside the CPU sit its three parts: registers, a handful of tiny ultra-fast storage slots inside the chip holding the few numbers it is working on right now; the ALU, the adder and comparator that does the actual math and logic; and the control unit, the coordinator that fetches instructions and tells the ALU and registers what to do.">
   <defs>
     <marker id="p0l05a-arp" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
-    <marker id="p0l05a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p0l05a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p0l05a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">One loop, forever: fetch → decode → execute, 3.5 billion ticks a second</text>
@@ -65,7 +65,7 @@ Here's the entire job of a CPU, repeated forever:
       <path d="M306 312 Q268 234 354 166" marker-end="url(#p0l05a-arp)"/>
     </g>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.8">
+    <g fill="none" stroke="#c94a12" stroke-width="1.8">
       <path d="M354 106 L198 106" marker-end="url(#p0l05a-arb)"/>
       <path d="M194 134 L352 134" marker-end="url(#p0l05a-arb)"/>
     </g>
@@ -76,9 +76,9 @@ Here's the entire job of a CPU, repeated forever:
     <g text-anchor="middle" fill="currentColor">
       <text x="108" y="116" font-size="12" font-weight="700" fill="#7f7f7f">RAM</text>
       <text x="108" y="132" font-size="8" opacity="0.9">Random Access Memory</text>
-      <text x="278" y="98" font-size="7" fill="#3553ff" font-weight="700">the address of the next</text>
-      <text x="278" y="118" font-size="7" fill="#3553ff" font-weight="700">instruction goes out to RAM</text>
-      <text x="278" y="150" font-size="7" fill="#3553ff" font-weight="700">the instruction bytes arrive</text>
+      <text x="278" y="98" font-size="7" fill="#c94a12" font-weight="700">the address of the next</text>
+      <text x="278" y="118" font-size="7" fill="#c94a12" font-weight="700">instruction goes out to RAM</text>
+      <text x="278" y="150" font-size="7" fill="#c94a12" font-weight="700">the instruction bytes arrive</text>
       <text x="278" y="162" font-size="7" opacity="0.8">— just numbers (lesson 1)</text>
     </g>
     <g fill="currentColor" font-size="7" opacity="0.9">

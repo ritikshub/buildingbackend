@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "At its simplest, what is a network?",
-    "options": ["A single powerful computer", "Two or more computers connected so they can exchange data", "A type of file", "A program that runs alone"],
-    "correct": 1,
-    "explanation": "A network is just connected computers that can exchange bytes. The simplest one is two machines joined by a cable; the internet is an enormous version of the same idea."
-  },
-  {
     "stage": "check",
     "question": "What makes a computer a 'server'?",
     "options": ["Special server-only hardware", "The role it plays: it waits for and answers requests", "It must live in a data center", "It has more RAM than a client"],

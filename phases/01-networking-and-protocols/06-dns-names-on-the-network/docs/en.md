@@ -66,14 +66,14 @@ actually hold the domain's records. That last server gives the real answer.
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor header boxes -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="15"  y="44" width="150" height="44" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+      <rect x="15"  y="44" width="150" height="44" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
       <rect x="195" y="44" width="150" height="44" rx="9" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
       <rect x="375" y="44" width="150" height="44" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="#7f7f7f"/>
       <rect x="555" y="44" width="150" height="44" rx="9" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
       <rect x="735" y="44" width="150" height="44" rx="9" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/>
     </g>
     <!-- actor names -->
-    <text x="90"  y="64" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">Stub resolver</text>
+    <text x="90"  y="64" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">Stub resolver</text>
     <text x="270" y="64" text-anchor="middle" font-size="11" font-weight="700" fill="#0fa07f">Recursive resolver</text>
     <text x="450" y="64" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">Root server</text>
     <text x="630" y="64" text-anchor="middle" font-size="11" font-weight="700" fill="#e0930f">.com TLD</text>

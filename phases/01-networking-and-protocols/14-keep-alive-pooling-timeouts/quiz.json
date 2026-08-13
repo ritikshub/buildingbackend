@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Before a TCP client can send its first request byte, what must happen?",
-    "options": [
-      "Nothing — data flows immediately",
-      "A three-way handshake (SYN, SYN-ACK, ACK), which costs a network round-trip",
-      "The server must send the client a password",
-      "The client must open at least ten connections"
-    ],
-    "correct": 1,
-    "explanation": "TCP is connection-oriented: the SYN / SYN-ACK / ACK handshake establishes shared state before any request data moves. That is one full round-trip of pure setup, and for HTTPS a TLS handshake adds one or two more — the cost keep-alive and pooling exist to avoid paying per request."
-  },
-  {
-    "stage": "pre",
-    "question": "What does 'keep-alive' (a persistent connection) mean?",
-    "options": [
-      "The server pings the client to keep it awake",
-      "After a request/response completes, the connection stays open so the next request reuses the same socket",
-      "The connection is encrypted end to end",
-      "The client keeps retrying until the server answers"
-    ],
-    "correct": 1,
-    "explanation": "Keep-alive means not closing the connection after one exchange. HTTP/1.1 makes this the default (RFC 9112 §9): one handshake is amortized over many requests instead of paying a new handshake for each one."
-  },
-  {
     "stage": "check",
     "question": "A connection pool's acquire() finds no idle connection and the pool is already at max_size with all connections checked out. What should it do?",
     "options": [

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A handler checks `if user.role in {\"admin\",\"editor\"}` and then returns `db.documents.get(doc_id)`. Any editor can now read any document by changing the id. What kind of failure is this?",
-    "options": [
-      "An authentication failure — the user isn't properly logged in",
-      "Broken object-level authorization (the IDOR): the code checks that the user may use the endpoint (route-level) but never checks that they may access THIS specific document (object-level). The role check is necessary but not sufficient; you must also verify ownership or a sharing relationship for doc_id. This is the #1 API vulnerability",
-      "A rate-limiting failure",
-      "Nothing — role-based checks are always sufficient"
-    ],
-    "correct": 1,
-    "explanation": "Route-level authorization answers 'may this user call this endpoint?' Object-level authorization answers 'may this user act on this particular record?' Passing the first while skipping the second is Broken Object-Level Authorization (IDOR) — OWASP API Security #1. The fix is to authorize the object itself (owner/shared-with) on every access, not just to confirm the user has a role."
-  },
-  {
     "stage": "check",
     "question": "What does RBAC give you over per-resource ACLs, and where does it break down?",
     "options": [

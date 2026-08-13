@@ -195,8 +195,8 @@ That third property is the direct answer to the 03:04 question. Without it, "wha
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Four layers set LOG_LEVEL. Only one is live — and the process can say which.</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
-    <path d="M32 66 L 32 336" fill="none" stroke="#3553ff" stroke-width="1.8" marker-end="url(#l05-a2)" stroke-opacity="0.8"/>
-    <text x="20" y="204" font-size="10" fill="#3553ff" font-weight="700" text-anchor="middle" transform="rotate(-90 20 204)">later layers win</text>
+    <path d="M32 66 L 32 336" fill="none" stroke="#c94a12" stroke-width="1.8" marker-end="url(#l05-a2)" stroke-opacity="0.8"/>
+    <text x="20" y="204" font-size="10" fill="#c94a12" font-weight="700" text-anchor="middle" transform="rotate(-90 20 204)">later layers win</text>
 
     <g fill="none" stroke-width="1.9" stroke-linejoin="round">
       <rect x="52" y="60" width="524" height="58" rx="9" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.45"/>

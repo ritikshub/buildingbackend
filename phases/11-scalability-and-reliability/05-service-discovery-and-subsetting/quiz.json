@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A checkout fleet of 1,000 instances does client-side balancing against a pricing fleet of 800, each client holding one connection to each backend. Both fleets double, to 2,000 × 1,600. What happens to the total connection count?",
-    "options": [
-      "It doubles, from 800,000 to 1,600,000 — you doubled the machines",
-      "It quadruples, from 800,000 to 3,200,000",
-      "It stays at 800,000 — connections belong to clients, and each client still opens one per backend",
-      "It triples, from 800,000 to 2,400,000, because backends are shared"
-    ],
-    "correct": 1,
-    "explanation": "Connections are N × M, so doubling *both* factors multiplies by four: 2,000 × 1,600 = 3,200,000. 'It doubles' is the tempting answer because that is the intuition every other capacity number trains — CPU, memory and request rate really do scale linearly with fleet size, so the reflex is to double. The connection count is the one quantity that is quadratic, which is why it is the term that ambushes you: the fleet grew 2× on the dashboard and the socket cost grew 4×. This is Lesson 2's κ (coherency) term expressed in file descriptors, and it is why fleets hit RLIMIT_NOFILE walls that nobody's capacity model predicted."
-  },
-  {
     "stage": "check",
     "question": "In the deterministic subsetting algorithm from Beyer et al.'s Site Reliability Engineering, the client shuffles the backend list before slicing it. What is that shuffle seeded with?",
     "options": [

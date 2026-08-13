@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your `users` table stored passwords as `sha256(password)` and it just leaked. The hashes aren't reversible, so are the passwords safe?",
-    "options": [
-      "Yes — SHA-256 is a strong, modern hash and cannot be reversed",
-      "No. SHA-256 is fast by design — a single GPU tries ~10 billion candidates per second — so the attacker simply brute-forces every password on a wordlist. And with no salt, identical passwords share a hash, so common ones crack in bulk and rainbow tables give instant lookups. 'Not reversible' is irrelevant when guessing is this cheap",
-      "Yes, as long as the passwords were at least 8 characters long",
-      "No, but only because SHA-256 is a broken algorithm; SHA-512 would have been safe"
-    ],
-    "correct": 1,
-    "explanation": "A password hash isn't attacked by inversion, it's attacked by guessing: hash a candidate, compare, repeat. SHA-256's speed — the property that makes it great for file fingerprints — makes each guess nearly free, so wordlists and brute force reverse most real passwords quickly. Unsalted means identical passwords collide (crack once, unlock many) and precomputed rainbow tables apply. The fix is a slow, salted, memory-hard hash, not a longer SHA variant."
-  },
-  {
     "stage": "check",
     "question": "You add a unique random salt per user. What does this fix, and what does it NOT fix?",
     "options": [

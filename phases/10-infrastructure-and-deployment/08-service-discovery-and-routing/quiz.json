@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "An instance of your service wedges — it stops answering and stops heartbeating, but its listening socket stays open. Your registry uses a 30-second lease TTL. How long until your callers stop sending it traffic?",
-    "options": [
-      "About 30 seconds — the lease TTL is the window, which is why it is the number everyone quotes",
-      "Instantly, because the caller's very next request fails and it will pick a different instance",
-      "About 47 seconds and highly variable, because the lease TTL is only one of six additive delays — heartbeat interval, lease grace, sweep granularity, propagation, the caller's cached list, and pooled connection reuse",
-      "About 60 seconds — twice the TTL, because the registry has to miss the entry on two consecutive sweeps"
-    ],
-    "correct": 2,
-    "explanation": "The lease TTL is the second of six terms, not the total. Measured over 2,000 simulated deaths: 47.25 s in the representative run, 48.96 s mean, 62.24 s at p95 against an assumed 30 s — 1.57x to 2.07x. Every layer behaved exactly as documented; nobody owns the sum. And with no maximum connection lifetime configured, the sixth term never ends at all."
-  },
-  {
     "stage": "check",
     "question": "You deregister a dying instance from the registry, and you also lower its DNS record's TTL and remove the A record. Your monitoring still shows requests arriving at that instance a full minute later. What is happening?",
     "options": [

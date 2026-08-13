@@ -139,37 +139,37 @@ You cannot do capacity arithmetic without a rough price list, and the prices spa
 
     <g stroke-width="1.3" fill="none">
       <path d="M70 254 L 70 196" stroke="#0fa07f"/>
-      <path d="M213.1 254 L 213.1 152" stroke="#3553ff"/>
-      <path d="M262.3 270 L 262.3 320" stroke="#3553ff"/>
-      <path d="M282.5 254 L 282.5 108" stroke="#3553ff"/>
-      <path d="M337.2 270 L 337.2 372" stroke="#3553ff"/>
+      <path d="M213.1 254 L 213.1 152" stroke="#c94a12"/>
+      <path d="M262.3 270 L 262.3 320" stroke="#c94a12"/>
+      <path d="M282.5 254 L 282.5 108" stroke="#c94a12"/>
+      <path d="M337.2 270 L 337.2 372" stroke="#c94a12"/>
       <path d="M479.5 254 L 479.5 196" stroke="#7f7f7f"/>
-      <path d="M551.5 270 L 551.5 320" stroke="#3553ff"/>
+      <path d="M551.5 270 L 551.5 320" stroke="#c94a12"/>
       <path d="M551.5 254 L 551.5 152" stroke="#7c5cff"/>
       <path d="M746.4 270 L 746.4 372" stroke="#d64545"/>
     </g>
     <g stroke="none">
-      <circle cx="70" cy="262" r="4.5" fill="#0fa07f"/><circle cx="213.1" cy="262" r="4.5" fill="#3553ff"/><circle cx="262.3" cy="262" r="4.5" fill="#3553ff"/><circle cx="282.5" cy="262" r="4.5" fill="#3553ff"/><circle cx="337.2" cy="262" r="4.5" fill="#3553ff"/><circle cx="551.5" cy="262" r="4.5" fill="#3553ff"/>
+      <circle cx="70" cy="262" r="4.5" fill="#0fa07f"/><circle cx="213.1" cy="262" r="4.5" fill="#c94a12"/><circle cx="262.3" cy="262" r="4.5" fill="#c94a12"/><circle cx="282.5" cy="262" r="4.5" fill="#c94a12"/><circle cx="337.2" cy="262" r="4.5" fill="#c94a12"/><circle cx="551.5" cy="262" r="4.5" fill="#c94a12"/>
     </g>
 
     <g fill="currentColor">
       <text x="70" y="192" font-size="10" font-weight="700" fill="#0fa07f">L1 hit ~1 ns</text><text x="70" y="180" font-size="8.5" opacity="0.8">Phase 0 L06</text>
 
-      <text x="213.1" y="148" font-size="10" font-weight="700" fill="#3553ff" text-anchor="middle">49.43 ns</text><text x="213.1" y="136" font-size="8.5" opacity="0.85" text-anchor="middle">one interpreter op</text>
+      <text x="213.1" y="148" font-size="10" font-weight="700" fill="#c94a12" text-anchor="middle">49.43 ns</text><text x="213.1" y="136" font-size="8.5" opacity="0.85" text-anchor="middle">one interpreter op</text>
       <text x="213.1" y="124" font-size="8.5" opacity="0.7" text-anchor="middle">MEASURED</text>
 
-      <text x="262.3" y="334" font-size="10" font-weight="700" fill="#3553ff" text-anchor="middle">189.6 ns</text><text x="262.3" y="346" font-size="8.5" opacity="0.85" text-anchor="middle">random RAM read</text>
+      <text x="262.3" y="334" font-size="10" font-weight="700" fill="#c94a12" text-anchor="middle">189.6 ns</text><text x="262.3" y="346" font-size="8.5" opacity="0.85" text-anchor="middle">random RAM read</text>
       <text x="262.3" y="358" font-size="8.5" opacity="0.7" text-anchor="middle">MEASURED · 4.8x sequential</text>
 
-      <text x="282.5" y="104" font-size="10" font-weight="700" fill="#3553ff" text-anchor="middle">329 ns</text><text x="282.5" y="92" font-size="8.5" opacity="0.85" text-anchor="middle">one syscall</text>
+      <text x="282.5" y="104" font-size="10" font-weight="700" fill="#c94a12" text-anchor="middle">329 ns</text><text x="282.5" y="92" font-size="8.5" opacity="0.85" text-anchor="middle">one syscall</text>
       <text x="282.5" y="80" font-size="8.5" opacity="0.7" text-anchor="middle">MEASURED · 12 of these per request</text>
 
-      <text x="337.2" y="386" font-size="10" font-weight="700" fill="#3553ff" text-anchor="middle">1.46 us</text><text x="337.2" y="398" font-size="8.5" opacity="0.85" text-anchor="middle">buffered 4 KiB write</text>
+      <text x="337.2" y="386" font-size="10" font-weight="700" fill="#c94a12" text-anchor="middle">1.46 us</text><text x="337.2" y="398" font-size="8.5" opacity="0.85" text-anchor="middle">buffered 4 KiB write</text>
       <text x="337.2" y="410" font-size="8.5" opacity="0.7" text-anchor="middle">MEASURED · no durability</text>
 
       <text x="470" y="192" font-size="10" font-weight="700" fill="#7f7f7f" text-anchor="end">NVMe read 50-100 us</text><text x="470" y="180" font-size="8.5" opacity="0.8" text-anchor="end">published spec</text>
 
-      <text x="551.5" y="334" font-size="10" font-weight="700" fill="#3553ff" text-anchor="middle">503.9 us</text><text x="551.5" y="346" font-size="8.5" opacity="0.85" text-anchor="middle">write + fsync</text>
+      <text x="551.5" y="334" font-size="10" font-weight="700" fill="#c94a12" text-anchor="middle">503.9 us</text><text x="551.5" y="346" font-size="8.5" opacity="0.85" text-anchor="middle">write + fsync</text>
       <text x="551.5" y="358" font-size="8.5" opacity="0.7" text-anchor="middle">MEASURED · 346x the buffered write</text>
 
       <text x="551.5" y="148" font-size="10" font-weight="700" fill="#7c5cff" text-anchor="middle">same-AZ RTT ~0.5 ms</text><text x="551.5" y="136" font-size="8.5" opacity="0.85" text-anchor="middle">a network hop costs what an fsync costs</text>
@@ -306,11 +306,11 @@ Here is the comparison that should happen before any architecture discussion. On
     <path d="M278 132 C 320 132, 320 200, 340 248" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6" marker-end="url(#p11-01-a3)"/>
     <path d="M460 268 C 495 268, 500 300, 520 316" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6" marker-end="url(#p11-01-a3)"/>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M700 148 L 700 96 L 240 96" marker-end="url(#p11-01-a3)"/>
     </g>
     <g fill="currentColor">
-      <text x="708" y="152" font-size="10.5" font-weight="700" fill="#3553ff">24 machines deleted</text><text x="708" y="167" font-size="9" opacity="0.85">by a 10.5x factor in</text>
+      <text x="708" y="152" font-size="10.5" font-weight="700" fill="#c94a12">24 machines deleted</text><text x="708" y="167" font-size="9" opacity="0.85">by a 10.5x factor in</text>
       <text x="708" y="180" font-size="9" opacity="0.85">code, not in hardware</text>
     </g>
 
@@ -403,9 +403,9 @@ There are exactly four honest reasons. If your reason is not one of these, it is
       <text x="658" y="353" font-size="9" font-weight="700" fill="#0fa07f">the ONLY scale reason</text>
     </g>
 
-    <rect x="24" y="382" width="818" height="46" rx="9" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.8"/>
+    <rect x="24" y="382" width="818" height="46" rx="9" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8"/>
     <g fill="currentColor">
-      <text x="40" y="402" font-size="10.5" font-weight="700" fill="#3553ff">Three of the four are not scalability problems at all.</text><text x="40" y="418" font-size="9.5" opacity="0.9">Reason 1 arrives first for almost every team — which means most fleets exist for reliability, and are then blamed for being slow.</text>
+      <text x="40" y="402" font-size="10.5" font-weight="700" fill="#c94a12">Three of the four are not scalability problems at all.</text><text x="40" y="418" font-size="9.5" opacity="0.9">Reason 1 arrives first for almost every team — which means most fleets exist for reliability, and are then blamed for being slow.</text>
     </g>
     <text x="440" y="454" font-size="11" text-anchor="middle" fill="currentColor" opacity="0.9">If your answer is "we need to scale", the honest follow-up is: which of these four, and what did you measure?</text><text x="440" y="470" font-size="11" text-anchor="middle" fill="currentColor" opacity="0.9">Anything else is reason 5: it felt slow. Reason 5 costs the same as the other four and buys nothing.</text>
   </g>

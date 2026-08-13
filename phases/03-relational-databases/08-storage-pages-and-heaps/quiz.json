@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why does a database read and write data in fixed-size pages rather than one row at a time?",
-    "options": ["Rows are always the same size", "Disks and the OS transfer data in fixed-size blocks, so reading one 40-byte row costs the same as reading the whole block — pack many rows per page and amortize the cost", "Pages are required by SQL", "It saves memory"],
-    "correct": 1,
-    "explanation": "Storage hardware moves fixed-size blocks (typically 4-8 KB). A single-row read still pulls the whole block, so a fast database packs many rows into each page and gets many rows' worth of work from one disk operation."
-  },
-  {
     "stage": "check",
     "question": "In a slotted page, why is a row's identity stored as (page, slot) rather than a raw byte offset?",
     "options": ["Byte offsets are too large", "So a row can move within its page (e.g. after compaction) without breaking references — only the slot's internal offset changes, while the external (page, slot) id stays stable", "Slots are faster to compute", "Raw offsets aren't allowed in Python"],

@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You are editing a document and the power suddenly cuts out before you saved. Why can the unsaved work be lost?",
-    "options": ["Disks erase themselves on power loss", "The work was only in RAM, which is volatile and wiped when power is lost", "The CPU deletes it", "Files are temporary by default"],
-    "correct": 1,
-    "explanation": "Work-in-progress lives in RAM, which is fast but volatile — it loses everything when power is cut. Saving copies it to persistent storage (disk), which survives."
-  },
-  {
     "stage": "check",
     "question": "What is the CPU's basic job, repeated billions of times a second?",
     "options": ["Store files permanently", "Fetch the next instruction from memory and execute it", "Manage the network", "Draw the screen"],

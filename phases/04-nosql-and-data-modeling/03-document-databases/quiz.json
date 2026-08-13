@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "How does a document database differ from a key-value store?",
-    "options": ["It's faster for lookups by key", "The value is a transparent JSON/BSON document the database can query inside (by field, including nested paths), not an opaque blob reachable only by key", "It can't store nested data", "It requires a fixed schema like a relational table"],
-    "correct": 1,
-    "explanation": "Both store a value under an id, but a key-value store's value is opaque — reachable only by key. A document store's value is a transparent JSON tree the database reads into, so you can query and index by any field, including nested ones. That transparency is the entire reason the category exists."
-  },
-  {
     "stage": "check",
     "question": "What does \"schema-on-read\" mean, and what's the catch?",
     "options": ["The schema is read from a config file", "No schema is enforced on write, so documents in a collection can have different shapes; the catch is that the correctness a relational schema guaranteed (required fields, types) is now the application's responsibility", "Documents are read-only", "The schema changes every time you read"],

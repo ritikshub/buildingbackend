@@ -301,7 +301,7 @@ The trade is continuous, not a choice between two designs:
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 478" width="100%" style="max-width:840px" role="img" aria-label="A measured trade-off curve plotting the worst-case revocation window in seconds against store lookups per one thousand requests, from a simulated hour of 29012 requests across 400 users on six instances. A server-side session store sits at 1000 lookups per 1000 requests with a zero second revocation window. Signed tokens move down the curve as their TTL grows: 434.8 lookups and a 54 second window at a 60 second TTL, 251.1 lookups and 281 seconds at 300 seconds, 177.9 lookups and 880 seconds at 900 seconds, and 90.5 lookups with a 3121 second window at a one hour TTL, which is off the top of the chart. A hybrid of a 15-minute token plus a denylist pulled every 30 seconds sits off the curve at 202.7 lookups and a 29 second window, buying the window back by putting load back on the store.">
   <defs>
-    <marker id="p11-06-c1" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p11-06-c1" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">You do not choose a token or a store. You choose a point on this curve.</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
@@ -315,9 +315,9 @@ The trade is continuous, not a choice between two designs:
       <path d="M254 74 L 254 350"/><path d="M398 74 L 398 350"/><path d="M542 74 L 542 350"/><path d="M686 74 L 686 350"/>
     </g>
 
-    <path d="M175 84 C 210 200, 238 292, 293 328 C 400 346, 560 350, 826 350" fill="none" stroke="#3553ff" stroke-width="2.2" stroke-dasharray="7 5" opacity="0.75"/>
+    <path d="M175 84 C 210 200, 238 292, 293 328 C 400 346, 560 350, 826 350" fill="none" stroke="#c94a12" stroke-width="2.2" stroke-dasharray="7 5" opacity="0.75"/>
 
-    <g fill="#3553ff" fill-opacity="0.30" stroke="#3553ff" stroke-width="2">
+    <g fill="#c94a12" fill-opacity="0.30" stroke="#c94a12" stroke-width="2">
       <circle cx="830" cy="350" r="6.5"/>
       <circle cx="423" cy="336" r="6.5"/>
       <circle cx="291" cy="277" r="6.5"/>
@@ -331,14 +331,14 @@ The trade is continuous, not a choice between two designs:
     </g>
 
     <g fill="currentColor" font-size="9.5">
-      <text x="822" y="306" text-anchor="end" font-weight="700" fill="#3553ff">server-side session store</text>
+      <text x="822" y="306" text-anchor="end" font-weight="700" fill="#c94a12">server-side session store</text>
       <text x="822" y="318" text-anchor="end" opacity="0.85">1000 lookups / 1000 req · window 0 s</text>
       <text x="822" y="330" text-anchor="end" opacity="0.85">every single request pays the store</text>
-      <text x="437" y="320" font-weight="700" fill="#3553ff">token, TTL 60 s</text>
+      <text x="437" y="320" font-weight="700" fill="#c94a12">token, TTL 60 s</text>
       <text x="437" y="332" opacity="0.85">434.8 lookups · 54 s</text>
-      <text x="305" y="262" font-weight="700" fill="#3553ff">token, TTL 300 s</text>
+      <text x="305" y="262" font-weight="700" fill="#c94a12">token, TTL 300 s</text>
       <text x="305" y="274" opacity="0.85">251.1 lookups · 281 s</text>
-      <text x="252" y="112" font-weight="700" fill="#3553ff">token, TTL 900 s</text>
+      <text x="252" y="112" font-weight="700" fill="#c94a12">token, TTL 900 s</text>
       <text x="252" y="124" opacity="0.85">177.9 lookups · 880 s</text>
       <text x="190" y="72" font-weight="700" fill="#e0930f">token, TTL 3600 s → 90.5 lookups, window 3121 s (off the chart)</text>
     </g>

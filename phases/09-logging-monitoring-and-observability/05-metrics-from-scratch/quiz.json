@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "One minute of traffic: 950 requests take 50 ms and 50 requests take 6 seconds. The dashboard shows a mean latency of 347 ms. What is wrong with that number?",
-    "options": ["Nothing — 347 ms is a correct arithmetic mean and therefore a correct summary", "It is arithmetically correct but describes zero of the 1,000 requests: no request took anything near 347 ms. The mean is an average of two populations that do not exist, and it hides the fact that 5% of users are timing out. p50 and p95 are both 50 ms; p99 is 6 seconds — those numbers describe real users", "The mean should have been computed over a longer window", "Latency should never be measured in milliseconds"],
-    "correct": 1,
-    "explanation": "An average is only a good summary of a distribution with a single mode and a short tail. Real latency distributions are the opposite: a big fast body and a long slow tail, so the mean lands in the empty space between them. Percentiles are answers to questions about actual users — 'what did the slowest 1% of requests experience' — which is why every latency SLO is written as a percentile and never as a mean."
-  },
-  {
     "stage": "check",
     "question": "A counter's scrapes over five intervals read 1240, 1402, 1559, 118, 297. Why can the query engine not simply sum the consecutive differences?",
     "options": ["Because counters are stored as floats and floats accumulate rounding error", "Because scrape intervals are never exactly equal, so the deltas are not comparable", "Because the process restarted before the fourth scrape and the counter went back to zero. Naively summing deltas gives -943 (one interval alone is -1441). Any decrease must be read as a reset, with the new value counted as the increase, giving 616 requests over 60 seconds = 10.27 req/s", "Because a counter's value is only valid at the moment it is scraped"],

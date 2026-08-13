@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A release goes out at 23:00 that ships a new container image, a new config value, and a migration that adds orders.total_cents and drops orders.total. At 03:14 the error rate is 2% and climbing. The on-call engineer redeploys the previous image digest — a clean, thirty-second rollback. What happens to the error rate?",
-    "options": [
-      "It drops to roughly zero, because the previous image is a known-good artifact that ran in production for weeks",
-      "It stays near 2%, because the artifact was never the cause and the config value still points at the new catalogue",
-      "It goes to 100%, because the old code queries orders.total and that column no longer exists — the rollback made a partial outage total",
-      "It halves, because only the requests that read the dropped column fail while the rest are served normally"
-    ],
-    "correct": 2,
-    "explanation": "Rolling back the artifact puts old code in front of the CURRENT database. The old build issues its first query against orders.total, which the migration dropped, so every request fails at the first statement — there is no code path that avoids it and no cache to hide behind. A release is three things (artifact, config, schema) and each rolls back separately; reverting one of the three is why a 2% incident becomes a 100% outage. The measured run served 200 of 200 requests as 5xx under exactly this attempt."
-  },
-  {
     "stage": "check",
     "question": "After the artifact-only rollback fails, the engineer also reverts the config value — two of the three layers now rolled back. What does the error rate do?",
     "options": [

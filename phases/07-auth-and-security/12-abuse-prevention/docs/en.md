@@ -35,7 +35,7 @@ Credential stuffing deserves its own understanding because it's the dominant acc
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
       <rect x="24" y="60" width="170" height="66" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
       <rect x="256" y="60" width="170" height="66" rx="10" fill="#d64545" fill-opacity="0.10" stroke="#d64545"/>
-      <rect x="488" y="60" width="170" height="66" rx="10" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="488" y="60" width="170" height="66" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
       <rect x="720" y="60" width="156" height="66" rx="10" fill="#d64545" fill-opacity="0.12" stroke="#d64545"/>
     </g>
     <text x="109" y="86" font-size="9.5" text-anchor="middle" font-weight="700">site B breached</text>
@@ -44,7 +44,7 @@ Credential stuffing deserves its own understanding because it's the dominant acc
     <text x="341" y="86" font-size="9.5" text-anchor="middle" font-weight="700" fill="#d64545">attacker's bot</text>
     <text x="341" y="104" font-size="8.5" text-anchor="middle">replays each pair</text>
     <text x="341" y="117" font-size="8.5" text-anchor="middle">against YOUR login</text>
-    <text x="573" y="86" font-size="9.5" text-anchor="middle" font-weight="700" fill="#3553ff">reuse → some work</text>
+    <text x="573" y="86" font-size="9.5" text-anchor="middle" font-weight="700" fill="#c94a12">reuse → some work</text>
     <text x="573" y="104" font-size="8.5" text-anchor="middle">~0.1–2% valid</text>
     <text x="573" y="117" font-size="8.5" text-anchor="middle">(correct passwords!)</text>
     <text x="798" y="86" font-size="9.5" text-anchor="middle" font-weight="700" fill="#d64545">thousands of</text>
@@ -84,13 +84,13 @@ No single control stops abuse; you stack them so each layer removes more automat
     <text x="450" y="52" font-size="10" text-anchor="middle" opacity="0.7">login attempts (mostly automated) ↓</text>
     <g stroke-linejoin="round" stroke-width="1.8">
       <polygon points="180,66 720,66 660,108 240,108" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
-      <polygon points="243,116 657,116 606,158 294,158" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <polygon points="243,116 657,116 606,158 294,158" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <polygon points="297,166 603,166 552,208 348,208" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <polygon points="351,216 549,216 498,258 402,258" fill="#0fa07f" fill-opacity="0.15" stroke="#0fa07f"/>
     </g>
     <text x="450" y="92" font-size="10.5" font-weight="700" text-anchor="middle" fill="#e0930f">① RATE LIMITING</text>
     <text x="450" y="104" font-size="8" text-anchor="middle">per IP / account / endpoint — drops floods</text>
-    <text x="450" y="140" font-size="10.5" font-weight="700" text-anchor="middle" fill="#3553ff">② BOT SIGNALS</text>
+    <text x="450" y="140" font-size="10.5" font-weight="700" text-anchor="middle" fill="#c94a12">② BOT SIGNALS</text>
     <text x="450" y="152" font-size="8" text-anchor="middle">IP reputation, headless, velocity, no-JS</text>
     <text x="450" y="190" font-size="10.5" font-weight="700" text-anchor="middle" fill="#7c5cff">③ CHALLENGE (on suspicion)</text>
     <text x="450" y="202" font-size="8" text-anchor="middle">CAPTCHA / proof-of-work</text>

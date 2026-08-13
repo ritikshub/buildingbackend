@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You split a monolith into a dozen services. Why does a stateless signed token (JWT) fit this better than the server-side session from Lesson 5?",
-    "options": [
-      "JWTs are encrypted, so services can pass them safely between each other",
-      "Because a server-side session requires every service to call the central session store on every request to resolve the ID into an identity — a network hop and shared dependency on the hot path. A JWT carries the identity and a signature, so each service verifies it locally with the key and no lookup. The tradeoff is that a JWT can't be instantly revoked",
-      "Because JWTs are smaller than session IDs",
-      "Because JWTs cannot be stolen, unlike session cookies"
-    ],
-    "correct": 1,
-    "explanation": "The win is lookup-free, local verification: a self-contained token means no callback to a shared store on every inter-service call, which removes a latency hop and a single point of failure. That's exactly what many-service and API architectures need. The cost is revocation — a stateless token is trusted on its signature until it expires — which is why short lifetimes and refresh tokens exist. JWTs are signed, not encrypted, and are as stealable as any bearer token."
-  },
-  {
     "stage": "check",
     "question": "A developer puts the user's email and a `is_admin` flag in a JWT payload and says the data is safe because the token is signed. What's the misconception?",
     "options": [

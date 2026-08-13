@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A test asserts on a row that a background worker writes after `POST /orders` returns 202. It fails about 30% of the time. You measure the end-to-end completion time and find a median of 41 ms and a p99.9 of 2.0 seconds. You set the sleep to 2.0 s — comfortably the p99.9 — across all 500 asynchronous assertions in the suite. What have you bought?",
-    "options": [
-      "A reliable suite. Sleeping to the p99.9 means a test fails only one time in a thousand, which for a 500-test suite is well inside normal CI noise",
-      "16.3 minutes of suite time and a build that is still red 46.5% of the time. A 0.129% per-test flake rate across 500 tests gives a 52.4% predicted green-build rate — measured 53.5% over 200 builds. The fixed sleep that would reach 99% green is 3.0 s, which is essentially the maximum of a 200,000-sample calibration",
-      "A slow but correct suite. The cost is real — about 16 minutes — but the flakiness is gone, and that is the trade you make when you cannot change the system under test",
-      "Nothing useful either way, because sleeping past the p99 means the tail events are all absorbed and the remaining failures are genuine bugs rather than flakes"
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer treats a per-test flake rate as if the suite ran one test. It runs 500, and a build is green only if all 500 pass, so the rate that matters is (1 − f)^500. At f = 0.129% that is 52.4% — measured 53.5% over 200 independent builds, which agrees. The deeper problem is what a genuinely safe sleep would have to be: solving 0.99^(1/500) gives a required per-test success rate of 0.999980, the p99.998 of the distribution, which measured out at 3.0 s against a sample maximum of 3.1 s. You would be sleeping for the slowest thing that happened in two hundred thousand tries, on every test, for 25.1 minutes. And you cannot even estimate that quantile: it took 200,000 observations, and a suite gives you 500."
-  },
-  {
     "stage": "check",
     "question": "Across 200 builds of a 500-test suite, four fixed sleeps and one polling primitive were measured on both flake rate and suite time. What does the two-dimensional result actually show?",
     "options": [

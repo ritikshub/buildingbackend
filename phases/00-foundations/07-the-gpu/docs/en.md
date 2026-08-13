@@ -34,15 +34,15 @@ arrange them for opposite goals:
   <text x="450" y="48" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.8">Both are built from the same transistors and gates — they just arrange them for opposite goals.</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="2">
-      <rect x="16" y="62" width="424" height="328" rx="12" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.8"/>
+      <rect x="16" y="62" width="424" height="328" rx="12" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.8"/>
       <rect x="460" y="62" width="424" height="328" rx="12" fill="#0fa07f" fill-opacity="0.05" stroke="#0fa07f" stroke-opacity="0.8"/>
     </g>
 
     <g text-anchor="middle" fill="currentColor">
-      <text x="228" y="88" font-size="13" font-weight="700" fill="#3553ff">CPU · optimizes for LATENCY</text>
+      <text x="228" y="88" font-size="13" font-weight="700" fill="#c94a12">CPU · optimizes for LATENCY</text>
       <text x="228" y="103" font-size="8" opacity="0.65">(Central Processing Unit)</text>
       <text x="228" y="122" font-size="9.5">finish ONE complex task fast</text>
-      <text x="228" y="140" font-size="10" font-weight="700" fill="#3553ff">4–16 large, powerful, general-purpose cores</text>
+      <text x="228" y="140" font-size="10" font-weight="700" fill="#c94a12">4–16 large, powerful, general-purpose cores</text>
 
       <text x="672" y="88" font-size="13" font-weight="700" fill="#0fa07f">GPU · optimizes for THROUGHPUT</text>
       <text x="672" y="103" font-size="8" opacity="0.65">(Graphics Processing Unit)</text>
@@ -51,24 +51,24 @@ arrange them for opposite goals:
     </g>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-      <rect x="36" y="150" width="84" height="64" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="136" y="150" width="84" height="64" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="236" y="150" width="84" height="64" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="336" y="150" width="84" height="64" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="36" y="230" width="84" height="64" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="136" y="230" width="84" height="64" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="236" y="230" width="84" height="64" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
-      <rect x="336" y="230" width="84" height="64" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+      <rect x="36" y="150" width="84" height="64" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="136" y="150" width="84" height="64" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="236" y="150" width="84" height="64" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="336" y="150" width="84" height="64" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="36" y="230" width="84" height="64" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="136" y="230" width="84" height="64" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="236" y="230" width="84" height="64" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
+      <rect x="336" y="230" width="84" height="64" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     </g>
     <g text-anchor="middle" fill="currentColor" font-family="'JetBrains Mono', ui-monospace, monospace">
-      <text x="78" y="178" font-size="11.5" font-weight="700" fill="#3553ff">core</text><text x="78" y="195" font-size="6.5" opacity="0.7">general-purpose</text>
-      <text x="178" y="178" font-size="11.5" font-weight="700" fill="#3553ff">core</text><text x="178" y="195" font-size="6.5" opacity="0.7">general-purpose</text>
-      <text x="278" y="178" font-size="11.5" font-weight="700" fill="#3553ff">core</text><text x="278" y="195" font-size="6.5" opacity="0.7">general-purpose</text>
-      <text x="378" y="178" font-size="11.5" font-weight="700" fill="#3553ff">core</text><text x="378" y="195" font-size="6.5" opacity="0.7">general-purpose</text>
-      <text x="78" y="258" font-size="11.5" font-weight="700" fill="#3553ff">core</text><text x="78" y="275" font-size="6.5" opacity="0.7">general-purpose</text>
-      <text x="178" y="258" font-size="11.5" font-weight="700" fill="#3553ff">core</text><text x="178" y="275" font-size="6.5" opacity="0.7">general-purpose</text>
-      <text x="278" y="258" font-size="11.5" font-weight="700" fill="#3553ff">core</text><text x="278" y="275" font-size="6.5" opacity="0.7">general-purpose</text>
-      <text x="378" y="258" font-size="11.5" font-weight="700" fill="#3553ff">core</text><text x="378" y="275" font-size="6.5" opacity="0.7">general-purpose</text>
+      <text x="78" y="178" font-size="11.5" font-weight="700" fill="#c94a12">core</text><text x="78" y="195" font-size="6.5" opacity="0.7">general-purpose</text>
+      <text x="178" y="178" font-size="11.5" font-weight="700" fill="#c94a12">core</text><text x="178" y="195" font-size="6.5" opacity="0.7">general-purpose</text>
+      <text x="278" y="178" font-size="11.5" font-weight="700" fill="#c94a12">core</text><text x="278" y="195" font-size="6.5" opacity="0.7">general-purpose</text>
+      <text x="378" y="178" font-size="11.5" font-weight="700" fill="#c94a12">core</text><text x="378" y="195" font-size="6.5" opacity="0.7">general-purpose</text>
+      <text x="78" y="258" font-size="11.5" font-weight="700" fill="#c94a12">core</text><text x="78" y="275" font-size="6.5" opacity="0.7">general-purpose</text>
+      <text x="178" y="258" font-size="11.5" font-weight="700" fill="#c94a12">core</text><text x="178" y="275" font-size="6.5" opacity="0.7">general-purpose</text>
+      <text x="278" y="258" font-size="11.5" font-weight="700" fill="#c94a12">core</text><text x="278" y="275" font-size="6.5" opacity="0.7">general-purpose</text>
+      <text x="378" y="258" font-size="11.5" font-weight="700" fill="#c94a12">core</text><text x="378" y="275" font-size="6.5" opacity="0.7">general-purpose</text>
     </g>
 
     <g fill="#0fa07f" fill-opacity="0.5" stroke="#0fa07f" stroke-opacity="0.85" stroke-width="0.6">

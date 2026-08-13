@@ -94,8 +94,8 @@ With that, four objects. People confuse them constantly, and the confusion is th
   <defs><marker id="l05-obj-arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker></defs>
   <text x="445" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Four objects everyone confuses — what makes each, and what completes each</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="52" width="196" height="188" rx="11" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
-    <rect x="236" y="52" width="196" height="188" rx="11" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/>
+    <rect x="16" y="52" width="196" height="188" rx="11" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
+    <rect x="236" y="52" width="196" height="188" rx="11" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/>
     <rect x="456" y="52" width="196" height="188" rx="11" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/>
     <rect x="676" y="52" width="196" height="188" rx="11" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
     <rect x="16" y="300" width="856" height="70" rx="11" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
@@ -108,17 +108,17 @@ With that, four objects. People confuse them constantly, and the confusion is th
     <path d="M554 296 L 554 244"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="114" y="76" font-size="12.5" font-weight="700" text-anchor="middle" fill="#3553ff">coroutine function</text>
+    <text x="114" y="76" font-size="12.5" font-weight="700" text-anchor="middle" fill="#c94a12">coroutine function</text>
     <text x="30" y="102" font-size="9.5">async def fetch(u):</text>
     <text x="30" y="118" font-size="9.5">    row = await db(u)</text>
     <text x="30" y="134" font-size="9.5">    return row</text>
     <text x="30" y="162" font-size="9" font-weight="700" opacity="0.75">IT IS</text>
     <text x="30" y="178" font-size="9.5" opacity="0.9">a function object with</text>
     <text x="30" y="192" font-size="9.5" opacity="0.9">CO_COROUTINE set.</text>
-    <text x="30" y="214" font-size="9" font-weight="700" fill="#3553ff">MADE BY</text>
+    <text x="30" y="214" font-size="9" font-weight="700" fill="#c94a12">MADE BY</text>
     <text x="30" y="230" font-size="9.5" opacity="0.9">the `async def` keyword</text>
 
-    <text x="334" y="76" font-size="12.5" font-weight="700" text-anchor="middle" fill="#3553ff">coroutine object</text>
+    <text x="334" y="76" font-size="12.5" font-weight="700" text-anchor="middle" fill="#c94a12">coroutine object</text>
     <text x="250" y="102" font-size="9.5">c = fetch(42)</text>
     <text x="250" y="126" font-size="9.5" font-weight="700" fill="#d64545">runs NOTHING.</text>
     <text x="250" y="142" font-size="9.5" opacity="0.9">Zero bytes of the body</text>
@@ -126,7 +126,7 @@ With that, four objects. People confuse them constantly, and the confusion is th
     <text x="250" y="178" font-size="9" font-weight="700" opacity="0.75">IT IS</text>
     <text x="250" y="194" font-size="9.5" opacity="0.9">a suspended frame with</text>
     <text x="250" y="208" font-size="9.5" opacity="0.9">a .send() method</text>
-    <text x="250" y="230" font-size="9" font-weight="700" fill="#3553ff">MADE BY calling it</text>
+    <text x="250" y="230" font-size="9" font-weight="700" fill="#c94a12">MADE BY calling it</text>
 
     <text x="554" y="76" font-size="12.5" font-weight="700" text-anchor="middle" fill="#e0930f">Task</text>
     <text x="470" y="102" font-size="9.5">t = create_task(c)</text>
@@ -185,7 +185,7 @@ This is the step most explanations skip, and it is the one that makes everything
   <defs><marker id="l05-arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker></defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">A suspended coroutine is a live stack frame, not a dead one</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="30" y="60" width="360" height="104" rx="10" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+    <rect x="30" y="60" width="360" height="104" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     <rect x="30" y="212" width="360" height="104" rx="10" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f" stroke-dasharray="7 4"/>
     <rect x="30" y="364" width="360" height="104" rx="10" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     <rect x="650" y="60" width="200" height="408" rx="10" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
@@ -195,7 +195,7 @@ This is the step most explanations skip, and it is the one that makes everything
     <path d="M646 300 L 398 300"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="44" y="82" font-size="11.5" font-weight="700" fill="#3553ff">1 · RUNNING</text>
+    <text x="44" y="82" font-size="11.5" font-weight="700" fill="#c94a12">1 · RUNNING</text>
     <text x="44" y="102" font-size="10">frame handle_request</text>
     <text x="60" y="120" font-size="10" opacity="0.9">user_id = 42</text>
     <text x="60" y="136" font-size="10" opacity="0.9">row     = None</text>
@@ -365,9 +365,9 @@ The Build It measures it precisely: eight coroutines that each need only 50 ms o
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">One blocking call, eight unrelated endpoints — measured</text>
   <g fill="none" stroke-linejoin="round" stroke-width="1.7">
     <rect x="150" y="66" width="465" height="24" rx="4" fill="#d64545" fill-opacity="0.20" stroke="#d64545"/>
-    <rect x="150" y="104" width="77" height="18" rx="3" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+    <rect x="150" y="104" width="77" height="18" rx="3" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
     <rect x="227" y="104" width="389" height="18" rx="3" fill="#d64545" fill-opacity="0.12" stroke="#d64545" stroke-dasharray="5 4"/>
-    <rect x="616" y="140" width="77" height="18" rx="3" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+    <rect x="616" y="140" width="77" height="18" rx="3" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
     <rect x="150" y="140" width="465" height="18" rx="3" fill="#d64545" fill-opacity="0.12" stroke="#d64545" stroke-dasharray="5 4"/>
 
     <rect x="150" y="252" width="465" height="24" rx="4" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-dasharray="6 4"/>

@@ -14,11 +14,16 @@
   --rule-soft: rgba(26, 26, 26, 0.16);
   --paper-rule: rgba(26, 26, 26, 0.08);
 
-  --blueprint: #3553ff;
-  --blueprint-tint: rgba(53, 83, 255, 0.08);
-  --blueprint-tint-strong: rgba(53, 83, 255, 0.18);
+  /* Sunset. Two tones, because one orange cannot do both jobs on cream paper:
+     --ember is deep enough to pass 4.5:1 as body-size text and as link colour
+     on every surface; --ember-bright is the vivid sunset that only ever runs
+     at display size (the masthead), where the 3:1 large-text bar applies. */
+  --ember: #b53707;
+  --ember-bright: #e2571f;
+  --ember-tint: rgba(181, 55, 7, 0.08);
+  --ember-tint-strong: rgba(181, 55, 7, 0.18);
 
-  --status-complete: #3553ff;
+  --status-complete: #b53707;
   --status-in-progress: #4a4a4a;
   --status-planned: #b8b6ad;
   --warn: #b8870f;
@@ -33,9 +38,9 @@
   --text: var(--ink);
   --text-muted: var(--ink-soft);
   --border: var(--rule-soft);
-  --accent: var(--blueprint);
-  --accent-hover: #2840d6;
-  --secondary: var(--blueprint);
+  --accent: var(--ember);
+  --accent-hover: #8f2c05;
+  --secondary: var(--ember);
   --complete: var(--status-complete);
   --planned: var(--status-planned);
   --shadow-color: var(--ink);
@@ -44,32 +49,37 @@
   --dot-color: var(--paper-rule);
 }
 
+/* The dark theme used to be navy (#0a0d1a / #131830), which was the other
+   half of "blue everywhere" — the surfaces themselves were blue, not just the
+   accent. These neutrals are tinted toward the ember hue instead, so the
+   accent sits on ground that agrees with it: dusk, not midnight. */
 [data-theme="dark"] {
-  --bg: #0a0d1a;
-  --bg-surface: #131830;
-  --bg-surface-hover: #1b2244;
+  --bg: #14100c;
+  --bg-surface: #1e1811;
+  --bg-surface-hover: #2a2118;
   --ink: #e8e6dc;
-  --ink-soft: #a8a6a0;
-  --ink-mute: #7a7878;
+  --ink-soft: #a8a29a;
+  --ink-mute: #7d766c;
   --rule: #e8e6dc;
   --rule-soft: rgba(232, 230, 220, 0.18);
   --paper-rule: rgba(232, 230, 220, 0.08);
 
-  --blueprint: #6b8eff;
-  --blueprint-tint: rgba(107, 142, 255, 0.12);
-  --blueprint-tint-strong: rgba(107, 142, 255, 0.22);
+  --ember: #ff8c42;
+  --ember-bright: #ff7a35;
+  --ember-tint: rgba(255, 140, 66, 0.12);
+  --ember-tint-strong: rgba(255, 140, 66, 0.22);
 
-  --status-complete: #6b8eff;
+  --status-complete: #ff8c42;
   --status-in-progress: #c8c6c0;
-  --status-planned: #4a4a48;
-  --warn: #d4a83d;
+  --status-planned: #4a423a;
+  --warn: #e0a93c;
 
-  --code-bg: #131830;
-  --modal-bg: #0f1424;
-  --overlay-bg: rgba(10, 13, 26, 0.78);
-  --header-bg: rgba(10, 13, 26, 0.94);
+  --code-bg: #1e1811;
+  --modal-bg: #191410;
+  --overlay-bg: rgba(20, 16, 12, 0.78);
+  --header-bg: rgba(20, 16, 12, 0.94);
 
-  --accent-hover: #8aa5ff;
+  --accent-hover: #ffa869;
 }
 
 *,
@@ -106,8 +116,10 @@ body {
   left: -9999px;
   top: 0;
   z-index: 9999;
-  background: var(--blueprint);
-  color: #fff;
+  background: var(--ember);
+  /* Was #fff, which only made 3.03:1 against the accent in dark mode. The
+     page background tracks the theme and clears 4.5:1 in both. */
+  color: var(--bg);
   padding: 12px 18px;
   font-family: var(--font-mono);
   font-size: 0.9rem;
@@ -135,7 +147,7 @@ h1, h2, h3, h4 {
   line-height: 1;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); }
@@ -151,14 +163,14 @@ p {
 }
 
 a {
-  color: var(--blueprint);
+  color: var(--ember);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.15s, color 0.15s;
 }
 
 a:hover {
-  border-bottom-color: var(--blueprint);
+  border-bottom-color: var(--ember);
 }
 
 code, pre, kbd, samp {
@@ -166,7 +178,7 @@ code, pre, kbd, samp {
 }
 
 ::selection {
-  background: var(--blueprint);
+  background: var(--ember);
   color: var(--bg);
 }
 
@@ -178,8 +190,8 @@ code, pre, kbd, samp {
   background-image:
     repeating-linear-gradient(
       to right,
-      var(--blueprint) 0,
-      var(--blueprint) 4px,
+      var(--ember) 0,
+      var(--ember) 4px,
       transparent 4px,
       transparent 8px
     ),
@@ -187,8 +199,8 @@ code, pre, kbd, samp {
       to right,
       transparent 0,
       transparent 8px,
-      var(--blueprint-tint-strong) 8px,
-      var(--blueprint-tint-strong) 14px
+      var(--ember-tint-strong) 8px,
+      var(--ember-tint-strong) 14px
     );
   background-size: 100% 3px, 100% 3px;
   background-position: 0 0, 0 3px;
@@ -211,7 +223,7 @@ code, pre, kbd, samp {
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 .dropcap > p:first-of-type::first-letter,
@@ -221,7 +233,7 @@ p.dropcap::first-letter {
   font-size: 4.2rem;
   line-height: 0.85;
   padding: 0.08em 0.12em 0 0;
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 .site-header {
@@ -259,7 +271,7 @@ p.dropcap::first-letter {
 }
 
 .logo:hover {
-  color: var(--blueprint);
+  color: var(--ember);
   border-bottom: none;
 }
 
@@ -267,7 +279,7 @@ p.dropcap::first-letter {
   display: inline-block;
   width: 12px;
   height: 12px;
-  background: var(--blueprint);
+  background: var(--ember);
 }
 
 .header-nav {
@@ -293,7 +305,7 @@ p.dropcap::first-letter {
 }
 
 .header-nav a:hover {
-  color: var(--blueprint);
+  color: var(--ember);
   border-bottom: none;
 }
 
@@ -314,9 +326,9 @@ p.dropcap::first-letter {
 }
 
 .header-github:hover {
-  border-color: var(--blueprint);
-  color: var(--blueprint);
-  border-bottom: 1px solid var(--blueprint);
+  border-color: var(--ember);
+  color: var(--ember);
+  border-bottom: 1px solid var(--ember);
 }
 
 .header-github svg {
@@ -324,7 +336,7 @@ p.dropcap::first-letter {
 }
 
 .header-github .star-icon {
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 .header-github .star-count {
@@ -354,8 +366,8 @@ p.dropcap::first-letter {
 }
 
 .theme-toggle:hover {
-  border-color: var(--blueprint);
-  color: var(--blueprint);
+  border-color: var(--ember);
+  color: var(--ember);
 }
 
 .theme-toggle .theme-icon {
@@ -399,9 +411,9 @@ p.dropcap::first-letter {
 }
 
 .btn-primary {
-  background: var(--blueprint);
+  background: var(--ember);
   color: var(--bg);
-  border-color: var(--blueprint);
+  border-color: var(--ember);
 }
 
 .btn-primary:hover {
@@ -433,7 +445,7 @@ p.dropcap::first-letter {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   text-align: left;
   text-transform: uppercase;
-  color: var(--blueprint);
+  color: var(--ember);
   margin-bottom: 8px;
 }
 
@@ -496,7 +508,7 @@ p.dropcap::first-letter {
 }
 
 .modal-close:hover {
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 .modal-header {
@@ -512,7 +524,7 @@ p.dropcap::first-letter {
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--blueprint);
+  color: var(--ember);
   margin-bottom: 6px;
 }
 
@@ -534,13 +546,13 @@ p.dropcap::first-letter {
 .modal-progress {
   margin-top: 14px;
   padding: 6px 10px;
-  background: var(--blueprint-tint);
-  border: 1px solid var(--blueprint);
+  background: var(--ember-tint);
+  border: 1px solid var(--ember);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--blueprint);
+  color: var(--ember);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -554,7 +566,7 @@ p.dropcap::first-letter {
 .modal-progress-pct {
   margin-left: auto;
   padding: 2px 8px;
-  background: var(--blueprint);
+  background: var(--ember);
   color: var(--bg);
   font-size: 0.7rem;
   font-weight: 600;
@@ -570,7 +582,7 @@ p.dropcap::first-letter {
 
 .modal-progress-bar-fill {
   height: 100%;
-  background: var(--blueprint);
+  background: var(--ember);
   transition: width 0.4s ease;
   width: 0%;
 }
@@ -607,8 +619,8 @@ p.dropcap::first-letter {
 }
 
 .modal-reset:hover {
-  color: var(--blueprint);
-  border-color: var(--blueprint);
+  color: var(--ember);
+  border-color: var(--ember);
 }
 
 .modal-lessons {
@@ -642,7 +654,7 @@ p.dropcap::first-letter {
 }
 
 .modal-lesson:hover {
-  background: var(--blueprint-tint);
+  background: var(--ember-tint);
 }
 
 .modal-lesson-num {
@@ -663,7 +675,7 @@ p.dropcap::first-letter {
 }
 
 .modal-lesson-main:focus-visible {
-  outline: 2px solid var(--blueprint);
+  outline: 2px solid var(--ember);
   outline-offset: 2px;
 }
 
@@ -678,7 +690,7 @@ p.dropcap::first-letter {
 }
 
 a.modal-lesson-main:hover .modal-lesson-name {
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 .modal-lesson-meta {
@@ -701,7 +713,7 @@ a.modal-lesson-main:hover .modal-lesson-name {
 }
 
 .modal-lesson-type[data-type="Build"] {
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 .modal-lesson-type[data-type="Capstone"] {
@@ -722,7 +734,7 @@ a.modal-lesson-main:hover .modal-lesson-name {
   padding: 0;
   border: 1px solid var(--rule-soft);
   background: transparent;
-  color: var(--blueprint);
+  color: var(--ember);
   font-family: var(--font-mono);
   font-size: 0.86rem;
   font-weight: 700;
@@ -735,14 +747,14 @@ a.modal-lesson-main:hover .modal-lesson-name {
 }
 
 .modal-lesson-toggle:hover {
-  border-color: var(--blueprint);
-  background: var(--blueprint-tint);
+  border-color: var(--ember);
+  background: var(--ember-tint);
 }
 
 .modal-lesson-toggle.done {
   background: transparent;
-  border-color: var(--blueprint);
-  color: var(--blueprint);
+  border-color: var(--ember);
+  color: var(--ember);
 }
 
 /* Keeps the checkbox column aligned on rows that have no progress toggle. */
@@ -764,7 +776,7 @@ a.modal-lesson-main:hover .modal-lesson-name {
 }
 
 .copy-btn:hover {
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 .site-footer {
@@ -803,7 +815,7 @@ a.modal-lesson-main:hover .modal-lesson-name {
 }
 
 .footer-links a:hover {
-  color: var(--blueprint);
+  color: var(--ember);
   border-bottom: none;
 }
 
@@ -1037,8 +1049,8 @@ body.js-anim .toc-row.in-view {
 }
 
 .search-toggle:hover {
-  border-color: var(--blueprint);
-  color: var(--blueprint);
+  border-color: var(--ember);
+  color: var(--ember);
 }
 
 /* ── Palette overlay wrapper ─────────────────────────────────────────── */
@@ -1121,7 +1133,7 @@ body.js-anim .toc-row.in-view {
   border: none;
   outline: none;
   min-width: 0;
-  caret-color: var(--blueprint);
+  caret-color: var(--ember);
 }
 
 .cp-input::placeholder {
@@ -1150,8 +1162,8 @@ body.js-anim .toc-row.in-view {
 }
 
 .cp-kbd-esc:hover {
-  color: var(--blueprint);
-  border-color: var(--blueprint);
+  color: var(--ember);
+  border-color: var(--ember);
 }
 
 /* ── Results list ────────────────────────────────────────────────────── */
@@ -1199,8 +1211,8 @@ body.js-anim .toc-row.in-view {
 
 .cp-item:hover,
 .cp-item--active {
-  background: var(--blueprint-tint);
-  border-left-color: var(--blueprint);
+  background: var(--ember-tint);
+  border-left-color: var(--ember);
 }
 
 .cp-item-body {
@@ -1219,7 +1231,7 @@ body.js-anim .toc-row.in-view {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--blueprint);
+  color: var(--ember);
   line-height: 1.2;
 }
 
@@ -1270,13 +1282,13 @@ body.js-anim .toc-row.in-view {
 .cp-item:hover .cp-item-arrow,
 .cp-item--active .cp-item-arrow {
   opacity: 1;
-  color: var(--blueprint);
+  color: var(--ember);
 }
 
 /* Highlighted match inside results */
 .cp-results mark {
-  background: var(--blueprint-tint-strong);
-  color: var(--blueprint);
+  background: var(--ember-tint-strong);
+  color: var(--ember);
   padding: 0 1px;
   font-style: normal;
   border-radius: 2px;

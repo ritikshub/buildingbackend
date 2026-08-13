@@ -47,7 +47,7 @@ then be rolled back. You made a decision based on data that never really existed
   <path d="M100 248 L 570 248" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l12a-ah)"/>
   </g>
   <g>
-  <rect x="65" y="52" width="70" height="40" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="65" y="52" width="70" height="40" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="305" y="52" width="70" height="40" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>
   <path d="M530 59 a 40.0 9 0 0 1 80 0 v 30 a 40.0 9 0 0 1 -80 0 Z" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f" stroke-width="2"/>
   <path d="M530 59 a 40.0 9 0 0 0 80 0" fill="none" stroke="#e0930f" stroke-width="2"/>
@@ -153,8 +153,8 @@ locking.
   <rect x="60" y="91" width="150" height="54" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="275" y="91" width="150" height="54" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="490" y="91" width="150" height="54" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="53.0" y="236" width="164" height="46" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="268.0" y="236" width="164" height="46" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="53.0" y="236" width="164" height="46" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="268.0" y="236" width="164" height="46" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   </g>
   <g>
   <text x="135.0" y="113.9" font-size="11.5" text-anchor="middle" font-weight="700" >v1 = 100</text>

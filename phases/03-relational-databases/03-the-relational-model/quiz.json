@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "In the relational model's formal vocabulary, what is a 'relation'?",
-    "options": ["A relationship between two tables", "A single table — a named set of rows over the same columns", "A foreign key", "A join operation"],
-    "correct": 1,
-    "explanation": "A relation is one table. The model is called 'relational' because it's built out of relations (tables), not because tables relate to each other."
-  },
-  {
     "stage": "check",
     "question": "A relation is defined as a SET of tuples. What two consequences follow directly from that?",
     "options": ["Rows must be sorted alphabetically", "No duplicate rows and no inherent row order", "Every row must have a NULL", "Columns are identified by position"],

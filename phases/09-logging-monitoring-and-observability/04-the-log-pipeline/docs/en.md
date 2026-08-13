@@ -63,14 +63,14 @@ Every logging stack — a three-container homelab or a vendor with a sales team 
     <path d="M628 132 L 628 174" marker-end="url(#l04-a1)" stroke-dasharray="6 5"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="18" y="52" width="152" height="80" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="18" y="52" width="152" height="80" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="190" y="52" width="152" height="80" rx="11" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.6"/>
     <rect x="362" y="52" width="176" height="80" rx="11" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="558" y="52" width="140" height="80" rx="11" fill="#e0930f" fill-opacity="0.15" stroke="#e0930f"/>
     <rect x="718" y="52" width="144" height="80" rx="11" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
     <rect x="18" y="178" width="844" height="200" rx="14" fill="#7f7f7f" fill-opacity="0.06" stroke="currentColor" stroke-opacity="0.45" stroke-dasharray="7 6"/>
     <rect x="36" y="218" width="190" height="140" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
-    <rect x="242" y="218" width="190" height="140" rx="10" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="242" y="218" width="190" height="140" rx="10" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="448" y="218" width="190" height="140" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="654" y="218" width="190" height="140" rx="10" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
   </g>
@@ -107,7 +107,7 @@ Every logging stack — a three-container homelab or a vendor with a sales team 
     <text x="337" y="280" font-size="9" opacity="0.9">filesystem buffer</text>
     <text x="337" y="296" font-size="9" opacity="0.9">survives a restart</text>
     <text x="337" y="312" font-size="9" opacity="0.9">still bounded — cap it</text>
-    <text x="337" y="340" font-size="10.5" font-weight="700" fill="#3553ff">BUYS TIME</text>
+    <text x="337" y="340" font-size="10.5" font-weight="700" fill="#c94a12">BUYS TIME</text>
     <text x="543" y="242" font-size="10.5" font-weight="700">DROP by severity</text>
     <text x="543" y="264" font-size="9" opacity="0.9">shed debug, then</text>
     <text x="543" y="280" font-size="9" opacity="0.9">info; keep warn and</text>
@@ -170,9 +170,9 @@ Once the batch reaches the backend, one design decision dominates everything dow
     <rect x="18" y="46" width="412" height="372" rx="14" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f"/>
     <rect x="450" y="46" width="412" height="372" rx="14" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f"/>
     <rect x="52" y="148" width="120" height="200" rx="4" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"/>
-    <rect x="52" y="348" width="120" height="52" rx="4" fill="#3553ff" fill-opacity="0.15" stroke="#3553ff"/>
+    <rect x="52" y="348" width="120" height="52" rx="4" fill="#c94a12" fill-opacity="0.15" stroke="#c94a12"/>
     <rect x="484" y="356" width="120" height="6" rx="2" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f"/>
-    <rect x="484" y="362" width="120" height="38" rx="4" fill="#3553ff" fill-opacity="0.15" stroke="#3553ff"/>
+    <rect x="484" y="362" width="120" height="38" rx="4" fill="#c94a12" fill-opacity="0.15" stroke="#c94a12"/>
   </g>
   <g fill="none" stroke="currentColor" stroke-width="1.3" opacity="0.6">
     <path d="M616 352 L 604 358"/>
@@ -275,7 +275,7 @@ Object storage is roughly an order of magnitude cheaper per gigabyte-month than 
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="70" y="48" width="700" height="52" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.6"/>
-    <rect x="140" y="144" width="560" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="140" y="144" width="560" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="308" y="242" width="224" height="52" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="308" y="340" width="56" height="52" rx="9" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="372" y="340" width="160" height="52" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
@@ -284,7 +284,7 @@ Object storage is roughly an order of magnitude cheaper per gigabyte-month than 
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="420" y="70" font-size="11.5" font-weight="700" text-anchor="middle">RAW — everything the application emits</text>
     <text x="420" y="89" font-size="10.5" text-anchor="middle" opacity="0.9">100%  ·  94 GB/day  ·  $20,281/yr</text>
-    <text x="452" y="118" font-size="10.5" font-weight="700" fill="#3553ff">LEVER 1 · emit less</text>
+    <text x="452" y="118" font-size="10.5" font-weight="700" fill="#c94a12">LEVER 1 · emit less</text>
     <text x="452" y="134" font-size="9.5" opacity="0.85">DEBUG off in prod · fix the top-3 loudest lines</text>
     <text x="420" y="166" font-size="11.5" font-weight="700" text-anchor="middle">AFTER THE FREE WINS</text>
     <text x="420" y="185" font-size="10.5" text-anchor="middle" opacity="0.9">~80%  ·  ~75 GB/day   (representative)</text>

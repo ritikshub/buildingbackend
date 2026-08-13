@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your fleet is 10 replicas running at 85% utilisation. The Deployment uses the Kubernetes defaults, maxSurge: 25% and maxUnavailable: 25%. Deploys have always looked fine. What is actually happening during every rollout?",
-    "options": [
-      "Nothing — maxSurge adds pods before any are removed, so capacity never drops below 100%",
-      "maxUnavailable: 25% rounds down to 2, so availability drops to 8 of 10 replicas and utilisation during the deploy rises to about 1.06 — the deploy itself pushes the fleet into overload for the whole rollout",
-      "Capacity drops to 8 of 10 but that is safe, because 85% of 8 replicas is still only 68% utilisation",
-      "The rollout is throttled automatically when utilisation is above 80%, so it takes longer but never overloads"
-    ],
-    "correct": 1,
-    "explanation": "maxUnavailable bounds how far below the replica count availability may fall — 25% of 10 rounds DOWN to 2, so you serve on 8 replicas during every wave. Utilisation is offered load divided by the capacity you actually have: 85% of the full fleet against 80% of the fleet is about 1.06, which is not a percentage but an accumulating deficit. maxSurge does not prevent this; the surge pods take startup time to become Ready, and the controller may terminate old pods immediately. The fix is maxUnavailable: 0, which holds capacity at 100% and costs you the surge pods for the length of the rollout."
-  },
-  {
     "stage": "check",
     "question": "Measured on identical fleets and an identical bad version: blue-green detected the problem at 30 seconds, the canary at 40 seconds. Yet blue-green caused 162 user-facing errors and the canary 20. Why?",
     "options": [

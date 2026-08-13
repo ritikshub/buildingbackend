@@ -103,8 +103,8 @@ directories:
     </g>
 
     <!-- working-directory marker -->
-    <rect x="364" y="130" width="116" height="18" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.4"/>
-    <text x="422" y="143" text-anchor="middle" font-size="8.5" font-weight="700" fill="#3553ff">cwd · you are here</text>
+    <rect x="364" y="130" width="116" height="18" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.4"/>
+    <text x="422" y="143" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c94a12">cwd · you are here</text>
 
     <!-- tree edges NOT on the traced walk -->
     <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.55" stroke-linejoin="round">
@@ -168,15 +168,15 @@ directories:
     <text x="450" y="418" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.85">Every / is one edge walked; every name between the slashes is one node you entered.</text>
 
     <!-- absolute vs relative -->
-    <rect x="20" y="436" width="860" height="88" rx="11" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.55" stroke-width="1.7"/>
-    <text x="36" y="458" font-size="11" font-weight="700" fill="#3553ff">Working directory (cwd) = /home/user — a relative path only means something from HERE</text>
+    <rect x="20" y="436" width="860" height="88" rx="11" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.55" stroke-width="1.7"/>
+    <text x="36" y="458" font-size="11" font-weight="700" fill="#c94a12">Working directory (cwd) = /home/user — a relative path only means something from HERE</text>
 
     <text x="36" y="480" font-size="9.5" font-weight="700" fill="#0fa07f">ABSOLUTE</text>
     <text x="104" y="480" font-size="11" fill="currentColor">/home/user/projects/server.py</text>
     <text x="312" y="480" font-size="8.5" fill="currentColor" opacity="0.8">works from any cwd — it starts at /</text>
     <text x="560" y="480" font-size="8.5" fill="currentColor" opacity="0.8">· /home/user/notes.txt</text>
 
-    <text x="36" y="498" font-size="9.5" font-weight="700" fill="#3553ff">RELATIVE</text>
+    <text x="36" y="498" font-size="9.5" font-weight="700" fill="#c94a12">RELATIVE</text>
     <text x="104" y="498" font-size="11" fill="currentColor">projects/server.py</text>
     <text x="312" y="498" font-size="8.5" fill="currentColor" opacity="0.8">shorter — breaks the moment cwd changes</text>
     <text x="560" y="498" font-size="8.5" fill="currentColor" opacity="0.8">· notes.txt</text>

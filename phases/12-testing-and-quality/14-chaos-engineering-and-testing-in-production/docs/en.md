@@ -48,7 +48,7 @@ The load-bearing word is *disprove*. A demonstration can only confirm what you a
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 428" width="100%" style="max-width:840px" role="img" aria-label="The five steps of the chaos engineering method drawn as a left-to-right pipeline: define a steady state, hypothesise it holds, vary a real-world event, try to disprove it, then bound and automate. Beneath it, the measured steady state of this lesson's four-service system: 2070 requests, 100.0000 percent good, p50 89 milliseconds, p99 150 milliseconds, hypothesis holds. Beneath that, the four prerequisites without which the exercise is simply an outage: an SLO to hypothesise on, observability to see the effect, a rollback that works, and a blast radius you can bound.">
   <defs>
-    <marker id="p12-14-arrow-a" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p12-14-arrow-a" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">Chaos engineering is the scientific method with a rollback plan</text>
@@ -56,12 +56,12 @@ The load-bearing word is *disprove*. A demonstration can only confirm what you a
 
     <g stroke-width="1.8">
       <rect x="24" y="64" width="152" height="80" rx="9" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
-      <rect x="194" y="64" width="152" height="80" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="194" y="64" width="152" height="80" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="364" y="64" width="152" height="80" rx="9" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/>
-      <rect x="534" y="64" width="152" height="80" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="534" y="64" width="152" height="80" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="704" y="64" width="152" height="80" rx="9" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
     </g>
-    <g fill="none" stroke="#3553ff" stroke-width="1.8">
+    <g fill="none" stroke="#c94a12" stroke-width="1.8">
       <path d="M176 104 L 190 104" marker-end="url(#p12-14-arrow-a)"/>
       <path d="M346 104 L 360 104" marker-end="url(#p12-14-arrow-a)"/>
       <path d="M516 104 L 530 104" marker-end="url(#p12-14-arrow-a)"/>
@@ -70,9 +70,9 @@ The load-bearing word is *disprove*. A demonstration can only confirm what you a
 
     <g text-anchor="middle" font-size="10.5" font-weight="700">
       <text x="100" y="86" fill="#0fa07f">1 · STEADY STATE</text>
-      <text x="270" y="86" fill="#3553ff">2 · HYPOTHESISE</text>
+      <text x="270" y="86" fill="#c94a12">2 · HYPOTHESISE</text>
       <text x="440" y="86" fill="#e0930f">3 · VARY AN EVENT</text>
-      <text x="610" y="86" fill="#3553ff">4 · TRY TO REFUTE</text>
+      <text x="610" y="86" fill="#c94a12">4 · TRY TO REFUTE</text>
       <text x="780" y="86" fill="#7c5cff">5 · BOUND, AUTOMATE</text>
     </g>
     <g text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.9">
@@ -403,10 +403,10 @@ The experiment is only legitimate if it is stoppable. So run the identical grey 
     <path d="M20 82 L 860 82" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.45"/>
 
     <g stroke-width="1.5">
-      <rect x="120" y="90" width="32.8" height="24" rx="3" fill="#3553ff" fill-opacity="0.30" stroke="#3553ff"/>
-      <rect x="120" y="132" width="54.5" height="24" rx="3" fill="#3553ff" fill-opacity="0.30" stroke="#3553ff"/>
-      <rect x="120" y="174" width="51.8" height="24" rx="3" fill="#3553ff" fill-opacity="0.30" stroke="#3553ff"/>
-      <rect x="120" y="216" width="120.0" height="24" rx="3" fill="#3553ff" fill-opacity="0.30" stroke="#3553ff"/>
+      <rect x="120" y="90" width="32.8" height="24" rx="3" fill="#c94a12" fill-opacity="0.30" stroke="#c94a12"/>
+      <rect x="120" y="132" width="54.5" height="24" rx="3" fill="#c94a12" fill-opacity="0.30" stroke="#c94a12"/>
+      <rect x="120" y="174" width="51.8" height="24" rx="3" fill="#c94a12" fill-opacity="0.30" stroke="#c94a12"/>
+      <rect x="120" y="216" width="120.0" height="24" rx="3" fill="#c94a12" fill-opacity="0.30" stroke="#c94a12"/>
       <rect x="500" y="90" width="0.4" height="24" rx="0.2" fill="#d64545" fill-opacity="0.30" stroke="#d64545"/>
       <rect x="500" y="132" width="1.3" height="24" rx="0.6" fill="#d64545" fill-opacity="0.30" stroke="#d64545"/>
       <rect x="500" y="174" width="20.2" height="24" rx="3" fill="#d64545" fill-opacity="0.30" stroke="#d64545"/>
@@ -416,7 +416,7 @@ The experiment is only legitimate if it is stoppable. So run the identical grey 
     <g fill="currentColor" font-size="11" font-weight="700">
       <text x="24" y="107">1%</text><text x="24" y="149">5%</text><text x="24" y="191">25%</text><text x="24" y="233">100%</text>
     </g>
-    <g font-size="10.5" font-weight="700" fill="#3553ff">
+    <g font-size="10.5" font-weight="700" fill="#c94a12">
       <text x="160" y="107">6.2</text><text x="182" y="149">10.3</text><text x="179" y="191">9.8</text><text x="248" y="233">22.7</text>
     </g>
     <g font-size="10.5" font-weight="700" fill="#d64545">
@@ -448,7 +448,7 @@ The experiment is only legitimate if it is stoppable. So run the identical grey 
     </g>
 
     <rect x="20" y="408" width="840" height="58" rx="9" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.4"/>
-    <text x="36" y="426" font-size="9.5" font-weight="700" fill="#3553ff">1% recovers z = 6.2 for 2 failed requests. 100% recovers z = 22.7 for 637.</text>
+    <text x="36" y="426" font-size="9.5" font-weight="700" fill="#c94a12">1% recovers z = 6.2 for 2 failed requests. 100% recovers z = 22.7 for 637.</text>
     <text x="500" y="426" font-size="9.5" fill="currentColor" opacity="0.92">3.7x the signal for 318x the damage.</text>
     <text x="36" y="442" font-size="9" fill="currentColor" opacity="0.88">But read the lower panel before generalising. The DIRECT effect is linear and plainly visible at 1%;</text>
     <text x="36" y="456" font-size="9" fill="currentColor" opacity="0.88">the EMERGENT one has a threshold between 5% and 25%, and no 1% experiment will ever find it.</text>
@@ -493,14 +493,14 @@ The rule everybody writes is some version of *"fail the canary if its error rate
     </g>
 
     <path d="M70 98.1 L 155.5 120.0 L 241.0 199.3 L 314.6 237.9 L 400 240" fill="none" stroke="#d64545" stroke-width="2.8" stroke-linejoin="round"/>
-    <path d="M70 231.9 L 155.5 217.7 L 241.0 221.1 L 314.6 221.1 L 400 216.4" fill="none" stroke="#3553ff" stroke-width="2.8" stroke-linejoin="round"/>
+    <path d="M70 231.9 L 155.5 217.7 L 241.0 221.1 L 314.6 221.1 L 400 216.4" fill="none" stroke="#c94a12" stroke-width="2.8" stroke-linejoin="round"/>
     <g fill="#d64545"><circle cx="70" cy="98.1" r="3.4"/><circle cx="155.5" cy="120.0" r="3.4"/><circle cx="241" cy="199.3" r="3.4"/></g>
-    <g fill="#3553ff"><circle cx="70" cy="231.9" r="3.4"/><circle cx="155.5" cy="217.7" r="3.4"/><circle cx="400" cy="216.4" r="3.4"/></g>
+    <g fill="#c94a12"><circle cx="70" cy="231.9" r="3.4"/><circle cx="155.5" cy="217.7" r="3.4"/><circle cx="400" cy="216.4" r="3.4"/></g>
 
     <path d="M490 188.0 L 575.5 229.3 L 661.0 240 L 734.6 240 L 820 240" fill="none" stroke="#d64545" stroke-width="2.8" stroke-linejoin="round"/>
-    <path d="M490 92.8 L 575.5 195.6 L 661.0 240 L 734.6 240 L 820 240" fill="none" stroke="#3553ff" stroke-width="2.8" stroke-linejoin="round"/>
+    <path d="M490 92.8 L 575.5 195.6 L 661.0 240 L 734.6 240 L 820 240" fill="none" stroke="#c94a12" stroke-width="2.8" stroke-linejoin="round"/>
     <g fill="#d64545"><circle cx="490" cy="188.0" r="3.4"/><circle cx="575.5" cy="229.3" r="3.4"/></g>
-    <g fill="#3553ff"><circle cx="490" cy="92.8" r="3.4"/><circle cx="575.5" cy="195.6" r="3.4"/></g>
+    <g fill="#c94a12"><circle cx="490" cy="92.8" r="3.4"/><circle cx="575.5" cy="195.6" r="3.4"/></g>
 
     <g fill="currentColor" font-size="8" text-anchor="middle" opacity="0.75">
       <text x="70" y="254">200</text><text x="155.5" y="254">1k</text><text x="241" y="254">5k</text><text x="314.6" y="254">20k</text><text x="400" y="254">100k</text>
@@ -510,15 +510,15 @@ The rule everybody writes is some version of *"fail the canary if its error rate
     <text x="655" y="270" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.7">requests per arm (log scale)</text>
 
     <text x="120" y="94" font-size="9.5" font-weight="700" fill="#d64545">33.1%</text>
-    <text x="250" y="150" font-size="8.5" font-weight="700" fill="#3553ff">z test: 1.9% &#8211; 5.5% at every volume</text>
-    <path d="M296 156 L 272 210" fill="none" stroke="#3553ff" stroke-width="1" opacity="0.45"/>
-    <text x="410" y="212" font-size="9.5" font-weight="700" fill="#3553ff">5.5%</text>
-    <text x="506" y="88" font-size="9.5" font-weight="700" fill="#3553ff">68.7%</text>
+    <text x="250" y="150" font-size="8.5" font-weight="700" fill="#c94a12">z test: 1.9% &#8211; 5.5% at every volume</text>
+    <path d="M296 156 L 272 210" fill="none" stroke="#c94a12" stroke-width="1" opacity="0.45"/>
+    <text x="410" y="212" font-size="9.5" font-weight="700" fill="#c94a12">5.5%</text>
+    <text x="506" y="88" font-size="9.5" font-weight="700" fill="#c94a12">68.7%</text>
     <text x="506" y="182" font-size="9.5" font-weight="700" fill="#d64545">24.3%</text>
 
     <g font-size="9" font-weight="700">
       <rect x="70" y="284" width="11" height="11" rx="2" fill="#d64545"/><text x="88" y="294" fill="#d64545">naive rule: &#8220;canary error rate &gt; 1.5x baseline&#8221;</text>
-      <rect x="490" y="284" width="11" height="11" rx="2" fill="#3553ff"/><text x="508" y="294" fill="#3553ff">one-sided two-proportion z test, alpha = 0.05</text>
+      <rect x="490" y="284" width="11" height="11" rx="2" fill="#c94a12"/><text x="508" y="294" fill="#c94a12">one-sided two-proportion z test, alpha = 0.05</text>
     </g>
 
     <rect x="20" y="308" width="840" height="112" rx="9" fill="#7f7f7f" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.4"/>
@@ -533,7 +533,7 @@ The rule everybody writes is some version of *"fail the canary if its error rate
       <text x="470" y="348">at 200 requests per arm, the threshold must be</text><text x="842" y="348" text-anchor="end" font-weight="700" fill="#d64545">+10.2%</text>
       <text x="470" y="366">at 800 requests per arm</text><text x="842" y="366" text-anchor="end" font-weight="700" fill="#e0930f">+5.0%</text>
       <text x="470" y="384">at 3,200 requests per arm</text><text x="842" y="384" text-anchor="end" font-weight="700" fill="#0fa07f">+2.4%</text>
-      <text x="470" y="402" font-size="9" font-weight="700" fill="#3553ff">so a fixed &#8220;+5%&#8221; rule is correct at exactly one traffic level</text>
+      <text x="470" y="402" font-size="9" font-weight="700" fill="#c94a12">so a fixed &#8220;+5%&#8221; rule is correct at exactly one traffic level</text>
     </g>
 
     <text x="440" y="446" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">A threshold is a hypothesis test whose false-alarm rate you did not choose.</text>

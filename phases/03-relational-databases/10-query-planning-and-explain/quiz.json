@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "SQL is declarative — you describe the result, not the steps. So who decides HOW a query actually runs?",
-    "options": ["The application code", "The query planner (optimizer), which compiles the query into a concrete execution plan", "The person who wrote the SQL", "The operating system"],
-    "correct": 1,
-    "explanation": "Because SQL says what, not how, a dedicated component — the query planner — chooses the execution plan: which scans, indexes, and join algorithms to use. The same query can run thousands of times faster or slower depending on that choice."
-  },
-  {
     "stage": "check",
     "question": "How does the planner decide between a sequential scan and an index scan?",
     "options": ["It always uses the index if one exists", "It estimates selectivity from table statistics: few matching rows favors an index scan; many matching rows favors a seq scan because random index-driven fetches would cost more", "It picks randomly", "It runs both and keeps the faster"],

@@ -35,7 +35,7 @@ That is the entire report. Behind it, real people are failing to buy things, and
     <path d="M520 216 C 520 262, 502 272, 488 300" marker-end="url(#l12-a1)" opacity="0.7"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="24" y="78" width="124" height="54" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="24" y="78" width="124" height="54" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="218" y="78" width="132" height="54" rx="11" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     <rect x="424" y="62" width="278" height="176" rx="13" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/>
     <rect x="776" y="78" width="160" height="54" rx="11" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.6"/>
@@ -44,7 +44,7 @@ That is the entire report. Behind it, real people are failing to buy things, and
     <g fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"><rect x="486" y="136" width="34" height="22" rx="5"/><rect x="526" y="136" width="34" height="22" rx="5"/><rect x="566" y="136" width="34" height="22" rx="5"/><rect x="606" y="136" width="34" height="22" rx="5"/></g>
   </g>
   <g fill="none" stroke-width="1.8" fill-opacity="0.20">
-    <circle cx="140" cy="86" r="11" fill="#3553ff" stroke="#3553ff"/><circle cx="342" cy="86" r="11" fill="#7c5cff" stroke="#7c5cff"/><circle cx="694" cy="70" r="11" fill="#0fa07f" stroke="#0fa07f"/>
+    <circle cx="140" cy="86" r="11" fill="#c94a12" stroke="#c94a12"/><circle cx="342" cy="86" r="11" fill="#7c5cff" stroke="#7c5cff"/><circle cx="694" cy="70" r="11" fill="#0fa07f" stroke="#0fa07f"/>
     <circle cx="928" cy="86" r="11" fill="#7f7f7f" stroke="currentColor" stroke-opacity="0.7"/><circle cx="562" cy="314" r="11" fill="#e0930f" stroke="#e0930f"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor" text-anchor="middle">
@@ -96,19 +96,19 @@ Lesson 1 introduced the funnel as an idea: *a metric alerts you → a trace loca
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 512" width="100%" style="max-width:920px" role="img" aria-label="The investigation funnel as five concrete queries: a burn-rate alert over ten million requests, a RED dashboard narrowing to one service, an exemplar narrowing to one trace, a span waterfall narrowing to one span, and a trace-id log filter narrowing to one log line — seven orders of magnitude in total.">
   <text x="470" y="28" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">The funnel as a procedure — every query throws away an order of magnitude</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="30" y="54" width="556" height="70" rx="11" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="30" y="54" width="556" height="70" rx="11" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="30" y="142" width="556" height="70" rx="11" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
     <rect x="30" y="230" width="556" height="70" rx="11" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/>
     <rect x="30" y="318" width="556" height="70" rx="11" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     <rect x="30" y="406" width="556" height="70" rx="11" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.6"/>
-    <rect x="618" y="78" width="290" height="28" rx="6" fill="#3553ff" fill-opacity="0.20" stroke="#3553ff"/>
+    <rect x="618" y="78" width="290" height="28" rx="6" fill="#c94a12" fill-opacity="0.20" stroke="#c94a12"/>
     <rect x="643" y="166" width="265" height="28" rx="6" fill="#7c5cff" fill-opacity="0.20" stroke="#7c5cff"/>
     <rect x="726" y="254" width="182" height="28" rx="6" fill="#e0930f" fill-opacity="0.22" stroke="#e0930f"/>
     <rect x="869" y="342" width="39" height="28" rx="6" fill="#0fa07f" fill-opacity="0.22" stroke="#0fa07f"/>
     <rect x="886" y="430" width="22" height="28" rx="6" fill="#7f7f7f" fill-opacity="0.24" stroke="currentColor" stroke-opacity="0.7"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="48" y="78" font-size="11.5" font-weight="700" fill="#3553ff">1 · BURN-RATE ALERT — is it broken?</text>
+    <text x="48" y="78" font-size="11.5" font-weight="700" fill="#c94a12">1 · BURN-RATE ALERT — is it broken?</text>
     <text x="48" y="98" font-size="8.7" opacity="0.88">sum(rate(http_requests_total{service="gateway",status=~"5.."}[5m]))</text>
     <text x="48" y="113" font-size="8.7" opacity="0.68">  / sum(rate(http_requests_total{service="gateway"}[5m])) / 0.001  &gt;  14.4</text>
     <text x="48" y="166" font-size="11.5" font-weight="700" fill="#7c5cff">2 · RED DASHBOARD — which service?</text>
@@ -446,7 +446,7 @@ sum(count_over_time({service="payments"} | json | event="pool_acquire_slow" [5m]
     <path d="M178 74 L178 290"/><path d="M380 74 L380 290"/><path d="M421 74 L421 290"/><path d="M664 74 L664 290"/><path d="M853 74 L853 290"/>
   </g>
   <path d="M70 290 L880 290" fill="none" stroke="currentColor" stroke-width="1.6"/>
-  <polyline points="124,250 178,250 232,224 286,221 340,193 394,116 448,110 502,110 556,110 610,111 664,110 718,142 772,199 853,250" fill="none" stroke="#3553ff" stroke-width="2.6" stroke-linejoin="round"/>
+  <polyline points="124,250 178,250 232,224 286,221 340,193 394,116 448,110 502,110 556,110 610,111 664,110 718,142 772,199 853,250" fill="none" stroke="#c94a12" stroke-width="2.6" stroke-linejoin="round"/>
   <g fill="none" stroke-width="2"><path d="M380 322 L380 330 L421 330 L421 322" stroke="#0fa07f"/><path d="M380 352 L380 360 L853 360 L853 352" stroke="#7c5cff"/></g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="62" y="254" font-size="9" text-anchor="end" opacity="0.8">95 ms</text>

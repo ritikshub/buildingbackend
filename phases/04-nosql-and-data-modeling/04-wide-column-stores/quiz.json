@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is a \"wide-column\" store, and how is it different from a \"columnar\" analytics store?",
-    "options": ["They are the same thing — both store each column contiguously on disk for fast analytics", "A wide-column store (Cassandra, HBase) is a ROW store that partitions rows across a cluster and lets each row hold a different, sparse set of columns; a columnar store (Parquet, Redshift) stores each COLUMN contiguously for analytics scans — same words, opposite purpose", "A wide-column store can only hold numeric columns, a columnar store holds text", "\"Columnar\" is just the older name for the same wide-column technology"],
-    "correct": 1,
-    "explanation": "This is the single most common confusion in NoSQL. A wide-column store is a row store built for high-volume operational reads/writes by key — it partitions rows across nodes and each row can be wide and ragged. A columnar (column-oriented) analytics store lays each column out contiguously so an OLAP query can scan one column across millions of rows. Identical-sounding names, unrelated purposes."
-  },
-  {
     "stage": "check",
     "question": "In the wide-column data model, what does the partition key decide versus the clustering key?",
     "options": ["Both decide the on-disk sort order of rows", "The partition key decides WHICH NODE owns the data (distribution, via consistent hashing); the clustering key decides the SORT ORDER of rows within a partition (enabling fast ordered range reads)", "The partition key sets the sort order; the clustering key picks the node", "Neither affects where data physically lives"],

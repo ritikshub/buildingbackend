@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is the CPU's role in a computer?",
-    "options": ["It stores files permanently", "It is the worker that executes a program's instructions", "It connects to the internet", "It displays the screen"],
-    "correct": 1,
-    "explanation": "The CPU is the part that actually does the work — executing the program's instructions step by step. It's built from the logic gates of the previous lesson."
-  },
-  {
     "stage": "check",
     "question": "What three steps does a CPU repeat over and over?",
     "options": ["Open, read, close", "Fetch, decode, execute", "Connect, send, receive", "Compress, store, delete"],

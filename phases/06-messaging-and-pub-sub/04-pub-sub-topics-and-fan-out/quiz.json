@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Five services (shipping, email, analytics, search, fraud) each need to react to every OrderPlaced event. Your existing broker gives you a queue, where each message is leased to exactly one consumer. Why is attaching all five services as consumers of that one queue wrong?",
-    "options": [
-      "It works, but throughput is limited because the five services process at different speeds and the slowest one sets the pace for the whole queue.",
-      "Each message is delivered to exactly one of the five, chosen essentially arbitrarily, so four of the five services never learn the order exists. The queue's 'exactly one consumer' guarantee is the bug, not a tuning problem.",
-      "It works only if all five services acknowledge the message; if any one of them fails to ack, the message is redelivered to all five and every service processes it twice.",
-      "The queue would deliver each message five times, once per consumer, which triples storage cost and requires every service to be idempotent."
-    ],
-    "correct": 1,
-    "explanation": "A queue is competing consumers over one message set: a message that goes to one consumer does not go to any other. With five services on one queue, each OrderPlaced reaches exactly one of them at random and the other four never see it. This is not a performance or ack problem - it is the wrong primitive. A topic delivers every message to every subscription independently, which is what 'who needs to know?' requires. Adding consumers to a queue divides work; adding subscriptions to a topic multiplies audience."
-  },
-  {
     "stage": "check",
     "question": "To avoid five separate queues, an engineer proposes one queue consumed by a 'dispatcher' service that forwards each message to the five real consumers. The dispatcher successfully forwards to shipping, email and analytics, then fails to reach search and fraud. What must it do with its single acknowledgement, and what does that reveal?",
     "options": [

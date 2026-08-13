@@ -37,7 +37,7 @@ the concerns that don't belong to any one of them — *once*, at the edge:
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 532" width="100%" style="max-width:880px" role="img" aria-label="An API gateway drawn as the single front door in front of three services. On the left, outside a dashed trust boundary, sit three untrusted clients on the public internet: a web app in a browser, a mobile app on a flaky network, and a partner integration. All three feed one rail into one address instead of ten hostnames. In the middle sits the gateway, a reverse proxy that understands your API's policies, with its seven jobs listed and the reason each belongs at the edge: one, TLS termination, meaning Transport Layer Security ends here and certificates live in one place; two, authentication, verify the token once and pass a trusted X-User-Id header inward; three, rate limiting and quotas, one global edge limit protects everything behind it; four, routing, map the public path slash v1 slash orders star to a service so clients never see the topology; five, aggregation and transformation, fan out to several services and compose one response; six, observability, stamp a request ID and record latency and error metrics and propagate a trace; seven, traffic management, canary and blue-green splits, retries, timeouts and circuit breaking. On the right, inside the boundary, three services speak plain HTTP and trust the injected identity: orders-service on slash v1 slash orders star, customers-service on slash v1 slash customers star, products-service on slash v1 slash products star. Curved arrows between those three services show east-west traffic, service to service inside the cluster, which never touches the gateway and is governed by a service mesh such as Istio or Linkerd. Four warnings run along the bottom: the gateway is a single point of failure, a god-object gateway recreates the Enterprise Service Bus mistake, it adds a latency tax of one extra network hop, and defense in depth still applies because the gateway removes duplication of the edge check, not each service's duty to guard its own data.">
   <defs>
-    <marker id="p2l10a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p2l10a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p2l10a-arp" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="700" fill="currentColor">One front door: the gateway does the edge work once, so ten services stop doing it ten times</text>
@@ -49,25 +49,25 @@ the concerns that don't belong to any one of them — *once*, at the edge:
     <text x="198" y="80" font-size="8" font-weight="700" fill="currentColor" opacity="0.72">TRUST BOUNDARY — inside, services speak plain HTTP and can be small and trusting</text>
 
     <!-- clients -->
-    <text x="84" y="80" text-anchor="middle" font-size="8.5" font-weight="700" fill="#3553ff">UNTRUSTED</text>
+    <text x="84" y="80" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c94a12">UNTRUSTED</text>
     <text x="84" y="92" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">the public internet</text>
     <text x="84" y="106" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">all three see ONE address</text>
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
-      <rect x="14" y="136" width="140" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="14" y="214" width="140" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="14" y="292" width="140" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="14" y="136" width="140" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="14" y="214" width="140" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="14" y="292" width="140" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
     <g text-anchor="middle">
-      <text x="84" y="158" font-size="10.5" font-weight="700" fill="#3553ff">Web app</text>
+      <text x="84" y="158" font-size="10.5" font-weight="700" fill="#c94a12">Web app</text>
       <text x="84" y="172" font-size="7.5" fill="currentColor" opacity="0.8">a browser dashboard</text>
-      <text x="84" y="236" font-size="10.5" font-weight="700" fill="#3553ff">Mobile app</text>
+      <text x="84" y="236" font-size="10.5" font-weight="700" fill="#c94a12">Mobile app</text>
       <text x="84" y="250" font-size="7.5" fill="currentColor" opacity="0.8">a flaky network</text>
-      <text x="84" y="314" font-size="10.5" font-weight="700" fill="#3553ff">Partner</text>
+      <text x="84" y="314" font-size="10.5" font-weight="700" fill="#c94a12">Partner</text>
       <text x="84" y="328" font-size="7.5" fill="currentColor" opacity="0.8">a third-party integration</text>
     </g>
 
     <!-- fan-in rail -->
-    <g fill="none" stroke="#3553ff" stroke-width="1.7">
+    <g fill="none" stroke="#c94a12" stroke-width="1.7">
       <path d="M156 162 L172 162"/>
       <path d="M156 240 L172 240"/>
       <path d="M156 318 L172 318"/>
@@ -224,7 +224,7 @@ exists to serve exactly one client:
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 622" width="100%" style="max-width:880px" role="img" aria-label="The Backend for Frontend pattern drawn as two parallel stacks over one shared set of services. On the left, a web app running a dashboard in a browser calls the Web BFF, which returns rich, wide payloads: its response is drawn as eight long full-width bars, the wide object a dashboard renders. On the right, an iOS app on a flaky network calls the Mobile BFF, which returns lean payloads with few round trips: its response is drawn as only three short bars labelled order, customer name, and product names, with empty space underneath and the note that nothing else is sent and the data is pre-joined so the phone makes one round trip instead of three. The same data, a different shape. Between the two stacks a panel explains why it works: because a frontend team owns its BFF, it can iterate on its own contract without waiting on a shared, committee-owned API. Both BFFs feed down into the same shared services at the bottom, orders, customers and products, where the domain logic lives and where it must stay, because a BFF must never make business decisions. Three warnings close the diagram. The cost is duplication, since logic can sprawl across BFFs, one per client is fine but ten near-identical ones are not. The discipline is to keep a BFF thin, aggregation and shaping only, because a BFF that starts making pricing decisions has become a new monolith wearing a frontend team's badge. And GraphQL is a generalized, declarative BFF: one endpoint where each client declares its own shape, instead of one hand-written BFF per client.">
   <defs>
-    <marker id="p2l10b-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p2l10b-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p2l10b-arp" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="700" fill="currentColor">BFF = Backend for Frontend — one thin backend per client, owned by that client's team</text>
@@ -234,16 +234,16 @@ exists to serve exactly one client:
 
     <!-- clients -->
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
-      <rect x="135" y="72" width="190" height="44" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="575" y="72" width="190" height="44" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="135" y="72" width="190" height="44" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="575" y="72" width="190" height="44" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
     <g text-anchor="middle">
-      <text x="230" y="94" font-size="11" font-weight="700" fill="#3553ff">Web app</text>
+      <text x="230" y="94" font-size="11" font-weight="700" fill="#c94a12">Web app</text>
       <text x="230" y="107" font-size="7.5" fill="currentColor" opacity="0.8">a dashboard in a browser</text>
-      <text x="670" y="94" font-size="11" font-weight="700" fill="#3553ff">iOS app</text>
+      <text x="670" y="94" font-size="11" font-weight="700" fill="#c94a12">iOS app</text>
       <text x="670" y="107" font-size="7.5" fill="currentColor" opacity="0.8">a phone on a flaky network</text>
     </g>
-    <g fill="none" stroke="#3553ff" stroke-width="1.7">
+    <g fill="none" stroke="#c94a12" stroke-width="1.7">
       <path d="M230 118 L230 134" marker-end="url(#p2l10b-arb)"/>
       <path d="M670 118 L670 134" marker-end="url(#p2l10b-arb)"/>
     </g>
@@ -394,7 +394,7 @@ order, the customer's name, and each product's name — three services, one resp
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" width="100%" style="max-width:880px" role="img" aria-label="A sequence diagram of a BFF fanning one client call out to three services. Five lifelines run down the page: the mobile app, the mobile BFF, orders-svc, customers-svc and products-svc. First the mobile app sends GET /mobile/orders/1001 to the BFF. A note across the BFF and the three services reads: fan out in parallel, one timeout each. Then, inside a bracketed parallel band, the BFF issues all three downstream calls at the same instant from one activation: GET /orders/1001 to orders-svc, GET /customers/42 to customers-svc, and GET /products?ids=... to products-svc, each carrying its own timeout=0.3, which is per call and not for the whole request. Because they leave together, the total cost is the slowest call, not the sum of the three. Two come back inside the band: orders-svc returns the order and customers-svc returns the customer's name. The third does not: an amber line ending in a cross on the products-svc lifeline shows no response arrived by 0.3 seconds, so the BFF gives up and moves on. Finally the BFF returns one composed JSON to the mobile app in a single round trip, holding the order and the customer's name with product names omitted, so the screen still renders. Two rules close the diagram. Rule one: call in parallel, not in series, because sequential calls cost the sum of their latencies while parallel calls cost only the slowest. Rule two: put a timeout on every call and decide the partial-failure policy per field, so a slow dependency degrades the screen gracefully instead of hanging it.">
   <defs>
-    <marker id="p2l10c-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p2l10c-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p2l10c-arp" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
     <marker id="p2l10c-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
@@ -404,14 +404,14 @@ order, the customer's name, and each product's name — three services, one resp
 
     <!-- actor headers -->
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
-      <rect x="10" y="62" width="148" height="38" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="10" y="62" width="148" height="38" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="176" y="62" width="148" height="38" rx="9" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
       <rect x="376" y="62" width="148" height="38" rx="9" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
       <rect x="556" y="62" width="148" height="38" rx="9" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
       <rect x="736" y="62" width="148" height="38" rx="9" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
     </g>
     <g text-anchor="middle" font-size="10.5" font-weight="700">
-      <text x="84" y="80" fill="#3553ff">Mobile app</text>
+      <text x="84" y="80" fill="#c94a12">Mobile app</text>
       <text x="250" y="80" fill="#7c5cff">Mobile BFF</text>
       <text x="450" y="80" fill="#7c5cff">orders-svc</text>
       <text x="630" y="80" fill="#7c5cff">customers-svc</text>
@@ -436,7 +436,7 @@ order, the customer's name, and each product's name — three services, one resp
 
     <!-- client request -->
     <text x="167" y="120" text-anchor="middle" font-size="9" fill="currentColor">GET /mobile/orders/1001</text>
-    <path d="M90 128 L244 128" fill="none" stroke="#3553ff" stroke-width="1.7" marker-end="url(#p2l10c-arb)"/>
+    <path d="M90 128 L244 128" fill="none" stroke="#c94a12" stroke-width="1.7" marker-end="url(#p2l10c-arb)"/>
 
     <!-- note band -->
     <rect x="176" y="146" width="708" height="24" rx="6" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.25" stroke-width="1"/>

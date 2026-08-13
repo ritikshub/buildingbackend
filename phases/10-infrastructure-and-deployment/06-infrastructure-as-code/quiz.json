@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A one-line change to your infrastructure configuration — widening the network's address range — produces `Plan: 6 to add, 1 to change, 6 to destroy` against a seven-resource stack. You edited one attribute on one resource. How should you read that summary?",
-    "options": [
-      "Six new resources are being added and six unrelated leftovers cleaned up; the counts are independent and a high destroy count usually means stale resources",
-      "It is a full rebuild. A replace counts once in 'to add' and once in 'to destroy', so 6 of 7 resources are being destroyed and recreated — and 5 of them were edited by nobody: each has an immutable attribute referencing something being replaced, so its value becomes `(known after apply)`, which is a change, and a forcing one",
-      "Six resources will be updated in place with new configuration and six old configurations discarded; identifiers and data are preserved throughout",
-      "The tool is proposing a safe zero-downtime rebuild: it creates the six replacements first, cuts over, then destroys the originals"
-    ],
-    "correct": 1,
-    "explanation": "This is the misconception that deletes production databases. The four verbs are not equally dangerous: create and update-in-place keep or create data, while replace is `-/+` — destroy the old object, create a new one — and it is a data-loss operation dressed up as an edit. What propagates it is that a replaced resource's id is unknown until apply time, so every immutable attribute pointing at it changes, and an immutable attribute that changes forces another replacement. In this lesson's run the cascade started at `network.core` and dragged in both subnets, both servers and `database.main` with its 100 GB — only `lb.public` escaped, because its target list is a *mutable* attribute that can absorb new ids as a single update. Mutable attributes are firebreaks; immutable ones are fuses. Option 4 describes `create_before_destroy`, which is not the default: the default order destroys first, and here `prevent_destroy` on the database refused the whole plan before anything ran."
-  },
-  {
     "stage": "check",
     "question": "A colleague argues that the state file is an unnecessary liability — it can be lost, it holds secrets, it needs locking — and that the tool should simply query the cloud on every run to discover what exists. What is the fatal objection?",
     "options": [

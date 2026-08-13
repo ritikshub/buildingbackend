@@ -63,16 +63,16 @@ Sit the two philosophies side by side, because internalizing the flip is the who
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 490" width="100%" style="max-width:880px" role="img" aria-label="The inversion, shown as two design pipelines that run in opposite directions through the same three stages: the queries, the keys, and the data. In the relational panel on the left the process starts at the bottom, at the data: step one is to model the data by normalizing it into clean customers, orders and order_items tables; step two is to add constraints and keys; and only at the top, step three, do you write whatever query you like, because the planner joins and adapts. The arrows therefore run upward, from data toward queries. In the NoSQL panel on the right the process starts at the top, at the queries: step one is to list every access pattern first, such as a customer's profile, their orders newest first, an order with its line items, and all orders in a given status; step two is to design the keys around that list, for example partition key CUSTOMER#c-1 and sort key ORDER#date#id, so that every pattern is a single-partition lookup; and only then, step three at the bottom, do you store the data in one table laid out the way the reads want it. The arrows therefore run downward, from queries toward data. The bottom bands give the honest bill. On the relational side a new query later is just a new SELECT with no schema change, optimizing for flexibility and correctness, at the cost that joins and ad-hoc queries do not scale across nodes. On the NoSQL side a query you did not design for becomes a full scan of every item, or is simply impossible, and adding a pattern later means a new secondary index or a data migration, in exchange for predictable constant-time reads at scale.">
   <defs>
-    <marker id="p4l7a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p4l7a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p4l7a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">The inversion &#8212; relational starts from the data, NoSQL starts from the queries</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
-    <rect x="20" y="44" width="396" height="298" rx="12" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.7" stroke-width="1.8"/>
+    <rect x="20" y="44" width="396" height="298" rx="12" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.7" stroke-width="1.8"/>
     <rect x="484" y="44" width="396" height="298" rx="12" fill="#0fa07f" fill-opacity="0.05" stroke="#0fa07f" stroke-opacity="0.7" stroke-width="1.8"/>
 
-    <text x="218" y="68" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3553ff">RELATIONAL &#183; data-first</text>
+    <text x="218" y="68" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c94a12">RELATIONAL &#183; data-first</text>
     <text x="682" y="68" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0fa07f">NoSQL &#183; query-first</text>
     <text x="218" y="86" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.8">the planner adapts to whatever you ask</text>
     <text x="682" y="86" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.8">the keys ARE the questions you may ask</text>
@@ -81,28 +81,28 @@ Sit the two philosophies side by side, because internalizing the flip is the who
     <text x="450" y="214" text-anchor="middle" font-size="8" font-weight="700" fill="currentColor" opacity="0.6">THE KEYS</text>
     <text x="450" y="294" text-anchor="middle" font-size="8" font-weight="700" fill="currentColor" opacity="0.6">THE DATA</text>
 
-    <rect x="32" y="102" width="372" height="58" rx="9" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff" stroke-width="1.5"/>
-    <rect x="32" y="182" width="372" height="58" rx="9" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff" stroke-width="1.5"/>
-    <rect x="32" y="262" width="372" height="58" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2.1"/>
+    <rect x="32" y="102" width="372" height="58" rx="9" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12" stroke-width="1.5"/>
+    <rect x="32" y="182" width="372" height="58" rx="9" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12" stroke-width="1.5"/>
+    <rect x="32" y="262" width="372" height="58" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2.1"/>
 
-    <text x="44" y="282" font-size="10.5" font-weight="700" fill="#3553ff">STEP 1 &#183; MODEL THE DATA</text>
-    <text x="392" y="282" text-anchor="end" font-size="7.5" font-weight="700" fill="#3553ff">START HERE</text>
+    <text x="44" y="282" font-size="10.5" font-weight="700" fill="#c94a12">STEP 1 &#183; MODEL THE DATA</text>
+    <text x="392" y="282" text-anchor="end" font-size="7.5" font-weight="700" fill="#c94a12">START HERE</text>
     <text x="44" y="298" font-size="9" fill="currentColor">normalize into clean tables &#8212; a faithful model of the domain</text>
     <text x="44" y="312" font-size="8.5" fill="currentColor" opacity="0.75">customers &#183; orders &#183; order_items</text>
 
-    <text x="44" y="202" font-size="10.5" font-weight="700" fill="#3553ff">STEP 2 &#183; ADD CONSTRAINTS AND KEYS</text>
+    <text x="44" y="202" font-size="10.5" font-weight="700" fill="#c94a12">STEP 2 &#183; ADD CONSTRAINTS AND KEYS</text>
     <text x="44" y="218" font-size="9" fill="currentColor">primary keys, foreign keys, a few indexes</text>
     <text x="44" y="232" font-size="8.5" fill="currentColor" opacity="0.75">the queries are still an afterthought at this point</text>
 
-    <text x="44" y="122" font-size="10.5" font-weight="700" fill="#3553ff">STEP 3 &#183; THEN WRITE ANY QUERY YOU LIKE</text>
+    <text x="44" y="122" font-size="10.5" font-weight="700" fill="#c94a12">STEP 3 &#183; THEN WRITE ANY QUERY YOU LIKE</text>
     <text x="44" y="138" font-size="9" fill="currentColor">the planner joins and adapts &#8212; nothing to redesign</text>
     <text x="44" y="152" font-size="8.5" fill="currentColor" opacity="0.75">all four access patterns: a WHERE and a couple of JOINs</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="2">
+    <g fill="none" stroke="#c94a12" stroke-width="2">
       <path d="M218 262 L218 244" marker-end="url(#p4l7a-arb)"/>
       <path d="M218 182 L218 164" marker-end="url(#p4l7a-arb)"/>
     </g>
-    <text x="218" y="336" text-anchor="middle" font-size="8.5" font-weight="700" fill="#3553ff">time runs &#8593; UPWARD &#183; data &#8594; keys &#8594; queries</text>
+    <text x="218" y="336" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c94a12">time runs &#8593; UPWARD &#183; data &#8594; keys &#8594; queries</text>
 
     <rect x="496" y="102" width="372" height="58" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2.1"/>
     <rect x="496" y="182" width="372" height="58" rx="9" fill="#0fa07f" fill-opacity="0.07" stroke="#0fa07f" stroke-width="1.5"/>
@@ -127,8 +127,8 @@ Sit the two philosophies side by side, because internalizing the flip is the who
     </g>
     <text x="682" y="336" text-anchor="middle" font-size="8.5" font-weight="700" fill="#0fa07f">time runs &#8595; DOWNWARD &#183; queries &#8594; keys &#8594; data</text>
 
-    <rect x="20" y="356" width="396" height="76" rx="11" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.6" stroke-width="1.6"/>
-    <text x="34" y="376" font-size="10.5" font-weight="700" fill="#3553ff">A NEW QUERY LATER</text>
+    <rect x="20" y="356" width="396" height="76" rx="11" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.6" stroke-width="1.6"/>
+    <text x="34" y="376" font-size="10.5" font-weight="700" fill="#c94a12">A NEW QUERY LATER</text>
     <text x="34" y="392" font-size="9" fill="currentColor">just write the SELECT &#183; no schema change at all</text>
     <text x="34" y="412" font-size="9.5" fill="currentColor">OPTIMIZES FOR: flexibility and correctness</text>
     <text x="34" y="426" font-size="8.5" fill="#e0930f">the bill: joins and ad-hoc scans stop scaling across nodes</text>
@@ -274,11 +274,11 @@ Model the e-commerce example as one table:
     <text x="628" y="350" font-size="7.5" fill="currentColor">read &#8212; the join you cannot do, precomputed</text>
     <text x="628" y="366" font-size="7.5" font-weight="700" fill="#0fa07f">1 request &#183; 3 items examined</text>
 
-    <rect x="20" y="394" width="428" height="112" rx="11" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.7" stroke-width="1.7"/>
-    <text x="34" y="416" font-size="11" font-weight="700" fill="#3553ff">RELATIONAL &#8212; the join happens at READ time</text>
-    <rect x="36" y="432" width="112" height="32" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.5"/>
-    <rect x="166" y="432" width="92" height="32" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.5"/>
-    <rect x="276" y="432" width="118" height="32" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.5"/>
+    <rect x="20" y="394" width="428" height="112" rx="11" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.7" stroke-width="1.7"/>
+    <text x="34" y="416" font-size="11" font-weight="700" fill="#c94a12">RELATIONAL &#8212; the join happens at READ time</text>
+    <rect x="36" y="432" width="112" height="32" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.5"/>
+    <rect x="166" y="432" width="92" height="32" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.5"/>
+    <rect x="276" y="432" width="118" height="32" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.5"/>
     <text x="92" y="452" text-anchor="middle" font-size="9" fill="currentColor">customers</text>
     <text x="212" y="452" text-anchor="middle" font-size="9" fill="currentColor">orders</text>
     <text x="335" y="452" text-anchor="middle" font-size="9" fill="currentColor">order_items</text>

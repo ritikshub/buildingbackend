@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You split a monolith into ten services. What problem is an API gateway primarily there to solve?",
-    "options": [
-      "It makes each service's database queries faster",
-      "It centralizes cross-cutting edge concerns (TLS, auth, rate limiting, routing) so every service doesn't reimplement them",
-      "It removes the need to write the services at all",
-      "It stores each user's session in memory so services can be stateless"
-    ],
-    "correct": 1,
-    "explanation": "A gateway is one front door for concerns that belong to no single service — TLS termination, authentication, rate limiting, routing, observability. Doing them once at the edge stops ten services from drifting into ten slightly-different copies, and hides the topology from clients."
-  },
-  {
     "stage": "check",
     "question": "A gateway and a service mesh both operate at L7. What's the difference in what they govern?",
     "options": [

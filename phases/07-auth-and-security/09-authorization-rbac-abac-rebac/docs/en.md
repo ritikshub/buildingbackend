@@ -41,7 +41,7 @@ Every authorization question has the same shape — a **subject** (who), an **ac
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Separate enforcement (where) from decision (what) — deny by default</text>
   <g fill="none" stroke-linejoin="round" stroke-width="1.8" font-family="'JetBrains Mono', ui-monospace, monospace">
     <rect x="24" y="88" width="130" height="60" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
-    <rect x="250" y="76" width="220" height="84" rx="11" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+    <rect x="250" y="76" width="220" height="84" rx="11" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     <rect x="560" y="76" width="220" height="84" rx="11" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/>
   </g>
   <g fill="none" stroke="currentColor" stroke-width="1.7">
@@ -52,7 +52,7 @@ Every authorization question has the same shape — a **subject** (who), an **ac
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="89" y="112" font-size="10" text-anchor="middle">request</text>
     <text x="89" y="128" font-size="8.5" text-anchor="middle" opacity="0.7">(authenticated)</text>
-    <text x="360" y="98" font-size="11" font-weight="700" text-anchor="middle" fill="#3553ff">PEP — Enforcement</text>
+    <text x="360" y="98" font-size="11" font-weight="700" text-anchor="middle" fill="#c94a12">PEP — Enforcement</text>
     <text x="360" y="116" font-size="8.5" text-anchor="middle">intercepts EVERY access</text>
     <text x="360" y="130" font-size="8.5" text-anchor="middle">gathers subject, action,</text>
     <text x="360" y="144" font-size="8.5" text-anchor="middle">resource, context → asks ↓</text>
@@ -94,12 +94,12 @@ Two models pick up where RBAC stops, and modern systems increasingly use them al
   </defs>
   <text x="450" y="22" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Three models — roles, attributes, relationships</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="42" width="284" height="284" rx="12" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.8"/>
+    <rect x="16" y="42" width="284" height="284" rx="12" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.8"/>
     <rect x="308" y="42" width="284" height="284" rx="12" fill="#e0930f" fill-opacity="0.06" stroke="#e0930f" stroke-opacity="0.8"/>
     <rect x="600" y="42" width="284" height="284" rx="12" fill="#0fa07f" fill-opacity="0.06" stroke="#0fa07f" stroke-opacity="0.8"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="158" y="66" font-size="12.5" font-weight="700" text-anchor="middle" fill="#3553ff">RBAC · roles</text>
+    <text x="158" y="66" font-size="12.5" font-weight="700" text-anchor="middle" fill="#c94a12">RBAC · roles</text>
     <text x="158" y="112" font-size="10" text-anchor="middle">Alice</text>
     <text x="158" y="160" font-size="10" text-anchor="middle">role: Editor</text>
     <text x="158" y="208" font-size="9" text-anchor="middle">perms: {doc.read,</text>

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A server has one IP address but runs a web server, a mail server, and SSH at once. How does the kernel deliver an incoming packet to the right one?",
-    "options": [
-      "It broadcasts the packet to every program and lets them decide",
-      "It reads the destination port number and hands the bytes to the program listening on that port",
-      "It uses the packet's size to guess the service",
-      "Each service must run on a separate IP address"
-    ],
-    "correct": 1,
-    "explanation": "A port is the 16-bit number in the TCP/UDP header that selects a program on a machine. The kernel keeps a table of which program listens on which port; port 443 goes to the web server, port 22 to SSH. Same IP, different doors."
-  },
-  {
     "stage": "check",
     "question": "Which best describes the well-known port range and why it exists?",
     "options": [

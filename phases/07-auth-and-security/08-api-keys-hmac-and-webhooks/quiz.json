@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "How should API keys be stored in your database, and why is the answer different from how you store passwords?",
-    "options": [
-      "In plaintext, so you can show them to the user again later",
-      "With bcrypt/Argon2, exactly like passwords",
-      "As a fast hash (e.g. SHA-256) plus a searchable prefix and metadata — never the raw key. Unlike a human password, an API key is already high-entropy random from a CSPRNG, so there's nothing to brute-force and no slow, memory-hard KDF is needed; a fast hash is both sufficient and fast to verify on every request. A DB leak then exposes hashes, not usable keys",
-      "Encrypted with a key stored in the same database"
-    ],
-    "correct": 2,
-    "explanation": "Passwords need slow hashes because they're low-entropy and guessable; API keys are long random secrets, so the guessing attack that motivates bcrypt/Argon2 doesn't apply. Store a fast SHA-256 hash (so a breach yields no usable keys) with a prefix for identification, show the full key exactly once, and verify by hashing the presented key and comparing in constant time. Plaintext or reversible encryption reintroduces the very leak you're guarding against."
-  },
-  {
     "stage": "check",
     "question": "Even a well-managed API key has a ceiling. What does a bare bearer key NOT give you?",
     "options": [

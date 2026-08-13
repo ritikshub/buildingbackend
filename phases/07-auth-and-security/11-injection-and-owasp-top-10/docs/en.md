@@ -77,13 +77,13 @@ With a parameterized query the database **compiles the query template first** �
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
       <rect x="30" y="66" width="150" height="60" rx="10" fill="#d64545" fill-opacity="0.10" stroke="#d64545"/>
-      <rect x="270" y="66" width="180" height="60" rx="10" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="270" y="66" width="180" height="60" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
       <rect x="560" y="52" width="310" height="180" rx="11" fill="#e0930f" fill-opacity="0.06" stroke="#e0930f" stroke-opacity="0.7"/>
     </g>
     <text x="105" y="90" font-size="10" font-weight="700" text-anchor="middle" fill="#d64545">attacker</text>
     <text x="105" y="108" font-size="8" text-anchor="middle">submits a URL for</text>
     <text x="105" y="120" font-size="8" text-anchor="middle">the server to fetch</text>
-    <text x="360" y="90" font-size="10" font-weight="700" text-anchor="middle" fill="#3553ff">YOUR SERVER</text>
+    <text x="360" y="90" font-size="10" font-weight="700" text-anchor="middle" fill="#c94a12">YOUR SERVER</text>
     <text x="360" y="108" font-size="8" text-anchor="middle">fetches the URL</text>
     <text x="360" y="120" font-size="8" text-anchor="middle">(avatar / webhook test)</text>
     <text x="715" y="74" font-size="10" font-weight="700" text-anchor="middle" fill="#e0930f">INTERNAL (attacker can't reach directly)</text>
@@ -135,7 +135,7 @@ The **OWASP Top 10** (Open Worldwide Application Security Project) is the indust
     <text x="28" y="172" font-weight="700">A04 · Insecure Design</text><text x="470" y="172">→ threat modeling, secure defaults</text><text x="820" y="172" text-anchor="end" font-weight="700" fill="#0fa07f">L1</text>
     <text x="28" y="208" font-weight="700">A05 · Security Misconfiguration</text><text x="470" y="208">→ CORS/headers, open defaults, verbose errors</text><text x="820" y="208" text-anchor="end" font-weight="700" fill="#0fa07f">L10·L13</text>
     <text x="28" y="244" font-weight="700">A06 · Vulnerable Components</text><text x="470" y="244">→ dependency scanning, patching (SCA)</text><text x="820" y="244" text-anchor="end" font-weight="700" fill="#0fa07f">Use It</text>
-    <text x="28" y="280" font-weight="700" fill="#3553ff">A07 · Auth Failures</text><text x="470" y="280">→ weak passwords, sessions, MFA, tokens</text><text x="820" y="280" text-anchor="end" font-weight="700" fill="#0fa07f">L3–L6</text>
+    <text x="28" y="280" font-weight="700" fill="#c94a12">A07 · Auth Failures</text><text x="470" y="280">→ weak passwords, sessions, MFA, tokens</text><text x="820" y="280" text-anchor="end" font-weight="700" fill="#0fa07f">L3–L6</text>
     <text x="28" y="316" font-weight="700">A08 · Integrity Failures</text><text x="470" y="316">→ signing, JWT verification, supply chain</text><text x="820" y="316" text-anchor="end" font-weight="700" fill="#0fa07f">L6·L8</text>
     <text x="28" y="352" font-weight="700">A09 · Logging &amp; Monitoring</text><text x="470" y="352">→ audit trails, detection, accountability</text><text x="820" y="352" text-anchor="end" font-weight="700" fill="#0fa07f">P10·L1</text>
     <text x="28" y="388" font-weight="700" fill="#e0930f">A10 · SSRF</text><text x="470" y="388">→ allowlist, block internal ranges</text><text x="820" y="388" text-anchor="end" font-weight="700" fill="#0fa07f">L11</text>

@@ -100,8 +100,8 @@ backend choice.)
     </g>
 
     <!-- the start node: where the traversal is asked from -->
-    <rect x="49" y="167" width="118" height="46" rx="23" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="2"/>
-    <text x="108" y="184" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">:User</text>
+    <rect x="49" y="167" width="118" height="46" rx="23" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="2"/>
+    <text x="108" y="184" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">:User</text>
     <text x="108" y="201" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">name: 'Ada'</text>
 
     <!-- the rest of the graph -->

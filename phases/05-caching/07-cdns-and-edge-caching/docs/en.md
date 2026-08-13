@@ -56,11 +56,11 @@ You put your content on the CDN; each edge caches a copy; and every user is rout
     <text x="672" y="89" text-anchor="middle" font-size="9.3" fill="currentColor" opacity="0.75">every user hits the edge in their own city</text>
 
     <!-- ============ WITHOUT ============ -->
-    <g fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.8" stroke-linejoin="round">
+    <g fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8" stroke-linejoin="round">
       <rect x="36" y="104" width="104" height="40" rx="10"/>
       <rect x="36" y="196" width="104" height="40" rx="10"/>
     </g>
-    <g text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">
+    <g text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">
       <text x="88" y="128">Sydney user</text>
       <text x="88" y="220">London user</text>
     </g>
@@ -80,11 +80,11 @@ You put your content on the CDN; each edge caches a copy; and every user is rout
     <text x="228" y="328" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.65">Every byte of every asset crosses the ocean, every time.</text>
 
     <!-- ============ WITH ============ -->
-    <g fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.8" stroke-linejoin="round">
+    <g fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8" stroke-linejoin="round">
       <rect x="474" y="104" width="88" height="40" rx="10"/>
       <rect x="474" y="196" width="88" height="40" rx="10"/>
     </g>
-    <g text-anchor="middle" font-size="9.5" font-weight="700" fill="#3553ff">
+    <g text-anchor="middle" font-size="9.5" font-weight="700" fill="#c94a12">
       <text x="518" y="128">Sydney user</text>
       <text x="518" y="220">London user</text>
     </g>

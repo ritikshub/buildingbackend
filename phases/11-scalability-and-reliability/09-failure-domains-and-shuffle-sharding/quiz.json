@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A service runs 8 identical workers behind a load balancer serving 800 customers. One customer sends a request that pins a worker at 100% CPU forever, and their client keeps sending more. Roughly what fraction of the 800 customers lose service?",
-    "options": [
-      "About 1/8 — only the worker that got the bad request is affected",
-      "About 1/800 — only the customer who sent the bad request is affected",
-      "Effectively all of them — the balancer will hand a poison request to every worker",
-      "None — the load balancer detects the slow worker and routes around it"
-    ],
-    "correct": 2,
-    "explanation": "Measured in this lesson: 799 of 799 other customers, a 100.00% blast radius. The tempting answer is 1/8, because 'we have 8 replicas' feels like it bounds the damage — but replicas only bound damage that arrives one machine at a time. A poison request is accepted by any worker, so a loop of them reaches all 8 within seconds. Routing around it is worse than useless here: least-connections actively prefers the workers that are still free, and the health checker eventually ejects every worker and feeds the poison to their replacements."
-  },
-  {
     "stage": "check",
     "question": "With 8 workers, each customer is assigned a random 2-worker subset instead of a fixed shard. What is the probability that another customer is assigned your exact subset, and how many distinct subsets exist?",
     "options": [

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your payment integration has a large suite, all green, and line coverage in the nineties. Every one of those tests runs against a hand-written double of the provider's API. What does that green build tell you about whether the integration works?",
-    "options": [
-      "That it works for every case the tests cover. High coverage means the integration code has been exercised against the provider's documented behaviour, so only untested edge cases can be wrong",
-      "Almost nothing about the provider. Measured over 12 releases of a provider that changed four times, a frozen hand-written double reported 8/8 green on every single release — 3 genuinely green, then 9 green while broken. At the worst release 1,902 of 2,000 real orders (95.1%) got the wrong outcome",
-      "That the integration works today but may break later, which is why you should re-run the suite after every provider release",
-      "That the code matches the double. Whether the double matches the provider is unknowable, so the only real answer is to delete the double and test against the live provider on every build"
-    ],
-    "correct": 1,
-    "explanation": "The tempting answer treats coverage as evidence about behaviour. Coverage measures which of your lines ran; it says nothing about whether the values flowing through them are the values the provider actually sends. The double and the code were written by the same person from the same reading of the docs, so they are wrong in the same way, which is exactly why the test passes. Re-running the suite after a provider release (option 3) changes nothing — the suite never touches the provider, so its verdict is identical on every release by construction. And option 4 over-corrects: the fix measured in this lesson is not deleting the double but pointing a shared contract suite at both the double and the real provider, which took defect exposure from 22 release-months to 0."
-  },
-  {
     "stage": "check",
     "question": "Over twelve releases a provider shipped four changes: a status string renamed (R4), receipt_url becoming optional (R6), validation errors moving 400 → 422 (R9), and one key in four requiring a retry (R11). Run each change in isolation against the same eight-scenario suite. How do their costs compare?",
     "options": [

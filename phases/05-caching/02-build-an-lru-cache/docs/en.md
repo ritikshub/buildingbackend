@@ -61,7 +61,7 @@ linked list** for order, with the map's values pointing *directly at the list no
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 448" width="100%" style="max-width:880px" role="img" aria-label="An LRU cache is two structures wired together. On top, a hash map called items maps each key to a node: it answers where is key K in constant time, but a hash map has no order at all. Below it, a doubly linked list holds the same nodes in recency order, running HEAD, then B, then A, then C, then TAIL. HEAD and TAIL are sentinel nodes that never hold data. The end next to HEAD is the most-recently-used end and the end next to TAIL is the least-recently-used end, so C is the oldest entry and the next one to be evicted. Dotted gray pointers run from each map entry straight down to its node in the list, and they cross, because the map's order says nothing about recency. Between every pair of neighbouring nodes there are two links: a next link pointing toward TAIL and a prev link pointing back toward HEAD. Because every node knows both of its neighbours, removing a node is a constant-time pair of pointer writes: n.prev.next = n.next and n.next.prev = n.prev.">
   <defs>
-    <marker id="p5l2a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p5l2a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p5l2a-pt" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7f7f7f"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Two structures, one cache — a map for &#8220;where?&#8221;, a list for &#8220;how recently?&#8221;</text>
@@ -93,23 +93,23 @@ linked list** for order, with the map's values pointing *directly at the list no
       <path d="M718 112 L610 280" marker-end="url(#p5l2a-pt)"/>
     </g>
 
-    <text x="52" y="262" font-size="11.5" font-weight="700" fill="#3553ff">DOUBLY LINKED LIST &#183; recency order</text>
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <text x="52" y="262" font-size="11.5" font-weight="700" fill="#c94a12">DOUBLY LINKED LIST &#183; recency order</text>
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M700 238 L728 238" marker-end="url(#p5l2a-ar)"/>
       <path d="M730 256 L702 256" marker-end="url(#p5l2a-ar)"/>
     </g>
     <text x="740" y="241" font-size="9" fill="currentColor" opacity="0.85">next</text>
     <text x="740" y="259" font-size="9" fill="currentColor" opacity="0.85">prev</text>
 
-    <rect x="46" y="264" width="808" height="128" rx="12" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.65" stroke-width="1.8"/>
+    <rect x="46" y="264" width="808" height="128" rx="12" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.65" stroke-width="1.8"/>
 
     <text x="130" y="276" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.7">most-recently-used end</text>
     <text x="770" y="276" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.7">least-recently-used end</text>
 
     <rect x="78" y="284" width="104" height="58" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f" stroke-width="1.7"/>
-    <rect x="238" y="284" width="104" height="58" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.7"/>
-    <rect x="398" y="284" width="104" height="58" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.7"/>
-    <rect x="558" y="284" width="104" height="58" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.7"/>
+    <rect x="238" y="284" width="104" height="58" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.7"/>
+    <rect x="398" y="284" width="104" height="58" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.7"/>
+    <rect x="558" y="284" width="104" height="58" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.7"/>
     <rect x="718" y="284" width="104" height="58" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f" stroke-width="1.7"/>
 
     <text x="130" y="309" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">HEAD</text>
@@ -124,7 +124,7 @@ linked list** for order, with the map's values pointing *directly at the list no
     <text x="610" y="330" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.7">oldest &#183; evict next</text>
     <text x="770" y="330" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.7">sentinel</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M184 300 L232 300" marker-end="url(#p5l2a-ar)"/>
       <path d="M344 300 L392 300" marker-end="url(#p5l2a-ar)"/>
       <path d="M504 300 L552 300" marker-end="url(#p5l2a-ar)"/>
@@ -158,20 +158,20 @@ the new MRU. No search, a constant number of pointer swaps:
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 502" width="100%" style="max-width:880px" role="img" aria-label="One eviction, step by step. Before: the cache is full at capacity three and the list reads HEAD, B, A, C, TAIL, with sentinels at both ends. C sits at the tail, so C is the least-recently-used entry and the victim; the two links that attach C to its neighbours are drawn in red and crossed out. Then put of key D arrives and there is no room. Step one, unlink the tail: lru = tail.prev finds C with no search, _unlink rewrites two pointers so A and TAIL point at each other, and del items of C drops the map entry. Step two, push_front the newcomer: a new node for D is created, items of D is set to it, and it is spliced in right after HEAD. After: the list reads HEAD, D, B, A, TAIL, D is the new most-recently-used entry, A is now the least-recently-used one, and a get of C is a miss. Nothing was searched or scanned — the whole eviction is a fixed, constant number of pointer writes.">
   <defs>
     <marker id="p5l2b-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker>
-    <marker id="p5l2b-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p5l2b-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p5l2b-arr" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#d64545"/></marker>
     <marker id="p5l2b-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Eviction in O(1) — the victim is already sitting at the tail</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
-    <rect x="46" y="42" width="808" height="120" rx="12" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.65" stroke-width="1.8"/>
-    <text x="62" y="64" font-size="11.5" font-weight="700" fill="#3553ff">BEFORE &#183; full at capacity 3 &#183; HEAD = MRU, TAIL = LRU</text>
+    <rect x="46" y="42" width="808" height="120" rx="12" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.65" stroke-width="1.8"/>
+    <text x="62" y="64" font-size="11.5" font-weight="700" fill="#c94a12">BEFORE &#183; full at capacity 3 &#183; HEAD = MRU, TAIL = LRU</text>
     <text x="610" y="78" text-anchor="middle" font-size="7.5" font-weight="700" fill="#d64545">tail.prev &#183; the victim</text>
 
     <rect x="78" y="86" width="104" height="52" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f" stroke-width="1.7"/>
-    <rect x="238" y="86" width="104" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.7"/>
-    <rect x="398" y="86" width="104" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.7"/>
+    <rect x="238" y="86" width="104" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.7"/>
+    <rect x="398" y="86" width="104" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.7"/>
     <rect x="558" y="86" width="104" height="52" rx="10" fill="#d64545" fill-opacity="0.14" stroke="#d64545" stroke-width="1.9"/>
     <rect x="718" y="86" width="104" height="52" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f" stroke-width="1.7"/>
 
@@ -187,7 +187,7 @@ the new MRU. No search, a constant number of pointer swaps:
     <text x="610" y="128" text-anchor="middle" font-size="7.5" font-weight="700" fill="#d64545">LRU &#183; evict me</text>
     <text x="770" y="128" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.7">sentinel</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M184 102 L232 102" marker-end="url(#p5l2b-arb)"/>
       <path d="M344 102 L392 102" marker-end="url(#p5l2b-arb)"/>
       <path d="M232 124 L184 124" marker-end="url(#p5l2b-arb)"/>
@@ -231,15 +231,15 @@ the new MRU. No search, a constant number of pointer swaps:
     </g>
     <text x="464" y="311" font-size="9" fill="currentColor" opacity="0.8">a fixed number of pointer writes &#8212; nothing was scanned</text>
 
-    <rect x="46" y="326" width="808" height="120" rx="12" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.65" stroke-width="1.8"/>
-    <text x="62" y="348" font-size="11.5" font-weight="700" fill="#3553ff">AFTER &#183; C is gone, D is the new MRU</text>
+    <rect x="46" y="326" width="808" height="120" rx="12" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.65" stroke-width="1.8"/>
+    <text x="62" y="348" font-size="11.5" font-weight="700" fill="#c94a12">AFTER &#183; C is gone, D is the new MRU</text>
     <text x="290" y="362" text-anchor="middle" font-size="7" font-weight="700" fill="#0fa07f">inserted right after HEAD</text>
     <text x="690" y="362" text-anchor="middle" font-size="7" fill="currentColor" opacity="0.7">gap C left, closed</text>
 
     <rect x="78" y="370" width="104" height="52" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f" stroke-width="1.7"/>
     <rect x="238" y="370" width="104" height="52" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="1.9"/>
-    <rect x="398" y="370" width="104" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.7"/>
-    <rect x="558" y="370" width="104" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.7"/>
+    <rect x="398" y="370" width="104" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.7"/>
+    <rect x="558" y="370" width="104" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.7"/>
     <rect x="718" y="370" width="104" height="52" rx="10" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f" stroke-width="1.7"/>
 
     <text x="130" y="392" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">HEAD</text>
@@ -260,7 +260,7 @@ the new MRU. No search, a constant number of pointer swaps:
       <path d="M232 408 L184 408" marker-end="url(#p5l2b-arg)"/>
       <path d="M392 408 L344 408" marker-end="url(#p5l2b-arg)"/>
     </g>
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M504 386 L552 386" marker-end="url(#p5l2b-arb)"/>
       <path d="M664 386 L712 386" marker-end="url(#p5l2b-arb)"/>
       <path d="M552 408 L504 408" marker-end="url(#p5l2b-arb)"/>

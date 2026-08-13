@@ -34,7 +34,7 @@ Put failures one and two side by side, because the instinct they provoke — "so
   </defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">One missing field, two readers, two very different bills</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="18" y="140" width="176" height="118" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="18" y="140" width="176" height="118" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="268" y="52" width="594" height="150" rx="13" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f"/>
     <rect x="268" y="222" width="594" height="140" rx="13" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f"/>
   </g>
@@ -46,7 +46,7 @@ Put failures one and two side by side, because the instinct they provoke — "so
     <text x="106" y="166" font-size="10.5" font-weight="700" text-anchor="middle">5,000 records</text>
     <text x="106" y="184" font-size="9" text-anchor="middle" opacity="0.9">written under v1</text>
     <text x="106" y="200" font-size="9" text-anchor="middle" opacity="0.9">field: total_cents</text>
-    <text x="106" y="222" font-size="9.5" font-weight="700" text-anchor="middle" fill="#3553ff">TRUE VALUE</text>
+    <text x="106" y="222" font-size="9.5" font-weight="700" text-anchor="middle" fill="#c94a12">TRUE VALUE</text>
     <text x="106" y="240" font-size="10" font-weight="700" text-anchor="middle">EUR 1,257,034.30</text>
     <text x="288" y="78" font-size="12" font-weight="700" fill="#e0930f">TOLERANT BUT NAIVE — rec.get("total_amount", 0)</text>
     <text x="288" y="100" font-size="9.5" opacity="0.9">the field is gone, so the language hands back its zero value</text>
@@ -117,13 +117,13 @@ That distinction sounds pedantic and is not. Non-transitive checks compose badly
       <path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/>
     </marker>
     <marker id="l12-arrowb" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/>
+      <path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/>
     </marker>
   </defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">The direction names the DATA, not the code</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="16" y="44" width="848" height="150" rx="13" fill="#0fa07f" fill-opacity="0.07" stroke="#0fa07f"/>
-    <rect x="16" y="204" width="848" height="150" rx="13" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff"/>
+    <rect x="16" y="204" width="848" height="150" rx="13" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12"/>
     <rect x="16" y="364" width="848" height="90" rx="13" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
@@ -131,7 +131,7 @@ That distinction sounds pedantic and is not. Non-transitive checks compose badly
     <rect x="188" y="112" width="92" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="316" y="112" width="92" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="444" y="112" width="92" height="46" rx="9" fill="#0fa07f" fill-opacity="0.18" stroke="#0fa07f"/>
-    <rect x="60" y="272" width="92" height="46" rx="9" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff"/>
+    <rect x="60" y="272" width="92" height="46" rx="9" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12"/>
     <rect x="188" y="272" width="92" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="316" y="272" width="92" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="444" y="272" width="92" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
@@ -141,7 +141,7 @@ That distinction sounds pedantic and is not. Non-transitive checks compose badly
     <path d="M482 108 L 482 92 L 234 92 L 234 108" marker-end="url(#l12-arrowg)"/>
     <path d="M482 108 L 482 92 L 362 92 L 362 108" marker-end="url(#l12-arrowg)"/>
   </g>
-  <g fill="none" stroke="#3553ff" stroke-width="2">
+  <g fill="none" stroke="#c94a12" stroke-width="2">
     <path d="M106 268 L 106 252 L 234 252 L 234 268" marker-end="url(#l12-arrowb)"/>
     <path d="M106 268 L 106 252 L 362 252 L 362 268" marker-end="url(#l12-arrowb)"/>
     <path d="M106 268 L 106 252 L 490 252 L 490 268" marker-end="url(#l12-arrowb)"/>
@@ -161,9 +161,9 @@ That distinction sounds pedantic and is not. Non-transitive checks compose badly
     <text x="576" y="130" font-size="9.5" opacity="0.9">solid arrows = the transitive check</text>
     <text x="576" y="147" font-size="9.5" opacity="0.9">plain BACKWARD only checks v3 -&gt; v4</text>
     <text x="576" y="170" font-size="10" font-weight="700" fill="#0fa07f">REQUIRED FOR REPLAY</text>
-    <text x="36" y="230" font-size="12.5" font-weight="700" fill="#3553ff">FORWARD — old code reads NEW data</text>
+    <text x="36" y="230" font-size="12.5" font-weight="700" fill="#c94a12">FORWARD — old code reads NEW data</text>
     <text x="36" y="248" font-size="9.5" opacity="0.85">the writer is the new schema; the readers are every consumer not yet upgraded</text>
-    <text x="106" y="292" font-size="10.5" font-weight="700" text-anchor="middle" fill="#3553ff">v4 WRITER</text>
+    <text x="106" y="292" font-size="10.5" font-weight="700" text-anchor="middle" fill="#c94a12">v4 WRITER</text>
     <text x="106" y="308" font-size="8.5" text-anchor="middle" opacity="0.85">new producer</text>
     <text x="234" y="300" font-size="10.5" font-weight="700" text-anchor="middle">v2 reader</text>
     <text x="362" y="300" font-size="10.5" font-weight="700" text-anchor="middle">v3 reader</text>
@@ -171,7 +171,7 @@ That distinction sounds pedantic and is not. Non-transitive checks compose badly
     <text x="576" y="272" font-size="10.5" font-weight="700">upgrade PRODUCERS first</text>
     <text x="576" y="290" font-size="9.5" opacity="0.9">the v1 reader is the one nobody</text>
     <text x="576" y="307" font-size="9.5" opacity="0.9">remembers is still running</text>
-    <text x="576" y="330" font-size="10" font-weight="700" fill="#3553ff">FULL = BOTH ROWS AT ONCE</text>
+    <text x="576" y="330" font-size="10" font-weight="700" fill="#c94a12">FULL = BOTH ROWS AT ONCE</text>
     <text x="36" y="390" font-size="12" font-weight="700" fill="#e0930f">WHY TRANSITIVE IS NOT PEDANTRY</text>
     <text x="36" y="410" font-size="9.5" opacity="0.9">v2 retires field tag 7 without reserving it. v4 reuses tag 7 for warehouse_id.</text>
     <text x="36" y="428" font-size="9.5" opacity="0.9">v3 -&gt; v4 is clean, so BACKWARD and FORWARD both say ACCEPT. v1 -&gt; v4 aliases</text>
@@ -287,7 +287,7 @@ Everything good about this comes from the functions being *pure and individually
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="30" y="64" width="212" height="58" rx="9" fill="#e0930f" fill-opacity="0.15" stroke="#e0930f"/>
     <rect x="248" y="64" width="240" height="58" rx="9" fill="#7c5cff" fill-opacity="0.15" stroke="#7c5cff"/>
-    <rect x="494" y="64" width="336" height="58" rx="9" fill="#3553ff" fill-opacity="0.15" stroke="#3553ff"/>
+    <rect x="494" y="64" width="336" height="58" rx="9" fill="#c94a12" fill-opacity="0.15" stroke="#c94a12"/>
     <rect x="192" y="196" width="150" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="366" y="196" width="150" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="540" y="196" width="150" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>

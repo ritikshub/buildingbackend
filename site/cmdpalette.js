@@ -167,10 +167,11 @@
     return s;
   }
 
-  function search(query) {
+  function search(query, limit) {
     var q = query.trim().toLowerCase();
     if (!q) return [];
 
+    var cap     = (typeof limit === 'number' && limit > 0) ? limit : MAX_RESULTS;
     var items   = buildIndex();
     var results = [];
 
@@ -180,7 +181,7 @@
     }
 
     results.sort(function (a, b) { return b.s - a.s; });
-    return results.slice(0, MAX_RESULTS).map(function (r) { return r.item; });
+    return results.slice(0, cap).map(function (r) { return r.item; });
   }
 
   // ── Utilities ────────────────────────────────────────────────────────
@@ -225,6 +226,28 @@
     if (!str || str.length <= max) return str || '';
     var cut = str.slice(0, max).replace(/\s+\S*$/, '');
     return (cut.length > max * 0.6 ? cut : str.slice(0, max)) + '…';
+  }
+
+  /**
+   * Where an index item points. Shared by the palette and the homepage
+   * search so the two can never disagree about a destination.
+   */
+  function hrefFor(item) {
+    if (item.kind === 'lesson') {
+      // Prefer the in-site reader; fall back to the GitHub URL
+      return item.lessonPath
+        ? 'lesson.html?path=' + encodeURIComponent(item.lessonPath)
+        : item.url;
+    }
+    if (item.kind === 'artifact') {
+      // Jump to the lesson that produced this artifact
+      return item.lessonPath
+        ? 'lesson.html?path=' + encodeURIComponent(item.lessonPath)
+        : ('https://github.com/ritikshub/buildingbackend/tree/main/' + item.file);
+    }
+    // Deep-link: pre-populate glossary search with the exact term name
+    // so the user lands directly on the definition, not the full list.
+    return 'jargon.html?q=' + encodeURIComponent(item.name);
   }
 
   // ── Palette DOM (created lazily on first open) ────────────────────────
@@ -387,24 +410,14 @@
       var chip = '';
       var chipClass = 'cp-item-chip';
 
+      dest = hrefFor(r);
       if (r.kind === 'lesson') {
-        // Prefer the in-site reader; fall back to GitHub URL
-        dest = r.lessonPath
-          ? 'lesson.html?path=' + encodeURIComponent(r.lessonPath)
-          : r.url;
         chip = 'Phase ' + String(r.phaseId).padStart(2, '0');
       } else if (r.kind === 'artifact') {
-        // Jump to the lesson that produced this artifact
-        dest = r.lessonPath
-          ? 'lesson.html?path=' + encodeURIComponent(r.lessonPath)
-          : ('https://github.com/ritikshub/buildingbackend/tree/main/' + r.file);
         var ak = (r.artKind || 'artifact');
         chip = ak.charAt(0).toUpperCase() + ak.slice(1);
         chipClass += ' cp-item-chip--alt';
       } else {
-        // Deep-link: pre-populate glossary search with the exact term name
-        // so the user lands directly on the definition, not the full list.
-        dest      = 'jargon.html?q=' + encodeURIComponent(r.name);
         chip      = 'Jargon';
         chipClass += ' cp-item-chip--alt';
       }
@@ -564,6 +577,14 @@
   }
 
   // ── Public API ────────────────────────────────────────────────────────
-  window.CmdPalette = { open: open, close: close };
+  // search/index/hrefFor are exposed so other surfaces (the homepage topic
+  // finder) reuse this ranking instead of growing a second, divergent one.
+  window.CmdPalette = {
+    open: open,
+    close: close,
+    search: search,
+    index: buildIndex,
+    hrefFor: hrefFor,
+  };
 
 }());

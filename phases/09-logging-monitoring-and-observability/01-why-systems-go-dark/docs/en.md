@@ -89,13 +89,13 @@ The distinction has a practical shape — **known unknowns vs. unknown unknowns*
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 344" width="100%" style="max-width:740px" role="img" aria-label="Monitoring versus observability: monitoring covers known failure modes with predefined dashboards and alerts, observability covers novel failures by letting you ask new questions of rich data after the fact.">
   <text x="400" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="700" fill="currentColor">Two different jobs, often confused</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="30" y="48" width="360" height="248" rx="14" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+    <rect x="30" y="48" width="360" height="248" rx="14" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     <rect x="410" y="48" width="360" height="248" rx="14" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
-    <line x1="54" y1="112" x2="366" y2="112" stroke="#3553ff" stroke-opacity="0.45" stroke-width="1.4"/>
+    <line x1="54" y1="112" x2="366" y2="112" stroke="#c94a12" stroke-opacity="0.45" stroke-width="1.4"/>
     <line x1="434" y1="112" x2="746" y2="112" stroke="#7c5cff" stroke-opacity="0.45" stroke-width="1.4"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="210" y="80" font-size="14" font-weight="700" text-anchor="middle" fill="#3553ff">MONITORING</text>
+    <text x="210" y="80" font-size="14" font-weight="700" text-anchor="middle" fill="#c94a12">MONITORING</text>
     <text x="210" y="99" font-size="10" text-anchor="middle" opacity="0.85">an activity you perform</text>
     <text x="590" y="80" font-size="14" font-weight="700" text-anchor="middle" fill="#7c5cff">OBSERVABILITY</text>
     <text x="590" y="99" font-size="10" text-anchor="middle" opacity="0.85">a property your system has</text>
@@ -130,18 +130,18 @@ Telemetry comes in three shapes. They are not three competing products — they 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 430" width="100%" style="max-width:820px" role="img" aria-label="The three pillars of observability: metrics are cheap aggregate numbers answering whether something is wrong, logs are detailed discrete events answering what exactly happened, traces follow one request across services answering where the time went.">
   <text x="430" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">The three pillars — three trade-offs between detail and cost</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="24" y="46" width="264" height="300" rx="14" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+    <rect x="24" y="46" width="264" height="300" rx="14" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     <rect x="298" y="46" width="264" height="300" rx="14" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
     <rect x="572" y="46" width="264" height="300" rx="14" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
-    <line x1="44" y1="146" x2="268" y2="146" stroke="#3553ff" stroke-opacity="0.4" stroke-width="1.3"/>
+    <line x1="44" y1="146" x2="268" y2="146" stroke="#c94a12" stroke-opacity="0.4" stroke-width="1.3"/>
     <line x1="318" y1="146" x2="542" y2="146" stroke="#0fa07f" stroke-opacity="0.4" stroke-width="1.3"/>
     <line x1="592" y1="146" x2="816" y2="146" stroke="#e0930f" stroke-opacity="0.4" stroke-width="1.3"/>
-    <line x1="44" y1="262" x2="268" y2="262" stroke="#3553ff" stroke-opacity="0.3" stroke-width="1.1" stroke-dasharray="4 4"/>
+    <line x1="44" y1="262" x2="268" y2="262" stroke="#c94a12" stroke-opacity="0.3" stroke-width="1.1" stroke-dasharray="4 4"/>
     <line x1="318" y1="262" x2="542" y2="262" stroke="#0fa07f" stroke-opacity="0.3" stroke-width="1.1" stroke-dasharray="4 4"/>
     <line x1="592" y1="262" x2="816" y2="262" stroke="#e0930f" stroke-opacity="0.3" stroke-width="1.1" stroke-dasharray="4 4"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="156" y="76" font-size="14" font-weight="700" text-anchor="middle" fill="#3553ff">METRICS</text>
+    <text x="156" y="76" font-size="14" font-weight="700" text-anchor="middle" fill="#c94a12">METRICS</text>
     <text x="156" y="96" font-size="10" text-anchor="middle" opacity="0.85">numbers over time</text>
     <text x="156" y="123" font-size="11.5" text-anchor="middle" font-weight="700">"Is something wrong?"</text>
     <text x="44" y="170" font-size="10" opacity="0.9">A count or measurement,</text>
@@ -209,13 +209,13 @@ Three separate piles of data are three separate haystacks. What turns them into 
     <path d="M642 84 L 700 84" marker-end="url(#obs-a2)"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="34" y="62" width="136" height="44" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="34" y="62" width="136" height="44" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="248" y="62" width="158" height="44" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
     <rect x="484" y="62" width="158" height="44" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
     <rect x="702" y="62" width="84" height="44" rx="9" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.6"/>
     <rect x="34" y="176" width="228" height="112" rx="11" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
     <rect x="296" y="176" width="228" height="112" rx="11" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
-    <rect x="558" y="176" width="228" height="112" rx="11" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="558" y="176" width="228" height="112" rx="11" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
   </g>
   <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 5" opacity="0.65">
     <path d="M102 108 L 102 172" marker-end="url(#obs-a2)"/>
@@ -241,7 +241,7 @@ Three separate piles of data are three separate haystacks. What turns them into 
     <text x="310" y="242" font-size="9" opacity="0.9">and nest by parent span</text>
     <text x="310" y="266" font-size="9" opacity="0.75">→ the waterfall of where</text>
     <text x="310" y="279" font-size="9" opacity="0.75">   the 4.2 seconds went</text>
-    <text x="672" y="202" font-size="11.5" text-anchor="middle" font-weight="700" fill="#3553ff">METRICS</text>
+    <text x="672" y="202" font-size="11.5" text-anchor="middle" font-weight="700" fill="#c94a12">METRICS</text>
     <text x="572" y="226" font-size="9" opacity="0.9">aggregate — no ID inside,</text>
     <text x="572" y="242" font-size="9" opacity="0.9">but exemplars pin a few</text>
     <text x="572" y="266" font-size="9" opacity="0.75">→ click the spike on the</text>
@@ -271,7 +271,7 @@ The same four stages sit under every observability stack you will ever meet, whe
     <path d="M746 152 L 746 186 L 430 186 L 430 206" marker-end="url(#obs-a3)" stroke-dasharray="6 5" opacity="0.75"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="24" y="66" width="188" height="84" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="24" y="66" width="188" height="84" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="246" y="66" width="164" height="84" rx="11" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="444" y="66" width="164" height="84" rx="11" fill="#e0930f" fill-opacity="0.15" stroke="#e0930f"/>
     <rect x="642" y="66" width="194" height="84" rx="11" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>

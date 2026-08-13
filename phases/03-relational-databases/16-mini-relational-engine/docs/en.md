@@ -42,7 +42,7 @@ vertical slice through the same stack a real engine uses:
   <path d="M540.0 316 L 540 366" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l16a-ah)"/>
   </g>
   <g>
-  <rect x="288.0" y="48" width="144" height="52" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="288.0" y="48" width="144" height="52" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="256.0" y="132" width="208" height="70" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>
   <rect x="91.0" y="258" width="186" height="58" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="450.5" y="258" width="179" height="58" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
@@ -91,7 +91,7 @@ Trace a single committed `put` and you can see every lesson doing its job in seq
   <path d="M871.5 98.0 L 901.5 98.0" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l16b-ah)"/>
   </g>
   <g>
-  <rect x="18.5" y="65.0" width="144" height="66" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="18.5" y="65.0" width="144" height="66" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="192.5" y="65.0" width="151" height="66" rx="9" fill="#7f7f7f" fill-opacity="0.14" stroke="#7f7f7f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="373.5" y="65.0" width="130" height="66" rx="9" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2" stroke-linejoin="round"/>
   <rect x="533.5" y="65.0" width="172" height="66" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>

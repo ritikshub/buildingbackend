@@ -40,7 +40,7 @@ A **session** is server-side state representing one authenticated period for one
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Only the opaque ID travels; the data stays on the server</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="30" y="58" font-size="11.5" font-weight="700" fill="#3553ff">① LOGIN</text>
+    <text x="30" y="58" font-size="11.5" font-weight="700" fill="#c94a12">① LOGIN</text>
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
       <rect x="30" y="68" width="130" height="40" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
       <rect x="250" y="64" width="200" height="48" rx="9" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/>
@@ -57,10 +57,10 @@ A **session** is server-side state representing one authenticated period for one
     <text x="705" y="96" font-size="9" text-anchor="middle">roles, csrf, login_at}</text>
     <text x="705" y="108" font-size="8" text-anchor="middle" opacity="0.7">(memory / Redis / DB)</text>
   </g>
-  <g fill="none" stroke="#3553ff" stroke-width="1.7">
+  <g fill="none" stroke="#c94a12" stroke-width="1.7">
     <path d="M540 120 L 200 120 L 200 150" marker-end="url(#l5s-ar)"/>
   </g>
-  <text x="370" y="136" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" fill="#3553ff">Set-Cookie: sid=8Kd9x… (the ID only) ↙</text>
+  <text x="370" y="136" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9" fill="#c94a12">Set-Cookie: sid=8Kd9x… (the ID only) ↙</text>
   <line x1="30" y1="172" x2="870" y2="172" stroke="currentColor" stroke-opacity="0.18" stroke-width="1"/>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="30" y="200" font-size="11.5" font-weight="700" fill="#0fa07f">② EVERY LATER REQUEST</text>
@@ -104,13 +104,13 @@ A **cookie** is the browser's mechanism for carrying the session ID: the server 
     <g fill="none" stroke-width="1.5">
       <path d="M150 72 L 150 96 L 180 96" stroke="#7c5cff"/>
       <path d="M250 72 L 250 122 L 280 122" stroke="#0fa07f"/>
-      <path d="M360 72 L 360 148 L 390 148" stroke="#3553ff"/>
+      <path d="M360 72 L 360 148 L 390 148" stroke="#c94a12"/>
       <path d="M440 72 L 440 174 L 470 174" stroke="#e0930f"/>
       <path d="M560 72 L 560 200 L 590 200" stroke="#d64545"/>
     </g>
     <text x="186" y="100" fill="#7c5cff" font-weight="700">__Host- prefix — forces Secure + Path=/ + no Domain (hardened, un-overridable by subdomains)</text>
     <text x="286" y="126" fill="#0fa07f" font-weight="700">value — 256 random bits from a CSPRNG → unguessable, opaque (encodes nothing)</text>
-    <text x="396" y="152" fill="#3553ff" font-weight="700">HttpOnly — JavaScript cannot read document.cookie → XSS can't steal the session</text>
+    <text x="396" y="152" fill="#c94a12" font-weight="700">HttpOnly — JavaScript cannot read document.cookie → XSS can't steal the session</text>
     <text x="476" y="178" fill="#e0930f" font-weight="700">Secure — sent only over HTTPS → no sniffing off the wire (sidejacking)</text>
     <text x="596" y="204" fill="#d64545" font-weight="700">SameSite=Lax — not sent on cross-site POST → mitigates CSRF (Lesson 10)</text>
   </g>

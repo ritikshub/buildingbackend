@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You are replacing your SSH-and-restart deploy script with something that survives a machine dying at 02:14. Sketching the design, where does the node-failure handling belong?",
-    "options": [
-      "A watcher subscribes to node-failure notifications; on receiving one it looks up which replicas were on that node and reschedules exactly those, with retries and a dead-letter queue for notifications it cannot process",
-      "There is no node-failure handling. A loop observes how many replicas exist, subtracts from how many were declared, and creates the difference — so a dead machine is not an error condition, it is a smaller number on the next pass. This lesson's reconciler restored full capacity in 2 ticks and contains no `except NodeDied:` anywhere",
-      "The scheduler owns it: it holds the placement decisions, so it detects the node's absence and re-runs placement for the affected replicas",
-      "A health-check daemon on each surviving node detects the missing peer via gossip and one of them elects itself to take over the orphaned work"
-    ],
-    "correct": 1,
-    "explanation": "This is the conceptual step the whole lesson turns on. Lesson 6 built observe -> diff -> act and ran it once, when a human remembered to; orchestration is the identical loop run continuously, forever, by a machine. Three things fall out of 'forever': idempotence stops being a nicety (act on 'ensure 12 exist', not 'create one', or you have 12,000 by lunchtime), convergence replaces correctness-at-a-moment, and **failure becomes an input rather than an exception**. Option 1 is the design almost everyone reaches for first, and it is the edge-triggered trap measured later in this lesson: it is only as correct as its least reliable message, and there is no path by which it recovers from a dropped one. Option 3 inverts the responsibilities — the scheduler decides *where*, the replica loop decides *how many*, and they coordinate only through shared state, never by calling each other. That decoupling is why deleting the scheduler leaves the cluster serving: new Pods just stay Pending."
-  },
-  {
     "stage": "check",
     "question": "Your reconciler consumes a reliable change stream and keeps an accurate running count, incrementing on each replica it creates and decrementing on each failure event it receives. It is well-tested and converges perfectly in every test. Under what conditions does it break, and how badly?",
     "options": [

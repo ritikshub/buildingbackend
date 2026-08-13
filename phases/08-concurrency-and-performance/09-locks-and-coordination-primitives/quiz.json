@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Eight threads share one global lock around a hot in-memory index, and the service is moved from a 4-core machine to a 16-core one. Throughput barely changes and p99 latency gets worse. What is the most likely explanation?",
-    "options": [
-      "The larger machine has slower per-core clock speeds, so each critical section takes longer to execute and the total time rises proportionally.",
-      "The critical section is a serial fraction, so Amdahl's Law caps the speedup regardless of core count; the extra cores add threads that queue for the same lock, and queueing shows up as tail latency.",
-      "Locks are implemented with spinlocks, so more cores means more threads spinning, which saturates the memory bus and slows every other instruction in the process.",
-      "The operating system's scheduler distributes threads across NUMA nodes, so the lock's cache line must be transferred between sockets on every acquire, which is the entire cost."
-    ],
-    "correct": 1,
-    "explanation": "A lock's critical section is work that must run serially, so it is exactly the 'f' in Amdahl's Law: speedup = 1/(f + (1-f)/N). In the lesson's measurement a 27.1% serial fraction caps the workload at 2.76x on eight cores and 3.7x on infinitely many. Extra cores let more threads arrive at the lock, and each one that loses is parked and rewoken, which lands in the tail. Cache-line transfer between sockets is real but is a second-order effect here, not the reason adding cores stops helping."
-  },
-  {
     "stage": "check",
     "question": "Why must a thread waiting on a condition variable recheck its predicate in a `while` loop rather than an `if`?",
     "options": [

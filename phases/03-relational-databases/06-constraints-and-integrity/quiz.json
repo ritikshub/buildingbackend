@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why is the database the right place to enforce a rule like 'order total can't be negative', rather than only the application?",
-    "options": ["The database is faster", "It's the one chokepoint every write passes through, so the rule can't be bypassed by any app, script, or manual query", "Applications can't do validation", "The database has more memory"],
-    "correct": 1,
-    "explanation": "Many doors write to your data (web, mobile, batch jobs, manual SQL). App checks protect only the doors that remember them. A database constraint is the final gate every write must pass, so the invalid state becomes impossible."
-  },
-  {
     "stage": "check",
     "question": "Two signup requests race to register the same email at the same millisecond. Why can't application-level 'is this email taken?' checking prevent a duplicate, and what can?",
     "options": ["It can prevent it if written carefully", "Between the app's check and its insert, another request can slip in; only a UNIQUE constraint, held atomically by the database, closes the gap", "You need a faster server", "Emails can't be duplicated anyway"],

@@ -94,7 +94,7 @@ Either write can fail after the other succeeds:
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 592" width="100%" style="max-width:880px" role="img" aria-label="The dual-write problem. An application handles one logical change — a product's price going from fifty dollars to forty — and must write it to two different systems. Write one updates Postgres and commits successfully. Write two indexes the same change into Elasticsearch and fails, because of a network blip or a crash. Both writes are drawn inside a dashed red boundary labelled as the transaction that does not exist: there is no shared commit and no shared rollback across two separate systems, so Postgres cannot be undone just because Elasticsearch failed. Downstream, the source of truth says forty dollars while the search index still says fifty, and a red not-equals badge sits between them. Nothing in the system holds a record that the second write was ever owed, so there is no retry and no reconciliation: the disagreement is silent and permanent.">
   <defs>
-    <marker id="p4l8a-ab" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p4l8a-ab" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p4l8a-ad" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#d64545"/></marker>
   </defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14" font-weight="700" fill="currentColor">The dual write: two systems, two writes, and no transaction around them</text>
@@ -109,13 +109,13 @@ Either write can fail after the other succeeds:
       <path d="M440 92 L440 128"/>
       <path d="M265 128 L615 128"/>
     </g>
-    <path d="M265 128 L265 156" fill="none" stroke="#3553ff" stroke-width="1.8" marker-end="url(#p4l8a-ab)"/>
+    <path d="M265 128 L265 156" fill="none" stroke="#c94a12" stroke-width="1.8" marker-end="url(#p4l8a-ab)"/>
     <path d="M615 128 L615 156" fill="none" stroke="#d64545" stroke-width="1.8" marker-end="url(#p4l8a-ad)"/>
 
-    <rect x="125" y="160" width="280" height="64" rx="9" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="265" y="182" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">1 · WRITE to Postgres</text>
+    <rect x="125" y="160" width="280" height="64" rx="9" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="265" y="182" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">1 · WRITE to Postgres</text>
     <text x="265" y="200" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">UPDATE products SET price = 40</text>
-    <text x="265" y="216" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3553ff">✓ COMMITS successfully</text>
+    <text x="265" y="216" text-anchor="middle" font-size="9.5" font-weight="700" fill="#c94a12">✓ COMMITS successfully</text>
 
     <rect x="475" y="160" width="280" height="64" rx="9" fill="#d64545" fill-opacity="0.09" stroke="#d64545" stroke-width="1.8"/>
     <text x="615" y="182" text-anchor="middle" font-size="11" font-weight="700" fill="#d64545">2 · WRITE to Elasticsearch</text>
@@ -124,14 +124,14 @@ Either write can fail after the other succeeds:
 
     <text x="440" y="242" text-anchor="middle" font-size="10.5" font-weight="700" fill="#d64545">✗ THIS BOUNDARY DOES NOT EXIST — no shared commit, no shared rollback</text>
 
-    <path d="M265 256 L265 288" fill="none" stroke="#3553ff" stroke-width="1.8" marker-end="url(#p4l8a-ab)"/>
-    <text x="278" y="277" font-size="9" fill="#3553ff">durable</text>
+    <path d="M265 256 L265 288" fill="none" stroke="#c94a12" stroke-width="1.8" marker-end="url(#p4l8a-ab)"/>
+    <text x="278" y="277" font-size="9" fill="#c94a12">durable</text>
     <path d="M615 256 L615 288" fill="none" stroke="#d64545" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#p4l8a-ad)"/>
     <text x="628" y="277" font-size="9" fill="#d64545">never arrives</text>
 
-    <path d="M170 300 L170 348 A95 13 0 0 0 360 348 L360 300" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.8"/>
-    <ellipse cx="265" cy="300" rx="95" ry="13" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="265" y="326" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Postgres</text>
+    <path d="M170 300 L170 348 A95 13 0 0 0 360 348 L360 300" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8"/>
+    <ellipse cx="265" cy="300" rx="95" ry="13" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="265" y="326" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Postgres</text>
     <text x="265" y="343" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">the system of record</text>
 
     <path d="M520 300 L520 348 A95 13 0 0 0 710 348 L710 300" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff" stroke-width="1.8"/>
@@ -139,11 +139,11 @@ Either write can fail after the other succeeds:
     <text x="615" y="326" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">Elasticsearch</text>
     <text x="615" y="343" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">unchanged since last sync</text>
 
-    <path d="M265 364 L265 390" fill="none" stroke="#3553ff" stroke-width="1.8" marker-end="url(#p4l8a-ab)"/>
+    <path d="M265 364 L265 390" fill="none" stroke="#c94a12" stroke-width="1.8" marker-end="url(#p4l8a-ab)"/>
     <path d="M615 364 L615 390" fill="none" stroke="#d64545" stroke-width="1.8" marker-end="url(#p4l8a-ad)"/>
 
-    <rect x="135" y="394" width="260" height="52" rx="9" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff" stroke-width="1.7"/>
-    <text x="265" y="417" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">source of truth: $40</text>
+    <rect x="135" y="394" width="260" height="52" rx="9" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12" stroke-width="1.7"/>
+    <text x="265" y="417" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">source of truth: $40</text>
     <text x="265" y="435" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">what the customer is charged</text>
 
     <rect x="485" y="394" width="260" height="52" rx="9" fill="#d64545" fill-opacity="0.10" stroke="#d64545" stroke-width="1.7"/>
@@ -201,8 +201,8 @@ restart; nothing is lost, because the intent to publish was committed atomically
     <path d="M265 128 L265 156" fill="none" stroke="#0fa07f" stroke-width="1.8" marker-end="url(#p4l8b-ag)"/>
     <path d="M615 128 L615 156" fill="none" stroke="#0fa07f" stroke-width="1.8" marker-end="url(#p4l8b-ag)"/>
 
-    <rect x="125" y="160" width="280" height="64" rx="9" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="265" y="182" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">1 · the business write</text>
+    <rect x="125" y="160" width="280" height="64" rx="9" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="265" y="182" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">1 · the business write</text>
     <text x="265" y="200" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">UPDATE products SET price = 40</text>
     <text x="265" y="216" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.75">the fact itself</text>
 
@@ -216,9 +216,9 @@ restart; nothing is lost, because the intent to publish was committed atomically
     <path d="M440 256 L440 272 L265 272 L265 288" fill="none" stroke="#0fa07f" stroke-width="2" marker-end="url(#p4l8b-ag)"/>
     <text x="452" y="269" font-size="9.5" font-weight="700" fill="#0fa07f">both rows land together — or not at all</text>
 
-    <path d="M170 300 L170 348 A95 13 0 0 0 360 348 L360 300" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.8"/>
-    <ellipse cx="265" cy="300" rx="95" ry="13" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="265" y="322" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">Postgres</text>
+    <path d="M170 300 L170 348 A95 13 0 0 0 360 348 L360 300" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8"/>
+    <ellipse cx="265" cy="300" rx="95" ry="13" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="265" y="322" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">Postgres</text>
     <text x="265" y="338" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">products row + outbox row,</text>
     <text x="265" y="351" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">in the same commit</text>
 

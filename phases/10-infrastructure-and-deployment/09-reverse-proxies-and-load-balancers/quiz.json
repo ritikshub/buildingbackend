@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You put a reverse proxy in front of your application. That afternoon your admin tool's IP allowlist starts returning 403 to your own office, even though nothing about the office network changed. What happened?",
-    "options": [
-      "The proxy is stripping the Authorization header, so the request arrives unauthenticated and the allowlist is a red herring",
-      "The proxy opened the connection to your app, so the app's socket peer address is now the proxy's address on every request — every client collapses to one address and the allowlist no longer matches anyone",
-      "TLS termination changed the request scheme to http, and the allowlist only permits https requests",
-      "The proxy is caching the 403 from an unrelated request and serving it to everyone"
-    ],
-    "correct": 1,
-    "explanation": "A reverse proxy terminates the client's connection and makes its own. Anything the application reads from its own socket — remote_addr, 'the client IP' — is now the proxy. Measured in this lesson: 3 clients from 3 distinct addresses all arrived at the backend with the same socket peer, so allowlists, rate limits and audit logs keyed on that value now see one client. The real address survives only in X-Forwarded-For, which is why the next question is how you parse it."
-  },
-  {
     "stage": "check",
     "question": "Your app sits behind two proxies you operate. It reads the client IP as xff.split(',')[0].strip(). A client sends its own header X-Forwarded-For: 10.0.0.1 — an address on your admin allowlist. What does your app do?",
     "options": [

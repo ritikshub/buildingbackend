@@ -88,9 +88,9 @@ How does a secrets manager (or your own database column) encrypt data without th
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
       <rect x="30" y="58" width="150" height="50" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.5"/>
-      <rect x="260" y="58" width="170" height="50" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+      <rect x="260" y="58" width="170" height="50" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
       <rect x="30" y="150" width="150" height="50" rx="9" fill="#e0930f" fill-opacity="0.12" stroke="#e0930f"/>
-      <rect x="260" y="150" width="170" height="50" rx="9" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-opacity="0.7"/>
+      <rect x="260" y="150" width="170" height="50" rx="9" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-opacity="0.7"/>
       <rect x="560" y="98" width="310" height="120" rx="11" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f"/>
     </g>
     <text x="105" y="80" font-size="9.5" text-anchor="middle">data</text>
@@ -129,11 +129,11 @@ The uncomfortable premise of this whole lesson is that secrets **will** leak —
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Rotate with an overlap window — no downtime, bounded exposure</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-      <rect x="30" y="58" width="250" height="66" rx="10" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="30" y="58" width="250" height="66" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
       <rect x="325" y="58" width="250" height="66" rx="10" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff"/>
       <rect x="620" y="58" width="250" height="66" rx="10" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/>
     </g>
-    <text x="155" y="80" font-size="10.5" font-weight="700" text-anchor="middle" fill="#3553ff">① only v1</text>
+    <text x="155" y="80" font-size="10.5" font-weight="700" text-anchor="middle" fill="#c94a12">① only v1</text>
     <text x="155" y="100" font-size="8.5" text-anchor="middle">sign with v1</text>
     <text x="155" y="114" font-size="8.5" text-anchor="middle">verify with v1</text>
     <text x="450" y="80" font-size="10.5" font-weight="700" text-anchor="middle" fill="#7c5cff">② overlap (v1 + v2)</text>

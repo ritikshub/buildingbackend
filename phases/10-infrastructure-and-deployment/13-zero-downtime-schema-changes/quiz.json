@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your migration is one line: ALTER TABLE orders RENAME COLUMN ship_to TO shipping_address. It runs in microseconds. The deploy is a rolling update across 6 instances and completes in 90 seconds. What is the total damage?",
-    "options": [
-      "None — the rename is atomic and the rollout is short, so at worst a handful of requests see a transient error",
-      "Some 5xx errors during the 90-second window, which stop as soon as the last instance is on the new version and leave nothing behind",
-      "5xx errors from old code writing the old column, AND silently wrong data from old code reading it: a missing column raises on the write path but returns None on the read path, so anything that persists a read result becomes permanent corruption",
-      "Only read errors — writes are fine because the database maps the old column name to the new one for backward compatibility"
-    ],
-    "correct": 2,
-    "explanation": "Measured over 1,700 requests through the mixed fleet: 202 requests raised OperationalError (loud, self-healing) and 90 of 363 exported rows persisted a NULL address (silent, permanent). The read path in every ORM is SELECT * followed by a dictionary lookup, and a missing key yields None rather than an exception. The 5xxs stop when the rollout finishes; the 90 corrupt rows are found by reconciliation the next morning."
-  },
-  {
     "stage": "check",
     "question": "An ALTER TABLE whose own work takes 1 ms is queued behind a 3-second analytics SELECT. Ordinary SELECTs keep arriving. What happens to those ordinary SELECTs, which do not conflict with the analytics query at all?",
     "options": [

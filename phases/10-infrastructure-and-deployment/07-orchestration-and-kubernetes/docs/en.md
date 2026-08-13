@@ -61,7 +61,7 @@ Three properties fall out of "forever", and each one is worth naming:
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
     <g fill="none" stroke-width="2" stroke-linejoin="round">
-      <rect x="248" y="46" width="384" height="52" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="248" y="46" width="384" height="52" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="120" y="132" width="146" height="60" rx="10" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.6"/>
       <rect x="367" y="132" width="146" height="60" rx="10" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
       <rect x="614" y="132" width="146" height="60" rx="10" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
@@ -69,7 +69,7 @@ Three properties fall out of "forever", and each one is worth naming:
     </g>
 
     <g fill="currentColor" text-anchor="middle">
-      <text x="440" y="66" font-size="11.5" font-weight="700" fill="#3553ff">DECLARED STATE — the only thing a human writes</text>
+      <text x="440" y="66" font-size="11.5" font-weight="700" fill="#c94a12">DECLARED STATE — the only thing a human writes</text>
       <text x="440" y="86" font-size="10" opacity="0.9">web: 12 replicas &#8195; 500m cpu / 512Mi each &#8195; spread maxSkew=1</text>
       <text x="193" y="156" font-size="12" font-weight="700">1 &#183; OBSERVE</text>
       <text x="193" y="173" font-size="9" opacity="0.85">count what is really</text>
@@ -354,11 +354,11 @@ Everything above is vendor-neutral, and now it earns its vocabulary. **Kubernete
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
     <g fill="none" stroke-width="2.2" stroke-linejoin="round">
-      <rect x="330" y="140" width="220" height="76" rx="12" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+      <rect x="330" y="140" width="220" height="76" rx="12" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
       <rect x="320" y="248" width="240" height="60" rx="12" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
     </g>
     <g fill="currentColor" text-anchor="middle">
-      <text x="440" y="166" font-size="13" font-weight="700" fill="#3553ff">kube-apiserver</text>
+      <text x="440" y="166" font-size="13" font-weight="700" fill="#c94a12">kube-apiserver</text>
       <text x="440" y="184" font-size="9.5" opacity="0.9">validates, authorises, versions</text>
       <text x="440" y="199" font-size="9.5" opacity="0.9">the ONLY writer to etcd</text>
       <text x="440" y="272" font-size="12.5" font-weight="700" fill="#7c5cff">etcd</text>
@@ -407,23 +407,23 @@ Everything above is vendor-neutral, and now it earns its vocabulary. **Kubernete
     <rect x="16" y="382" width="848" height="176" rx="12" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.6"/>
     <text x="440" y="404" font-size="11.5" text-anchor="middle" font-weight="700" fill="currentColor">the object vocabulary, mapped to what you built</text>
     <g fill="currentColor" font-size="9.5">
-      <text x="34" y="426" font-weight="700" fill="#3553ff">Pod</text>
+      <text x="34" y="426" font-weight="700" fill="#c94a12">Pod</text>
       <text x="34" y="440" opacity="0.9">one Replica: co-scheduled</text>
       <text x="34" y="452" opacity="0.9">containers, one IP, one fate</text>
-      <text x="34" y="472" font-weight="700" fill="#3553ff">ReplicaSet</text>
+      <text x="34" y="472" font-weight="700" fill="#c94a12">ReplicaSet</text>
       <text x="34" y="486" opacity="0.9">the loop in section 2:</text>
       <text x="34" y="498" opacity="0.9">keep N Pods existing</text>
-      <text x="34" y="518" font-weight="700" fill="#3553ff">Deployment</text>
+      <text x="34" y="518" font-weight="700" fill="#c94a12">Deployment</text>
       <text x="34" y="532" opacity="0.9">a loop over ReplicaSets;</text>
       <text x="34" y="544" opacity="0.9">rolling updates live here</text>
 
-      <text x="242" y="426" font-weight="700" fill="#3553ff">StatefulSet</text>
+      <text x="242" y="426" font-weight="700" fill="#c94a12">StatefulSet</text>
       <text x="242" y="440" opacity="0.9">stable identity + its own</text>
       <text x="242" y="452" opacity="0.9">volume, ordered rollout</text>
-      <text x="242" y="472" font-weight="700" fill="#3553ff">DaemonSet</text>
+      <text x="242" y="472" font-weight="700" fill="#c94a12">DaemonSet</text>
       <text x="242" y="486" opacity="0.9">one Pod per node, not N</text>
       <text x="242" y="498" opacity="0.9">total: agents and log shippers</text>
-      <text x="242" y="518" font-weight="700" fill="#3553ff">Job / CronJob</text>
+      <text x="242" y="518" font-weight="700" fill="#c94a12">Job / CronJob</text>
       <text x="242" y="532" opacity="0.9">run to COMPLETION, then</text>
       <text x="242" y="544" opacity="0.9">stop. On a schedule.</text>
 

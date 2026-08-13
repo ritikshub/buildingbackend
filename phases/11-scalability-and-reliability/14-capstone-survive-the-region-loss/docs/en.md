@@ -57,7 +57,7 @@ Every technique in this phase sits at a level, and each level assumes the one be
     <path d="M14 412 L14 62" fill="none" stroke="currentColor" stroke-width="1.4" opacity="0.5" marker-end="url(#p11-14-b1)"/>
 
     <g stroke-width="1.6" fill="none">
-      <rect x="24" y="60"  width="544" height="28" rx="6" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff"/> <rect x="24" y="92"  width="544" height="28" rx="6" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/> <rect x="24" y="124" width="544" height="28" rx="6" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
+      <rect x="24" y="60"  width="544" height="28" rx="6" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12"/> <rect x="24" y="92"  width="544" height="28" rx="6" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/> <rect x="24" y="124" width="544" height="28" rx="6" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
       <rect x="24" y="156" width="544" height="28" rx="6" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/> <rect x="24" y="188" width="544" height="28" rx="6" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/> <rect x="24" y="220" width="544" height="28" rx="6" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/>
       <rect x="24" y="252" width="544" height="28" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/> <rect x="24" y="284" width="544" height="28" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/> <rect x="24" y="316" width="544" height="28" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
       <rect x="24" y="348" width="544" height="28" rx="6" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f"/> <rect x="24" y="380" width="544" height="28" rx="6" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f"/>
@@ -76,7 +76,7 @@ Every technique in this phase sits at a level, and each level assumes the one be
     </g>
 
     <g fill="currentColor" font-size="9" text-anchor="end" opacity="0.85">
-      <text x="560" y="79" font-weight="700" fill="#3553ff">this lesson</text> <text x="560" y="111">+6.5 err-s</text> <text x="560" y="143">+36.5 err-s</text>
+      <text x="560" y="79" font-weight="700" fill="#c94a12">this lesson</text> <text x="560" y="111">+6.5 err-s</text> <text x="560" y="143">+36.5 err-s</text>
       <text x="560" y="175">+1.5 err-s</text> <text x="560" y="207" font-weight="700" fill="#d64545">+87.6 err-s</text> <text x="560" y="239">blast 29 -&gt; 60</text>
       <text x="560" y="271">RPO 20 writes</text> <text x="560" y="303">failover needs it</text> <text x="560" y="335">+0.2 / +2.4 err-s</text>
       <text x="560" y="367">sub-linear</text> <text x="560" y="399">25 req/s</text>
@@ -163,7 +163,7 @@ The same multiplication is what makes fan-out dangerous, which is Lesson 11's su
   <text x="440" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">The system under test — and the lesson that supplied every defence on it</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
-    <rect x="286" y="42" width="308" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.8"/> <text x="440" y="62" font-size="11" text-anchor="middle" fill="currentColor" font-weight="700">40M users · 60,000 req/s peak · 400 ms deadline</text>
+    <rect x="286" y="42" width="308" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.8"/> <text x="440" y="62" font-size="11" text-anchor="middle" fill="currentColor" font-weight="700">40M users · 60,000 req/s peak · 400 ms deadline</text>
 
     <rect x="230" y="88" width="420" height="42" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff" stroke-width="1.8"/> <text x="440" y="106" font-size="11.5" text-anchor="middle" fill="currentColor" font-weight="700">GSLB — health-checked global DNS</text> <text x="440" y="121" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.85">detect 15 s · TTL 60 s · 1.8% of resolvers never move (RFC 8767)</text>
     <text x="664" y="112" font-size="9.5" fill="#7c5cff" font-weight="700">L10</text>
@@ -568,7 +568,7 @@ Now the most valuable output. Re-run the identical seven-stage script with exact
       <rect x="352" y="74"  width="455" height="22" rx="3" fill="#d64545" fill-opacity="0.22" stroke="#d64545"/> <rect x="352" y="106" width="242" height="22" rx="3" fill="#d64545" fill-opacity="0.18" stroke="#d64545"/> <rect x="352" y="138" width="190" height="22" rx="3" fill="#d64545" fill-opacity="0.18" stroke="#d64545"/>
       <rect x="352" y="170" width="60"  height="22" rx="3" fill="#e0930f" fill-opacity="0.18" stroke="#e0930f"/> <rect x="352" y="202" width="34"  height="22" rx="3" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/> <rect x="352" y="234" width="12"  height="22" rx="3" fill="#7f7f7f" fill-opacity="0.16" stroke="#7f7f7f"/>
       <rect x="352" y="266" width="8"   height="22" rx="3" fill="#7f7f7f" fill-opacity="0.16" stroke="#7f7f7f"/> <rect x="352" y="298" width="3"   height="22" rx="1" fill="#7f7f7f" fill-opacity="0.16" stroke="#7f7f7f"/> <rect x="352" y="330" width="2"   height="22" rx="1" fill="#7f7f7f" fill-opacity="0.16" stroke="#7f7f7f"/>
-      <rect x="290" y="362" width="62"  height="22" rx="3" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff"/>
+      <rect x="290" y="362" width="62"  height="22" rx="3" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12"/>
     </g>
 
     <g fill="currentColor" font-size="10.5">
@@ -585,7 +585,7 @@ Now the most valuable output. Re-run the identical seven-stage script with exact
       <text x="797" y="89" text-anchor="end" fill="#d64545">+87.6</text> <text x="602" y="121" fill="#d64545">+46.5</text> <text x="550" y="153" fill="#d64545">+36.5</text>
       <text x="420" y="185" fill="#e0930f">+11.6</text> <text x="394" y="217" fill="#e0930f">+6.5</text> <text x="372" y="249" fill="currentColor" opacity="0.8">+2.4</text>
       <text x="368" y="281" fill="currentColor" opacity="0.8">+1.5</text> <text x="362" y="313" fill="currentColor" opacity="0.8">+0.2</text> <text x="362" y="345" fill="currentColor" opacity="0.8">0.0</text>
-      <text x="282" y="377" text-anchor="end" fill="#3553ff">-12.0</text>
+      <text x="282" y="377" text-anchor="end" fill="#c94a12">-12.0</text>
     </g>
     <g fill="currentColor" font-size="10" text-anchor="end" opacity="0.9">
       <text x="856" y="89">29/60</text><text x="856" y="121">35/60</text> <text x="856" y="153" font-weight="700" fill="#d64545">60/60</text> <text x="856" y="185">29/60</text><text x="856" y="217">29/60</text><text x="856" y="249">29/60</text>
@@ -594,7 +594,7 @@ Now the most valuable output. Re-run the identical seven-stage script with exact
 
     <path d="M20 396 L860 396" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35"/>
     <g fill="currentColor" font-size="10">
-      <text x="24" y="440" font-weight="700" fill="#3553ff">Read the last row in BOTH columns.</text> <text x="256" y="440">Removing shuffle sharding raised fleet availability 90.10% -&gt; 93.21%</text> <text x="24" y="456">and took customers below 95% from 29 to 60. It does not reduce damage; it decides who receives it.</text>
+      <text x="24" y="440" font-weight="700" fill="#c94a12">Read the last row in BOTH columns.</text> <text x="256" y="440">Removing shuffle sharding raised fleet availability 90.10% -&gt; 93.21%</text> <text x="24" y="456">and took customers below 95% from 29 to 60. It does not reduce damage; it decides who receives it.</text>
     </g>
   </g>
 </svg>

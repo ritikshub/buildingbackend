@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service's health endpoint queries the database and returns 503 when the query fails. All 40 replicas share that database, and you have wired the endpoint to the liveness probe. The database has a 30-second failover. What happens?",
-    "options": [
-      "Nothing — the replicas keep serving from cache until the database returns, because liveness failures are advisory",
-      "The 40 replicas are removed from the load balancer one at a time and return automatically when the database recovers",
-      "All 40 replicas fail liveness at the same instant and are killed and restarted together, so the 30-second blip becomes a full outage with 40 simultaneous cold starts",
-      "Only the replica whose connection happened to be in use is restarted; the rest keep their connections"
-    ],
-    "correct": 2,
-    "explanation": "A liveness failure means 'kill and restart this container'. Because the dependency is shared, every replica fails at the same moment, so the orchestrator restarts the entire fleet at once — losing every warm cache and connection pool and stampeding the database that just recovered. This is why liveness must never check a dependency; the check belongs in readiness, whose consequence (removal from the load balancer) is cheap and reversible."
-  },
-  {
     "stage": "check",
     "question": "What is the defining difference between a liveness probe and a readiness probe?",
     "options": [

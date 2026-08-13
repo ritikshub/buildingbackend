@@ -42,11 +42,11 @@ in agreement.
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <!-- actor headers -->
     <g stroke-width="1.7" stroke-linejoin="round">
-      <rect x="70" y="46" width="160" height="30" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="70" y="46" width="160" height="30" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="370" y="46" width="160" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
       <rect x="670" y="46" width="160" height="30" rx="8" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
     </g>
-    <text x="150" y="66" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">App</text>
+    <text x="150" y="66" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">App</text>
     <text x="450" y="66" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0fa07f">Cache</text>
     <text x="750" y="66" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">DB</text>
     <!-- lifelines -->
@@ -151,9 +151,9 @@ Reading is the easy half. On a **write** you must decide what happens to *both* 
 
     <!-- boxes: App / Cache / DB, coloured as in the sequence above -->
     <g stroke-width="1.6" stroke-linejoin="round">
-      <rect x="108" y="86" width="94" height="28" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="403" y="86" width="94" height="28" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="698" y="86" width="94" height="28" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="108" y="86" width="94" height="28" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="403" y="86" width="94" height="28" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="698" y="86" width="94" height="28" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="30"  y="200" width="96" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
       <rect x="325" y="200" width="96" height="30" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
       <rect x="620" y="200" width="96" height="30" rx="8" fill="#0fa07f" fill-opacity="0.05" stroke="#0fa07f" stroke-opacity="0.45"/>
@@ -162,9 +162,9 @@ Reading is the easy half. On a **write** you must decide what happens to *both* 
       <rect x="774" y="200" width="96" height="30" rx="8" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
     </g>
     <g font-size="10.5" font-weight="700" text-anchor="middle">
-      <text x="155" y="105" fill="#3553ff">App</text>
-      <text x="450" y="105" fill="#3553ff">App</text>
-      <text x="745" y="105" fill="#3553ff">App</text>
+      <text x="155" y="105" fill="#c94a12">App</text>
+      <text x="450" y="105" fill="#c94a12">App</text>
+      <text x="745" y="105" fill="#c94a12">App</text>
       <text x="78"  y="220" fill="#0fa07f">Cache</text>
       <text x="373" y="220" fill="#0fa07f">Cache</text>
       <text x="668" y="220" fill="#0fa07f" opacity="0.5">Cache</text>

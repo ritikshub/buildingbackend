@@ -55,26 +55,26 @@ If there are bytes there, the kernel copies up to 4,096 of them into your buffer
   <defs>
     <marker id="l03-arr" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker>
     <marker id="l03-arrp" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
-    <marker id="l03-arrb" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="l03-arrb" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="l03-arrg" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7f7f7f"/></marker>
   </defs>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">One blocking recv(): the thread is parked, not spinning</text>
 
-    <rect x="120" y="44" width="180" height="32" rx="8" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2"/>
+    <rect x="120" y="44" width="180" height="32" rx="8" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2"/>
     <rect x="390" y="44" width="180" height="32" rx="8" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="2"/>
     <rect x="660" y="44" width="180" height="32" rx="8" fill="#7f7f7f" fill-opacity="0.14" stroke="#7f7f7f" stroke-width="2"/>
-    <text x="210" y="65" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">USER THREAD</text><text x="480" y="65" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">KERNEL</text><text x="750" y="65" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7f7f7f">NIC / PEER</text>
+    <text x="210" y="65" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">USER THREAD</text><text x="480" y="65" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">KERNEL</text><text x="750" y="65" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7f7f7f">NIC / PEER</text>
 
     <g stroke-width="1.4" stroke-dasharray="5 6" opacity="0.55">
-      <line x1="210" y1="76" x2="210" y2="408" stroke="#3553ff"/>
+      <line x1="210" y1="76" x2="210" y2="408" stroke="#c94a12"/>
       <line x1="480" y1="76" x2="480" y2="408" stroke="#7c5cff"/>
       <line x1="750" y1="76" x2="750" y2="408" stroke="#7f7f7f"/>
     </g>
 
     <text x="14" y="98" font-size="9" font-weight="700" fill="currentColor" opacity="0.6">TIME SPENT</text>
 
-    <line x1="215" y1="112" x2="472" y2="112" stroke="#3553ff" stroke-width="2" marker-end="url(#l03-arrb)"/>
+    <line x1="215" y1="112" x2="472" y2="112" stroke="#c94a12" stroke-width="2" marker-end="url(#l03-arrb)"/>
     <text x="343" y="106" text-anchor="middle" font-size="10" fill="currentColor">recv(fd, buf, 4096)</text><text x="14" y="116" font-size="9.5" fill="currentColor" opacity="0.8">~1 us</text>
 
     <rect x="388" y="124" width="188" height="30" rx="6" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f" stroke-width="1.6"/>
@@ -102,10 +102,10 @@ If there are bytes there, the kernel copies up to 4,096 of them into your buffer
     <rect x="126" y="342" width="168" height="30" rx="6" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f" stroke-width="1.6"/>
     <text x="210" y="361" text-anchor="middle" font-size="9.5" fill="currentColor">back on the run queue</text><text x="14" y="356" font-size="9.5" font-weight="700" fill="#0fa07f">16.2 us</text><text x="14" y="370" font-size="9" fill="currentColor" opacity="0.8">measured</text>
 
-    <line x1="472" y1="396" x2="218" y2="396" stroke="#3553ff" stroke-width="2" marker-end="url(#l03-arrb)"/>
-    <text x="345" y="390" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">recv() returns 4096 bytes</text><text x="14" y="400" font-size="9.5" fill="currentColor" opacity="0.8">~1 us</text>
+    <line x1="472" y1="396" x2="218" y2="396" stroke="#c94a12" stroke-width="2" marker-end="url(#l03-arrb)"/>
+    <text x="345" y="390" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">recv() returns 4096 bytes</text><text x="14" y="400" font-size="9.5" fill="currentColor" opacity="0.8">~1 us</text>
 
-    <rect x="120" y="418" width="640" height="30" rx="7" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff" stroke-width="1.4" stroke-opacity="0.5"/>
+    <rect x="120" y="418" width="640" height="30" rx="7" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12" stroke-width="1.4" stroke-opacity="0.5"/>
     <text x="440" y="437" text-anchor="middle" font-size="10" fill="currentColor">Blocking costs you a THREAD, not a CPU. 10,000 parked threads burn 0% CPU and 78 GiB of address space.</text>
 
     <text x="440" y="472" text-anchor="middle" font-size="11" fill="currentColor" opacity="0.9">The thread is not spinning — it is descheduled. That is why the bill is memory and scheduling, never cycles.</text>
@@ -219,18 +219,18 @@ They are orthogonal, and the crucial consequence is that **non-blocking is not a
     <text x="357" y="61" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">BLOCKING</text><text x="357" y="75" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">the call parks your thread until it can act</text><text x="691" y="61" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">NON-BLOCKING</text>
     <text x="691" y="75" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">the call returns right now, EAGAIN if idle</text>
 
-    <rect x="16" y="92" width="170" height="170" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.6"/>
-    <text x="101" y="152" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">SYNCHRONOUS</text><text x="101" y="176" text-anchor="middle" font-size="9" fill="currentColor">YOUR thread does</text><text x="101" y="190" text-anchor="middle" font-size="9" fill="currentColor">the kernel-to-user</text>
+    <rect x="16" y="92" width="170" height="170" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.6"/>
+    <text x="101" y="152" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">SYNCHRONOUS</text><text x="101" y="176" text-anchor="middle" font-size="9" fill="currentColor">YOUR thread does</text><text x="101" y="190" text-anchor="middle" font-size="9" fill="currentColor">the kernel-to-user</text>
     <text x="101" y="204" text-anchor="middle" font-size="9" fill="currentColor">copy, and is busy</text><text x="101" y="218" text-anchor="middle" font-size="9" fill="currentColor">while it happens</text>
 
     <rect x="16" y="274" width="170" height="170" rx="8" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff" stroke-width="1.6"/>
     <text x="101" y="334" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">ASYNCHRONOUS</text><text x="101" y="358" text-anchor="middle" font-size="9" fill="currentColor">the KERNEL does</text><text x="101" y="372" text-anchor="middle" font-size="9" fill="currentColor">the copy and tells</text>
     <text x="101" y="386" text-anchor="middle" font-size="9" fill="currentColor">you when the bytes</text><text x="101" y="400" text-anchor="middle" font-size="9" fill="currentColor">are ALREADY yours</text>
 
-    <rect x="196" y="92" width="322" height="170" rx="10" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff" stroke-width="2"/>
-    <text x="212" y="114" font-size="10.5" font-weight="700" fill="#3553ff">blocking I/O</text><text x="212" y="132" font-size="9.5" fill="currentColor">recv(fd) parks until one socket speaks.</text><text x="212" y="148" font-size="9.5" fill="currentColor">Simple; costs a thread per connection.</text>
-    <line x1="212" y1="162" x2="502" y2="162" stroke="#3553ff" stroke-width="1.2" stroke-opacity="0.4"/>
-    <text x="212" y="184" font-size="10.5" font-weight="700" fill="#3553ff">I/O multiplexing — READINESS</text><text x="212" y="202" font-size="9.5" fill="currentColor">select / poll / epoll / kqueue.</text><text x="212" y="218" font-size="9.5" fill="currentColor">One thread parks until ANY of 10,000</text>
+    <rect x="196" y="92" width="322" height="170" rx="10" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12" stroke-width="2"/>
+    <text x="212" y="114" font-size="10.5" font-weight="700" fill="#c94a12">blocking I/O</text><text x="212" y="132" font-size="9.5" fill="currentColor">recv(fd) parks until one socket speaks.</text><text x="212" y="148" font-size="9.5" fill="currentColor">Simple; costs a thread per connection.</text>
+    <line x1="212" y1="162" x2="502" y2="162" stroke="#c94a12" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="212" y="184" font-size="10.5" font-weight="700" fill="#c94a12">I/O multiplexing — READINESS</text><text x="212" y="202" font-size="9.5" fill="currentColor">select / poll / epoll / kqueue.</text><text x="212" y="218" font-size="9.5" fill="currentColor">One thread parks until ANY of 10,000</text>
     <text x="212" y="234" font-size="9.5" fill="currentColor">fds is ready — then YOU still call recv().</text><text x="212" y="252" font-size="9" font-weight="700" fill="#0fa07f">This lesson lives here.</text>
 
     <rect x="530" y="92" width="322" height="170" rx="10" fill="#e0930f" fill-opacity="0.11" stroke="#e0930f" stroke-width="2"/>
@@ -483,10 +483,10 @@ docker compose exec -T app python phases/08-concurrency-and-performance/03-block
     <text x="224" y="66" text-anchor="middle" font-size="12.5" font-weight="700" fill="#d64545">THREAD-PER-CONNECTION</text><text x="656" y="66" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0fa07f">ONE THREAD + SELECTOR</text>
 
     <g stroke-width="1.6">
-      <circle cx="48" cy="98" r="7" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <circle cx="48" cy="124" r="7" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <circle cx="48" cy="150" r="7" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <circle cx="48" cy="176" r="7" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <circle cx="48" cy="98" r="7" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <circle cx="48" cy="124" r="7" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <circle cx="48" cy="150" r="7" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <circle cx="48" cy="176" r="7" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="150" y="88" width="118" height="20" rx="5" fill="#d64545" fill-opacity="0.14" stroke="#d64545"/>
       <rect x="150" y="114" width="118" height="20" rx="5" fill="#d64545" fill-opacity="0.14" stroke="#d64545"/>
       <rect x="150" y="140" width="118" height="20" rx="5" fill="#d64545" fill-opacity="0.14" stroke="#d64545"/>
@@ -503,10 +503,10 @@ docker compose exec -T app python phases/08-concurrency-and-performance/03-block
     <text x="350" y="172" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">the call stack</text>
 
     <g stroke-width="1.6">
-      <circle cx="480" cy="98" r="7" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <circle cx="480" cy="124" r="7" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <circle cx="480" cy="150" r="7" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
-      <circle cx="480" cy="176" r="7" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <circle cx="480" cy="98" r="7" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <circle cx="480" cy="124" r="7" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <circle cx="480" cy="150" r="7" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
+      <circle cx="480" cy="176" r="7" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <rect x="586" y="88" width="112" height="98" rx="7" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
       <rect x="734" y="112" width="112" height="50" rx="7" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     </g>

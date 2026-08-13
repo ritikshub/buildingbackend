@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Eight threads each run `counter += 1` one hundred thousand times against one shared counter. What comes out, and what does the program do about it?",
-    "options": [
-      "800,000 every time — Python's Global Interpreter Lock guarantees that only one thread runs at a time, so shared-state updates cannot interleave",
-      "A number slightly below 800,000, and the interpreter emits a RuntimeWarning about concurrent modification so you can find it in the logs",
-      "A different wrong number nearly every run — the lesson's run gave 214,734, then 173,918-ish values across twenty runs with 20 distinct answers, 0 correct, and a spread of 84,955 — and the program raises nothing at all: no exception, no log line, no crash. `counter += 1` is a load, an add and a store, and any schedule where two threads load the same value silently discards one increment",
-      "800,000 in CPython but a wrong number on other interpreters, because only CPython refcounting makes integer arithmetic safe"
-    ],
-    "correct": 2,
-    "explanation": "The GIL serialises bytecode execution, which is not the same as making a multi-bytecode sequence indivisible: the interpreter can and does switch threads between the load and the store. The truly dangerous property is the silence — every increment executed without error and the final number is simply wrong, so there is no signal to alert on and nothing for a test to assert against, since the wrong value is different every run."
-  },
-  {
     "stage": "check",
     "question": "In the lesson's run, `box[0] += 1` in a tight loop across 8 threads x 100,000 lost exactly 0 updates, while the identical arithmetic written as `c.value += 1` (where `value` is a `@property`) lost 585,266. What is the actual difference?",
     "options": [

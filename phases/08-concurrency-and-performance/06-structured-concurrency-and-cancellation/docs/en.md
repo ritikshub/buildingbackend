@@ -57,10 +57,10 @@ Four independent language communities converged on the same shape within five ye
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="16" y="44" width="416" height="346" rx="12" fill="#d64545" fill-opacity="0.09" stroke="#d64545"/>
     <rect x="448" y="44" width="416" height="346" rx="12" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/>
-    <rect x="44" y="98" width="150" height="22" rx="5" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff" stroke-width="1.6"/>
-    <rect x="500" y="150" width="196" height="20" rx="5" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff" stroke-width="1.6"/>
-    <rect x="500" y="196" width="240" height="20" rx="5" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff" stroke-width="1.6"/>
-    <rect x="500" y="242" width="160" height="20" rx="5" fill="#3553ff" fill-opacity="0.18" stroke="#3553ff" stroke-width="1.6"/>
+    <rect x="44" y="98" width="150" height="22" rx="5" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12" stroke-width="1.6"/>
+    <rect x="500" y="150" width="196" height="20" rx="5" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12" stroke-width="1.6"/>
+    <rect x="500" y="196" width="240" height="20" rx="5" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12" stroke-width="1.6"/>
+    <rect x="500" y="242" width="160" height="20" rx="5" fill="#c94a12" fill-opacity="0.18" stroke="#c94a12" stroke-width="1.6"/>
     <rect x="476" y="126" width="356" height="158" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f" stroke-width="2.4"/>
   </g>
   <g fill="#d64545" fill-opacity="0.20" stroke="#d64545" stroke-width="1.6">
@@ -71,15 +71,15 @@ Four independent language communities converged on the same shape within five ye
   <g fill="none" stroke="#d64545" stroke-width="2" marker-end="url(#l06-orphan)">
     <path d="M398 160 L 420 160"/><path d="M398 222 L 420 222"/><path d="M398 284 L 420 284"/>
   </g>
-  <path d="M194 92 L 194 372" fill="none" stroke="#3553ff" stroke-width="1.8" stroke-dasharray="6 5"/>
+  <path d="M194 92 L 194 372" fill="none" stroke="#c94a12" stroke-width="1.8" stroke-dasharray="6 5"/>
   <path d="M832 126 L 832 284" fill="none" stroke="#0fa07f" stroke-width="3"/>
   <g fill="none" stroke="#0fa07f" stroke-width="1.6" marker-end="url(#l06-tick)">
     <path d="M700 160 L 818 160"/><path d="M744 206 L 818 206"/><path d="M664 252 L 818 252"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="224" y="72" font-size="12.5" font-weight="700" text-anchor="middle" fill="#d64545">UNSTRUCTURED — asyncio.create_task()</text>
-    <text x="52" y="113" font-size="9.5" font-weight="700" fill="#3553ff">handle_request()</text>
-    <text x="200" y="88" font-size="9" font-weight="700" fill="#3553ff">returns here</text>
+    <text x="52" y="113" font-size="9.5" font-weight="700" fill="#c94a12">handle_request()</text>
+    <text x="200" y="88" font-size="9" font-weight="700" fill="#c94a12">returns here</text>
     <text x="118" y="164" font-size="9" font-weight="700">reconcile_ledger()</text>
     <text x="112" y="186" font-size="8.5" opacity="0.9">raises → nobody awaited it → no log, no alert</text>
     <text x="118" y="226" font-size="9" font-weight="700">send_webhook()</text>
@@ -90,9 +90,9 @@ Four independent language communities converged on the same shape within five ye
     <text x="32" y="362" font-size="9.5" font-weight="700" fill="#d64545">no owner to keep them alive, no scope to cancel them.</text>
     <text x="656" y="72" font-size="12.5" font-weight="700" text-anchor="middle" fill="#0fa07f">STRUCTURED — async with Nursery() as n:</text>
     <text x="484" y="144" font-size="9" font-weight="700" opacity="0.85">the scope</text>
-    <text x="508" y="164" font-size="9" font-weight="700" fill="#3553ff">n.start_soon(a)</text>
-    <text x="508" y="210" font-size="9" font-weight="700" fill="#3553ff">n.start_soon(b)</text>
-    <text x="508" y="256" font-size="9" font-weight="700" fill="#3553ff">n.start_soon(c)</text>
+    <text x="508" y="164" font-size="9" font-weight="700" fill="#c94a12">n.start_soon(a)</text>
+    <text x="508" y="210" font-size="9" font-weight="700" fill="#c94a12">n.start_soon(b)</text>
+    <text x="508" y="256" font-size="9" font-weight="700" fill="#c94a12">n.start_soon(c)</text>
     <text x="840" y="200" font-size="9" font-weight="700" fill="#0fa07f" writing-mode="tb" letter-spacing="1">closing brace</text>
     <text x="464" y="316" font-size="9.5" font-weight="700" fill="#0fa07f">The box closes only when everything inside it is done.</text>
     <text x="464" y="338" font-size="8.5" opacity="0.9">On exit each child has completed, failed, or been cancelled.</text>
@@ -124,11 +124,11 @@ This is the single most misunderstood mechanism in async programming, and everyt
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 400" width="100%" style="max-width:840px" role="img" aria-label="A timeline showing that task.cancel called at 100 milliseconds does not stop a coroutine: the coroutine keeps spinning on the CPU with no await points, CancelledError is finally raised at its next await at 800 milliseconds, the finally block then runs its cleanup, and the exception propagates to the enclosing timeout scope as a TimeoutError.">
   <defs>
-    <marker id="l06-up" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="l06-up" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">cancel() does not stop a coroutine. It arms an exception.</text>
   <g fill="none" stroke-linejoin="round">
-    <rect x="130" y="76" width="702" height="22" rx="5" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff" stroke-width="1.6"/>
+    <rect x="130" y="76" width="702" height="22" rx="5" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12" stroke-width="1.6"/>
     <rect x="130" y="136" width="312" height="30" rx="5" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f" stroke-width="1.8"/>
     <rect x="442" y="136" width="312" height="30" rx="5" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f" stroke-width="1.8"/>
     <rect x="754" y="136" width="78" height="30" rx="5" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f" stroke-width="1.8"/>
@@ -137,23 +137,23 @@ This is the single most misunderstood mechanism in async programming, and everyt
   <path d="M208 72 L 208 210" fill="none" stroke="#d64545" stroke-width="2" stroke-dasharray="6 5"/>
   <path d="M754 130 L 754 176" fill="none" stroke="#d64545" stroke-width="2.4"/>
   <path d="M442 128 L 442 136" fill="none" stroke="#0fa07f" stroke-width="1.6"/>
-  <path d="M828 136 L 828 102" fill="none" stroke="#3553ff" stroke-width="1.8" marker-end="url(#l06-up)"/>
+  <path d="M828 136 L 828 102" fill="none" stroke="#c94a12" stroke-width="1.8" marker-end="url(#l06-up)"/>
   <g fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.3">
     <path d="M130 218 L 832 218"/><path d="M130 218 L 130 226"/><path d="M208 218 L 208 226"/><path d="M442 218 L 442 226"/><path d="M754 218 L 754 226"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="122" y="92" font-size="9.5" font-weight="700" text-anchor="end" fill="#3553ff">timeout scope</text>
+    <text x="122" y="92" font-size="9.5" font-weight="700" text-anchor="end" fill="#c94a12">timeout scope</text>
     <text x="122" y="150" font-size="9.5" font-weight="700" text-anchor="end" fill="#e0930f">coroutine</text>
     <text x="122" y="162" font-size="8" text-anchor="end" opacity="0.7">(on the CPU)</text>
-    <text x="140" y="91" font-size="9" font-weight="700" fill="#3553ff">async with asyncio.timeout(0.100):</text>
+    <text x="140" y="91" font-size="9" font-weight="700" fill="#c94a12">async with asyncio.timeout(0.100):</text>
     <text x="286" y="155" font-size="9.5" font-weight="700" text-anchor="middle">spin(400 ms) — no await inside</text>
     <text x="598" y="155" font-size="9.5" font-weight="700" text-anchor="middle">spin(400 ms) — no await inside</text>
     <text x="793" y="155" font-size="9" font-weight="700" text-anchor="middle" fill="#0fa07f">finally:</text>
     <text x="481" y="190" font-size="9" font-weight="700" text-anchor="middle" fill="#d64545">the cancellation gap: 700.4 ms measured</text>
     <text x="214" y="50" font-size="10" font-weight="700" fill="#d64545">t = 100 ms  the timer fires: task.cancel()</text>
     <text x="214" y="64" font-size="8.5" opacity="0.85">it marks the task and raises nothing</text>
-    <text x="830" y="50" font-size="9" font-weight="700" text-anchor="end" fill="#3553ff">the scope catches it →</text>
-    <text x="830" y="64" font-size="9" font-weight="700" text-anchor="end" fill="#3553ff">raises TimeoutError to the caller</text>
+    <text x="830" y="50" font-size="9" font-weight="700" text-anchor="end" fill="#c94a12">the scope catches it →</text>
+    <text x="830" y="64" font-size="9" font-weight="700" text-anchor="end" fill="#c94a12">raises TimeoutError to the caller</text>
     <text x="442" y="126" font-size="8.5" text-anchor="middle" fill="#0fa07f">await ①</text>
     <text x="748" y="112" font-size="9.5" font-weight="700" text-anchor="end" fill="#d64545">await ② — CancelledError raised here</text>
     <text x="748" y="126" font-size="8.5" text-anchor="end" opacity="0.85">at 800.4 ms: 8x the 100 ms deadline</text>
@@ -229,7 +229,7 @@ Now the part most codebases get wrong. A request arrives at your gateway with 50
     <rect x="231" y="302" width="420" height="26" rx="4"/>
     <rect x="374" y="332" width="420" height="26" rx="4"/>
   </g>
-  <g fill="#3553ff" fill-opacity="0.22" stroke="#3553ff" stroke-width="1.6">
+  <g fill="#c94a12" fill-opacity="0.22" stroke="#c94a12" stroke-width="1.6">
     <rect x="130" y="274" width="101" height="22" rx="4"/>
     <rect x="231" y="304" width="143" height="22" rx="4"/>
     <rect x="374" y="334" width="384" height="22" rx="4"/>
@@ -253,7 +253,7 @@ Now the part most codebases get wrong. A request arrives at your gateway with 50
     <text x="122" y="349" font-size="9.5" font-weight="700" text-anchor="end">profile</text>
     <text x="240" y="290" font-size="8.5" fill="#e0930f" font-weight="700">its own fresh 500 ms window</text>
     <text x="386" y="320" font-size="8.5" fill="#e0930f" font-weight="700">its own fresh 500 ms window</text>
-    <text x="382" y="349" font-size="8.5" font-weight="700" fill="#3553ff">profile: 450 ms of work</text>
+    <text x="382" y="349" font-size="8.5" font-weight="700" fill="#c94a12">profile: 450 ms of work</text>
     <text x="657" y="349" font-size="8.5" font-weight="700" text-anchor="middle" fill="#d64545">orphaned: 241 ms</text>
     <text x="564" y="258" font-size="9" font-weight="700" fill="#d64545">the client gives up here — 504 at 507.3 ms</text>
     <text x="32" y="382" font-size="9.5" opacity="0.95">Each hop's timer looks reasonable alone; nested they sum to 1500 ms. The client's own limit fires first, and reaches nobody.</text>

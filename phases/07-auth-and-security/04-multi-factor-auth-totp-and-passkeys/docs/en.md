@@ -65,8 +65,8 @@ Second factors are not interchangeable; they form a security ladder. Read this b
       <text x="810" y="168" font-size="8.5" font-weight="400" fill="currentColor" opacity="0.7">good</text>
     </g>
     <g>
-      <rect x="20" y="198" width="200" height="56" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-      <text x="34" y="222" fill="#3553ff">Push approval</text>
+      <rect x="20" y="198" width="200" height="56" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+      <text x="34" y="222" fill="#c94a12">Push approval</text>
       <text x="34" y="242" font-size="8.5" font-weight="400" fill="currentColor" opacity="0.75">"approve on your phone"</text>
       <text x="250" y="232" text-anchor="middle" fill="#e0930f" font-size="13">~</text>
       <text x="470" y="232" text-anchor="middle" fill="#0fa07f" font-size="16">✓</text>
@@ -164,11 +164,11 @@ The fix for phishing is to stop having a secret the user can type at all. **WebA
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">WebAuthn / passkeys — the server stores only a public key</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="30" y="60" font-size="12" font-weight="700" fill="#3553ff">① REGISTER</text>
+    <text x="30" y="60" font-size="12" font-weight="700" fill="#c94a12">① REGISTER</text>
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
       <rect x="30" y="70" width="180" height="66" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
       <rect x="360" y="70" width="230" height="66" rx="9" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
-      <rect x="690" y="70" width="180" height="66" rx="9" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="690" y="70" width="180" height="66" rx="9" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     </g>
     <g fill="none" stroke="currentColor" stroke-width="1.6">
       <path d="M210 92 L 356 92" marker-end="url(#l4w-ar)"/>
@@ -182,7 +182,7 @@ The fix for phishing is to stop having a secret the user can type at all. **WebA
       <text x="475" y="121" font-size="8" text-anchor="middle">private key → secure hardware</text>
       <text x="290" y="86" font-size="7.5" text-anchor="middle" opacity="0.7">challenge</text>
       <text x="640" y="108" font-size="7.5" text-anchor="middle" opacity="0.7">cred id + PUBLIC key</text>
-      <text x="780" y="96" font-size="9.5" text-anchor="middle" font-weight="700" fill="#3553ff">SERVER</text>
+      <text x="780" y="96" font-size="9.5" text-anchor="middle" font-weight="700" fill="#c94a12">SERVER</text>
       <text x="780" y="116" font-size="8.5" text-anchor="middle">stores public key</text>
     </g>
   </g>
@@ -192,7 +192,7 @@ The fix for phishing is to stop having a secret the user can type at all. **WebA
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
       <rect x="30" y="196" width="180" height="72" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
       <rect x="360" y="196" width="230" height="72" rx="9" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff"/>
-      <rect x="690" y="196" width="180" height="72" rx="9" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="690" y="196" width="180" height="72" rx="9" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     </g>
     <g fill="none" stroke="currentColor" stroke-width="1.6">
       <path d="M210 220 L 356 220" marker-end="url(#l4w-ar)"/>
@@ -206,7 +206,7 @@ The fix for phishing is to stop having a secret the user can type at all. **WebA
       <text x="475" y="244" font-size="8" text-anchor="middle">(biometric/PIN) → signs challenge</text>
       <text x="475" y="258" font-size="8" text-anchor="middle">with the private key</text>
       <text x="640" y="238" font-size="7.5" text-anchor="middle" opacity="0.7">signature</text>
-      <text x="780" y="222" font-size="9.5" text-anchor="middle" font-weight="700" fill="#3553ff">SERVER</text>
+      <text x="780" y="222" font-size="9.5" text-anchor="middle" font-weight="700" fill="#c94a12">SERVER</text>
       <text x="780" y="242" font-size="8.5" text-anchor="middle">verify w/ public key</text>
     </g>
   </g>

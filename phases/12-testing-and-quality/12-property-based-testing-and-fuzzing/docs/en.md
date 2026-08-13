@@ -57,8 +57,8 @@ Here is the fair comparison. Same codec, same three bugs, two suites, each bug s
     <text x="230" y="82" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e0930f">40 hand-written example tests</text>
     <text x="230" y="101" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">~120 lines · inputs chosen by a careful engineer</text>
 
-    <rect x="454" y="60" width="392" height="54" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="650" y="82" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">3 properties</text>
+    <rect x="454" y="60" width="392" height="54" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="650" y="82" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">3 properties</text>
     <text x="650" y="101" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">15 lines · inputs chosen by a generator</text>
 
     <g fill="currentColor" font-size="8.5" font-weight="700" opacity="0.62">
@@ -81,9 +81,9 @@ Here is the fair comparison. Same codec, same three bugs, two suites, each bug s
       <text x="558" y="180" fill="#0fa07f">40/40 green</text><text x="558" y="216" fill="#0fa07f">40/40 green</text><text x="558" y="252" fill="#0fa07f">40/40 green</text>
     </g>
     <g font-size="9">
-      <text x="652" y="180" font-weight="700" fill="#3553ff">survives a URL</text><text x="846" y="180" text-anchor="end" font-weight="700" fill="currentColor">case 5</text>
-      <text x="652" y="216" font-weight="700" fill="#3553ff">round-trip</text><text x="846" y="216" text-anchor="end" font-weight="700" fill="currentColor">case 4</text>
-      <text x="652" y="252" font-weight="700" fill="#3553ff">pagination complete</text><text x="846" y="252" text-anchor="end" font-weight="700" fill="currentColor">case 10</text>
+      <text x="652" y="180" font-weight="700" fill="#c94a12">survives a URL</text><text x="846" y="180" text-anchor="end" font-weight="700" fill="currentColor">case 5</text>
+      <text x="652" y="216" font-weight="700" fill="#c94a12">round-trip</text><text x="846" y="216" text-anchor="end" font-weight="700" fill="currentColor">case 4</text>
+      <text x="652" y="252" font-weight="700" fill="#c94a12">pagination complete</text><text x="846" y="252" text-anchor="end" font-weight="700" fill="currentColor">case 10</text>
     </g>
 
     <path d="M28 272 L 852 272" fill="none" stroke="currentColor" stroke-width="1.3" opacity="0.45"/>
@@ -91,8 +91,8 @@ Here is the fair comparison. Same codec, same three bugs, two suites, each bug s
     <text x="558" y="296" text-anchor="middle" font-size="15" font-weight="700" fill="#d64545">0 of 3</text>
     <text x="756" y="296" text-anchor="middle" font-size="15" font-weight="700" fill="#0fa07f">3 of 3</text>
 
-    <rect x="28" y="316" width="824" height="78" rx="9" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff" stroke-opacity="0.5" stroke-width="1.4"/>
-    <text x="42" y="336" font-size="9.5" font-weight="700" fill="#3553ff">the tie bug, shrunk by the engine in 34 evaluations — this is the whole ticket:</text>
+    <rect x="28" y="316" width="824" height="78" rx="9" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12" stroke-opacity="0.5" stroke-width="1.4"/>
+    <text x="42" y="336" font-size="9.5" font-weight="700" fill="#c94a12">the tie bug, shrunk by the engine in 34 evaluations — this is the whole ticket:</text>
     <text x="42" y="356" font-size="9.5" fill="currentColor" opacity="0.95">rows = [("", 0), ("", 1)]   page_size = 1</text>
     <text x="42" y="373" font-size="9.5" fill="currentColor" opacity="0.95">walk_pages returned [("", 0)] — expected [("", 0), ("", 1)]. One row vanished.</text>
     <text x="42" y="388" font-size="8.5" fill="currentColor" opacity="0.72">two rows, one shared sort key, page size 1. No hand-written pagination fixture looks like this.</text>
@@ -288,7 +288,7 @@ The technique is **model-based testing**: generate a *sequence* of operations, r
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">The minimal counterexample is 5 operations long — so 4 is a wall, not a slowdown</text>
 
-    <text x="222" y="56" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">sequences drawn before the first disagreement</text>
+    <text x="222" y="56" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">sequences drawn before the first disagreement</text>
     <text x="662" y="56" text-anchor="middle" font-size="11" font-weight="700" fill="#0fa07f">the counterexample, shrunk</text>
 
     <g fill="currentColor" font-size="8.5" font-weight="700" opacity="0.62">
@@ -448,7 +448,7 @@ So measure it. The same property, the same commit, **300 different seeds**, at s
       <rect x="200" y="92" width="330" height="18"/><rect x="200" y="122" width="330" height="18"/><rect x="200" y="152" width="330" height="18"/><rect x="200" y="182" width="330" height="18"/><rect x="200" y="212" width="330" height="18"/><rect x="200" y="242" width="330" height="18"/>
       <rect x="600" y="92" width="220" height="18"/><rect x="600" y="122" width="220" height="18"/><rect x="600" y="152" width="220" height="18"/><rect x="600" y="182" width="220" height="18"/><rect x="600" y="212" width="220" height="18"/><rect x="600" y="242" width="220" height="18"/>
     </g>
-    <g fill="#3553ff" fill-opacity="0.42" stroke="#3553ff" stroke-width="1.3">
+    <g fill="#c94a12" fill-opacity="0.42" stroke="#c94a12" stroke-width="1.3">
       <rect x="200" y="92" width="195" height="18"/><rect x="200" y="122" width="275" height="18"/><rect x="200" y="152" width="322" height="18"/>
     </g>
     <g fill="#0fa07f" fill-opacity="0.42" stroke="#0fa07f" stroke-width="1.3">
@@ -459,7 +459,7 @@ So measure it. The same property, the same commit, **300 different seeds**, at s
       <text x="34" y="106">5</text><text x="34" y="136">10</text><text x="34" y="166">25</text><text x="34" y="196">50</text><text x="34" y="226">100</text><text x="34" y="256">250</text>
     </g>
     <g font-size="9" font-weight="700" text-anchor="middle">
-      <text x="565" y="106" fill="#3553ff">177 · 59.0%</text><text x="565" y="136" fill="#3553ff">250 · 83.3%</text><text x="565" y="166" fill="#3553ff">293 · 97.7%</text>
+      <text x="565" y="106" fill="#c94a12">177 · 59.0%</text><text x="565" y="136" fill="#c94a12">250 · 83.3%</text><text x="565" y="166" fill="#c94a12">293 · 97.7%</text>
       <text x="565" y="196" fill="#0fa07f">300 · 100%</text><text x="565" y="226" fill="#0fa07f">300 · 100%</text><text x="565" y="256" fill="#0fa07f">300 · 100%</text>
     </g>
     <g font-size="9.5" font-weight="700" fill="#0fa07f" text-anchor="middle">

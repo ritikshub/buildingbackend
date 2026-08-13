@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You add three read replicas to a database that is 90% reads. Your write volume is unchanged. What happens to the total amount of write work performed across the whole system?",
-    "options": [
-      "It stays the same — the writes still only happen once, on the primary",
-      "It roughly quadruples — the primary plus each of the three replicas applies 100% of the writes",
-      "It falls, because the primary is now less busy and can batch writes more efficiently",
-      "It splits three ways, since each replica takes a third of the write stream"
-    ],
-    "correct": 1,
-    "explanation": "A replica is not a machine that does a share of the work — it does ALL of the write work plus a share of the reads. Every replica replays 100% of the WAL, so four nodes means four times the write work. Option A is the intuition almost everyone starts with, and it is why 'just add a replica' feels free; it is exactly true of the reads and exactly false of the writes. Option D describes sharding, which is Lesson 8 and a genuinely different mechanism. Measured in this lesson: at a 30% write ratio you need 21 machines to serve 60,000 ops/s of demand, and the system performs 438,000 ops of actual work — a 7.3x amplification."
-  },
-  {
     "stage": "check",
     "question": "Your replicas sit 12-33 ms behind and are completely healthy. A user POSTs a profile update and your server replies with a 302 redirect; the browser follows it in 12 ms and the read goes to a random replica. Roughly what fraction of these read-after-write requests return the OLD value?",
     "options": [

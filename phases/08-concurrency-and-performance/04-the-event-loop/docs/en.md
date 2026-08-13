@@ -45,7 +45,7 @@ This is the heart of the lesson, and it must be exact. Every detail below is a b
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">One iteration: five steps, two data structures, forever</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="2">
-      <rect x="40" y="60" width="342" height="48" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="40" y="60" width="342" height="48" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="40" y="124" width="342" height="48" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="40" y="188" width="342" height="48" rx="9" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
       <rect x="40" y="252" width="342" height="48" rx="9" fill="#e0930f" fill-opacity="0.13" stroke="#e0930f"/>
@@ -62,7 +62,7 @@ This is the heart of the lesson, and it must be exact. Every detail below is a b
     </g>
 
     <g fill="currentColor">
-      <text x="54" y="82" font-size="11.5" font-weight="700" fill="#3553ff">1 · compute the timeout</text>
+      <text x="54" y="82" font-size="11.5" font-weight="700" fill="#c94a12">1 · compute the timeout</text>
       <text x="54" y="98" font-size="9" opacity="0.85">ready? 0.0 · else heap[0].when - now · else None (forever)</text>
       <text x="54" y="146" font-size="11.5" font-weight="700" fill="#7c5cff">2 · selector.select(timeout)</text>
       <text x="54" y="162" font-size="9" opacity="0.85">the ONE blocking call in the whole program</text>
@@ -160,11 +160,11 @@ And the damage is invisible from where it originates. The slow request looks slo
 
     <g fill="none" stroke-width="1.6">
       <rect x="16" y="56" width="108" height="26" rx="6" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff"/>
-      <rect x="16" y="112" width="108" height="24" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="16" y="150" width="108" height="24" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="16" y="112" width="108" height="24" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="16" y="150" width="108" height="24" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="16" y="188" width="108" height="24" rx="6" fill="#d64545" fill-opacity="0.14" stroke="#d64545"/>
-      <rect x="16" y="226" width="108" height="24" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="16" y="264" width="108" height="24" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="16" y="226" width="108" height="24" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="16" y="264" width="108" height="24" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
     <g fill="currentColor" font-size="9.5">
       <text x="30" y="73" font-weight="700" fill="#7c5cff">loop thread</text>
@@ -328,11 +328,11 @@ The loop is asleep inside `select()`. A background thread finishes a job and app
 
     <g fill="none" stroke-width="2">
       <rect x="376" y="198" width="128" height="28" rx="6" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
-      <rect x="376" y="248" width="128" height="28" rx="6" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff"/>
+      <rect x="376" y="248" width="128" height="28" rx="6" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12"/>
       <line x1="440" y1="226" x2="440" y2="248" stroke="currentColor" stroke-opacity="0.55"/>
     </g>
     <g fill="currentColor" text-anchor="middle" font-size="9" font-weight="700">
-      <text x="440" y="216" fill="#e0930f">write end</text><text x="440" y="266" fill="#3553ff">read end</text>
+      <text x="440" y="216" fill="#e0930f">write end</text><text x="440" y="266" fill="#c94a12">read end</text>
     </g>
     <text x="518" y="266" font-size="8.5" fill="currentColor" opacity="0.9">registered with the selector</text>
 
@@ -353,9 +353,9 @@ The loop is asleep inside `select()`. A background thread finishes a job and app
       <text x="184" y="317" opacity="0.9">queued Handle into ready, run it</text>
     </g>
 
-    <rect x="16" y="344" width="848" height="64" rx="9" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.8"/>
+    <rect x="16" y="344" width="848" height="64" rx="9" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8"/>
     <g fill="currentColor">
-      <text x="32" y="363" font-size="10" font-weight="700" fill="#3553ff">MEASURED (Build It, section 4):</text>
+      <text x="32" y="363" font-size="10" font-weight="700" fill="#c94a12">MEASURED (Build It, section 4):</text>
       <text x="32" y="381" font-size="10.5" font-weight="700">select() calls in the whole run: 1 · time asleep: 310.6 ms · socketpair write -&gt; callback ran: 0.111 ms</text>
       <text x="32" y="399" font-size="9" opacity="0.85">Without the read end in the selector the loop would sleep on regardless — the result would sit in the queue, correct and unseen.</text>
     </g>

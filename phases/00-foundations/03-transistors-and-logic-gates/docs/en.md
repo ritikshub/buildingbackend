@@ -29,7 +29,7 @@ No voltage → no current (**off**, `0`).
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 464" width="100%" style="max-width:880px" role="img" aria-label="A transistor drawn as a real switch, in its two states side by side. In both panels the same three connections appear: a gate at the top, and an input on the left and an output on the right, with the current path running horizontally between them. The gate line comes down perpendicular to that path and ends in a flat plate above it, so the control never touches the current it controls. Left panel, gate voltage on equals 1: the gate's field closes the switch, the bar bridges the two terminals, current flows all the way from in to out, and out equals 1. Right panel, no voltage equals 0: nothing pushes the switch shut, the bar is lifted and there is a real gap between it and the far terminal, so no current flows and out equals 0. The transistor itself is identical in both panels; only the voltage on the gate differs. Underneath are the two things that make it different from a light switch: it is controlled by electricity rather than a finger, so one transistor can flip another and circuits can control themselves; and it is astonishingly small and fast, with billions fitting on a fingernail-sized chip and each switching billions of times per second.">
   <defs>
-    <marker id="p0l03a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p0l03a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">A transistor is a switch that a voltage flips — not a finger</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
@@ -45,15 +45,15 @@ No voltage → no current (**off**, `0`).
     <text x="670" y="84" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.8">the very same transistor, nothing on the gate</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
-      <rect x="150" y="94" width="160" height="32" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="590" y="94" width="160" height="32" rx="8" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.5"/>
+      <rect x="150" y="94" width="160" height="32" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="590" y="94" width="160" height="32" rx="8" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.5"/>
     </g>
-    <text x="230" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">gate (control)</text>
-    <text x="670" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff" opacity="0.65">gate (control)</text>
+    <text x="230" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">gate (control)</text>
+    <text x="670" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12" opacity="0.65">gate (control)</text>
 
-    <path d="M230 126 V156" fill="none" stroke="#3553ff" stroke-width="2.4" marker-end="url(#p0l03a-arb)"/>
-    <path d="M670 126 V156" fill="none" stroke="#3553ff" stroke-width="2.4" stroke-opacity="0.3"/>
-    <text x="243" y="142" font-size="9.5" font-weight="700" fill="#3553ff">voltage ON = 1</text>
+    <path d="M230 126 V156" fill="none" stroke="#c94a12" stroke-width="2.4" marker-end="url(#p0l03a-arb)"/>
+    <path d="M670 126 V156" fill="none" stroke="#c94a12" stroke-width="2.4" stroke-opacity="0.3"/>
+    <text x="243" y="142" font-size="9.5" font-weight="700" fill="#c94a12">voltage ON = 1</text>
     <text x="243" y="155" font-size="8" fill="currentColor" opacity="0.8">electricity, not a finger</text>
     <text x="683" y="142" font-size="9.5" font-weight="700" fill="#e0930f">no voltage = 0</text>
     <text x="683" y="155" font-size="8" fill="currentColor" opacity="0.8">nothing pushes it shut</text>
@@ -63,13 +63,13 @@ No voltage → no current (**off**, `0`).
       <rect x="602" y="158" width="136" height="76" rx="10" fill="#7c5cff" fill-opacity="0.08" stroke="#7c5cff"/>
     </g>
 
-    <path d="M190 176 H270" fill="none" stroke="#3553ff" stroke-width="4.5" stroke-linecap="round"/>
-    <path d="M630 176 H710" fill="none" stroke="#3553ff" stroke-width="4.5" stroke-linecap="round" stroke-opacity="0.35"/>
+    <path d="M190 176 H270" fill="none" stroke="#c94a12" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M630 176 H710" fill="none" stroke="#c94a12" stroke-width="4.5" stroke-linecap="round" stroke-opacity="0.35"/>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M205 184 V196"/><path d="M230 184 V196"/><path d="M255 184 V196"/>
     </g>
-    <g fill="#3553ff">
+    <g fill="#c94a12">
       <path d="M201.5 196 L208.5 196 L205 201.5 Z"/>
       <path d="M226.5 196 L233.5 196 L230 201.5 Z"/>
       <path d="M251.5 196 L258.5 196 L255 201.5 Z"/>
@@ -96,14 +96,14 @@ No voltage → no current (**off**, `0`).
     </g>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
-      <rect x="32" y="198" width="76" height="32" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="32" y="198" width="76" height="32" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
       <rect x="352" y="198" width="76" height="32" rx="8" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
-      <rect x="472" y="198" width="76" height="32" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="472" y="198" width="76" height="32" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
       <rect x="792" y="198" width="76" height="32" rx="8" fill="#e0930f" fill-opacity="0.12" stroke="#e0930f"/>
     </g>
-    <text x="70" y="219" text-anchor="middle" font-size="12" font-weight="700" fill="#3553ff">in</text>
+    <text x="70" y="219" text-anchor="middle" font-size="12" font-weight="700" fill="#c94a12">in</text>
     <text x="390" y="219" text-anchor="middle" font-size="12" font-weight="700" fill="#0fa07f">out = 1</text>
-    <text x="510" y="219" text-anchor="middle" font-size="12" font-weight="700" fill="#3553ff">in</text>
+    <text x="510" y="219" text-anchor="middle" font-size="12" font-weight="700" fill="#c94a12">in</text>
     <text x="830" y="219" text-anchor="middle" font-size="12" font-weight="700" fill="#e0930f">out = 0</text>
 
     <text x="230" y="248" text-anchor="middle" font-size="10" font-weight="700" fill="#7c5cff">TRANSISTOR — a switch made of silicon</text>
@@ -208,13 +208,13 @@ This little circuit is called a **half-adder**:
     <text x="676" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" opacity="0.85">THE TRUTH TABLE — adding two single bits</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
-      <rect x="26" y="124" width="54" height="32" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-      <rect x="26" y="248" width="54" height="32" rx="8" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="26" y="124" width="54" height="32" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+      <rect x="26" y="248" width="54" height="32" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
-    <text x="53" y="146" text-anchor="middle" font-size="14" font-weight="700" fill="#3553ff">a</text>
-    <text x="53" y="270" text-anchor="middle" font-size="14" font-weight="700" fill="#3553ff">b</text>
+    <text x="53" y="146" text-anchor="middle" font-size="14" font-weight="700" fill="#c94a12">a</text>
+    <text x="53" y="270" text-anchor="middle" font-size="14" font-weight="700" fill="#c94a12">b</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.8" stroke-linejoin="round">
+    <g fill="none" stroke="#c94a12" stroke-width="1.8" stroke-linejoin="round">
       <path d="M80 140 H104"/>
       <path d="M104 122 V250"/>
       <path d="M104 122 H210"/>
@@ -224,10 +224,10 @@ This little circuit is called a **half-adder**:
       <path d="M128 150 H210"/>
       <path d="M128 278 H210"/>
     </g>
-    <g fill="#3553ff">
+    <g fill="#c94a12">
       <circle cx="104" cy="140" r="3.4"/><circle cx="128" cy="264" r="3.4"/>
     </g>
-    <g text-anchor="middle" font-size="8" font-weight="700" fill="#3553ff" opacity="0.9">
+    <g text-anchor="middle" font-size="8" font-weight="700" fill="#c94a12" opacity="0.9">
       <text x="53" y="196">each input</text>
       <text x="53" y="207">feeds BOTH</text>
       <text x="53" y="218">gates</text>
@@ -255,7 +255,7 @@ This little circuit is called a **half-adder**:
     <text x="234" y="334" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.72">a dot = wires joined · a hop = a crossing, not a connection</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.6">
-      <rect x="492" y="82" width="140" height="164" rx="7" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff" stroke-opacity="0.45"/>
+      <rect x="492" y="82" width="140" height="164" rx="7" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12" stroke-opacity="0.45"/>
       <rect x="650" y="82" width="98" height="164" rx="7" fill="#0fa07f" fill-opacity="0.11" stroke="#0fa07f"/>
       <rect x="756" y="82" width="108" height="164" rx="7" fill="#e0930f" fill-opacity="0.11" stroke="#e0930f"/>
     </g>
@@ -265,8 +265,8 @@ This little circuit is called a **half-adder**:
     <rect x="488" y="214" width="380" height="32" rx="5" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.6"/>
 
     <g text-anchor="middle" font-size="12" font-weight="700">
-      <text x="527" y="99" fill="#3553ff">a</text>
-      <text x="597" y="99" fill="#3553ff">b</text>
+      <text x="527" y="99" fill="#c94a12">a</text>
+      <text x="597" y="99" fill="#c94a12">b</text>
       <text x="699" y="99" fill="#0fa07f">sum</text>
       <text x="810" y="99" fill="#e0930f">carry</text>
     </g>

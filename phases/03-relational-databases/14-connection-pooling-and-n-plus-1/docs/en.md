@@ -45,9 +45,9 @@ When your app connects to Postgres, several things happen before you can run a s
   </g>
   <g>
   <rect x="29.5" y="68.0" width="130" height="56" rx="9" fill="#7f7f7f" fill-opacity="0.14" stroke="#7f7f7f" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="191.5" y="68.0" width="165" height="56" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="388.5" y="68.0" width="144" height="56" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="564.5" y="68.0" width="179" height="56" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="191.5" y="68.0" width="165" height="56" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="388.5" y="68.0" width="144" height="56" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="564.5" y="68.0" width="179" height="56" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="775.5" y="68.0" width="193" height="56" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="1000.5" y="68.0" width="130" height="56" rx="9" fill="#12a05a" fill-opacity="0.14" stroke="#12a05a" stroke-width="2" stroke-linejoin="round"/>
   </g>
@@ -92,9 +92,9 @@ expensive handshake happens a handful of times at startup, not once per request.
   <path d="M428 250 Q 314.2 241.9 216 300" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l14b-ah)"/>
   </g>
   <g>
-  <rect x="48" y="78" width="150" height="46" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="48" y="146" width="150" height="46" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="38" y="220" width="176" height="56" rx="9" fill="#3553ff" fill-opacity="0.14" stroke="#3553ff" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="48" y="78" width="150" height="46" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="48" y="146" width="150" height="46" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="38" y="220" width="176" height="56" rx="9" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="2" stroke-linejoin="round"/>
   <rect x="428" y="74" width="224" height="196" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="450" y="150" width="30" height="66" rx="5" fill="#0fa07f" fill-opacity="0.22" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>
   <rect x="488" y="150" width="30" height="66" rx="5" fill="#0fa07f" fill-opacity="0.22" stroke="#0fa07f" stroke-width="2" stroke-linejoin="round"/>

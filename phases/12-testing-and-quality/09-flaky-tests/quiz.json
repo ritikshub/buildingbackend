@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your team adds `--reruns 2` to pytest because the build is red too often. A colleague objects that this could hide bugs. You reply that a real bug fails deterministically, so retries cannot hide it — they only suppress noise. How good is that reasoning?",
-    "options": [
-      "Sound. A deterministic regression fails on every attempt, so no number of retries can turn it green; retries only remove genuine noise.",
-      "Sound for the common case, and the residual risk is small because intermittent product bugs are rare compared to environmental flakes.",
-      "Unsound. Intermittent product bugs exist and retries suppress them at rate p^(R+1) — a race manifesting 3% of runs is reported on 0.0027% of builds under --reruns 2, one build in 37,037.",
-      "Unsound, but only because retries cost extra CI minutes that would be better spent fixing the underlying tests."
-    ],
-    "correct": 2,
-    "explanation": "The first option is the near-universal belief and it is true as far as it goes — a deterministic regression does fail every attempt — which is exactly why retries feel harmless. The trap is that it silently assumes every real bug is deterministic. Intermittent product bugs (races, ordering, resource contention) are precisely the ones a suite is least likely to catch by other means, and retries suppress them super-linearly: reporting drops from p to p^(R+1), so 3% becomes 0.0027%. Measured over 100 simulated days, blanket --reruns 2 left 2 of 6 genuine races completely undiscovered. The second option underrates how skewed the damage is toward the bugs you can least afford to miss. The fourth is measurably wrong in the other direction: per-test retries cost only 0.4% more executions, which is why the argument against them cannot be made on money at all."
-  },
-  {
     "stage": "check",
     "question": "A suite of 3,000 tests has a measured per-test flake rate of 0.2% — one spurious failure per test per 500 runs. What fraction of commits containing no real bug will produce a green build?",
     "options": [

@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "You have structured logs with a shared trace_id on every line, from all eight services a request touched. Why can you still not say where the 4.2 seconds went?",
-    "options": [
-      "Log lines are points in time, so a duration must be inferred by subtracting two timestamps — and timestamps from different machines are subject to clock skew, so the arithmetic is both tedious and wrong",
-      "Log lines are usually sampled, so most of the request's lines were discarded before they reached storage",
-      "Logs are stored in a search index that cannot sort by timestamp at query time",
-      "The trace_id only identifies the request at the edge; downstream services generate their own unrelated ids"
-    ],
-    "correct": 0,
-    "explanation": "A log records an instant; latency is an interval. Reconstructing intervals means pairing start and end events you may never have logged, and comparing wall clocks across machines that differ by milliseconds or more. A span solves this by recording a start AND an end on one machine, so the duration is measured by a single clock."
-  },
-  {
     "stage": "check",
     "question": "A waterfall shows a 1200 ms SERVER span whose only child is a 40 ms database call. Where is the time?",
     "options": [

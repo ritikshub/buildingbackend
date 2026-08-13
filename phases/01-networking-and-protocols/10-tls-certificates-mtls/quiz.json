@@ -1,29 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is the relationship between HTTPS and TLS?",
-    "options": [
-      "HTTPS is a faster version of HTTP that replaces TLS",
-      "HTTPS is ordinary HTTP sent inside a TLS-encrypted connection",
-      "TLS is a type of HTML used only on secure pages",
-      "They are unrelated; HTTPS uses UDP while TLS uses TCP"
-    ],
-    "correct": 1,
-    "explanation": "HTTPS (HTTP Secure) is just HTTP carried inside TLS. The client opens TCP to port 443, runs the TLS handshake, and then sends the same HTTP request it always would — now encrypted. TLS adds the security; the HTTP semantics are unchanged."
-  },
-  {
-    "stage": "pre",
-    "question": "TLS provides three guarantees. Which set is correct?",
-    "options": [
-      "Speed, compression, and caching",
-      "Confidentiality, integrity, and authentication",
-      "Reliability, ordering, and flow control",
-      "Routing, addressing, and fragmentation"
-    ],
-    "correct": 1,
-    "explanation": "TLS gives confidentiality (encryption, so eavesdroppers cannot read the data), integrity (tampering is detected), and authentication (the server proves its identity with a certificate). Reliability and ordering come from TCP underneath; TLS adds security on top."
-  },
-  {
     "stage": "check",
     "question": "Why does the TLS handshake use asymmetric (public-key) cryptography to set up a shared symmetric key, instead of just encrypting all data with public-key crypto?",
     "options": [

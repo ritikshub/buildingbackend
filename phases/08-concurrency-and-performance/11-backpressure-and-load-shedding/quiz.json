@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A service with 4 workers and 50 ms of service time (80 req/s of capacity) receives 160 req/s for two minutes. One copy has an unbounded work queue; the other bounds it at 40 items and returns 503 when full. What is the difference in what they achieve?",
-    "options": [
-      "The unbounded queue completes roughly twice as many requests, because it never turns work away — that is the whole point of buffering a burst",
-      "The bounded queue completes fewer requests but with lower latency; it is a straight throughput-for-latency trade you make deliberately",
-      "They complete exactly the same number of requests — 9,462 out of 19,423 arrivals — because capacity is capacity and no queueing policy changes it. The difference is that the unbounded run had a p99 of 61 s against a 1 s deadline, peaked at 9,957 queued requests (~82 MB), and 98% of its completed work was already past its deadline: goodput 1.3/s versus 78.8/s, a 61x gap",
-      "The unbounded queue is strictly better until memory runs out, at which point the process restarts and the queue is cleared anyway"
-    ],
-    "correct": 2,
-    "explanation": "The tempting answer treats a queue as storage that buys you capacity. It does not: throughput is set by workers times service rate, and both runs proved it by completing the identical 9,462 requests. What an unbounded queue actually buys is queueing time, which becomes latency, which crosses the caller's deadline — turning correct responses into work nobody reads. A bound does not create capacity; it stops you spending the capacity you have on requests that have already been abandoned."
-  },
-  {
     "stage": "check",
     "question": "Under 2x overload you add a deadline check at dequeue: any request whose deadline has already passed is dropped instead of executed. Goodput goes from 1.2/s to 16.5/s and the queue stops growing — but 79% of completions are still late. Why, and what fixes it?",
     "options": [

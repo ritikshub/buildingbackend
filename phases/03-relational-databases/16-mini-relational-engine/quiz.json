@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A database engine is built in layers. Which set of components forms the essential 'spine' MiniDB keeps?",
-    "options": ["A GUI, a web server, and a cache", "Durability via a write-ahead log, atomicity via transactions, and fast ordered access via a B-tree index", "Only a hash map", "A SQL parser and nothing else"],
-    "correct": 1,
-    "explanation": "MiniDB drops the SQL parser, on-disk paging, MVCC, and the planner, but keeps the spine that makes it a database rather than a dict: WAL (durability), transactions (atomicity), and a B-tree (ordered access)."
-  },
-  {
     "stage": "check",
     "question": "In what order does a committed put flow through MiniDB's layers, and why does the order matter?",
     "options": ["Apply to the index first, then log — for speed", "Log the write and commit record to the WAL and fsync FIRST, then apply to the B-tree — so a crash between the two is recovered by replaying the log", "Both happen simultaneously with no ordering", "Only the index is updated; the log is optional"],

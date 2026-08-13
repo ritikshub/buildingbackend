@@ -124,8 +124,8 @@ The suite from The Problem is worth staring at, because it is the cleanest possi
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">The whole suite, and the three numbers it produces</text>
 
-    <rect x="24" y="48" width="386" height="146" rx="9" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff" stroke-width="1.6"/>
-    <text x="40" y="68" font-size="9" font-weight="700" fill="#3553ff">one of the six tests — the other five are the same shape</text>
+    <rect x="24" y="48" width="386" height="146" rx="9" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12" stroke-width="1.6"/>
+    <text x="40" y="68" font-size="9" font-weight="700" fill="#c94a12">one of the six tests — the other five are the same shape</text>
     <g font-size="10" fill="currentColor">
       <text x="40" y="90">def test_discount_does_not_explode():</text>
       <text x="40" y="108">&#160;&#160;&#160;&#160;for qty in (-1, 5, 50, 150):</text>
@@ -355,8 +355,8 @@ Deciding whether a given mutant is equivalent reduces to deciding whether two pr
     <text x="99" y="86" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">6 operators, 48 lines</text>
 
     <path d="M174 73 L 236 73" fill="none" stroke="#7f7f7f" stroke-width="1.8" marker-end="url(#p12-13-d-n)"/>
-    <rect x="240" y="50" width="150" height="46" rx="8" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff" stroke-width="1.8"/>
-    <text x="315" y="70" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">run the suite</text>
+    <rect x="240" y="50" width="150" height="46" rx="8" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12" stroke-width="1.8"/>
+    <text x="315" y="70" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">run the suite</text>
     <text x="315" y="86" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">26 tests, once per mutant</text>
 
     <path d="M390 62 L 452 62" fill="none" stroke="#0fa07f" stroke-width="1.8" marker-end="url(#p12-13-d-g)"/>
@@ -457,12 +457,12 @@ Those four rules have a shape, and the shape is decided by cost. Mutation testin
     <text x="440" y="26" text-anchor="middle" font-size="14.5" font-weight="700" fill="currentColor">Same technique, three stages, three costs. Only one of them blocks a merge.</text>
     <text x="440" y="46" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.82">sized from the measured density: 1.46 mutants per executable line, 30 s suite, 8 workers</text>
 
-    <rect x="24" y="60" width="264" height="150" rx="10" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff" stroke-width="1.9"/>
+    <rect x="24" y="60" width="264" height="150" rx="10" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12" stroke-width="1.9"/>
     <rect x="308" y="60" width="264" height="150" rx="10" fill="#7c5cff" fill-opacity="0.11" stroke="#7c5cff" stroke-width="1.9"/>
     <rect x="592" y="60" width="264" height="150" rx="10" fill="#e0930f" fill-opacity="0.11" stroke="#e0930f" stroke-width="1.9"/>
 
     <g font-size="11" font-weight="700" text-anchor="middle">
-      <text x="156" y="82" fill="#3553ff">IN THE PULL REQUEST</text><text x="440" y="82" fill="#7c5cff">ON MAIN</text><text x="724" y="82" fill="#e0930f">NIGHTLY</text>
+      <text x="156" y="82" fill="#c94a12">IN THE PULL REQUEST</text><text x="440" y="82" fill="#7c5cff">ON MAIN</text><text x="724" y="82" fill="#e0930f">NIGHTLY</text>
     </g>
     <g font-size="9" fill="currentColor" opacity="0.92">
       <text x="40" y="104">pytest --cov=app --cov-branch</text>

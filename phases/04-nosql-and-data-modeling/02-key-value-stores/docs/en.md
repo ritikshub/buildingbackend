@@ -43,23 +43,23 @@ look inside them, cannot index a field within them, and cannot answer "find all 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 436" width="100%" style="max-width:880px" role="img" aria-label="The whole key-value model in one picture. On the left, a panel labelled THE ENTIRE API holds just three operations: PUT of a key and a value, which stores those bytes under that key; GET of a key, which hands back exactly those bytes; and DELETE of a key, which forgets it. There is no WHERE, no JOIN and no schema. An arrow leads from the API panel to the store panel on the right, which maps three keys — user colon 1042, session colon 9f3a and cart colon 1042 — each to one value. The keys are readable, but every value is drawn as a sealed grey block: rows of redacted bars behind a padlock, because the store never parses them. The store knows a key, a length and a run of bytes, and nothing more. A red band at the bottom spells out the consequence: a query like SELECT star FROM store WHERE value dot country equals DE is impossible, because there is no field, no type and no secondary index inside a value. The only way to a value is to already know its key.">
   <defs>
     <marker id="p4l2a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker>
-    <marker id="p4l2a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p4l2a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Three operations &#8212; and a value the store refuses to look inside</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
-    <rect x="30" y="48" width="300" height="250" rx="12" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.7" stroke-width="1.8"/>
-    <text x="180" y="72" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">THE ENTIRE API</text>
+    <rect x="30" y="48" width="300" height="250" rx="12" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.7" stroke-width="1.8"/>
+    <text x="180" y="72" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">THE ENTIRE API</text>
 
-    <rect x="48" y="86" width="264" height="52" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.5"/>
+    <rect x="48" y="86" width="264" height="52" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.5"/>
     <text x="180" y="110" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">PUT(key, value)</text>
     <text x="180" y="128" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.72">store these bytes under this key</text>
 
-    <rect x="48" y="148" width="264" height="52" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.5"/>
+    <rect x="48" y="148" width="264" height="52" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.5"/>
     <text x="180" y="172" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">GET(key) &#8594; value</text>
     <text x="180" y="190" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.72">hand back exactly those bytes</text>
 
-    <rect x="48" y="210" width="264" height="52" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.5"/>
+    <rect x="48" y="210" width="264" height="52" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.5"/>
     <text x="180" y="234" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">DELETE(key)</text>
     <text x="180" y="252" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.72">forget this key</text>
 
@@ -71,17 +71,17 @@ look inside them, cannot index a field within them, and cannot answer "find all 
 
     <rect x="370" y="48" width="500" height="250" rx="12" fill="#7c5cff" fill-opacity="0.05" stroke="#7c5cff" stroke-opacity="0.7" stroke-width="1.8"/>
     <text x="620" y="72" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c5cff">THE STORE &#8212; key &#8594; opaque value</text>
-    <text x="466" y="90" text-anchor="middle" font-size="8" font-weight="700" fill="#3553ff">KEY &#8212; the only way in</text>
+    <text x="466" y="90" text-anchor="middle" font-size="8" font-weight="700" fill="#c94a12">KEY &#8212; the only way in</text>
     <text x="752" y="90" text-anchor="middle" font-size="8" font-weight="700" fill="#7f7f7f">VALUE &#8212; bytes, never parsed</text>
 
-    <rect x="386" y="96" width="160" height="44" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.5"/>
-    <text x="466" y="123" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">user:1042</text>
-    <rect x="386" y="148" width="160" height="44" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.5"/>
-    <text x="466" y="175" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">session:9f3a</text>
-    <rect x="386" y="200" width="160" height="44" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.5"/>
-    <text x="466" y="227" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">cart:1042</text>
+    <rect x="386" y="96" width="160" height="44" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.5"/>
+    <text x="466" y="123" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">user:1042</text>
+    <rect x="386" y="148" width="160" height="44" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.5"/>
+    <text x="466" y="175" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">session:9f3a</text>
+    <rect x="386" y="200" width="160" height="44" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.5"/>
+    <text x="466" y="227" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">cart:1042</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M552 118 L666 118" marker-end="url(#p4l2a-arb)"/>
       <path d="M552 170 L666 170" marker-end="url(#p4l2a-arb)"/>
       <path d="M552 222 L666 222" marker-end="url(#p4l2a-arb)"/>
@@ -239,8 +239,8 @@ move, not all of them.
     <text x="266" y="380" text-anchor="end" font-size="10" font-weight="700" fill="currentColor">Node C &#183; 240&#176;</text>
     <text x="266" y="394" text-anchor="end" font-size="8" fill="currentColor" opacity="0.75">owns 120&#176; &#8594; 240&#176;</text>
 
-    <path d="M619.4 306.8 L627.4 314.8 L619.4 322.8 L611.4 314.8 Z" fill="#3553ff"/>
-    <path d="M302.8 207 L310.8 215 L302.8 223 L294.8 215 Z" fill="#3553ff"/>
+    <path d="M619.4 306.8 L627.4 314.8 L619.4 322.8 L611.4 314.8 Z" fill="#c94a12"/>
+    <path d="M302.8 207 L310.8 215 L302.8 223 L294.8 215 Z" fill="#c94a12"/>
 
     <g fill="none" stroke="#7f7f7f" stroke-width="1.4" stroke-dasharray="3 4" stroke-opacity="0.9">
       <path d="M268 213 L290 214.5" marker-end="url(#p4l2b-pt)"/>
@@ -248,13 +248,13 @@ move, not all of them.
     </g>
 
     <rect x="14" y="168" width="252" height="88" rx="10" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f" stroke-opacity="0.7" stroke-width="1.7"/>
-    <text x="28" y="192" font-size="10.5" font-weight="700" fill="#3553ff">hash('cart:77') = 300&#176;</text>
+    <text x="28" y="192" font-size="10.5" font-weight="700" fill="#c94a12">hash('cart:77') = 300&#176;</text>
     <text x="28" y="212" font-size="8.5" fill="currentColor" opacity="0.8">no node between 300&#176; and 360&#176;</text>
     <text x="28" y="230" font-size="8.5" fill="currentColor" opacity="0.8">so it wraps over the 0&#176;/360&#176; seam</text>
     <text x="28" y="249" font-size="9.5" font-weight="700" fill="#e0930f">&#8594; owned by Node A</text>
 
     <rect x="672" y="196" width="214" height="88" rx="10" fill="#0fa07f" fill-opacity="0.07" stroke="#0fa07f" stroke-opacity="0.7" stroke-width="1.7"/>
-    <text x="686" y="220" font-size="10.5" font-weight="700" fill="#3553ff">hash('user:1042') = 95&#176;</text>
+    <text x="686" y="220" font-size="10.5" font-weight="700" fill="#c94a12">hash('user:1042') = 95&#176;</text>
     <text x="686" y="240" font-size="8.5" fill="currentColor" opacity="0.8">just past the 90&#176; mark</text>
     <text x="686" y="258" font-size="8.5" fill="currentColor" opacity="0.8">next node clockwise is 120&#176;</text>
     <text x="686" y="277" font-size="9.5" font-weight="700" fill="#0fa07f">&#8594; owned by Node B</text>
@@ -295,14 +295,14 @@ hash index mapping each key to the **byte offset** of its latest record in the l
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Never edit in place &#8212; append forward, and point an index at the newest copy</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
-    <text x="450" y="54" text-anchor="middle" font-size="11.5" font-weight="700" fill="#3553ff">IN RAM &#183; hash index &#8212; key &#8594; byte offset of its LATEST record</text>
-    <rect x="40" y="64" width="820" height="88" rx="12" fill="#3553ff" fill-opacity="0.05" stroke="#3553ff" stroke-opacity="0.65" stroke-width="1.8"/>
+    <text x="450" y="54" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c94a12">IN RAM &#183; hash index &#8212; key &#8594; byte offset of its LATEST record</text>
+    <rect x="40" y="64" width="820" height="88" rx="12" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.65" stroke-width="1.8"/>
 
-    <rect x="150" y="82" width="210" height="44" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.6"/>
-    <text x="255" y="110" text-anchor="middle" font-size="12.5" font-weight="700"><tspan fill="#3553ff">user:1</tspan><tspan fill="currentColor" opacity="0.55"> &#8594; </tspan><tspan fill="#7c5cff">off 96</tspan></text>
+    <rect x="150" y="82" width="210" height="44" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.6"/>
+    <text x="255" y="110" text-anchor="middle" font-size="12.5" font-weight="700"><tspan fill="#c94a12">user:1</tspan><tspan fill="currentColor" opacity="0.55"> &#8594; </tspan><tspan fill="#7c5cff">off 96</tspan></text>
 
-    <rect x="530" y="82" width="210" height="44" rx="9" fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.6"/>
-    <text x="635" y="110" text-anchor="middle" font-size="12.5" font-weight="700"><tspan fill="#3553ff">user:2</tspan><tspan fill="currentColor" opacity="0.55"> &#8594; </tspan><tspan fill="#7c5cff">off 40</tspan></text>
+    <rect x="530" y="82" width="210" height="44" rx="9" fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.6"/>
+    <text x="635" y="110" text-anchor="middle" font-size="12.5" font-weight="700"><tspan fill="#c94a12">user:2</tspan><tspan fill="currentColor" opacity="0.55"> &#8594; </tspan><tspan fill="#7c5cff">off 40</tspan></text>
 
     <text x="54" y="142" font-size="8.5" fill="currentColor" opacity="0.7">lost on every crash</text>
     <text x="846" y="142" text-anchor="end" font-size="8.5" fill="currentColor" opacity="0.7">rebuilt by replaying the log</text>

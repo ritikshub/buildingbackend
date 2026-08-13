@@ -62,9 +62,9 @@ That is it. There is no modelling, no simulation and no assumption beyond indepe
 <g font-family="'JetBrains Mono', ui-monospace, monospace">
 <text x="440" y="48" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.85">P(a build with NO real bug comes back green) = (1 &#8722; f)&#8319;&#8195;&#183;&#8195;computed, not sampled</text>
 <text x="164" y="82" text-anchor="end" font-size="9.5" font-weight="700" fill="currentColor" opacity="0.7">per-test flake rate f</text>
-<text x="239" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">100 tests</text> <text x="361" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">300 tests</text>
-<text x="483" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">1,000 tests</text> <text x="605" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">3,000 tests</text>
-<text x="727" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#3553ff">10,000 tests</text> <text x="164" y="116" text-anchor="end" font-size="11" font-weight="700" fill="currentColor">0.01%</text>
+<text x="239" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">100 tests</text> <text x="361" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">300 tests</text>
+<text x="483" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">1,000 tests</text> <text x="605" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">3,000 tests</text>
+<text x="727" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">10,000 tests</text> <text x="164" y="116" text-anchor="end" font-size="11" font-weight="700" fill="currentColor">0.01%</text>
 <text x="164" y="126" text-anchor="end" font-size="8" fill="currentColor" opacity="0.6">1 in 10,000</text>
 <rect x="180" y="95" width="118" height="32" rx="5" fill="#0fa07f" fill-opacity="0.2" stroke="#0fa07f" stroke-width="1.1" stroke-opacity="0.55"/>
 <text x="239" y="115" text-anchor="middle" font-size="10.5" font-weight="400" fill="currentColor">99.00%</text>
@@ -205,7 +205,7 @@ The mechanism is worth naming because it explains why this creeps up on teams. A
 <defs><marker id="p12-09-a2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#d64545"/></marker></defs>
 <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">A red build stops carrying information long before anyone stops trusting it</text>
 <g font-family="'JetBrains Mono', ui-monospace, monospace">
-<text x="88" y="52" font-size="10.5" font-weight="700" fill="#3553ff">EVIDENCE IN ONE RED BUILD (n = 3,000)</text>
+<text x="88" y="52" font-size="10.5" font-weight="700" fill="#c94a12">EVIDENCE IN ONE RED BUILD (n = 3,000)</text>
 <text x="88" y="68" font-size="9.5" fill="currentColor" opacity="0.8">log&#8322; P(bug|red) / P(bug) &#8212; bits gained over the 5% prior</text>
 <path d="M88 92 L 88 288 L 468 288" fill="none" stroke="currentColor" stroke-width="1.5"/> <path d="M83 288.0 L 468 288.0" fill="none" stroke="currentColor" stroke-width="1" opacity="0.16"/>
 <text x="78" y="291.5" text-anchor="end" font-size="9" fill="currentColor" opacity="0.75">0</text> <path d="M83 243.5 L 468 243.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.16"/>
@@ -392,7 +392,7 @@ Retries do not reduce the *rate* at which a race occurs. They reduce the rate at
 <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">A retried flake and a retried race look identical. Only one of them is yours.</text>
 <g font-family="'JetBrains Mono', ui-monospace, monospace">
 <text x="440" y="48" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.85">400 tests &#183; 14 environmental flakes + 6 genuine product races &#183; 600 builds = 100 days &#183; measured</text>
-<rect x="40" y="64" width="262" height="150" rx="10" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-width="1.8"/> <text x="54" y="86" font-size="11.5" font-weight="700" fill="#3553ff">A  no retries</text>
+<rect x="40" y="64" width="262" height="150" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8"/> <text x="54" y="86" font-size="11.5" font-weight="700" fill="#c94a12">A  no retries</text>
 <text x="54" y="106" font-size="9" fill="currentColor" opacity="0.7">green on a clean commit</text> <text x="288" y="106" font-size="11" font-weight="700" text-anchor="end" fill="currentColor">35.2%</text>
 <text x="54" y="122" font-size="9" fill="currentColor" opacity="0.7">builds red</text> <text x="288" y="122" font-size="10" text-anchor="end" fill="currentColor">70.2%</text>
 <text x="54" y="138" font-size="9" fill="currentColor" opacity="0.7">P(investigate) at day 100</text> <text x="288" y="138" font-size="10" text-anchor="end" fill="currentColor">7.4%</text>
@@ -431,23 +431,23 @@ Retries do not reduce the *rate* at which a race occurs. They reduce the rate at
 <circle cx="776" cy="186" r="9" fill="#0fa07f" fill-opacity="0.30" stroke="#0fa07f" stroke-width="2"/> <path d="M771.8 186.4 L 774.8 189.6 L 780.4 182.4" fill="none" stroke="#0fa07f" stroke-width="2.1" stroke-linecap="round"/>
 <circle cx="814" cy="186" r="9" fill="#0fa07f" fill-opacity="0.30" stroke="#0fa07f" stroke-width="2"/> <path d="M809.8 186.4 L 812.8 189.6 L 818.4 182.4" fill="none" stroke="#0fa07f" stroke-width="2.1" stroke-linecap="round"/>
 <text x="731" y="208" text-anchor="middle" font-size="9.5" font-weight="700" fill="#0fa07f">6 found, none hidden</text>
-<text x="40" y="238" font-size="10.5" font-weight="700" fill="#3553ff">DAYS FROM MERGE TO SOMEBODY OPENING IT</text> <text x="696" y="238" font-size="9" fill="currentColor" opacity="0.7">never found</text>
+<text x="40" y="238" font-size="10.5" font-weight="700" fill="#c94a12">DAYS FROM MERGE TO SOMEBODY OPENING IT</text> <text x="696" y="238" font-size="9" fill="currentColor" opacity="0.7">never found</text>
 <path d="M128 246 L 128 430" fill="none" stroke="currentColor" stroke-width="1" opacity="0.15"/> <text x="128" y="446" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.7">0 d</text>
 <path d="M268 246 L 268 430" fill="none" stroke="currentColor" stroke-width="1" opacity="0.15"/> <text x="268" y="446" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.7">20 d</text>
 <path d="M408 246 L 408 430" fill="none" stroke="currentColor" stroke-width="1" opacity="0.15"/> <text x="408" y="446" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.7">40 d</text>
 <path d="M548 246 L 548 430" fill="none" stroke="currentColor" stroke-width="1" opacity="0.15"/> <text x="548" y="446" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.7">60 d</text>
 <path d="M688 246 L 688 430" fill="none" stroke="currentColor" stroke-width="1" opacity="0.15"/> <text x="688" y="446" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.7">80 d</text>
-<text x="32" y="269" font-size="10" fill="currentColor" opacity="0.9">race @ 35%</text> <rect x="128" y="253" width="11.9" height="6" rx="3" fill="#3553ff" fill-opacity="0.85"/>
+<text x="32" y="269" font-size="10" fill="currentColor" opacity="0.9">race @ 35%</text> <rect x="128" y="253" width="11.9" height="6" rx="3" fill="#c94a12" fill-opacity="0.85"/>
 <rect x="128" y="261" width="10.5" height="6" rx="3" fill="#d64545" fill-opacity="0.85"/> <rect x="128" y="269" width="3.0" height="6" rx="3" fill="#0fa07f" fill-opacity="0.85"/>
-<text x="32" y="299" font-size="10" fill="currentColor" opacity="0.9">race @ 22%</text> <rect x="128" y="283" width="18.9" height="6" rx="3" fill="#3553ff" fill-opacity="0.85"/>
+<text x="32" y="299" font-size="10" fill="currentColor" opacity="0.9">race @ 22%</text> <rect x="128" y="283" width="18.9" height="6" rx="3" fill="#c94a12" fill-opacity="0.85"/>
 <rect x="128" y="291" width="537.6" height="6" rx="3" fill="#d64545" fill-opacity="0.85"/> <text x="672" y="297" font-size="8.5" font-weight="700" fill="#d64545">76.8 d</text>
 <rect x="128" y="299" width="7.0" height="6" rx="3" fill="#0fa07f" fill-opacity="0.85"/> <text x="32" y="329" font-size="10" fill="currentColor" opacity="0.9">race @ 14%</text>
-<rect x="128" y="313" width="73.5" height="6" rx="3" fill="#3553ff" fill-opacity="0.85"/> <rect x="128" y="321" width="311.5" height="6" rx="3" fill="#d64545" fill-opacity="0.85"/>
+<rect x="128" y="313" width="73.5" height="6" rx="3" fill="#c94a12" fill-opacity="0.85"/> <rect x="128" y="321" width="311.5" height="6" rx="3" fill="#d64545" fill-opacity="0.85"/>
 <text x="446" y="327" font-size="8.5" font-weight="700" fill="#d64545">44.5 d</text> <rect x="128" y="329" width="7.0" height="6" rx="3" fill="#0fa07f" fill-opacity="0.85"/>
-<text x="32" y="359" font-size="10" fill="currentColor" opacity="0.9">race @ 9%</text> <rect x="128" y="343" width="3.0" height="6" rx="3" fill="#3553ff" fill-opacity="0.85"/>
+<text x="32" y="359" font-size="10" fill="currentColor" opacity="0.9">race @ 9%</text> <rect x="128" y="343" width="3.0" height="6" rx="3" fill="#c94a12" fill-opacity="0.85"/>
 <rect x="128" y="351" width="226.1" height="6" rx="3" fill="#d64545" fill-opacity="0.85"/> <text x="360" y="357" font-size="8.5" font-weight="700" fill="#d64545">32.3 d</text>
 <rect x="128" y="359" width="16.1" height="6" rx="3" fill="#0fa07f" fill-opacity="0.85"/> <text x="32" y="389" font-size="10" fill="currentColor" opacity="0.9">race @ 6%</text>
-<rect x="128" y="373" width="282.1" height="6" rx="3" fill="#3553ff" fill-opacity="0.85"/> <text x="416" y="379" font-size="8.5" font-weight="700" fill="#3553ff">40.3 d</text>
+<rect x="128" y="373" width="282.1" height="6" rx="3" fill="#c94a12" fill-opacity="0.85"/> <text x="416" y="379" font-size="8.5" font-weight="700" fill="#c94a12">40.3 d</text>
 <rect x="128" y="381" width="560" height="6" rx="3" fill="#d64545" fill-opacity="0.14"/> <text x="696" y="387" font-size="8.5" font-weight="700" fill="#d64545">B NEVER</text>
 <rect x="128" y="389" width="11.9" height="6" rx="3" fill="#0fa07f" fill-opacity="0.85"/> <text x="32" y="419" font-size="10" fill="currentColor" opacity="0.9">race @ 3%</text>
 <rect x="128" y="403" width="560" height="6" rx="3" fill="#d64545" fill-opacity="0.14"/> <text x="696" y="409" font-size="8.5" font-weight="700" fill="#d64545">A NEVER</text>
@@ -508,7 +508,7 @@ The fix is Zeller & Hildebrandt's **ddmin** (*Simplifying and Isolating Failure-
 <text x="44" y="74" font-size="11" font-weight="700" fill="#d64545">1 &#183; HALVE AND KEEP THE RED HALF</text>
 <rect x="44" y="86" width="360" height="22" rx="4" fill="#7f7f7f" fill-opacity="0.12" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.45"/>
 <rect x="114.8" y="86" width="6" height="22" rx="2" fill="#d64545" fill-opacity="0.9"/> <rect x="253.4" y="86" width="6" height="22" rx="2" fill="#d64545" fill-opacity="0.9"/>
-<rect x="352.4" y="86" width="6" height="22" rx="2" fill="#d64545" fill-opacity="0.9"/> <path d="M224 82 L 224 116" fill="none" stroke="#3553ff" stroke-width="2" stroke-dasharray="4 3"/>
+<rect x="352.4" y="86" width="6" height="22" rx="2" fill="#d64545" fill-opacity="0.9"/> <path d="M224 82 L 224 116" fill="none" stroke="#c94a12" stroke-width="2" stroke-dasharray="4 3"/>
 <text x="44" y="130" font-size="9" fill="currentColor" opacity="0.8">tests 1-100</text> <text x="404" y="130" text-anchor="end" font-size="9" fill="currentColor" opacity="0.8">tests 101-200</text>
 <rect x="44" y="138" width="176" height="24" rx="4" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f" stroke-width="1.4"/>
 <text x="132" y="154" text-anchor="middle" font-size="9.5" font-weight="700" fill="#0fa07f">left half: PASSES</text>
@@ -526,8 +526,8 @@ The fix is Zeller & Hildebrandt's **ddmin** (*Simplifying and Isolating Failure-
 <text x="468" y="182" font-size="10.5" font-weight="700" fill="#0fa07f">Removing preserves interactions. Keeping splits them.</text>
 <text x="468" y="198" font-size="9.5" fill="currentColor" opacity="0.9">Measured over 600 trials: minimises to exactly 3 tests,</text>
 <text x="468" y="212" font-size="10.5" font-weight="700" fill="#0fa07f">100.0% of the time, median 158 oracle calls</text>
-<rect x="40" y="240" width="392" height="150" rx="10" fill="#3553ff" fill-opacity="0.08" stroke="#3553ff" stroke-width="1.8"/>
-<text x="58" y="262" font-size="10.5" font-weight="700" fill="#3553ff">SCALING &#8212; the reason ddmin wins</text> <text x="58" y="282" font-size="8.5" font-weight="700" fill="currentColor" opacity="0.7">job size n</text>
+<rect x="40" y="240" width="392" height="150" rx="10" fill="#c94a12" fill-opacity="0.08" stroke="#c94a12" stroke-width="1.8"/>
+<text x="58" y="262" font-size="10.5" font-weight="700" fill="#c94a12">SCALING &#8212; the reason ddmin wins</text> <text x="58" y="282" font-size="8.5" font-weight="700" fill="currentColor" opacity="0.7">job size n</text>
 <text x="270" y="282" font-size="8.5" font-weight="700" text-anchor="end" fill="currentColor" opacity="0.7">one-at-a-time</text>
 <text x="360" y="282" font-size="8.5" font-weight="700" text-anchor="end" fill="currentColor" opacity="0.7">ddmin</text>
 <text x="414" y="282" font-size="8.5" font-weight="700" text-anchor="end" fill="currentColor" opacity="0.7">ratio</text> <text x="58" y="302" font-size="10" font-weight="400" fill="currentColor">50</text>

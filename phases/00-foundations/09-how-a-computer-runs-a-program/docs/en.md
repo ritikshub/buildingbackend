@@ -29,7 +29,7 @@ copies its bytes from disk into **RAM**, then points the **CPU** at the first in
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 572" width="100%" style="max-width:880px" role="img" aria-label="Running a program, drawn as a vertical hierarchy with the disk at the bottom, RAM in the middle and the CPU at the top, so it rhymes with the memory hierarchy of lesson 6. At the bottom, the disk is a physical device holding your program as a file: a run of twelve bytes, shown in gray as 55 89 E5 8B 45 08 01 02 03 04 05 0F. Nothing is running; the file is inert. An arrow upward is labelled: the operating system LOADS it, copying those bytes from disk into RAM and then pointing the CPU at the first instruction. In RAM the very same twelve bytes are now two things. The first six are INSTRUCTIONS, what to do, drawn in blue, meaningless until the CPU decodes them. The last six are DATA, the values the program works on, drawn in green: 01 02 03 04 05 are the Try It loop's values one through five, and 0F is its total, fifteen, written in hexadecimal from lesson 1. A second arrow upward is labelled: the CPU FETCHES, reading instruction bytes out of RAM one at a time, and the file on disk is never touched again. At the top, the CPU runs the fetch, decode, execute loop you built in lesson 5: FETCH gets the next instruction from RAM, DECODE works out what the byte means, EXECUTE has the ALU, the Arithmetic Logic Unit, carry it out, and the loop repeats forever, one instruction at a time. The point is that no byte is ever transformed: the same bytes sit on disk, in RAM and in the CPU, and only their location and their role change.">
   <defs>
     <marker id="p0l09a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker>
-    <marker id="p0l09a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p0l09a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
   <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Running a program: the OS copies the same bytes disk → RAM → CPU</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
@@ -53,12 +53,12 @@ copies its bytes from disk into **RAM**, then points the **CPU** at the first in
 
     <text x="565" y="76" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" opacity="0.85">the fetch → decode → execute loop you built in lesson 5</text>
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
-      <rect x="310" y="84" width="150" height="52" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="310" y="84" width="150" height="52" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="490" y="84" width="150" height="52" rx="9" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f"/>
       <rect x="670" y="84" width="150" height="52" rx="9" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     </g>
     <g text-anchor="middle">
-      <text x="385" y="102" font-size="10.5" font-weight="700" fill="#3553ff">FETCH</text>
+      <text x="385" y="102" font-size="10.5" font-weight="700" fill="#c94a12">FETCH</text>
       <text x="385" y="116" font-size="7.8" fill="currentColor">get the next</text>
       <text x="385" y="128" font-size="7.8" fill="currentColor">instruction from RAM</text>
       <text x="565" y="102" font-size="10.5" font-weight="700" fill="currentColor">DECODE</text>
@@ -75,10 +75,10 @@ copies its bytes from disk into **RAM**, then points the **CPU** at the first in
     </g>
     <text x="565" y="174" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor" opacity="0.85">repeat — one instruction at a time, for as long as the program lives</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="2">
+    <g fill="none" stroke="#c94a12" stroke-width="2">
       <path d="M160 230 L160 198" marker-end="url(#p0l09a-arb)"/>
     </g>
-    <text x="186" y="212" font-size="10" font-weight="700" fill="#3553ff">the CPU FETCHES</text>
+    <text x="186" y="212" font-size="10" font-weight="700" fill="#c94a12">the CPU FETCHES</text>
     <text x="186" y="226" font-size="8.5" fill="currentColor" opacity="0.82">reads instruction bytes out of RAM, one at a time — the file on disk is never touched again</text>
 
     <text x="76" y="256" font-size="11.5" font-weight="700" fill="#7c5cff">RAM</text>
@@ -89,19 +89,19 @@ copies its bytes from disk into **RAM**, then points the **CPU** at the first in
     <text x="76" y="341" font-size="8.5" fill="currentColor" opacity="0.78">copied, not changed</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
-      <rect x="292" y="262" width="268" height="96" rx="9" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.85"/>
+      <rect x="292" y="262" width="268" height="96" rx="9" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.85"/>
       <rect x="570" y="262" width="268" height="96" rx="9" fill="#0fa07f" fill-opacity="0.06" stroke="#0fa07f" stroke-opacity="0.85"/>
     </g>
-    <text x="426" y="280" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">INSTRUCTIONS — what to do</text>
+    <text x="426" y="280" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">INSTRUCTIONS — what to do</text>
     <text x="704" y="280" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0fa07f">DATA — the values it works on</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.5">
-      <rect x="300" y="290" width="42" height="28" rx="5" fill="#3553ff" fill-opacity="0.14"/>
-      <rect x="342" y="290" width="42" height="28" rx="5" fill="#3553ff" fill-opacity="0.14"/>
-      <rect x="384" y="290" width="42" height="28" rx="5" fill="#3553ff" fill-opacity="0.14"/>
-      <rect x="426" y="290" width="42" height="28" rx="5" fill="#3553ff" fill-opacity="0.14"/>
-      <rect x="468" y="290" width="42" height="28" rx="5" fill="#3553ff" fill-opacity="0.14"/>
-      <rect x="510" y="290" width="42" height="28" rx="5" fill="#3553ff" fill-opacity="0.14"/>
+    <g fill="none" stroke="#c94a12" stroke-width="1.5">
+      <rect x="300" y="290" width="42" height="28" rx="5" fill="#c94a12" fill-opacity="0.14"/>
+      <rect x="342" y="290" width="42" height="28" rx="5" fill="#c94a12" fill-opacity="0.14"/>
+      <rect x="384" y="290" width="42" height="28" rx="5" fill="#c94a12" fill-opacity="0.14"/>
+      <rect x="426" y="290" width="42" height="28" rx="5" fill="#c94a12" fill-opacity="0.14"/>
+      <rect x="468" y="290" width="42" height="28" rx="5" fill="#c94a12" fill-opacity="0.14"/>
+      <rect x="510" y="290" width="42" height="28" rx="5" fill="#c94a12" fill-opacity="0.14"/>
     </g>
     <g fill="none" stroke="#0fa07f" stroke-width="1.5">
       <rect x="578" y="290" width="42" height="28" rx="5" fill="#0fa07f" fill-opacity="0.14"/>
@@ -201,7 +201,7 @@ organized into four regions — worth knowing because backend bugs live here:
       <rect x="204" y="136" width="414" height="152" rx="8" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f" stroke-dasharray="7 6"/>
       <rect x="204" y="288" width="414" height="74" rx="8" fill="#7f7f7f" fill-opacity="0.12" stroke="#7f7f7f"/>
       <rect x="204" y="362" width="414" height="62" rx="8" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
-      <rect x="204" y="424" width="414" height="62" rx="8" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+      <rect x="204" y="424" width="414" height="62" rx="8" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     </g>
 
     <text x="216" y="82" font-size="11.5" font-weight="700" fill="currentColor">STACK</text>
@@ -236,7 +236,7 @@ organized into four regions — worth knowing because backend bugs live here:
 
     <text x="216" y="446" font-size="11.5" font-weight="700" fill="currentColor">CODE</text>
     <text x="216" y="462" font-size="9" fill="currentColor" opacity="0.9">the instructions themselves — the bytes the CPU fetches</text>
-    <text x="216" y="478" font-size="8.5" font-weight="700" fill="#3553ff">FIXED SIZE — read-only, loaded from disk</text>
+    <text x="216" y="478" font-size="8.5" font-weight="700" fill="#c94a12">FIXED SIZE — read-only, loaded from disk</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.6">
       <rect x="640" y="62" width="244" height="62" rx="9" fill="#d64545" fill-opacity="0.07" stroke="#d64545" stroke-opacity="0.75"/>
@@ -250,7 +250,7 @@ organized into four regions — worth knowing because backend bugs live here:
     <text x="652" y="112" font-size="8.5" fill="currentColor" opacity="0.9">frames until the gap runs out</text>
 
     <text x="652" y="172" font-size="9.5" font-weight="700" fill="currentColor">FIXED vs GROWING</text>
-    <text x="652" y="192" font-size="8.5" font-weight="700" fill="#3553ff">CODE + DATA — fixed size,</text>
+    <text x="652" y="192" font-size="8.5" font-weight="700" fill="#c94a12">CODE + DATA — fixed size,</text>
     <text x="652" y="206" font-size="8.5" fill="currentColor" opacity="0.9">decided when the program loads</text>
     <text x="652" y="226" font-size="8.5" font-weight="700" fill="#e0930f">HEAP + STACK — grow at runtime,</text>
     <text x="652" y="240" font-size="8.5" fill="currentColor" opacity="0.9">toward each other</text>

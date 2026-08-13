@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Why can't a fast origin server alone give a distant user a fast experience?",
-    "options": ["Because servers get tired", "Because round-trip latency is bounded by the speed of light over distance — bytes spend most of the time in flight across the ocean", "Because DNS is slow", "Because the user's browser is slow"],
-    "correct": 1,
-    "explanation": "A Sydney-to-Virginia round trip is ~160 ms of pure propagation at best. No matter how fast the origin answers, the distance dominates. The fix is to stop sending requests across the planet — cache near the user."
-  },
-  {
     "stage": "check",
     "question": "What is a CDN, in one sentence?",
     "options": ["A faster type of database", "A globally distributed fleet of edge caching servers in PoPs near users, so requests hit a nearby edge instead of your distant origin", "A load balancer inside your datacenter", "A DNS provider"],

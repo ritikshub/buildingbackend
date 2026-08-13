@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is a TTL, and what problem does it solve?",
-    "options": ["A limit on cache size", "A per-entry expiry that bounds staleness — 'trust this copy for N seconds' — turning 'be right forever' into a tunable 'be right for a while'", "A way to encrypt cached data", "The time to connect to Redis"],
-    "correct": 1,
-    "explanation": "A TTL (Time To Live) expires an entry after N seconds. It converts the unsolvable problem of knowing exactly when data changes into a tunable one: how much staleness you can tolerate."
-  },
-  {
     "stage": "check",
     "question": "Expiration and eviction both remove entries. How do they differ?",
     "options": ["They're the same thing", "Expiration is time-driven (the TTL passed); eviction is memory-driven (the cache is full and must make room, stale or not)", "Expiration only affects strings", "Eviction only happens on restart"],

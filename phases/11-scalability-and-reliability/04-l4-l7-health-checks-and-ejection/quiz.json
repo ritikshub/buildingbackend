@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A load balancer's dashboard shows all 8 backends holding exactly 3 connections each. What does that tell you about how the request load is distributed?",
-    "options": [
-      "The request load is evenly distributed — equal connections means equal work",
-      "Almost nothing, because the number of requests carried by a connection varies enormously",
-      "The request load is uneven, but only if the balancer is misconfigured",
-      "Nothing can be said without knowing the balancing algorithm"
-    ],
-    "correct": 1,
-    "explanation": "Equal connection counts and equal request counts are the same thing only when connections are short and interchangeable. The measured run in this lesson split 24 connections across 8 backends perfectly — 3 each — and still produced a 22.6% / 6.8% request distribution, a 3.3x spread, because real per-connection request rates are lognormal (0.85 to 14.75 req/s here). Option A is the intuition the incident in The Problem is built on. Option D is tempting but wrong in an instructive way: the algorithm was round-robin in every configuration measured, including the one that gave a perfect 1.00x spread at L7 — so the algorithm was never the variable, the layer was."
-  },
-  {
     "stage": "check",
     "question": "You run gRPC behind a Layer 4 balancer. Autoscaling adds a new instance; it passes health checks and joins the pool. Hours later it has served zero requests. Why?",
     "options": [

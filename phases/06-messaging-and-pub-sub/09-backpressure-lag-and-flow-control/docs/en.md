@@ -83,7 +83,7 @@ Here is the skill that separates someone who can fix a lag incident from someone
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="16" y="44" width="268" height="240" rx="12" fill="#0fa07f" fill-opacity="0.09" stroke="#0fa07f"/>
     <rect x="306" y="44" width="268" height="240" rx="12" fill="#e0930f" fill-opacity="0.09" stroke="#e0930f"/>
-    <rect x="596" y="44" width="268" height="240" rx="12" fill="#3553ff" fill-opacity="0.09" stroke="#3553ff"/>
+    <rect x="596" y="44" width="268" height="240" rx="12" fill="#c94a12" fill-opacity="0.09" stroke="#c94a12"/>
     <rect x="16" y="296" width="268" height="240" rx="12" fill="#7c5cff" fill-opacity="0.09" stroke="#7c5cff"/>
     <rect x="306" y="296" width="268" height="240" rx="12" fill="#7c5cff" fill-opacity="0.09" stroke="#7c5cff"/>
     <rect x="596" y="296" width="268" height="240" rx="12" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
@@ -96,7 +96,7 @@ Here is the skill that separates someone who can fix a lag incident from someone
 
   <path d="M30 136 L 70 132 L 110 138 L 150 133 L 190 137 L 230 132 L 270 136" fill="none" stroke="#0fa07f" stroke-width="2.6"/>
   <path d="M320 148 L 560 82" fill="none" stroke="#e0930f" stroke-width="2.6"/>
-  <path d="M610 148 L 640 84 L 850 146" fill="none" stroke="#3553ff" stroke-width="2.6"/>
+  <path d="M610 148 L 640 84 L 850 146" fill="none" stroke="#c94a12" stroke-width="2.6"/>
   <path d="M30 146 L 32 90 L 74 144 L 76 90 L 118 144 L 120 90 L 162 144 L 164 90 L 206 144 L 208 90 L 250 144 L 252 108 L 270 122" fill="none" stroke="#7c5cff" stroke-width="2.4"/>
   <path d="M320 140 L 366 140 L 376 88 L 386 140 L 436 140 L 446 88 L 456 140 L 506 140 L 516 88 L 526 140 L 560 140" fill="none" stroke="#7c5cff" stroke-width="2.4"/>
   <path d="M610 148 L 706 96 L 726 90 L 850 90" fill="none" stroke="#e0930f" stroke-width="2.8"/>
@@ -120,7 +120,7 @@ Here is the skill that separates someone who can fix a lag incident from someone
     <text x="440" y="274" font-size="9.5" font-weight="700" text-anchor="middle">ACTION: add capacity NOW</text>
 
     <text x="730" y="70" font-size="11.5" font-weight="700" text-anchor="middle">SPIKE, THEN SLOW DECLINE</text>
-    <text x="730" y="182" font-size="11" font-weight="700" text-anchor="middle" fill="#3553ff">A BURST, BEING ABSORBED</text>
+    <text x="730" y="182" font-size="11" font-weight="700" text-anchor="middle" fill="#c94a12">A BURST, BEING ABSORBED</text>
     <text x="614" y="206" font-size="9">The system is working exactly</text>
     <text x="614" y="222" font-size="9">as designed. Recovery time is</text>
     <text x="614" y="238" font-size="9">excess / headroom — compute it</text>
@@ -251,8 +251,8 @@ Sooner or later λ exceeds μ and you cannot fix it in the next ten minutes. The
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="20" y="46" width="580" height="60" rx="10" fill="#0fa07f" fill-opacity="0.13" stroke="#0fa07f"/>
     <rect x="20" y="116" width="580" height="60" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
-    <rect x="20" y="186" width="580" height="60" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-    <rect x="20" y="256" width="580" height="60" rx="10" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff"/>
+    <rect x="20" y="186" width="580" height="60" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+    <rect x="20" y="256" width="580" height="60" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12"/>
     <rect x="20" y="326" width="580" height="60" rx="10" fill="#7c5cff" fill-opacity="0.12" stroke="#7c5cff"/>
     <rect x="20" y="396" width="580" height="60" rx="10" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
     <rect x="20" y="478" width="840" height="54" rx="11" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f" stroke-dasharray="7 6"/>
@@ -664,11 +664,11 @@ Six things in that output are worth more than the rest of this lesson.
     <path d="M242 100 L 242 340"/>
   </g>
 
-  <path d="M90 340 L 108 100 L 242 148 L 759 340 L 800 340" fill="none" stroke="#3553ff" stroke-width="2.8"/>
+  <path d="M90 340 L 108 100 L 242 148 L 759 340 L 800 340" fill="none" stroke="#c94a12" stroke-width="2.8"/>
   <path d="M90 340 L 108 311 L 160 240 L 242 100 L 400 178 L 600 268 L 759 340 L 800 340" fill="none" stroke="#e0930f" stroke-width="2.8"/>
-  <circle cx="108" cy="100" r="4.5" fill="#3553ff"/>
+  <circle cx="108" cy="100" r="4.5" fill="#c94a12"/>
   <circle cx="242" cy="100" r="4.5" fill="#e0930f"/>
-  <circle cx="242" cy="148" r="4" fill="none" stroke="#3553ff" stroke-width="2"/>
+  <circle cx="242" cy="148" r="4" fill="none" stroke="#c94a12" stroke-width="2"/>
 
   <g fill="none" stroke="currentColor" stroke-width="1.3" opacity="0.8">
     <path d="M270 118 L 300 118" marker-end="url(#l09-tip)" transform="rotate(180 285 118)"/>
@@ -680,10 +680,10 @@ Six things in that output are worth more than the rest of this lesson.
     <text x="108" y="358" font-size="9" text-anchor="middle" opacity="0.8">t=63</text>
     <text x="242" y="358" font-size="9" text-anchor="middle" opacity="0.8">t=85</text>
 
-    <text x="128" y="86" font-size="10.5" font-weight="700" fill="#3553ff">COUNT lag peaks 21,800</text>
+    <text x="128" y="86" font-size="10.5" font-weight="700" fill="#c94a12">COUNT lag peaks 21,800</text>
     <text x="306" y="112" font-size="10.5" font-weight="700" fill="#e0930f">TIME lag peaks 21.5s — 22s later</text>
     <text x="306" y="132" font-size="9.5" opacity="0.9">count lag is already down to 17,400 here</text>
-    <text x="470" y="212" font-size="9.5" fill="#3553ff" opacity="0.95">count lag: falling steadily at 200/s</text>
+    <text x="470" y="212" font-size="9.5" fill="#c94a12" opacity="0.95">count lag: falling steadily at 200/s</text>
     <text x="470" y="300" font-size="9.5" fill="#e0930f" opacity="0.95">time lag: the head ages 0.875s per second</text>
     <text x="470" y="316" font-size="9.5" opacity="0.8">while it is still inside the burst region</text>
 

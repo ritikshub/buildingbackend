@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your team has 214 dashboards covering every service and every machine. What does that tell you about the system's observability?",
-    "options": [
-      "The system is highly observable — 214 dashboards is far more coverage than most teams achieve",
-      "Almost nothing. Dashboards answer questions someone thought of in advance, so they serve monitoring (known unknowns) and say nothing about whether you can answer a novel question from data you already emit — and a large dashboard count is usually evidence of accretion, not coverage",
-      "It tells you the metrics backend is well provisioned, since dashboards are the main load on it",
-      "It means alerting is probably in good shape, because alerts are derived from dashboard panels"
-    ],
-    "correct": 1,
-    "explanation": "Lesson 1's distinction decides this. Dashboards make KNOWN answers fast; they cannot address unknown unknowns, which need ad-hoc querying of rich data. Worse, a count that high almost always means dashboards grew by accretion — a panel added per incident, none ever removed — so the marginal dashboard reduces the chance of finding the useful one."
-  },
-  {
     "stage": "check",
     "question": "Which PromQL expression correctly computes the 99th-percentile request duration for a service across all its instances?",
     "options": [

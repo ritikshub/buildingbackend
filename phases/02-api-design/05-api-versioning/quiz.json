@@ -1,12 +1,5 @@
 [
   {
-    "question": "Which versioning strategy is most debuggable and caches with zero Vary gymnastics?",
-    "options": ["Accept media type (application/vnd.api.v3+json)", "URI path (/v1/orders)", "Custom request header", "Query parameter (?version=2)"],
-    "correct": 1,
-    "explanation": "A path version like /v1/ is visible and greppable in logs, copy-pasteable in bug reports, routes cleanly at the gateway, and produces distinct cacheable URLs with no Vary header needed. It's the pragmatic default.",
-    "stage": "pre"
-  },
-  {
     "question": "You need to rename the response field 'amt' to 'total_amount'. What's a non-breaking rollout?",
     "options": ["Rename it and bump to /v2 immediately", "Add total_amount alongside amt, deprecate amt with Deprecation/Sunset headers, monitor usage, remove later", "Change amt's type instead", "Return both under the same name"],
     "correct": 1,

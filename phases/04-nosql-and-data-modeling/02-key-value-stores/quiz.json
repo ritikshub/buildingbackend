@@ -1,12 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "What is the defining constraint of a key-value store?",
-    "options": ["Values must be JSON", "The value is opaque — the store returns it by key but cannot index or query anything inside it", "Keys must be integers", "It can only hold one value at a time"],
-    "correct": 1,
-    "explanation": "A KV store maps a key to an opaque value (a sealed blob of bytes). The only way to reach data is by its key — there is no querying by the value's contents, no joins, no secondary lookup on fields inside the value. That single restriction is the source of all its speed and scale."
-  },
-  {
     "stage": "check",
     "question": "Why can a key-value store scale horizontally so much more easily than a relational database?",
     "options": ["It uses less memory", "It has no joins or cross-key transactions to protect, so the keyspace can be split across machines and each node's owner is computed by hashing the key", "It stores data in RAM only", "Relational databases can't be replicated"],

@@ -117,13 +117,13 @@ set of methods. That table *is* the `405 + Allow` contract.
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
     <g fill="none" stroke-linejoin="round" stroke-width="2">
-      <rect x="320" y="56" width="260" height="42" rx="10" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="320" y="56" width="260" height="42" rx="10" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <path d="M450 112 L554 150 L450 188 L346 150 Z" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.6"/>
       <rect x="390" y="240" width="120" height="60" rx="10" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
     </g>
 
     <g text-anchor="middle" fill="currentColor">
-      <text x="450" y="76" font-size="11" font-weight="700" fill="#3553ff">request: method + path</text>
+      <text x="450" y="76" font-size="11" font-weight="700" fill="#c94a12">request: method + path</text>
       <text x="450" y="91" font-size="7.5" opacity="0.8">e.g. POST /orders · DELETE /orders/ord_7hQ2df</text>
       <text x="450" y="146" font-size="12" font-weight="700">path shape?</text>
       <text x="450" y="161" font-size="7.5" opacity="0.75">one dispatch table lookup</text>
@@ -142,8 +142,8 @@ set of methods. That table *is* the `405 + Allow` contract.
       <path d="M450 190 L450 233" marker-end="url(#p2l02a-arm)"/>
     </g>
     <g font-size="9" font-weight="700">
-      <text x="270" y="143" text-anchor="middle" fill="#3553ff">/orders</text>
-      <text x="630" y="143" text-anchor="middle" fill="#3553ff">/orders/{id}</text>
+      <text x="270" y="143" text-anchor="middle" fill="#c94a12">/orders</text>
+      <text x="630" y="143" text-anchor="middle" fill="#c94a12">/orders/{id}</text>
       <text x="458" y="206" font-size="8" fill="#e0930f">anything</text>
       <text x="458" y="217" font-size="8" fill="#e0930f">else</text>
     </g>
@@ -154,20 +154,20 @@ set of methods. That table *is* the `405 + Allow` contract.
     </g>
 
     <g>
-      <rect x="30" y="217" width="40" height="7" rx="2" fill="#3553ff" fill-opacity="0.5"/>
-      <rect x="30" y="228" width="40" height="7" rx="2" fill="#3553ff" fill-opacity="0.5"/>
-      <rect x="30" y="239" width="40" height="7" rx="2" fill="#3553ff" fill-opacity="0.5"/>
-      <rect x="538" y="217" width="40" height="7" rx="2" fill="none" stroke="#3553ff" stroke-opacity="0.45" stroke-width="1"/>
-      <rect x="538" y="228" width="40" height="7" rx="2" fill="#3553ff" fill-opacity="0.5"/>
-      <rect x="538" y="239" width="40" height="7" rx="2" fill="none" stroke="#3553ff" stroke-opacity="0.45" stroke-width="1"/>
+      <rect x="30" y="217" width="40" height="7" rx="2" fill="#c94a12" fill-opacity="0.5"/>
+      <rect x="30" y="228" width="40" height="7" rx="2" fill="#c94a12" fill-opacity="0.5"/>
+      <rect x="30" y="239" width="40" height="7" rx="2" fill="#c94a12" fill-opacity="0.5"/>
+      <rect x="538" y="217" width="40" height="7" rx="2" fill="none" stroke="#c94a12" stroke-opacity="0.45" stroke-width="1"/>
+      <rect x="538" y="228" width="40" height="7" rx="2" fill="#c94a12" fill-opacity="0.5"/>
+      <rect x="538" y="239" width="40" height="7" rx="2" fill="none" stroke="#c94a12" stroke-opacity="0.45" stroke-width="1"/>
     </g>
 
     <g fill="currentColor">
       <text x="84" y="226" font-size="11.5" font-weight="700">COLLECTION</text>
-      <text x="84" y="241" font-size="11.5" font-weight="700" fill="#3553ff">/orders</text>
+      <text x="84" y="241" font-size="11.5" font-weight="700" fill="#c94a12">/orders</text>
       <text x="84" y="256" font-size="8" opacity="0.8">the set of all orders</text>
       <text x="592" y="226" font-size="11.5" font-weight="700">MEMBER</text>
-      <text x="592" y="241" font-size="11.5" font-weight="700" fill="#3553ff">/orders/{id}</text>
+      <text x="592" y="241" font-size="11.5" font-weight="700" fill="#c94a12">/orders/{id}</text>
       <text x="592" y="256" font-size="8" opacity="0.8">one order in that set — /orders/ord_7hQ2df</text>
     </g>
 

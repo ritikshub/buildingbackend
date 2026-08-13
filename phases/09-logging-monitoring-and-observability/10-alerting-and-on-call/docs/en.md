@@ -64,9 +64,9 @@ directions and symptom alerts are wrong in neither.
     <rect x="138" y="174" width="130" height="74" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.45"/>
     <rect x="272" y="174" width="130" height="74" rx="9" fill="#7c5cff" fill-opacity="0.18" stroke="#7c5cff"/>
     <rect x="464" y="94" width="350" height="58" rx="10" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
-    <rect x="464" y="206" width="110" height="48" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-    <rect x="584" y="206" width="110" height="48" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-    <rect x="704" y="206" width="110" height="48" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="464" y="206" width="110" height="48" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+    <rect x="584" y="206" width="110" height="48" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+    <rect x="704" y="206" width="110" height="48" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
   </g>
   <path d="M639 152 L 639 178" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#l10-a1)"/>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
@@ -162,7 +162,7 @@ produces a 41-alert night.
     <path d="M430 558 L 508 558" marker-end="url(#l10-a2)"/>
   </g>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="170" y="44" width="260" height="42" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="170" y="44" width="260" height="42" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <path d="M300 102 L430 156 L300 210 L170 156 Z" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor"/>
     <path d="M300 236 L430 290 L300 344 L170 290 Z" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor"/>
     <path d="M300 370 L430 424 L300 478 L170 424 Z" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor"/>
@@ -327,9 +327,9 @@ otherwise have to invent.
   <text x="428" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">From a true expression to a ringing phone — and everything that stops it</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="40" y="160" width="776" height="136" rx="14" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f" stroke-dasharray="8 6"/>
-    <rect x="40" y="56" width="248" height="72" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-    <rect x="304" y="56" width="248" height="72" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
-    <rect x="568" y="56" width="248" height="72" rx="11" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+    <rect x="40" y="56" width="248" height="72" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+    <rect x="304" y="56" width="248" height="72" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
+    <rect x="568" y="56" width="248" height="72" rx="11" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     <rect x="60" y="200" width="240" height="76" rx="11" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="316" y="200" width="240" height="76" rx="11" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="572" y="200" width="224" height="76" rx="11" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>

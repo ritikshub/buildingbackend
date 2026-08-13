@@ -48,17 +48,17 @@ what it is by building a miniature version of it.
       <rect x="78" y="158" width="300" height="46" rx="9"/>
       <rect x="78" y="214" width="300" height="46" rx="9"/>
     </g>
-    <text x="94" y="124" font-size="11" font-weight="700" fill="#3553ff">App 1</text>
+    <text x="94" y="124" font-size="11" font-weight="700" fill="#c94a12">App 1</text>
     <text x="94" y="139" font-size="8.5" fill="currentColor" opacity="0.7">own map in its own RAM</text>
     <text x="362" y="124" text-anchor="end" font-size="12" font-weight="700" fill="#d64545">x = 1</text>
     <text x="362" y="139" text-anchor="end" font-size="8" fill="#d64545" opacity="0.85">stale</text>
 
-    <text x="94" y="180" font-size="11" font-weight="700" fill="#3553ff">App 2</text>
+    <text x="94" y="180" font-size="11" font-weight="700" fill="#c94a12">App 2</text>
     <text x="94" y="195" font-size="8.5" fill="currentColor" opacity="0.7">own map in its own RAM</text>
     <text x="362" y="180" text-anchor="end" font-size="12" font-weight="700" fill="#0fa07f">x = 2</text>
     <text x="362" y="195" text-anchor="end" font-size="8" fill="#0fa07f" opacity="0.85">written here</text>
 
-    <text x="94" y="236" font-size="11" font-weight="700" fill="#3553ff">App 3</text>
+    <text x="94" y="236" font-size="11" font-weight="700" fill="#c94a12">App 3</text>
     <text x="94" y="251" font-size="8.5" fill="currentColor" opacity="0.7">own map in its own RAM</text>
     <text x="362" y="236" text-anchor="end" font-size="12" font-weight="700" fill="#d64545">x = 1</text>
     <text x="362" y="251" text-anchor="end" font-size="8" fill="#d64545" opacity="0.85">stale</text>
@@ -72,11 +72,11 @@ what it is by building a miniature version of it.
       <rect x="478" y="160" width="142" height="44" rx="9"/>
       <rect x="478" y="218" width="142" height="44" rx="9"/>
     </g>
-    <text x="549" y="122" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">App 1</text>
+    <text x="549" y="122" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">App 1</text>
     <text x="549" y="137" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">no local map</text>
-    <text x="549" y="180" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">App 2</text>
+    <text x="549" y="180" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">App 2</text>
     <text x="549" y="195" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">no local map</text>
-    <text x="549" y="238" text-anchor="middle" font-size="11" font-weight="700" fill="#3553ff">App 3</text>
+    <text x="549" y="238" text-anchor="middle" font-size="11" font-weight="700" fill="#c94a12">App 3</text>
     <text x="549" y="253" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">no local map</text>
 
     <g fill="none" stroke="#0fa07f" stroke-width="1.6">
@@ -147,26 +147,26 @@ fast by never handing that one thread an O(n) command in production.
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="100%" style="max-width:880px" role="img" aria-label="How Redis executes commands. Three clients send commands concurrently: Client 1 sends SET x 1, Client 2 sends INCR n, Client 3 sends GET x. Their commands arrive interleaved into a single command queue, so the queue holds a mixed sequence such as C1 SET x 1, C3 GET x, C2 INCR n, C1 GET x, C3 GET x. One single thread drains that queue strictly in order: it takes exactly one command, runs it to completion, and only then takes the next. Because nothing else can run in between, every command is atomic for free, with no locks or mutexes. The thread reads and writes the in-memory data structures — strings, hashes, lists, sets, sorted sets and streams — mutating them in place, and replies travel back to the clients one at a time in the exact order the thread finished them. The flip side is that one slow order-n command, such as KEYS star, a huge SORT or a giant SMEMBERS, holds the single thread while every other client waits behind it.">
   <defs>
     <marker id="p5l3b-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker>
-    <marker id="p5l3b-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p5l3b-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p5l3b-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
     <marker id="p5l3b-arp" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7c5cff"/></marker>
   </defs>
   <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">One thread, one command at a time — that is why every command is atomic</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="85" y="58" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3553ff">CONCURRENT CLIENTS</text>
-    <g fill="#3553ff" fill-opacity="0.1" stroke="#3553ff" stroke-width="1.6">
+    <text x="85" y="58" text-anchor="middle" font-size="9.5" font-weight="700" fill="#c94a12">CONCURRENT CLIENTS</text>
+    <g fill="#c94a12" fill-opacity="0.1" stroke="#c94a12" stroke-width="1.6">
       <rect x="20" y="76" width="130" height="44" rx="9"/>
       <rect x="20" y="140" width="130" height="44" rx="9"/>
       <rect x="20" y="204" width="130" height="44" rx="9"/>
     </g>
-    <text x="85" y="96" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">Client 1</text>
+    <text x="85" y="96" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">Client 1</text>
     <text x="85" y="111" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">SET x 1</text>
-    <text x="85" y="160" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">Client 2</text>
+    <text x="85" y="160" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">Client 2</text>
     <text x="85" y="175" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">INCR n</text>
-    <text x="85" y="224" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3553ff">Client 3</text>
+    <text x="85" y="224" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">Client 3</text>
     <text x="85" y="239" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">GET x</text>
 
-    <g fill="none" stroke="#3553ff" stroke-width="1.6">
+    <g fill="none" stroke="#c94a12" stroke-width="1.6">
       <path d="M154 98 L186 120" marker-end="url(#p5l3b-arb)"/>
       <path d="M154 162 L186 158" marker-end="url(#p5l3b-arb)"/>
       <path d="M154 226 L186 196" marker-end="url(#p5l3b-arb)"/>
@@ -175,7 +175,7 @@ fast by never handing that one thread an O(n) command in production.
     <rect x="190" y="64" width="156" height="204" rx="10" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.5"/>
     <text x="268" y="84" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Command queue</text>
     <text x="268" y="97" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">commands arrive interleaved</text>
-    <g fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.5" stroke-width="1.2">
+    <g fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.5" stroke-width="1.2">
       <rect x="202" y="104" width="132" height="22" rx="5"/>
       <rect x="202" y="130" width="132" height="22" rx="5"/>
       <rect x="202" y="156" width="132" height="22" rx="5"/>

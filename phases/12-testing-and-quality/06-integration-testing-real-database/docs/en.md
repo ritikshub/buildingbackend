@@ -329,10 +329,10 @@ It also has one failure mode, it is not rare, and it is invisible:
     <path d="M790 240 L790 248" fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.55"/>
     <circle cx="790" cy="258" r="7.5" fill="none" stroke="#0fa07f" stroke-width="1.3"/>
     <text x="790" y="261.5" text-anchor="middle" font-size="8.5" font-weight="700" fill="#0fa07f">7</text>
-    <circle cx="140" cy="205" r="4.5" fill="#3553ff" stroke="none"/>
-    <text x="140" y="196" text-anchor="middle" font-size="8" font-weight="700" fill="#3553ff">INSERT</text>
-    <circle cx="574" cy="170" r="4.5" fill="#3553ff" stroke="none"/>
-    <text x="574" y="161" text-anchor="middle" font-size="8" font-weight="700" fill="#3553ff">INSERT</text>
+    <circle cx="140" cy="205" r="4.5" fill="#c94a12" stroke="none"/>
+    <text x="140" y="196" text-anchor="middle" font-size="8" font-weight="700" fill="#c94a12">INSERT</text>
+    <circle cx="574" cy="170" r="4.5" fill="#c94a12" stroke="none"/>
+    <text x="574" y="161" text-anchor="middle" font-size="8" font-weight="700" fill="#c94a12">INSERT</text>
     <text x="222" y="196" text-anchor="middle" font-size="8" font-weight="700" fill="#d64545">COMMIT</text>
     <text x="28" y="292" font-size="8.3" fill="currentColor">1 &#183; BEGIN &#8212; the harness opens the test transaction</text>
     <text x="28" y="305" font-size="8.3" fill="currentColor">2 &#183; INSERT INTO products &#8212; the code under test writes</text>
@@ -391,11 +391,11 @@ One row, a balance of 100. `T1` adds 10, `T2` adds 5, both as read-modify-write,
     <rect x="20" y="96" width="838" height="40" rx="6" fill="#0fa07f" fill-opacity="0.07" stroke="none"/>
     <text x="30" y="112" font-size="10" font-weight="700" fill="currentColor">R1 W1 R2 W2</text>
     <text x="30" y="126" font-size="7.6" font-weight="700" fill="#e0930f">serial &#183; the only two a test runs</text>
-    <rect x="250" y="99" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="281" y="109" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 read</text>
+    <rect x="250" y="99" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="281" y="109" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 read</text>
     <text x="281" y="120" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
-    <rect x="344" y="99" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="375" y="109" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 write</text>
+    <rect x="344" y="99" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="375" y="109" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 write</text>
     <text x="375" y="120" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+10</text>
     <rect x="438" y="99" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="469" y="109" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 read</text>
@@ -414,25 +414,25 @@ One row, a balance of 100. `T1` adds 10, `T2` adds 5, both as read-modify-write,
     <rect x="344" y="151" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="375" y="161" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 write</text>
     <text x="375" y="172" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+5</text>
-    <rect x="438" y="151" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="469" y="161" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 read</text>
+    <rect x="438" y="151" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="469" y="161" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 read</text>
     <text x="469" y="172" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
-    <rect x="532" y="151" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="563" y="161" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 write</text>
+    <rect x="532" y="151" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="563" y="161" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 write</text>
     <text x="563" y="172" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+10</text>
     <text x="660" y="164" font-size="10.5" font-weight="700" fill="#0fa07f">115  ok</text>
     <text x="762" y="164" font-size="10.5" font-weight="700" fill="#0fa07f">115  ok</text>
     <rect x="20" y="200" width="838" height="40" rx="6" fill="#d64545" fill-opacity="0.07" stroke="none"/>
     <text x="30" y="216" font-size="10" font-weight="700" fill="currentColor">R1 R2 W1 W2</text>
     <text x="30" y="230" font-size="7.6" font-weight="700" fill="#7f7f7f">interleaved &#183; never tested</text>
-    <rect x="250" y="203" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="281" y="213" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 read</text>
+    <rect x="250" y="203" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="281" y="213" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 read</text>
     <text x="281" y="224" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
     <rect x="344" y="203" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="375" y="213" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 read</text>
     <text x="375" y="224" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
-    <rect x="438" y="203" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="469" y="213" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 write</text>
+    <rect x="438" y="203" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="469" y="213" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 write</text>
     <text x="469" y="224" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+10</text>
     <rect x="532" y="203" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="563" y="213" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 write</text>
@@ -442,8 +442,8 @@ One row, a balance of 100. `T1` adds 10, `T2` adds 5, both as read-modify-write,
     <rect x="20" y="252" width="838" height="40" rx="6" fill="#d64545" fill-opacity="0.07" stroke="none"/>
     <text x="30" y="268" font-size="10" font-weight="700" fill="currentColor">R1 R2 W2 W1</text>
     <text x="30" y="282" font-size="7.6" font-weight="700" fill="#7f7f7f">interleaved &#183; never tested</text>
-    <rect x="250" y="255" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="281" y="265" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 read</text>
+    <rect x="250" y="255" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="281" y="265" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 read</text>
     <text x="281" y="276" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
     <rect x="344" y="255" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="375" y="265" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 read</text>
@@ -451,8 +451,8 @@ One row, a balance of 100. `T1` adds 10, `T2` adds 5, both as read-modify-write,
     <rect x="438" y="255" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="469" y="265" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 write</text>
     <text x="469" y="276" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+5</text>
-    <rect x="532" y="255" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="563" y="265" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 write</text>
+    <rect x="532" y="255" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="563" y="265" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 write</text>
     <text x="563" y="276" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+10</text>
     <text x="660" y="268" font-size="10.5" font-weight="700" fill="#d64545">110  LOST 5</text>
     <text x="762" y="268" font-size="10.5" font-weight="700" fill="#0fa07f">115  caught</text>
@@ -462,11 +462,11 @@ One row, a balance of 100. `T1` adds 10, `T2` adds 5, both as read-modify-write,
     <rect x="250" y="307" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="281" y="317" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 read</text>
     <text x="281" y="328" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
-    <rect x="344" y="307" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="375" y="317" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 read</text>
+    <rect x="344" y="307" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="375" y="317" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 read</text>
     <text x="375" y="328" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
-    <rect x="438" y="307" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="469" y="317" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 write</text>
+    <rect x="438" y="307" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="469" y="317" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 write</text>
     <text x="469" y="328" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+10</text>
     <rect x="532" y="307" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="563" y="317" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 write</text>
@@ -479,14 +479,14 @@ One row, a balance of 100. `T1` adds 10, `T2` adds 5, both as read-modify-write,
     <rect x="250" y="359" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="281" y="369" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 read</text>
     <text x="281" y="380" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
-    <rect x="344" y="359" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="375" y="369" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 read</text>
+    <rect x="344" y="359" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="375" y="369" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 read</text>
     <text x="375" y="380" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">sees 100</text>
     <rect x="438" y="359" width="62" height="24" rx="4" fill="#7c5cff" fill-opacity="0.16" stroke="#7c5cff" stroke-width="1.3"/>
     <text x="469" y="369" text-anchor="middle" font-size="9" font-weight="700" fill="#7c5cff">T2 write</text>
     <text x="469" y="380" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+5</text>
-    <rect x="532" y="359" width="62" height="24" rx="4" fill="#3553ff" fill-opacity="0.16" stroke="#3553ff" stroke-width="1.3"/>
-    <text x="563" y="369" text-anchor="middle" font-size="9" font-weight="700" fill="#3553ff">T1 write</text>
+    <rect x="532" y="359" width="62" height="24" rx="4" fill="#c94a12" fill-opacity="0.16" stroke="#c94a12" stroke-width="1.3"/>
+    <text x="563" y="369" text-anchor="middle" font-size="9" font-weight="700" fill="#c94a12">T1 write</text>
     <text x="563" y="380" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">+10</text>
     <text x="660" y="372" font-size="10.5" font-weight="700" fill="#d64545">110  LOST 5</text>
     <text x="762" y="372" font-size="10.5" font-weight="700" fill="#0fa07f">115  caught</text>

@@ -36,14 +36,14 @@ Every one of those is configured correctly. This lesson is about the **seams**.
     </g>
 
     <g stroke-width="1.9" stroke-linejoin="round">
-      <rect x="30" y="58" width="600" height="54" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="30" y="58" width="600" height="54" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
       <rect x="30" y="126" width="600" height="54" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="30" y="194" width="600" height="54" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="30" y="262" width="600" height="54" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="30" y="330" width="600" height="54" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="30" y="398" width="600" height="54" rx="9" fill="#7c5cff" fill-opacity="0.13" stroke="#7c5cff"/>
       <rect x="30" y="466" width="600" height="54" rx="9" fill="#7f7f7f" fill-opacity="0.11" stroke="#7f7f7f"/>
-      <rect x="30" y="534" width="600" height="54" rx="9" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff"/>
+      <rect x="30" y="534" width="600" height="54" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
     </g>
 
     <g fill="currentColor">
@@ -66,14 +66,14 @@ Every one of those is configured correctly. This lesson is about the **seams**.
     </g>
 
     <g font-size="9.5" font-weight="700" text-anchor="end">
-      <text x="618" y="80" fill="#3553ff">L 3</text>
+      <text x="618" y="80" fill="#c94a12">L 3</text>
       <text x="618" y="148" fill="#7c5cff">L 3</text>
       <text x="618" y="216" fill="#7c5cff">L 4</text>
       <text x="618" y="284" fill="#7c5cff">L 5 · 10</text>
       <text x="618" y="352" fill="#7c5cff">L 6</text>
       <text x="618" y="420" fill="#7c5cff">L 7</text>
       <text x="618" y="488" fill="#7f7f7f">L 8 · 9</text>
-      <text x="618" y="556" fill="#3553ff">L 1 · 2</text>
+      <text x="618" y="556" fill="#c94a12">L 1 · 2</text>
     </g>
 
     <g font-size="9" text-anchor="end" fill="currentColor" opacity="0.75">

@@ -73,7 +73,7 @@ When `orders` publishes an event, it declares a fact and stops. It has no consum
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="16" y="42" width="848" height="280" rx="13" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f"/>
     <rect x="16" y="336" width="848" height="282" rx="13" fill="#0fa07f" fill-opacity="0.07" stroke="#0fa07f"/>
-    <rect x="44" y="124" width="130" height="140" rx="10" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="44" y="124" width="130" height="140" rx="10" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="212" y="134" width="126" height="28" rx="8" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="212" y="180" width="126" height="28" rx="8" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
     <rect x="212" y="226" width="126" height="28" rx="8" fill="#e0930f" fill-opacity="0.16" stroke="#e0930f"/>
@@ -92,7 +92,7 @@ When `orders` publishes an event, it declares a fact and stops. It has no consum
   <path d="M109 286 L 466 286" fill="none" stroke="#e0930f" stroke-width="3" marker-end="url(#l11-a1o)"/>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="40" y="452" width="126" height="64" rx="10" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="40" y="452" width="126" height="64" rx="10" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="206" y="414" width="178" height="140" rx="11" fill="#0fa07f" fill-opacity="0.16" stroke="#0fa07f"/>
     <rect x="452" y="400" width="150" height="36" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="452" y="442" width="150" height="36" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
@@ -265,9 +265,9 @@ Five things must happen when an order is placed. There are exactly two ways to a
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">Same five steps, same broker — the difference is who holds the map</text>
 
   <g fill="none" stroke-linejoin="round" stroke-width="2">
-    <rect x="16" y="42" width="418" height="512" rx="13" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff"/>
+    <rect x="16" y="42" width="418" height="512" rx="13" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12"/>
     <rect x="446" y="42" width="418" height="512" rx="13" fill="#7c5cff" fill-opacity="0.07" stroke="#7c5cff"/>
-    <rect x="44" y="92" width="170" height="34" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="44" y="92" width="170" height="34" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="44" y="152" width="170" height="34" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="44" y="212" width="170" height="34" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="44" y="272" width="170" height="34" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
@@ -299,7 +299,7 @@ Five things must happen when an order is placed. There are exactly two ways to a
   </g>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
-    <text x="36" y="70" font-size="12.5" font-weight="700" fill="#3553ff">CHOREOGRAPHY — five subscriptions, no map</text>
+    <text x="36" y="70" font-size="12.5" font-weight="700" fill="#c94a12">CHOREOGRAPHY — five subscriptions, no map</text>
     <text x="129" y="114" font-size="10.5" font-weight="700" text-anchor="middle">orders</text>
     <text x="129" y="174" font-size="10.5" font-weight="700" text-anchor="middle">payments</text>
     <text x="129" y="234" font-size="10.5" font-weight="700" text-anchor="middle">inventory</text>

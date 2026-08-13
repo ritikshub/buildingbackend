@@ -53,8 +53,8 @@ Everything a thread needs to be independent is small: its own **registers**, its
     <rect x="506" y="44" width="358" height="310" rx="12" fill="#7c5cff" fill-opacity="0.08" stroke="#7c5cff"/>
     <rect x="32" y="80" width="438" height="112" rx="9" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
     <rect x="522" y="80" width="326" height="112" rx="9" fill="#0fa07f" fill-opacity="0.12" stroke="#0fa07f"/>
-    <rect x="32" y="202" width="438" height="138" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
-    <rect x="522" y="202" width="326" height="138" rx="9" fill="#3553ff" fill-opacity="0.11" stroke="#3553ff"/>
+    <rect x="32" y="202" width="438" height="138" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
+    <rect x="522" y="202" width="326" height="138" rx="9" fill="#c94a12" fill-opacity="0.11" stroke="#c94a12"/>
     <rect x="16" y="366" width="848" height="46" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.45"/>
   </g>
   <g fill="none" stroke="#0fa07f" stroke-width="1.5">
@@ -67,11 +67,11 @@ Everything a thread needs to be independent is small: its own **registers**, its
     <rect x="688" y="106" width="72" height="76" rx="6" fill="#0fa07f" fill-opacity="0.10"/>
     <rect x="768" y="106" width="72" height="76" rx="6" fill="#0fa07f" fill-opacity="0.10"/>
   </g>
-  <g fill="none" stroke="#3553ff" stroke-width="1.5">
-    <rect x="46" y="230" width="132" height="100" rx="6" fill="#3553ff" fill-opacity="0.10"/>
-    <rect x="190" y="230" width="132" height="100" rx="6" fill="#3553ff" fill-opacity="0.10"/>
-    <rect x="334" y="230" width="132" height="100" rx="6" fill="#3553ff" fill-opacity="0.10"/>
-    <rect x="536" y="230" width="132" height="100" rx="6" fill="#3553ff" fill-opacity="0.10"/>
+  <g fill="none" stroke="#c94a12" stroke-width="1.5">
+    <rect x="46" y="230" width="132" height="100" rx="6" fill="#c94a12" fill-opacity="0.10"/>
+    <rect x="190" y="230" width="132" height="100" rx="6" fill="#c94a12" fill-opacity="0.10"/>
+    <rect x="334" y="230" width="132" height="100" rx="6" fill="#c94a12" fill-opacity="0.10"/>
+    <rect x="536" y="230" width="132" height="100" rx="6" fill="#c94a12" fill-opacity="0.10"/>
   </g>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="32" y="68" font-size="12.5" font-weight="700" fill="#7c5cff">PROCESS 4711</text>
@@ -86,8 +86,8 @@ Everything a thread needs to be independent is small: its own **registers**, its
     <text x="644" y="132" font-size="9.5" font-weight="700" text-anchor="middle">DATA</text><text x="644" y="152" font-size="8.5" text-anchor="middle" opacity="0.8">its own</text>
     <text x="724" y="132" font-size="9.5" font-weight="700" text-anchor="middle">HEAP</text><text x="724" y="152" font-size="8.5" text-anchor="middle" opacity="0.8">its own</text>
     <text x="804" y="132" font-size="9.5" font-weight="700" text-anchor="middle">FDs</text><text x="804" y="152" font-size="8.5" text-anchor="middle" opacity="0.8">its own</text>
-    <text x="251" y="220" font-size="9.5" font-weight="700" text-anchor="middle" fill="#3553ff">PRIVATE TO ONE THREAD — nobody else can reach it</text>
-    <text x="685" y="220" font-size="9.5" font-weight="700" text-anchor="middle" fill="#3553ff">PRIVATE TO ONE THREAD</text>
+    <text x="251" y="220" font-size="9.5" font-weight="700" text-anchor="middle" fill="#c94a12">PRIVATE TO ONE THREAD — nobody else can reach it</text>
+    <text x="685" y="220" font-size="9.5" font-weight="700" text-anchor="middle" fill="#c94a12">PRIVATE TO ONE THREAD</text>
     <text x="112" y="254" font-size="10.5" font-weight="700" text-anchor="middle">THREAD 1</text>
     <text x="256" y="254" font-size="10.5" font-weight="700" text-anchor="middle">THREAD 2</text>
     <text x="400" y="254" font-size="10.5" font-weight="700" text-anchor="middle">THREAD 3</text>
@@ -133,14 +133,14 @@ Every thread is in exactly one of a few states. It is **runnable** — it has wo
   <text x="440" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="14.5" font-weight="700" fill="currentColor">What the scheduler does with a thread — and what "blocked" really costs</text>
   <g fill="none" stroke-linejoin="round" stroke-width="2">
     <rect x="24" y="140" width="112" height="48" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
-    <rect x="196" y="140" width="144" height="48" rx="9" fill="#3553ff" fill-opacity="0.13" stroke="#3553ff"/>
+    <rect x="196" y="140" width="144" height="48" rx="9" fill="#c94a12" fill-opacity="0.13" stroke="#c94a12"/>
     <rect x="470" y="140" width="140" height="48" rx="9" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f"/>
     <rect x="706" y="140" width="150" height="48" rx="9" fill="#7f7f7f" fill-opacity="0.10" stroke="currentColor" stroke-opacity="0.55"/>
     <rect x="470" y="280" width="140" height="48" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f"/>
     <rect x="636" y="272" width="228" height="90" rx="9" fill="#7f7f7f" fill-opacity="0.09" stroke="currentColor" stroke-opacity="0.4"/>
-    <rect x="196" y="62" width="144" height="42" rx="7" fill="#3553ff" fill-opacity="0.07" stroke="#3553ff" stroke-opacity="0.6" stroke-dasharray="5 4"/>
+    <rect x="196" y="62" width="144" height="42" rx="7" fill="#c94a12" fill-opacity="0.07" stroke="#c94a12" stroke-opacity="0.6" stroke-dasharray="5 4"/>
   </g>
-  <g fill="#3553ff" fill-opacity="0.22" stroke="#3553ff" stroke-width="1.2">
+  <g fill="#c94a12" fill-opacity="0.22" stroke="#c94a12" stroke-width="1.2">
     <rect x="206" y="74" width="36" height="18" rx="3"/><rect x="248" y="74" width="36" height="18" rx="3"/><rect x="290" y="74" width="36" height="18" rx="3"/>
   </g>
   <g fill="none" stroke="currentColor" stroke-width="1.8">
@@ -154,7 +154,7 @@ Every thread is in exactly one of a few states. It is **runnable** — it has wo
   <path d="M466 300 C 380 300, 268 292, 268 194" fill="none" stroke="#0fa07f" stroke-width="2" marker-end="url(#l02-arrg)"/>
   <g font-family="'JetBrains Mono', ui-monospace, monospace" fill="currentColor">
     <text x="80" y="170" font-size="11.5" font-weight="700" text-anchor="middle">NEW</text>
-    <text x="268" y="164" font-size="11.5" font-weight="700" text-anchor="middle" fill="#3553ff">RUNNABLE</text>
+    <text x="268" y="164" font-size="11.5" font-weight="700" text-anchor="middle" fill="#c94a12">RUNNABLE</text>
     <text x="268" y="180" font-size="8.5" text-anchor="middle" opacity="0.85">wants a CPU</text>
     <text x="540" y="164" font-size="11.5" font-weight="700" text-anchor="middle" fill="#0fa07f">RUNNING</text>
     <text x="540" y="180" font-size="8.5" text-anchor="middle" opacity="0.85">owns a core right now</text>
@@ -162,7 +162,7 @@ Every thread is in exactly one of a few states. It is **runnable** — it has wo
     <text x="781" y="180" font-size="8.5" text-anchor="middle" opacity="0.85">stack freed</text>
     <text x="540" y="304" font-size="11.5" font-weight="700" text-anchor="middle" fill="#e0930f">BLOCKED</text>
     <text x="540" y="320" font-size="8.5" text-anchor="middle" opacity="0.85">off the run queue</text>
-    <text x="268" y="54" font-size="9.5" font-weight="700" text-anchor="middle" fill="#3553ff">kernel RUN QUEUE — one per CPU</text>
+    <text x="268" y="54" font-size="9.5" font-weight="700" text-anchor="middle" fill="#c94a12">kernel RUN QUEUE — one per CPU</text>
     <text x="163" y="152" font-size="9" text-anchor="middle">start()</text>
     <text x="402" y="143" font-size="9" text-anchor="middle">scheduler picks it</text>
     <text x="404" y="196" font-size="9" text-anchor="middle" opacity="0.9">preempted:</text>

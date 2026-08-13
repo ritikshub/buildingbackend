@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "One of your dependencies is about to have a bad day. Every call to it has a timeout, an exponential-backoff retry and a circuit breaker, all reviewed and all in production. Which outcome costs your users more: the dependency dies completely, or it keeps answering correctly but 5× slower?",
-    "options": [
-      "Dying completely, by a wide margin. A dead dependency means every call to it fails, while a slow one still returns correct data — degraded latency is unpleasant but it is not an outage",
-      "Roughly the same. Either way the requests that need that dependency are affected, so the cost scales with how much of your traffic touches it rather than with the kind of fault",
-      "The 5× slowdown, and it is not close. Measured on the same dependency over the same 20-second window: the hard kill cost 0 failed requests and 0.0 minutes of error budget, while the slowdown cost 2,744 failed requests, 130.7 minutes of budget, a p50 of 2,006 ms, and 21 seconds to recover after the fault was already gone",
-      "Dying completely, because a dead dependency also fails your health checks and takes instances out of the load balancer, which amplifies the loss of capacity"
-    ],
-    "correct": 2,
-    "explanation": "The tempting answer ranks faults by how broken the dependency is, which is the right instinct applied to the wrong system — what matters is how broken YOUR service becomes. A hard failure produces an error, an error reaches an `except` block somebody wrote, and the fallback runs: measured, the hard kill produced a median user latency of 47 ms, FASTER than the 89 ms steady state, because the failing call is skipped. A slowdown produces no error at all, so no error path is entered, the circuit breaker tripped 10 times on the kill and 0 times on the slowdown, and the connection pool quietly saturates until a queue 675 deep forms on a service two hops away. Option 2 is the subtle wrong answer: the cost is not proportional to traffic touched, it is determined by whether an error path exists. On a REQUIRED dependency with no fallback the same measurement gives 66.8 versus 64.1 minutes — nearly identical."
-  },
-  {
     "stage": "check",
     "question": "Your `orders → inventory` connection pool has 6 slots. At the steady rate of 70 requests per second with a 40 ms hold time, Little's law says you need L = 2.80 concurrent slots. The dependency then becomes 5× slower. What happens, and what does the 6-slot pool actually buy you?",
     "options": [

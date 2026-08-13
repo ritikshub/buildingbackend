@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "Your service image is 1.2 GB. An earlier RUN downloads a 400 MB dataset and installs build tools; you add `RUN rm -rf /root/.cache/pip /var/lib/apt/lists /tmp/dataset` as the final instruction and rebuild. What happens to the image size?",
-    "options": [
-      "It drops by roughly the size of what you deleted, since the files are no longer in the filesystem",
-      "It is unchanged — very slightly larger, in fact — because the deleted bytes stay in the layers below and the rm only adds a layer of whiteout markers",
-      "It stays the same locally but shrinks on push, because the registry recompacts layers it has already seen",
-      "It drops only after `docker image prune`, which garbage-collects the orphaned bytes"
-    ],
-    "correct": 1,
-    "explanation": "Lower layers are read-only. A delete in a later layer is a whiteout marker that hides the name from the merged view; the bytes below are untouched and still travel with the image. Measured here: the rm removed 30.38 MB from the merged filesystem (73 files down to 70) and the image went from 271.92 MB to 271.92 MB, up by 64 bytes for three whiteouts. Cleanup only works chained with `&&` inside the same RUN that created the mess, so the bytes are never committed — or structurally, with a multi-stage build."
-  },
-  {
     "stage": "check",
     "question": "You move `COPY . /app` from the top of your Dockerfile to just above CMD, so dependencies install first. Your CI does 100 builds a week and 25 of them change requirements.txt. What should you expect?",
     "options": [

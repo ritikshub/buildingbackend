@@ -88,31 +88,31 @@ of bytes.
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 768" width="100%" style="max-width:880px" role="img" aria-label="How UTF-8 encodes the character e-acute into bytes. The character is Unicode code point U+00E9, decimal 233, which in binary is 11101001. Unicode says which number the character is; UTF-8 decides how that number becomes bytes. A two-byte UTF-8 sequence carries exactly eleven payload bits, so 233 is padded with three leading zeros to eleven bits and split five plus six: 00011 and 101001. The two-byte template is 110xxxxx 10xxxxxx, where the leading 110 and the leading 10 are wrapper bits and every x is an empty slot for one of the character's own bits. Dropping the payload bits into those slots gives 110 00011 and 10 101001, that is the bytes 11000011 and 10101001, which are 0xC3 equals 195 and 0xA9 equals 169. Decoding runs backwards: strip the wrapper bits, concatenate 00011 and 101001 back into 00011101001, and the number 233 is there again, so the wrapper bits are pure bookkeeping and carry no character data. The length table reads as follows. Pattern 0xxxxxxx is one byte for code points U+0000 to U+007F, so A at U+0041 equals 65 is the single byte 0x41, identical to ASCII. Pattern 110xxxxx 10xxxxxx is two bytes for U+0080 to U+07FF, which is where e-acute lives. Pattern 1110xxxx 10xxxxxx 10xxxxxx is three bytes for U+0800 to U+FFFF, such as the euro sign at U+20AC equals 8364. Pattern 11110xxx followed by three continuation bytes is four bytes for U+10000 to U+10FFFF, such as the grinning face emoji at U+1F600 equals 128512. The count of leading ones in the first byte is the length, and any byte starting with 10 is always a continuation byte, so a program that jumps into the middle of a stream can resynchronise to the next character boundary. Because ASCII code points 0 to 127 encode to a single byte, plain English UTF-8 text is byte-for-byte identical to ASCII, the single biggest reason UTF-8 took over the internet. Finally, the word cafe with an acute e is four characters but five bytes: 63 61 66 C3 A9.">
   <defs>
-    <marker id="p0l02a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3553ff"/></marker>
+    <marker id="p0l02a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p0l02a-arp" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7f7f7f"/></marker>
   </defs>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <text x="450" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">UTF-8 slices a code point's bits into a byte template that describes itself</text>
 
-    <rect x="16" y="40" width="868" height="72" rx="11" fill="#3553ff" fill-opacity="0.06" stroke="#3553ff" stroke-opacity="0.7" stroke-width="1.8"/>
-    <text x="32" y="60" font-size="10.5" font-weight="700" fill="#3553ff">1 · THE CHARACTER — a code point is a number, not yet bytes</text>
-    <text x="450" y="90" text-anchor="middle" font-size="15" fill="currentColor"><tspan font-size="21" font-weight="700" fill="#3553ff">é</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#3553ff">U+00E9</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#3553ff">233</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#3553ff">11101001</tspan><tspan font-size="10">&#x2003;(8 bits)</tspan></text>
+    <rect x="16" y="40" width="868" height="72" rx="11" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.7" stroke-width="1.8"/>
+    <text x="32" y="60" font-size="10.5" font-weight="700" fill="#c94a12">1 · THE CHARACTER — a code point is a number, not yet bytes</text>
+    <text x="450" y="90" text-anchor="middle" font-size="15" fill="currentColor"><tspan font-size="21" font-weight="700" fill="#c94a12">é</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#c94a12">U+00E9</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#c94a12">233</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#c94a12">11101001</tspan><tspan font-size="10">&#x2003;(8 bits)</tspan></text>
     <text x="450" y="106" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">Unicode gives the number. UTF-8 decides how that number becomes bytes.</text>
 
     <text x="450" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">2 · PAD 11101001 TO 11 BITS, THEN DROP THEM INTO THE 2-BYTE TEMPLATE</text>
 
     <g fill="none" stroke-width="1.6">
-      <rect x="292" y="156" width="126" height="22" rx="6" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-opacity="0.55"/>
-      <rect x="534" y="156" width="152" height="22" rx="6" fill="#3553ff" fill-opacity="0.10" stroke="#3553ff" stroke-opacity="0.55"/>
+      <rect x="292" y="156" width="126" height="22" rx="6" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-opacity="0.55"/>
+      <rect x="534" y="156" width="152" height="22" rx="6" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-opacity="0.55"/>
     </g>
-    <text x="355" y="150" text-anchor="middle" font-size="8" fill="#3553ff" opacity="0.85">high 5 bits</text>
-    <text x="610" y="150" text-anchor="middle" font-size="8" fill="#3553ff" opacity="0.85">low 6 bits</text>
+    <text x="355" y="150" text-anchor="middle" font-size="8" fill="#c94a12" opacity="0.85">high 5 bits</text>
+    <text x="610" y="150" text-anchor="middle" font-size="8" fill="#c94a12" opacity="0.85">low 6 bits</text>
     <text x="196" y="172" text-anchor="end" font-size="9" fill="currentColor" opacity="0.85">pad to 11 bits</text>
     <g font-size="13" font-weight="700" text-anchor="middle">
       <text x="303" y="172" fill="#7f7f7f">0</text><text x="329" y="172" fill="#7f7f7f">0</text><text x="355" y="172" fill="#7f7f7f">0</text>
-      <text x="381" y="172" fill="#3553ff">1</text><text x="407" y="172" fill="#3553ff">1</text>
-      <text x="545" y="172" fill="#3553ff">1</text><text x="571" y="172" fill="#3553ff">0</text><text x="597" y="172" fill="#3553ff">1</text>
-      <text x="623" y="172" fill="#3553ff">0</text><text x="649" y="172" fill="#3553ff">0</text><text x="675" y="172" fill="#3553ff">1</text>
+      <text x="381" y="172" fill="#c94a12">1</text><text x="407" y="172" fill="#c94a12">1</text>
+      <text x="545" y="172" fill="#c94a12">1</text><text x="571" y="172" fill="#c94a12">0</text><text x="597" y="172" fill="#c94a12">1</text>
+      <text x="623" y="172" fill="#c94a12">0</text><text x="649" y="172" fill="#c94a12">0</text><text x="675" y="172" fill="#c94a12">1</text>
     </g>
 
     <g stroke="#7f7f7f" stroke-width="1.2" stroke-opacity="0.7">
@@ -120,7 +120,7 @@ of bytes.
       <path d="M329 180 L329 197" marker-end="url(#p0l02a-arp)"/>
       <path d="M355 180 L355 197" marker-end="url(#p0l02a-arp)"/>
     </g>
-    <g stroke="#3553ff" stroke-width="1.2" stroke-opacity="0.75">
+    <g stroke="#c94a12" stroke-width="1.2" stroke-opacity="0.75">
       <path d="M381 180 L381 197" marker-end="url(#p0l02a-ar)"/>
       <path d="M407 180 L407 197" marker-end="url(#p0l02a-ar)"/>
       <path d="M545 180 L545 197" marker-end="url(#p0l02a-ar)"/>
@@ -151,20 +151,20 @@ of bytes.
 
     <g fill="none" stroke-width="1.6">
       <rect x="214" y="244" width="74"  height="22" rx="6" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-opacity="0.8"/>
-      <rect x="292" y="244" width="126" height="22" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-opacity="0.7"/>
+      <rect x="292" y="244" width="126" height="22" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-opacity="0.7"/>
       <rect x="482" y="244" width="48"  height="22" rx="6" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-opacity="0.8"/>
-      <rect x="534" y="244" width="152" height="22" rx="6" fill="#3553ff" fill-opacity="0.12" stroke="#3553ff" stroke-opacity="0.7"/>
+      <rect x="534" y="244" width="152" height="22" rx="6" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-opacity="0.7"/>
     </g>
     <text x="196" y="260" text-anchor="end" font-size="9" fill="currentColor" opacity="0.85">drop the bits in</text>
     <g font-size="13" font-weight="700" text-anchor="middle">
       <text x="225" y="260" fill="#e0930f">1</text><text x="251" y="260" fill="#e0930f">1</text><text x="277" y="260" fill="#e0930f">0</text>
       <text x="303" y="260" fill="#7f7f7f">0</text><text x="329" y="260" fill="#7f7f7f">0</text><text x="355" y="260" fill="#7f7f7f">0</text>
-      <text x="381" y="260" fill="#3553ff">1</text><text x="407" y="260" fill="#3553ff">1</text>
+      <text x="381" y="260" fill="#c94a12">1</text><text x="407" y="260" fill="#c94a12">1</text>
       <text x="493" y="260" fill="#e0930f">1</text><text x="519" y="260" fill="#e0930f">0</text>
-      <text x="545" y="260" fill="#3553ff">1</text><text x="571" y="260" fill="#3553ff">0</text><text x="597" y="260" fill="#3553ff">1</text>
-      <text x="623" y="260" fill="#3553ff">0</text><text x="649" y="260" fill="#3553ff">0</text><text x="675" y="260" fill="#3553ff">1</text>
+      <text x="545" y="260" fill="#c94a12">1</text><text x="571" y="260" fill="#c94a12">0</text><text x="597" y="260" fill="#c94a12">1</text>
+      <text x="623" y="260" fill="#c94a12">0</text><text x="649" y="260" fill="#c94a12">0</text><text x="675" y="260" fill="#c94a12">1</text>
     </g>
-    <text x="712" y="260" font-size="8.5" fill="#3553ff" opacity="0.95">blue = the character's bits</text>
+    <text x="712" y="260" font-size="8.5" fill="#c94a12" opacity="0.95">blue = the character's bits</text>
     <text x="712" y="272" font-size="8.5" fill="#7f7f7f">grey = padding / empty slot</text>
 
     <g fill="none" stroke-width="1.8">
@@ -185,7 +185,7 @@ of bytes.
 
     <text x="450" y="404" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">3 · EVERY BYTE ANNOUNCES ITS OWN ROLE — the leading 1s of the first byte are the length</text>
     <rect x="16" y="414" width="868" height="124" rx="11" fill="#7f7f7f" fill-opacity="0.06" stroke="#7f7f7f" stroke-opacity="0.6" stroke-width="1.6" fill-rule="evenodd"/>
-    <rect x="24" y="464" width="852" height="24" rx="5" fill="#3553ff" fill-opacity="0.09"/>
+    <rect x="24" y="464" width="852" height="24" rx="5" fill="#c94a12" fill-opacity="0.09"/>
     <g font-size="9" fill="currentColor" opacity="0.75">
       <text x="34" y="436">byte pattern (x = the character's own bits)</text>
       <text x="300" y="436">len</text>
@@ -210,7 +210,7 @@ of bytes.
     </g>
     <g font-size="9" fill="currentColor">
       <text x="530" y="458"><tspan fill="#0fa07f">A</tspan> = U+0041 = 65 → 0x41, the ASCII byte</text>
-      <text x="530" y="478"><tspan fill="#3553ff" font-weight="700">é</tspan><tspan font-weight="700"> = U+00E9 = 233 → C3 A9</tspan>  ← worked out above</text>
+      <text x="530" y="478"><tspan fill="#c94a12" font-weight="700">é</tspan><tspan font-weight="700"> = U+00E9 = 233 → C3 A9</tspan>  ← worked out above</text>
       <text x="530" y="498"><tspan fill="#0fa07f">€</tspan> = U+20AC = 8364 → 3 bytes</text>
       <text x="530" y="518"><tspan fill="#0fa07f">😀</tspan> = U+1F600 = 128512 → 4 bytes</text>
     </g>
@@ -224,13 +224,13 @@ of bytes.
       <rect x="470" y="604" width="414" height="96" rx="10" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f" stroke-opacity="0.8"/>
     </g>
     <text x="231" y="624" text-anchor="middle" font-size="10" font-weight="700" fill="#0fa07f">ASCII IS A 1-BYTE SUBSET — UTF-8 IS BACKWARD-COMPATIBLE</text>
-    <text x="231" y="648" text-anchor="middle" font-size="11.5" fill="currentColor"><tspan font-weight="700" fill="#3553ff">A</tspan> = U+0041 = 65 → <tspan fill="#e0930f" font-weight="700">0</tspan><tspan fill="#3553ff" font-weight="700">1000001</tspan> = <tspan fill="#0fa07f" font-weight="700">0x41</tspan></text>
+    <text x="231" y="648" text-anchor="middle" font-size="11.5" fill="currentColor"><tspan font-weight="700" fill="#c94a12">A</tspan> = U+0041 = 65 → <tspan fill="#e0930f" font-weight="700">0</tspan><tspan fill="#c94a12" font-weight="700">1000001</tspan> = <tspan fill="#0fa07f" font-weight="700">0x41</tspan></text>
     <text x="231" y="668" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">code points 0–127 need nothing but a single leading 0</text>
     <text x="231" y="686" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.75">plain English UTF-8 is byte-for-byte ASCII — why UTF-8 won</text>
 
     <text x="677" y="624" text-anchor="middle" font-size="10" font-weight="700" fill="#e0930f">SO CHARACTER COUNT ≠ BYTE COUNT</text>
     <g font-size="10.5" text-anchor="middle" fill="currentColor">
-      <text x="573" y="642">c</text><text x="625" y="642">a</text><text x="677" y="642">f</text><text x="755" y="642" fill="#3553ff" font-weight="700">é</text>
+      <text x="573" y="642">c</text><text x="625" y="642">a</text><text x="677" y="642">f</text><text x="755" y="642" fill="#c94a12" font-weight="700">é</text>
     </g>
     <g fill="none" stroke-width="1.5">
       <rect x="550" y="648" width="46" height="26" rx="6" fill="#7f7f7f" fill-opacity="0.10" stroke="#7f7f7f" stroke-opacity="0.7"/>

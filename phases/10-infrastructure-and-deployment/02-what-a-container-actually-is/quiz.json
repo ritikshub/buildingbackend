@@ -1,17 +1,5 @@
 [
   {
-    "stage": "pre",
-    "question": "A local privilege-escalation CVE lands in the Linux kernel. Your services all run containerised, as a non-root uid, with all capabilities dropped and a read-only root filesystem. A colleague says the containers are isolated from the host kernel the way virtual machines are, so this is a host-patching problem and not an application one. What is actually true?",
-    "options": [
-      "Each container runs its own kernel from its base image, so you are exposed only until you rebuild on a patched base",
-      "Every container on the machine calls into the exact same host kernel — a container is a process, not a machine, so the vulnerable code is your code path too; the hardening narrows the syscall surface but does not remove the boundary, and only a real VM or microVM (Firecracker, Kata, gVisor) changes that answer",
-      "Dropping all capabilities removes the exposure, because privilege escalation requires holding at least one capability to begin with",
-      "A read-only root filesystem removes the exposure, because an escalation exploit has to write a binary somewhere first"
-    ],
-    "correct": 1,
-    "explanation": "There is no `struct container` in Linux. There is a process, plus namespaces (what it can see), cgroups (what it may use), a layered root filesystem (what it thinks its disk is), and a reduced capability set (what root means). Nothing in that list virtualises the kernel: every syscall your container makes is executed by the same 30-million-line host kernel as every other container on the box. Option 1 is the misconception the whole lesson exists to remove — base images ship userspace, never a kernel. The hardening in options 3 and 4 is real and worth having (this sandbox measured `CapEff = 0x00000000a80425fb`, 14 of 41 capabilities held) but it shrinks the attack surface rather than adding a boundary; changing the boundary means a hypervisor or a userspace kernel."
-  },
-  {
     "stage": "check",
     "question": "Your service ships a 40 MB vendor bundle inside the image and rewrites a few header bytes of it during warm-up. Ever since, the first request after each pod starts is measurably slower than every request after it, and the effect vanishes on the second request to the same pod. What is the mechanism?",
     "options": [
