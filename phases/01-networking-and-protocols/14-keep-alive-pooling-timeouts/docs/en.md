@@ -2,11 +2,6 @@
 
 > Opening a TCP connection costs a round-trip you pay before sending a single useful byte. Keep-alive reuses the connection, a pool bounds and shares them, and timeouts make sure a silent peer can never hang you forever.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons [05](../05-transport-layer-tcp-vs-udp/) and [08](../08-http-in-depth/) — the TCP handshake cost and HTTP keep-alive.
-**Time:** ~60 minutes
-
 ## The Problem
 
 You wrote a service that calls another service once per request. Under light

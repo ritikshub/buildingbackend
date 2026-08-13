@@ -2,11 +2,6 @@
 
 > Run one transaction and everything is simple. Run a thousand at once and they start reading each other's half-finished work, overwriting each other, and seeing the database change underfoot. Isolation is the dial that controls how much of that chaos leaks through — and it's a dial, not a switch, because the top setting isn't free.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [Transactions & ACID](../11-transactions-and-acid/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 The "I" in ACID (Lesson 11) promised that concurrent transactions "don't step on each

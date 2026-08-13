@@ -2,11 +2,6 @@
 
 > GHz, FLOPS, GB, GB/s, IOPS, ms — hardware is sold in a soup of units. This lesson decodes them so you can compare a CPU, a GPU, RAM, and a disk on the same page, and know why each costs what it does.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The CPU](../05-the-cpu/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 You've now met the CPU, RAM, the GPU, and storage. But how do you actually **compare**

@@ -2,11 +2,6 @@
 
 > Everyone knows about Amdahl's Law and the serial fraction that caps your speedup. Almost nobody knows about the second term — the one that makes throughput go *down*. Measured here on a simulated fleet: doubling from 32 machines to 64 cost **17.8% of throughput** and 2.43× the cost per request, and **removing** those 32 machines recovered **+21.7%** in one deploy. Amdahl's Law predicted a ceiling of 41× and told you to keep buying. The real peak was 10.96× at 32 machines. This lesson teaches you to fit both terms to your own load test and find your peak before your traffic finds it for you.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [What One Machine Can Actually Do](../01-what-one-machine-can-do/), [Why Concurrency? Latency, Throughput & Little's Law](../../08-concurrency-and-performance/01-why-concurrency/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 It is 09:40 on the morning of a product launch. You run a fleet of 24 instances behind a load balancer, doing about 19,000 requests per second. Marketing sends the email at 10:00 and you are expecting roughly double the traffic, so at 09:40 you do the responsible thing and pre-scale. You take the fleet from 24 instances to 48.

@@ -2,11 +2,6 @@
 
 > How does `COMMIT` make a change survive a crash *one nanosecond later*, without slowly writing every modified page to its final home on disk first? By writing the *intent* to a sequential log and flushing that — a trick that is both faster and safer than touching the data itself. This is the engine under the "D" in ACID.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Transactions & ACID](../11-transactions-and-acid/) · [How Data Lives on Disk](../08-storage-pages-and-heaps/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 Lesson 11 promised durability: once `COMMIT` returns, the change survives any crash. Lesson

@@ -2,11 +2,6 @@
 
 > Now you have a cache and a database. The only real question left is choreography: who reads which first, who writes which first, and what happens when one of them fails mid-step. That order of operations is the whole design — and one wrong ordering serves stale data forever.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Redis Fundamentals](../03-redis-fundamentals/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 You have two stores now: a fast cache (Redis) and a slow source of truth (the

@@ -2,11 +2,6 @@
 
 > A byte is just a number. Text only exists because everyone agreed which number means which letter. That agreement is an *encoding* — and getting it wrong is exactly why you sometimes see � instead of an emoji.
 
-**Type:** Learn
-**Languages:** Python
-**Prerequisites:** [Bits & Bytes](../01-bits-and-bytes/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 Last lesson ended on a promise: **all data is bytes, plus an agreement about how to

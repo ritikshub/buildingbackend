@@ -2,11 +2,6 @@
 
 > A web framework is not magic. It is an accept loop, a text parser, and a string builder — the exact three things you are about to write by hand on a raw socket.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons 05 and 08 — the TCP socket and HTTP. You should know the socket lifecycle (`socket` → `bind` → `listen` → `accept`) and the shape of an HTTP request and response.
-**Time:** ~75 minutes
-
 ## The Problem
 
 You have climbed the whole stack. You started with **bits on a wire** (the physical layer), watched the data-link layer group them into **frames**, saw the network layer wrap those into **packets** addressed to a machine, learned how the transport layer turns unreliable packets into a **TCP byte stream** addressed to a program (Lesson 05), and then read the **HTTP** (HyperText Transfer Protocol) request and response that ride on top of that stream (Lesson 08).

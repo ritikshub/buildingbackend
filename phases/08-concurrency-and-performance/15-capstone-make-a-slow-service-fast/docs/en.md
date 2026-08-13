@@ -2,11 +2,6 @@
 
 > You inherit a service that is correct, reviewed, in production, and serves **11.5 requests per second** on a machine with ten idle cores. Nobody has ever profiled it. Over nine stages you will take it to **794 requests per second** and a p99 of **27 ms** — but the number that matters is not the speedup, it is that every single step was decided by a measurement. One stage makes it faster and silently wrong. One stage does nothing at all and gets reverted. That is what a real performance investigation looks like.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Concurrency](../01-why-concurrency/) · [Processes, Threads & the GIL](../02-processes-threads-and-the-gil/) · [Blocking vs Non-Blocking I/O](../03-blocking-vs-non-blocking-io/) · [The Event Loop](../04-the-event-loop/) · [Coroutines & async/await](../05-coroutines-and-async-await/) · [Structured Concurrency & Cancellation](../06-structured-concurrency-and-cancellation/) · [Thread Pools & Work Queues](../07-thread-pools-and-work-queues/) · [Race Conditions & Atomicity](../08-race-conditions-and-atomicity/) · [Locks & Coordination Primitives](../09-locks-and-coordination-primitives/) · [Deadlock, Livelock & Starvation](../10-deadlock-livelock-and-starvation/) · [Backpressure & Load Shedding](../11-backpressure-and-load-shedding/) · [Connection & Resource Pooling](../12-connection-and-resource-pooling/) · [Profiling](../13-profiling/) · [Benchmarking & Load Testing](../14-benchmarking-and-load-testing/)
-**Time:** ~100 minutes
-
 ## The Problem
 
 The ticket says: *"checkout is slow, please make it faster."* It is assigned to you because the person who wrote the service left.

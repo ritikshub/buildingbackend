@@ -2,11 +2,6 @@
 
 > A key is how the database answers "*which* row?" — and a foreign key is how one table points at another so firmly that the database won't let the connection break. Keys are what turn a pile of tables into a model.
 
-**Type:** Learn
-**Languages:** SQL
-**Prerequisites:** [Tables, Columns & Data Types](../04-tables-columns-data-types/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 You have an `author` table and a `book` table. Two questions decide whether they're a real

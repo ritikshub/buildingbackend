@@ -2,11 +2,6 @@
 
 > A key-value store hands back a sealed envelope; a relational database makes you cut every record into a dozen tables and sew them back together with joins. The document model sits between them: store the whole object as one self-describing JSON tree — the way your application already thinks about it — and let the database look *inside* it to answer queries. You trade the iron discipline of a schema for the freedom to let each record be its own shape.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Key-Value Stores](../02-key-value-stores/), [Schema Design & Normalization](../../03-relational-databases/07-schema-design-and-normalization/), [Indexes & the B-Tree](../../03-relational-databases/09-indexes-and-the-btree/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 An order arrives in your application as one object: a customer, a shipping address, a list of

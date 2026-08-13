@@ -2,11 +2,6 @@
 
 > Login proves who you are exactly once. Then HTTP forgets — every one of the next thousand requests arrives as a stranger, because the protocol is stateless. A **session** is how the server remembers you across them, and the **cookie** that carries the session is a bearer token: whoever holds it *is* you, no password required. This lesson builds server-side sessions and signed cookies from scratch, and gets the four cookie attributes — `HttpOnly`, `Secure`, `SameSite`, and the `__Host-` prefix — exactly right, because each one is the entire defense against a specific, common attack.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Cryptographic Building Blocks](../02-cryptographic-building-blocks/) · [HTTP in Depth](../../01-networking-and-protocols/08-http-in-depth/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 Your login endpoint works: it checks the password ([Lesson 3](../03-password-storage-and-hashing/)), maybe a second factor ([Lesson 4](../04-multi-factor-auth-totp-and-passkeys/)), and confirms this request is from `alice`. Then the response goes out, the connection closes, and the *next* request Alice makes — clicking to her dashboard — arrives at your server carrying **nothing** that says it's her. HTTP is **stateless**: each request is independent, with no memory of any request before it ([Phase 1, Lesson 8](../../01-networking-and-protocols/08-http-in-depth/)). You proved who Alice was, and the protocol immediately forgot.

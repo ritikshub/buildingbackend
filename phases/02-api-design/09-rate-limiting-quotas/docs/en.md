@@ -2,11 +2,6 @@
 
 > A rate limit turns "everyone gets slow, then everyone gets errors" into "one client gets 429s, everyone else is fine." Resilience is a negotiated protocol between client and server.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Idempotency & Safe Retries](../07-idempotency-safe-retries/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 Every API that survives production needs a way to say "no" politely when demand

@@ -2,11 +2,6 @@
 
 > A typical API request takes 200 ms, and 195 ms of that is your process sitting still, blocked on a database and an HTTP call. Handled one at a time on a 16-core machine, that server measures **4.96 requests per second while using 0.157% of the CPU you are renting** — fifteen and a half cores doing nothing at all. The machine is not slow; it is idle, and it is idle because your code is standing in line. This lesson builds the four pieces of arithmetic that turn that observation into a number you can size a system with: latency versus throughput, Little's Law, the utilization knee, and the two laws that cap how far more workers can ever take you.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The CPU: Cores, Clock & Execution](../../00-foundations/05-the-cpu/), [RAM & the Memory Hierarchy](../../00-foundations/06-ram-and-memory-hierarchy/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 You have written an ordinary endpoint. `GET /orders/{id}`. It parses and authorizes the request, queries Postgres for the order, calls the payments API to check whether the charge settled, shapes the result, and serializes JSON. Nothing exotic. It takes **200 ms**, and everybody agrees that is acceptable.

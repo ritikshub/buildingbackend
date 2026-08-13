@@ -2,11 +2,6 @@
 
 > The browser is the strangest client you have: you ship it your code, and then you can't trust it — because it will run *any* script that ends up on your page, and it will automatically attach your user's cookie to *any* request to your domain, no matter who initiated it. Those two behaviors create three attack classes the backend must actively defend: **XSS** (get a script onto the page), **CSRF** (ride the auto-attached cookie), and the **Same-Origin Policy / CORS** that governs what one origin may do to another. This lesson explains the browser's security model and the exact headers and tokens that defend each — because "we have a login" means nothing if a comment field can steal every session.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Sessions & Secure Cookies](../05-sessions-and-secure-cookies/) · [Authentication, Authorization & the Security Mindset](../01-authn-authz-and-the-security-mindset/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Your app is two parts: an API and a web front-end the browser runs. Everything about auth so far — passwords, MFA, sessions, tokens, authorization — assumed the request came from something you could reason about. The browser breaks that assumption in two specific ways, and each opens an attack.

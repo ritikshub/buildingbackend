@@ -2,11 +2,6 @@
 
 > Six tests that call every function in a pricing module and contain **not one assertion** score **100.0% line coverage** — 48 of 48 executable lines — and walk through a `fail_under = 90` gate without an argument. Measured here against 70 seeded faults, that suite catches **zero of them**. Then the result that reframes the metric: across five suites of rising quality, line coverage is already at its maximum on the *first* one and never moves again, while the mutation score climbs **0% → 30.0% → 78.6% → 88.6% → 95.7%**. Every bit of quality difference between those five suites is invisible to the number your CI gate reads. And two suites of eight tests, both reporting **100% line and 100% branch coverage**, detected **52.9%** and **95.7%** of the same faults.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Anatomy of a Unit Test](../03-anatomy-of-a-unit-test/), [Property-Based Testing & Fuzzing](../12-property-based-testing-and-fuzzing/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 The pricing service sits at 87% line coverage. The gate in `.coveragerc` says `fail_under = 90`. Every pull request has been red for eleven days, and the sprint goal — written on a card, agreed in planning, visible on a dashboard — is "reach 90% coverage".

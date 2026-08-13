@@ -2,11 +2,6 @@
 
 > A fixed `sleep` cannot win. Measured here on a real completion-time distribution: `sleep(p99.9)` costs **16.3 minutes** across a 500-test suite and still leaves **46.5% of builds red for no reason**; the only fixed sleep that gets a 500-test suite to 99% green is **3.0 seconds — 74× the median, and essentially the slowest of 200,000 observations** — costing **25.1 minutes** of pure waiting. A 12-line polling primitive reached **100% green in 30.7 seconds**, 49× faster and strictly less flaky. Then the rest of what your async suite is not testing: an at-least-once consumer that over-credited **$3,571.20** across 400 orders, **2 of 5 invariants** that secretly depended on arrival order and broke in **480 and 360 of 720** permutations, and a retry that wrote **4 rows for 1 order** while the dead-letter queue stayed empty.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Determinism: Time, Randomness, IDs & Order](../08-determinism-time-randomness-order/), [Delivery Semantics & Idempotent Consumers](../../06-messaging-and-pub-sub/06-delivery-semantics-and-idempotency/), [Coroutines & Async/Await from the Ground Up](../../08-concurrency-and-performance/05-coroutines-and-async-await/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 It is 09:14 on a Wednesday and `test_order_is_visible_after_checkout` is red on `main`. Nobody touched checkout. Nobody touched the worker. The diff on the failing commit fixes a typo in a README.

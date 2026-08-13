@@ -2,11 +2,6 @@
 
 > Your load generator reports a p99 of 7.81 ms. The truth, measured on the same server in the same second, is 1,525 ms — 195 times worse. Nothing was broken and no error was logged; the generator simply stopped sending requests while the server was stalled, so the only requests that would have been slow were never made. This lesson builds an honest microbenchmark harness, three benchmarks that lie with the true number beside each, and an end-to-end demonstration of coordinated omission — plus the correction that recovers 92% of the real answer.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Profiling: Finding the Real Bottleneck](../13-profiling/), [Backpressure & Load Shedding](../11-backpressure-and-load-shedding/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 Someone opens a pull request. The description says: **"The optimization made it 3× faster."**

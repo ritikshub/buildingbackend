@@ -2,11 +2,6 @@
 
 > A constraint is a rule you declare once and the database enforces on every write, forever, no matter which app or which bug is doing the writing. It's how you make an invalid state not "unlikely" but *impossible*.
 
-**Type:** Learn
-**Languages:** SQL
-**Prerequisites:** [Keys & Relationships](../05-keys-and-relationships/)
-**Time:** ~50 minutes
-
 ## The Problem
 
 Where should the rule "an order total can't be negative" live? The tempting answer is "in

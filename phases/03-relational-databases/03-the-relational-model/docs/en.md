@@ -2,11 +2,6 @@
 
 > A table looks too simple to be a breakthrough. But behind that grid is a piece of mathematics that lets you ask *any* question of your data by describing the answer — never by explaining how to go and fetch it. That separation is the whole idea.
 
-**Type:** Learn
-**Languages:** SQL
-**Prerequisites:** [A Field Guide to Databases](../02-database-landscape/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 We've said relational databases store data in "tables." Everyone has seen a table — it's

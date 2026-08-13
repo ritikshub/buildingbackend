@@ -2,11 +2,6 @@
 
 > The network layer gets a packet to the right *machine*. The transport layer gets it to the right *program* — and decides whether "getting there" is guaranteed or just attempted.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Phase 1 · Lessons 01–04 — the OSI/TCP-IP models through the network layer. You should know that an IP (Internet Protocol) address identifies a machine and that data travels in packets.
-**Time:** ~75 minutes
-
 ## The Problem
 
 Your laptop has one IP address, but right now it is talking to a dozen servers

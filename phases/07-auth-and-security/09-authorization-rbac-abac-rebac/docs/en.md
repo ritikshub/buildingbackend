@@ -2,11 +2,6 @@
 
 > Eight lessons established *who* the caller is. This one answers the other half of the phase's opening question — *what are they allowed to do?* — and it's where the very first bug in this phase, the IDOR, actually lives. Authorization is a decision, `(subject, action, resource) → allow | deny`, and the difference between a secure system and a breach is whether that decision is made **consistently, on every access, and at the object level**. You'll build the three models the industry runs on — **RBAC** (roles), **ABAC** (attributes), and **ReBAC** (relationships, the Google Zanzibar model behind modern fine-grained authorization) — and learn where the check must live so it can't be skipped.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Authentication, Authorization & the Security Mindset](../01-authn-authz-and-the-security-mindset/) · [JWT & Token Auth from Scratch](../06-jwt-and-token-auth/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 Your app has authenticated users. Now the real question arrives on every single request: *is this specific user allowed to do this specific thing to this specific object?* Can Alice **read** document 42? Can Bob **delete** it? Can a support agent **refund** this payment but not that one?

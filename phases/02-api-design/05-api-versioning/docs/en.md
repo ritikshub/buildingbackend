@@ -2,11 +2,6 @@
 
 > A version is a promise to code you can't see or update. The best versioning strategy is the one that lets you almost never bump the version.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [REST Principles & Resource Modeling](../01-rest-principles-resource-modeling/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 You version because you'll eventually need a breaking change. But *where* you put

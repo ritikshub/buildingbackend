@@ -2,11 +2,6 @@
 
 > Optimizing without measuring is choosing a random number to divide by. This lesson builds a checkout endpoint whose true cost breakdown is known — 895 ms, of which 501 ms is spent waiting and 18 ms is spent in the function everyone blames — and then grades three profilers against it. The CPU profiler reports the wait as **0.0% of 1,476 samples**: not small, absent. The wall-clock profiler lands within **0.06 percentage points** of truth. Choosing the wrong profiler is how you measure carefully and still learn nothing.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Concurrency?](../01-why-concurrency/), [Coroutines & Async/Await](../05-coroutines-and-async-await/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 The checkout endpoint takes 900 ms and everybody has a theory.

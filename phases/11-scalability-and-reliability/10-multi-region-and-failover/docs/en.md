@@ -2,11 +2,6 @@
 
 > The business asks for a second region and nobody asks which region owns a write. Measured here: moving the app tier one region away from its database — same code, same queries — took p50 from **9.3 ms to 456.2 ms**, a 49x regression that no profiler will ever blame on you. Then the part that decides whether the second region was worth its bill: two identical evacuations of a dead region, differing only in whether the survivor had headroom, cost **455,000 failed requests versus 2,941,245**. A second region you have never failed over to is a second bill, not a second region.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Failure Domains, Blast Radius & Shuffle Sharding](../09-failure-domains-and-shuffle-sharding/), [Read Replicas & Replication Lag](../07-read-replicas-and-replication-lag/), [Names on the Network: DNS](../../01-networking-and-protocols/06-dns-names-on-the-network/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 The decision arrives in a sentence: *"we need to be multi-region for reliability."* Nobody in the

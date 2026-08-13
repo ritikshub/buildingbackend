@@ -2,11 +2,6 @@
 
 > An instance stops answering at 14:02:00. Its callers keep sending it traffic until 14:02:47. Nothing is misconfigured — six layers each behave exactly as documented, and their delays add up. Measured here: an **assumed 30-second window that is actually 47.25 s (1.57×), with 315 failed requests**, and — with no maximum connection lifetime, which is the default in most HTTP clients — traffic that **never stops at all**, 1,067 failures and counting, because a keep-alive connection is pinned to an address and discovery closes no sockets. Then the reduction: 47.25 s → 2.65 s, and three shutdown orderings that drop **375, 228 and 0** requests.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Orchestration: Control Loops, Schedulers & Kubernetes](../07-orchestration-and-kubernetes/), [Health Checks, Readiness & Graceful Shutdown](../../09-logging-monitoring-and-observability/08-health-checks-and-probes/), [DNS: Names on the Network](../../01-networking-and-protocols/06-dns-names-on-the-network/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Lesson 7 built a control loop that moves replicas between machines without being asked. It works. A node died and the loop had full capacity back in two ticks, at 02:14, with nobody awake.

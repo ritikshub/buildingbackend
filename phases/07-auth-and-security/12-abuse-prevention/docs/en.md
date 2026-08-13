@@ -2,11 +2,6 @@
 
 > Every lesson before this stopped attackers from doing things they *shouldn't*. This one defends against attackers using your system exactly as *designed* — but automated, at machine scale, in bulk. Nobody exploits a bug to run **credential stuffing**; they just call your login a hundred million times with passwords leaked from other sites, and a small percentage work. The defense isn't a patch, it's an economic argument: make abuse **expensive and detectable** for the attacker while keeping it **frictionless** for the human. You'll build a login defender that throttles, screens breached passwords, blocks enumeration, and spots stuffing — layered on the rate-limiting algorithms you built back in Phase 2.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Password Storage & Hashing](../03-password-storage-and-hashing/) · [Multi-Factor Auth: TOTP & Passkeys](../04-multi-factor-auth-totp-and-passkeys/) · [Rate Limiting & Quotas](../../02-api-design/09-rate-limiting-quotas/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 Your login endpoint is perfect. Argon2 password storage ([Lesson 3](../03-password-storage-and-hashing/)), optional MFA ([Lesson 4](../04-multi-factor-auth-totp-and-passkeys/)), secure sessions ([Lesson 5](../05-sessions-and-secure-cookies/)), no injection, correct authorization. An attacker can't *break* it — so they *use* it, millions of times, and win anyway:

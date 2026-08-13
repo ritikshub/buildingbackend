@@ -2,11 +2,6 @@
 
 > Ten I/O calls of 100 ms each, awaited one at a time in a loop, took **1,002.7 ms**. The identical ten coroutines handed to `asyncio.gather` took **100.6 ms** — a **9.96x** speedup with not one line changed inside the coroutine. That gap is the entire lesson: `async` buys you the *ability* to suspend, and scheduling is what actually overlaps the waiting. Then we measure the other side of the deal — one `time.sleep(0.3)` inside a coroutine dragged eight unrelated endpoints from 50.4 ms to a median of **325.8 ms**, because a coroutine that never awaits never yields.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The Event Loop](../04-the-event-loop/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 Lesson 4 ended in a strange place. You had a working event loop — a ready queue, a timer heap, one `select()` call watching every socket at once — and it was fast, and the code was unreadable.

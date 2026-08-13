@@ -2,11 +2,6 @@
 
 > On a timeout, the client can't tell whether the request failed or succeeded with the response lost. A blind retry double-charges. Idempotency keys are the fix.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [URLs, Verbs & Status Codes](../02-urls-verbs-status-codes/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 A client sends `POST /v1/payments` and the connection drops before the response

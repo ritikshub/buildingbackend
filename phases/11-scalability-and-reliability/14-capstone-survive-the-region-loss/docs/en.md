@@ -2,11 +2,6 @@
 
 > Two builds of the same service, the same traffic, the same seven failures injected in the same order. One ends the exercise at **90.10% availability having spent 38.1 error-seconds and needing zero operator restarts**. The other ends at **26.69%**, spends **282.2 error-seconds — 21.5% of an entire month's budget in 6.4 minutes** — and needs three restarts to get through the script at all. Then the ablation: re-run the whole thing with each defence switched off in turn, and find out which of the thirteen lessons actually earned its complexity.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [What One Machine Can Actually Do](../01-what-one-machine-can-do/) · [The Universal Scalability Law](../02-universal-scalability-law/) · [Load Balancing Algorithms](../03-load-balancing-algorithms/) · [L4 vs L7, Health Checks & Outlier Ejection](../04-l4-l7-health-checks-and-ejection/) · [Service Discovery & Subsetting](../05-service-discovery-and-subsetting/) · [Stateless Services](../06-stateless-services/) · [Read Replicas & Replication Lag](../07-read-replicas-and-replication-lag/) · [Sharding the Data Tier](../08-sharding-the-data-tier/) · [Failure Domains & Shuffle Sharding](../09-failure-domains-and-shuffle-sharding/) · [Multi-Region: Failover & Data Gravity](../10-multi-region-and-failover/) · [The Tail at Scale](../11-the-tail-at-scale/) · [Capacity Planning](../12-capacity-planning/) · [Autoscaling](../13-autoscaling/)
-**Time:** ~120 minutes
-
 ## The Problem
 
 It is the second week of the quarter and you have been given an assignment with a date on it.

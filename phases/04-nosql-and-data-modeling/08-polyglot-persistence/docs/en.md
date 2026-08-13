@@ -2,11 +2,6 @@
 
 > The end of this phase is not "pick the one right database." It's the senior realization that a real system uses *several* — a relational core for money, a cache for speed, a search index for text, maybe a graph for recommendations — each placed exactly where its pressure is felt. The hard part was never choosing them. It's keeping them from lying to each other. Polyglot persistence is powerful, and it is a tax; this lesson is how to pay the least tax for the most benefit.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [When Not to Use SQL](../01-when-not-to-use-sql/), [Document Databases](../03-document-databases/), [Data Modeling by Access Pattern](../07-data-modeling-by-access-pattern/), [Durability: Write-Ahead Logging](../../03-relational-databases/13-write-ahead-logging/)
-**Time:** ~50 minutes
-
 ## The Problem
 
 Go back to the e-commerce system you walked in Lesson 1, but now you've finished the phase and you

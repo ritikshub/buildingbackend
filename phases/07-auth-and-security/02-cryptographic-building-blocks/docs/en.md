@@ -2,11 +2,6 @@
 
 > The word "encrypt" gets used for three unrelated operations, and confusing them is how the AcmeNotes token from Lesson 1 got forged. This lesson pulls apart the small set of primitives every later mechanism is made of — encoding, hashing, MACs, symmetric and asymmetric encryption, key derivation, and the one random generator you're allowed to use — and builds the keyed ones by hand from Python's standard library, so a hashed password, a signed JWT, an HMAC'd webhook, and an encrypted secret stop being magic.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Authentication, Authorization & the Security Mindset](../01-authn-authz-and-the-security-mindset/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 A developer is handed a ticket: *"encrypt the sensitive stuff."* They ship three changes that afternoon, feel productive, and introduce three vulnerabilities — because "encrypt" in a stand-up means at least three different operations, and they used the wrong one each time.

@@ -2,11 +2,6 @@
 
 > "Why are we running 135 instances when the dashboard says 33%?" is a completely reasonable question, and most teams cannot answer it. Measured here: the same 4,454 req/s peak needs 45 machines if you size against the number a load test prints, and 135 once you write down the failure you must survive — a **3.00× multiplier**, every point of it accounted for. The fleet sized to the sensible-sounding middle answer served **61.6% of requests** during an availability-zone loss. This lesson turns headroom from an opinion into arithmetic you can defend in a budget review.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The Universal Scalability Law](../02-universal-scalability-law/), [Failure Domains, Blast Radius & Shuffle Sharding](../09-failure-domains-and-shuffle-sharding/), [Benchmarking & Load Testing](../../08-concurrency-and-performance/14-benchmarking-and-load-testing/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 It is a quarterly budget review. The compute line has gone up again, and someone from finance — who is being helpful, not hostile — puts a graph on the screen and asks the obvious question.

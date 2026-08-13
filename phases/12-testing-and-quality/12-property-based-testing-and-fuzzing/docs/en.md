@@ -2,11 +2,6 @@
 
 > Forty hand-written tests for a pagination cursor codec caught **0 of its 3 real bugs** and stayed **40/40 green** through every one of them. Three properties — fifteen lines — caught **3 of 3**, in **5, 4 and 10 generated cases**. Then the number that makes it usable: a failing input of **4,000 characters shrank to 2** in **58 property evaluations**, and the two characters are the bug report. And the result nobody guesses: swapping only the *generator*, with the property and the code and the budget all identical, moved one bug from "found in 8 cases" to "expected in 4,294,967,296" — a **537-million-fold** difference produced by nothing but how you draw an integer.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Anatomy of a Unit Test](../03-anatomy-of-a-unit-test/), [Determinism: Time, Randomness, IDs & Order](../08-determinism-time-randomness-order/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 It is 14:06 on a Thursday and the mobile team files a bug that reads like a support ticket rather than an engineering one: *"some users can't scroll past page 3."* Not all users. Not any user you can name. Some.

@@ -2,11 +2,6 @@
 
 > A dependency gets 20% slower. Nothing errors, nothing crashes, and every request your workers are executing was abandoned by its caller long ago. Measured here: the same overload through an unbounded queue and a 40-item bounded one completed the identical 9,462 requests — but the unbounded run's p99 was 61 seconds and **98% of its completed work was already past its deadline**, perfect answers nobody would ever read. Then the part that ends careers: remove the original slowdown and the system does not recover. This lesson builds the one capability that gets you out, which is the ability to say no.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Concurrency?](../01-why-concurrency/), [Thread Pools & Work Queues](../07-thread-pools-and-work-queues/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 It is 14:12. The recommendations service your checkout endpoint calls got 20% slower — a routine index change on their side, well within their SLO (Service Level Objective, the latency target a team promises). Nothing on your dashboards is red. Your error rate is 0.00%. Your CPU is at 40%. Your service is *fine*.

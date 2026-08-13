@@ -2,11 +2,6 @@
 
 > A database never reads "a row." It reads a **page** — a fixed-size block of bytes holding many rows — because that's the only unit the disk hands out efficiently. Understand the page and you understand why every index, transaction, and log in this phase works the way it does.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Schema Design & Normalization](../07-schema-design-and-normalization/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 Everything so far has been the *logical* view: tables, rows, keys, constraints. But

@@ -2,11 +2,6 @@
 
 > Two test suites over the same pricing module, **59 lines each**, scored against the same 25 seeded bugs. One catches **11**. The other catches **23**. The weak one is not lazy — it has *more* assertions (31 against 17) and one test carrying **fourteen** of them, of which only **six** were ever the failure you were shown while the other eight broke 26 times in silence. And when a refactor that provably changes no money at all lands, **6 of the 10 weak tests go red and 0 of the 14 good ones do**. Same language, same module, same budget. Everything that separates them is in this lesson.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Tests Exist: The Cost of Finding a Bug Late](../01-why-tests-exist/), [The Shape of a Test Suite](../02-the-shape-of-a-test-suite/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 **Tuesday, 09:12.** Pull request #4417 is open in front of you: *"add tests for pricing"*. **Ten new tests, 59 lines, 31 assertions.** The CI badge is green. The whole file runs in well under a second. Coverage on `pricing.py` clears the gate the team argued about for a month, and every line of the module is executed. Two colleagues have already approved it.

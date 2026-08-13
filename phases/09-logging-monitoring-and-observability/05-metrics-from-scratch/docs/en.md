@@ -2,11 +2,6 @@
 
 > A log costs you money per request. A metric costs you a few bytes per *series*, forever, no matter how much traffic flows through it — because it throws the individual request away the instant it records it. That trade buys you the ability to watch every endpoint continuously for a year. This lesson builds the three metric types by hand, and proves the one property that makes histograms worth their cost: you can add them together across machines, and you can never do that with a percentile.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Systems Go Dark](../01-why-systems-go-dark/), [The Log Pipeline](../04-the-log-pipeline/), [Time-Series Databases](../../04-nosql-and-data-modeling/05-time-series-databases/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 You just finished pricing the log pipeline in Lesson 4, and the number is still on the whiteboard. Now product asks a reasonable question: **"What's the error rate and the latency of every endpoint, right now, and how does it compare to last Tuesday?"**

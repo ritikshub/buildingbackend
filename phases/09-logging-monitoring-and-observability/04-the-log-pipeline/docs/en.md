@@ -2,11 +2,6 @@
 
 > A log line that never leaves the machine that wrote it is worthless the moment that machine dies — and a log line that *does* leave costs real money, every day, forever. This lesson takes the structured events of Lesson 2 and the correlation IDs of Lesson 3 and follows them off the box: through the container runtime, into an agent, across a bounded buffer that must decide what to drop, into two very different storage engines, and finally onto an invoice. Getting that invoice under control is a backend engineering skill, and almost nobody teaches it.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Logs: From `print()` to Structured Events](../02-structured-logging/), [Correlation: Request IDs, Trace Context & Propagation](../03-correlation-and-request-context/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 Your service logs beautifully. Every line is JSON (JavaScript Object Notation), every line carries a `trace_id`, every level is used with discipline. And then, in order, three things happen.

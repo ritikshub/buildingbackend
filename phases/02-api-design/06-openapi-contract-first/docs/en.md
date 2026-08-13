@@ -2,11 +2,6 @@
 
 > When the spec is generated from the same models that validate requests at runtime, your docs and your behavior can't drift.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [URLs, Verbs & Status Codes](../02-urls-verbs-status-codes/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Hand-maintained API docs rot. The moment the code and the docs live in separate

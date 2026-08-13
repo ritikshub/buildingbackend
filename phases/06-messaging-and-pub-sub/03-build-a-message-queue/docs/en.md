@@ -2,11 +2,6 @@
 
 > A queue looks like a list you push to and pop from, right up until a worker dies holding a customer's refund. Then you discover that `pop()` deleted the job before the work happened, that nothing remembers it existed, and that no error was ever logged. This lesson builds the queue that survives that: durable checksummed records, an atomic claim, a lease that expires, and an acknowledgement that arrives *after* the work. Sixty refunds, four workers, one crash — with the wrong design you silently lose one, and with the right one you lose none.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Anatomy of a Message](../02-anatomy-of-a-message/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 You have a queue. It is four characters long:

@@ -2,11 +2,6 @@
 
 > Lesson 9 told you to make your locks finer-grained. Take that advice and you inherit the worst failure mode in this phase: two threads, two locks, opposite order, and both threads are gone — no exception, no error, no log line, and **0.1% of a core** of CPU while the health check still returns 200. This lesson reproduces that deadlock deterministically, dumps the stuck threads' stacks, builds the wait-for-graph detector that PostgreSQL uses to find it, and then shows that the fix — a total order on locks — costs **30 nanoseconds per transfer**. It also measures the two failure modes that look like deadlock and are not: livelock (37% of a core, 30 attempts, zero work finished) and starvation (18,233 acquisitions per second, one thread getting 224 of them, invisible to p50 and p99).
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Locks & Coordination Primitives](../09-locks-and-coordination-primitives/), [Race Conditions & Atomicity](../08-race-conditions-and-atomicity/), [Processes, Threads & the GIL](../02-processes-threads-and-the-gil/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 You have a bank. Accounts have balances, and money moves between them. In Lesson 8 you learned that `balance -= amount` is not atomic, so you put a lock around it. In Lesson 9 you learned that one global lock serialises your entire service, so you made the locks **finer-grained**: one lock per account. Two transfers touching four different accounts now run genuinely in parallel. This is the correct advice and you should follow it.

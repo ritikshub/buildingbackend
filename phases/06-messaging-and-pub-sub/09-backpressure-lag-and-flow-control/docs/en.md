@@ -2,11 +2,6 @@
 
 > Lesson 1 sold you the queue as a shock absorber. This lesson collects the bill. A queue absorbs a *burst*; it cannot absorb a *sustained* rate mismatch, and the difference between those two words is the difference between a graph that recovers on its own and an outage that ends with you choosing which four hours of data to delete. We build the lag simulator, read the shapes, size the prefetch, and watch an autoscaler make things worse.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Retries, Backoff, Dead-Letter Queues & Poison Messages](../08-retries-backoff-and-dead-letter-queues/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 At 14:00 you deploy a change to the `payments-consumer`. It is a good change: each `PaymentAuthorized` message now gets enriched with the customer's loyalty tier before it goes downstream, which means one synchronous call to `loyalty-api` inside the handler. Per-message processing time goes from 4 ms to 16 ms. Nobody notices, because nothing is *broken* — every message is still processed correctly, the error rate is zero, the CPU graph is calm, and the dashboards are green.

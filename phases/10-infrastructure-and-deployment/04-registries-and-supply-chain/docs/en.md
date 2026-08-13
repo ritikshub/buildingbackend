@@ -2,11 +2,6 @@
 
 > `app:1.0` is not a version. It is a pointer, stored in someone else's database, that anybody with push access can move without telling you. Measured here: two pulls of the *identical* reference string returned two different manifests — `sha256:f29d198c…` and `sha256:2e3da6b0…` — while the same two pulls pinned by digest returned byte-identical content both times. The same sha256 that lets a registry store ten releases in 99.6 MiB instead of 839.3 MiB is what makes that tampering detectable at all. This lesson is about storing, distributing and *trusting* the artifact you built.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Images, Layers & the Reproducible Build](../03-images-layers-and-builds/), [Cryptographic Building Blocks](../../07-auth-and-security/02-cryptographic-building-blocks/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 Three nodes in the same fleet. The same Deployment. The same one line:

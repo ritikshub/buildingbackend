@@ -2,11 +2,6 @@
 
 > `asyncio.create_task()` is the `goto` of concurrency: it starts a control flow that outlives the function that started it and returns to nobody. In this lesson's measured run, ten identical fire-and-forget tasks were garbage-collected mid-flight the instant the collector ran, a request that returned a 504 to the user kept three database writes running for 352 ms after it "ended", and a coroutine that swallowed `CancelledError` turned a 150 ms timeout into 456 ms with no error anywhere. Every one of those is the same bug — a task with no parent — and one ~70-line abstraction makes all three impossible.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Coroutines & Async/Await](../05-coroutines-and-async-await/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 Three incidents, three different weeks, three different teams. Same root cause.

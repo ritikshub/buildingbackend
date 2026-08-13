@@ -2,11 +2,6 @@
 
 > Fourteen lessons built the stages. This one runs one service through all of them — commit, image, registry, declared infrastructure, orchestrated fleet, routed traffic — and then lands a change that needs **both** a schema migration and a new code path, three different ways. Staged properly it costs **0 user-facing errors**. Shipped as "one migration and one deploy" it costs **48,983 5xx and 32,259 silent bad reads**, because the rollout does not fail — it *waits*. Canaried the way most teams canary, it costs **0 errors and 57,614 wrong prices**, because the canary watched one instance for 600 seconds and only **250 of its 24,600 requests** ever executed the code being tested. Then an incident, where a tidy-up done nine minutes early takes time-to-mitigate from **6.7 s to 849 s**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Rollback, Backups & Disaster Recovery](../14-rollback-backups-and-disaster-recovery/) · [Deployment Strategies: Rolling, Blue-Green & Canary](../11-deployment-strategies/)
-**Time:** ~110 minutes
-
 ## The Problem
 
 Every lesson in this phase built one stage and measured it in isolation, which is the only way to learn a stage. It is not how anything breaks.

@@ -2,11 +2,6 @@
 
 > One thousand clients calling eight hundred backends, each client holding a connection to each backend, is **800,000 sockets** — 16.8 GB of memory for zero requests in flight, 100 health probes per second against every backend, and 2,667 TLS handshakes per second on every deploy. Nothing is broken. The topology is quadratic and it grew past the size where quadratic is affordable. This lesson builds the fix: deterministic subsetting, which cuts the same fleet to **20,000 connections — 2.5% — while giving every backend exactly 25 clients, measured min 25, max 25, standard deviation 0.00.**
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Layer 4 vs Layer 7, Health Checks & Outlier Ejection](../04-l4-l7-health-checks-and-ejection/), [Names on the Network: DNS](../../01-networking-and-protocols/06-dns-names-on-the-network/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Your checkout service has 1,000 instances. It calls the pricing service, which has 800. Both numbers grew slowly, over about two years, and neither of them is wrong.

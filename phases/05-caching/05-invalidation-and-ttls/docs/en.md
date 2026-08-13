@@ -2,11 +2,6 @@
 
 > Every cached entry is a bet that the source of truth hasn't changed. Invalidation is knowing when you've lost the bet — and it's hard because the cache has no idea the database moved on. TTLs are the humble, powerful answer: don't try to be right forever, just be right for a bounded while.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Cache Strategies: Aside, Through, Behind](../04-cache-strategies/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 A cache entry is a photograph of the truth at one instant. The moment the database

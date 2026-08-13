@@ -2,11 +2,6 @@
 
 > Your Redis cache is blindingly fast and sitting in Virginia. A user in Sydney still waits a third of a second for the first byte — not because your server is slow, but because light isn't fast enough to cross the planet and back in time. The only fix is to stop crossing the planet: keep a copy of the answer a few miles from the user.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [Cache Stampede & the Thundering Herd](../06-cache-stampede/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 Everything so far cached *inside* your datacenter — a map in your process, Redis on the

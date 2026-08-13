@@ -2,11 +2,6 @@
 
 > A thread per unit of work is the fix everyone reaches for, and it fails three ways at once in production: you pay the creation cost per item, your thread count is set by your *arrival rate* instead of your capacity, and there is nowhere to put the answer. The fix inverts all three — a fixed set of workers pulling from a bounded queue, handing results back through futures. That leaves exactly two hard questions, and this lesson measures both: sweeping a real pool from 1 to 64 workers against one capacity-limited dependency, 64 workers delivered **49% of the throughput of 8** and a p99 **16x worse**; and against identical overload, an unbounded queue grew **9.3 MiB/s** with latency climbing from 38 ms to 657 ms inside one second, while a 64-slot bound held latency flat at 90 ms.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Processes, Threads & the GIL](../02-processes-threads-and-the-gil/), [Structured Concurrency](../06-structured-concurrency-and-cancellation/), [Why Concurrency?](../01-why-concurrency/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 You have a request handler that needs to do four independent things — call a pricing service, hit the database, write an audit record, push a notification. Doing them one after another takes the sum of their latencies. Doing them at the same time takes the maximum. So you reach for the obvious tool:

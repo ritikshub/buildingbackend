@@ -2,11 +2,6 @@
 
 > Every backend you call has a p99 of 105 ms and a green dashboard. Your user request calls a hundred of them and waits for all of them, and its **median** is 129 ms — worse than the p99 of every single service it touched, because the chance that at least one of 100 calls lands in its own slow 1% is 63.7%. Nobody's dashboard shows this, because the problem is not in any one service; it is in the multiplication. This lesson measures that arithmetic, then buys the tail back: hedging at the p95 took the same 100-way request from a 128.7 ms median to 35.7 ms for **5% more backend load** — and then shows you the two ways that same trick kills you.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Load Balancing Algorithms](../03-load-balancing-algorithms/), [Backpressure, Queueing & Load Shedding](../../08-concurrency-and-performance/11-backpressure-and-load-shedding/), [Sharding the Data Tier](../08-sharding-the-data-tier/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 It is 09:40 on a Tuesday and you are in a meeting that has happened four times already this quarter.

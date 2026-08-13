@@ -2,11 +2,6 @@
 
 > The CPU is the part that actually does the work — and it does one absurdly simple thing, billions of times a second. Once you see that loop, "GHz" and "cores" stop being marketing.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Transistors & Logic Gates](../03-transistors-and-logic-gates/)
-**Time:** ~50 minutes
-
 ## The Problem
 
 You've now got transistors → gates → an adder, all etched onto a chip. But a pile of

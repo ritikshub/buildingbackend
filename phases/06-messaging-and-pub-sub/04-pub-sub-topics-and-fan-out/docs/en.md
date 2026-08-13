@@ -2,11 +2,6 @@
 
 > The queue you just built has one rule that is about to become a problem: each message goes to exactly one consumer. That is perfect for work and catastrophic for news. When five services all need to know that an order was placed, "exactly one of you gets this" is precisely the wrong guarantee. This lesson builds the other broker shape — one message, many independent readers — and measures what it costs, because one publish quietly becomes N writes and somebody pays for all of them.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Build a Message Queue: Work Distribution & Acknowledgement](../03-build-a-message-queue/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 The queue from [Lesson 3](../03-build-a-message-queue/) does one thing extremely well. Producers push work in; a pool of competing consumers pulls work out; each message is leased to exactly one consumer, acknowledged, and gone. Add a consumer and throughput rises. That is **work distribution**, and it is the right primitive whenever a message represents a *job* — resize this image, charge this card, send this one email.

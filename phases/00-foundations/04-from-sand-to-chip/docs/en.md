@@ -2,11 +2,6 @@
 
 > The chip running this page started as sand. Turning sand into a processor with billions of switches is the most precise manufacturing humanity does — which is exactly why good chips cost a fortune.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [Transistors & Logic Gates](../03-transistors-and-logic-gates/)
-**Time:** ~40 minutes
-
 ## The Problem
 
 Last lesson: a processor is billions of transistors. That raises an obvious question —

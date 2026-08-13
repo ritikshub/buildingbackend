@@ -2,11 +2,6 @@
 
 > You tell SQL *what* you want, never *how* to get it. Something has to decide the how — and that something, the query planner, can make the same query run in a millisecond or a minute. Learning to read its mind (via `EXPLAIN`) is the single highest-leverage database skill.
 
-**Type:** Learn
-**Languages:** SQL
-**Prerequisites:** [Indexes & the B-Tree](../09-indexes-and-the-btree/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 SQL is **declarative** (Lesson 3): `SELECT * FROM orders WHERE user_id = 42` describes a

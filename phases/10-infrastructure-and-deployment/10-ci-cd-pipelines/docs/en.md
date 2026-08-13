@@ -2,11 +2,6 @@
 
 > The pipeline takes 40 minutes and is red about a third of the time for reasons unrelated to the change, so the team's reflex on red is to press re-run rather than read it. Measured here: a 20-job pipeline of 95%-reliable jobs is green **35.8% of the time** with nobody having written a bug; auto-retrying the failed job buys 97% green and drops detection of a real race from **59.5% to 9.1%**. Then the deeper failure — because it is slow and untrusted, someone ships from a laptop, and the bytes in production were built on a machine nobody can reproduce. This lesson builds the pipeline that earns the trust back: one artifact, promoted.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Registries, Digests & the Software Supply Chain](../04-registries-and-supply-chain/), [Config, Environments & the Twelve-Factor App](../05-config-and-twelve-factor/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 **Tuesday, 11:40.** You push a two-line fix. CI (continuous integration — the practice of merging everyone's work to a shared branch continuously, and the system that builds and tests each merge) picks it up. The pipeline takes about forty minutes on a good day, so you go to lunch.

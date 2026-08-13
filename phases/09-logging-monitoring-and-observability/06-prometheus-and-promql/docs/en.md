@@ -2,11 +2,6 @@
 
 > You built a metrics registry in the last lesson. It lives in the memory of one process, on one of forty machines, and it dies at every deploy. This lesson gets those numbers *out* — over HTTP, in a text format you can read with `curl` — and then makes them *answerable*: how do you ask "the 99th-percentile checkout latency across the fleet, per region, right now" when nobody ever stored that number?
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Metrics: Counters, Gauges & Histograms from Scratch](../05-metrics-from-scratch/), [Time-Series Databases](../../04-nosql-and-data-modeling/05-time-series-databases/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 Your registry works. `http_requests_total{route="/checkout",status="500"}` is sitting at 412, incremented correctly, costing you nothing. It is also completely useless, for three reasons.

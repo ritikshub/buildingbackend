@@ -2,11 +2,6 @@
 
 > REST isn't "JSON over HTTP" — it's six constraints from Fielding's dissertation, and statelessness is the one that buys you horizontal scaling.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** Phase 1 · HTTP methods and semantics
-**Time:** ~60 minutes
-
 ## The Problem
 
 You can ship `POST /api/getUserData` with a server-side session and call it an

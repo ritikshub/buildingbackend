@@ -2,11 +2,6 @@
 
 > You added nine more consumers and throughput went up beautifully. Then the tickets arrived: a profile updated before it was created, an account deleted before it existed, a wallet that briefly showed a negative balance and tripped a fraud alert. Nothing crashed. Nothing was lost. Every consumer was correct on its own. **Parallelism destroyed order**, and order turned out to be a correctness requirement nobody had written down. This lesson is about the one design decision that decides it — the partition key — and the three separate jobs it is secretly doing at the same time.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Delivery Semantics & Idempotent Consumers](../06-delivery-semantics-and-idempotency/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 Your consumer was falling behind, so you did the obvious thing. One consumer became ten. Lag went to zero, the graph looked wonderful, and you closed the ticket.

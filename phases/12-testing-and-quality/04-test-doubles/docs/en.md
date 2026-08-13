@@ -2,11 +2,6 @@
 
 > A hand-written mock stayed **green on all twelve releases** of a payment provider that changed underneath it four times. Measured here: **three releases were genuinely green, then nine were green while broken** — and at the worst of them **1,902 of 2,000 real orders (95.1%) got the wrong outcome** with the suite still reporting zero failures. One renamed status string cost **90.7% of a day's traffic**. Then the fix, measured on the same twelve releases: a **shared contract suite** run against the double *and* the real thing took defect exposure from **22 release-months to 0** — and a bare `Mock()` caught **1 of 7** test mistakes where `create_autospec()` caught 5.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Anatomy of a Unit Test](../03-anatomy-of-a-unit-test/), [Request Validation & Error Contracts](../../02-api-design/03-request-validation-error-contracts/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 It is 11:20 on a Tuesday and the payments integration goes live behind a feature flag. You have earned this. The suite is green — every test, every time — and the checkout module has more tests than it has lines. The flag goes to 5% of traffic.

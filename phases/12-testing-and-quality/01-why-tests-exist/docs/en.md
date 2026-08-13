@@ -2,11 +2,6 @@
 
 > One character changed — `>=` became `>` — and 75 of a day's 2,000 orders were priced wrong. That is **3.75%**, which is why nothing noticed: every other invoice in the day was byte-identical to the correct one, and the day's revenue moved **0.16%** against a staging alarm set at 2%. The overcharge was **$408.00 a day**. The incident it caused cost **702 engineer-minutes — $1,053 — of which 35 minutes was the actual fix and 467 was finding out.** This lesson prices the same bug at six moments in its life, runs 40 real bugs through five real gates, and measures what each gate catches *that the one before it did not*. Two gates catch nothing at all.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [CI/CD Pipelines](../../10-infrastructure-and-deployment/10-ci-cd-pipelines/), [Deployment Strategies](../../10-infrastructure-and-deployment/11-deployment-strategies/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 **Friday, 16:40.** The ticket says the volume discount is confusing customers whose cart lands exactly on the fifty-dollar threshold. You open `pricing.py`, find the line, and read it:

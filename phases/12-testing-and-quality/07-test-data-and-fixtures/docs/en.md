@@ -2,11 +2,6 @@
 
 > Someone adds a third order to `user_id = 1` so they can test pagination. **52 of 240 unrelated tests go red** — 21.7% of the suite — and not one line of the code under test changed. Rebuild the same 240 tests on factories and the identical change breaks **0**. Then the quieter number: the `random.randint(1, 10**6)` you use for a "unique" test email gives you a 1-in-100 chance of a red build at **143 tests**, not at five thousand, and at 5,000 tests it collides **99.999634%** of the time. Both numbers come out of one 4,374-line seed file and one program you can run.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Integration Testing Against a Real Database](../06-integration-testing-real-database/), [Anatomy of a Unit Test](../03-anatomy-of-a-unit-test/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 **09:12.** Priya picks up a two-line ticket: *orders list should paginate at 25 per page*. The endpoint already works; it just needs a test. She opens the integration suite, finds the fixture everyone uses, and needs a user with more than two orders.

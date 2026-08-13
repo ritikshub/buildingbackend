@@ -2,11 +2,6 @@
 
 > Eleven lessons built the instruments. This one hands you a running, fully instrumented four-service checkout path that is quietly on fire, and a pager that just went off. You will not read the source to find the fault — you will follow the signals, the way you will at 03:11 on a Tuesday: a burn-rate alert wakes you, a dashboard narrows it to one service, an exemplar drops you into one trace, a waterfall names the guilty span, and one log line ends the argument. Ten million requests to one log line, in five queries.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Structured Logging](../02-structured-logging/) · [Correlation & Request Context](../03-correlation-and-request-context/) · [Metrics from Scratch](../05-metrics-from-scratch/) · [Prometheus & PromQL](../06-prometheus-and-promql/) · [Distributed Tracing & OpenTelemetry](../07-distributed-tracing-and-opentelemetry/) · [SLIs, SLOs & Error Budgets](../09-slis-slos-and-error-budgets/) · [Alerting & On-Call](../10-alerting-and-on-call/) · [Dashboards: RED, USE & Grafana](../11-dashboards-red-and-use/)
-**Time:** ~120 minutes
-
 ## The Problem
 
 Your phone goes off at **03:11:30**. Not a human this time — a machine:

@@ -2,11 +2,6 @@
 
 > Ten schema-and-query pairs, run against a real SQL engine and against PostgreSQL. **All ten returned different answers, and five of them raised no error in either engine** — the `SUM` over a money column is `10.305000000000001` here and exactly `10.31` there, `LIKE 'ADA%'` matches one row here and none there, and page 1 of your paginated list holds different rows. Then the isolation strategy that makes your suite **54× cheaper** turns out to do nothing at all for three tests in two hundred, and the suite stays green in file order **for ever** — shuffling finds it in **378 of 400 runs**. And of the six ways two transactions can interleave over one row, **four lose money**, while the two a normal test explores are exactly the two that pass.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Designing for Testability: Seams, Injection & the Untestable Function](../05-designing-for-testability/), [Transactions & ACID](../../03-relational-databases/11-transactions-and-acid/), [Isolation, Concurrency & MVCC](../../03-relational-databases/12-isolation-levels-and-mvcc/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 The suite runs against SQLite. Somebody made that choice three years ago for an excellent reason: 1,412 tests finish in 38 seconds, on a laptop, on a plane, with no Docker daemon running. It has been green every day since. Production is PostgreSQL 16.

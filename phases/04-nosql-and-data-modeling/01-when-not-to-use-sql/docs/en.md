@@ -2,11 +2,6 @@
 
 > The relational database is the best default we have, and it will be the right answer more often than not. "NoSQL" is not a rebellion against it — it's a set of specialized tools for the specific shapes and scales where the relational model starts charging you more than it's worth. Knowing *when* to reach for one is a senior skill; reaching for one by reflex is a junior mistake.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [The Relational Model](../../03-relational-databases/03-the-relational-model/), [Schema Design & Normalization](../../03-relational-databases/07-schema-design-and-normalization/), [Indexes & the B-Tree](../../03-relational-databases/09-indexes-and-the-btree/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 You spent all of Phase 3 learning why the relational database is so good: it stores data as

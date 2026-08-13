@@ -2,11 +2,6 @@
 
 > Two quiet performance killers live at the seam between your app and the database: opening a fresh connection for every request, and firing one query per row in a loop. Both feel harmless in development and both fall over in production — and both have a one-paragraph fix.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Transactions & ACID](../11-transactions-and-acid/) · [How Queries Run](../10-query-planning-and-explain/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 Your app works perfectly with one user on your laptop. In production, under real traffic, it

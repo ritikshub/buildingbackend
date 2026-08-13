@@ -2,11 +2,6 @@
 
 > You have queues, topics, a replayable log, idempotent consumers, dead-letter paths and an outbox. Every primitive works. And six months after the team started "doing events", nobody can answer *"what happens when an order is placed?"* without opening fourteen repositories, a customer has been charged for a parcel that will never ship, and one team's harmless field rename broke five services in production. The broker was never the hard part. This lesson is: which messages are facts and which are instructions, who owns a process that spans six services, and what you type instead of `ROLLBACK` when step three fails.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [The Dual-Write Problem: Transactional Outbox & CDC](../10-dual-write-outbox-and-cdc/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 Ten lessons of machinery are behind you. Messages carry ids and trace context (Lesson 2), work is distributed through queues (Lesson 3) and broadcast through topics (Lesson 4), the log lets consumers replay (Lesson 5), consumers are idempotent (Lesson 6), partition keys hold per-order ordering (Lesson 7), failures land in a dead-letter queue (Lesson 8), lag is charted (Lesson 9), and the outbox has killed the dual-write bug (Lesson 10).

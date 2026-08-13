@@ -2,11 +2,6 @@
 
 > Move $30 from Alice to Bob and the world must never see the money debited-but-not-credited — not for a microsecond, not even if the power fails between the two writes. A transaction is the guarantee that a group of changes happens all the way, or not at all.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [How Data Lives on Disk](../08-storage-pages-and-heaps/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 A bank transfer is two operations: subtract $30 from Alice, add $30 to Bob. Run them as

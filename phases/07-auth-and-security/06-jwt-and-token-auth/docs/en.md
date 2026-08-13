@@ -2,11 +2,6 @@
 
 > The signed cookie you built in Lesson 5 was a JWT in miniature. The real thing is that same idea — a payload made tamper-proof by a signature — standardized into a compact, self-contained token that any service holding the key can verify with no database lookup, which is exactly what a world of many services needs. This lesson builds a JWT byte by byte, then spends its second half on the part that actually matters: **verification**, where getting the algorithm check wrong produced two forgeries — `alg:none` and HS/RS key confusion — that have unlocked real production systems.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Cryptographic Building Blocks](../02-cryptographic-building-blocks/) · [Sessions & Secure Cookies](../05-sessions-and-secure-cookies/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 Your app grew from one server into a dozen services — an API gateway, an orders service, a payments service, a notifications worker. A request authenticated at the gateway now has to prove *who it's for* to each service it touches. The Lesson 5 answer, a server-side session, strains here: every service, on every request, would have to call the central session store to resolve the session ID into an identity. That's a network hop and a shared dependency on the hot path of every call, and if the store is slow or down, the whole fleet is down.

@@ -2,11 +2,6 @@
 
 > "How reliable should we be?" is the most expensive unanswered question in engineering. Left unanswered, every incident becomes a values argument and every risky deploy is decided by whoever talks loudest. Answered — as a number, agreed in advance — it becomes arithmetic: here is the target, here is how much badness we can afford this month, here is how much is left. This lesson turns reliability from an opinion into a budget you can spend.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [Metrics: Counters, Gauges & Histograms from Scratch](../05-metrics-from-scratch/), [Prometheus: Pull, Exposition & PromQL](../06-prometheus-and-promql/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 Thursday, 4pm, a conference room with two groups of people in it. On one side, the product engineers: they have a checkout redesign that's been ready for eleven days, it touches the payment path, and they want it out on Monday because the quarter ends in three weeks and this is the feature the quarter is about. On the other side, the operations engineers: they were paged twice last week — 02:40 and 05:15, both times a deploy that touched the payment path — and they want a two-week stabilization freeze.

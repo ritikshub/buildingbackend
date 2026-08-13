@@ -2,11 +2,6 @@
 
 > Your request-rate graph is perfectly flat across all eight instances, and that is exactly why nobody suspects the balancer. Measured here: identical request counts produced a **24% spread in actual work**, one instance ran at **87.9% busy while the other seven averaged 30.4%**, and p99 sat at **32× p50** on a fleet using a third of its capacity. Then the result worth memorising — picking **two backends at random and taking the less loaded** beats one random pick exponentially, needs no shared state, and is the only reason "least loaded" does not stampede at fleet scale.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The Universal Scalability Law](../02-universal-scalability-law/), [Backpressure, Queueing & Load Shedding](../../08-concurrency-and-performance/11-backpressure-and-load-shedding/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 It is 09:41 and the checkout service has been breaching its p99 objective for six minutes. You open the dashboard. The first panel is requests per second, broken out per instance: eight lines, and the eight lines are drawn on top of each other. **31 requests per second each, flat, all morning.** Whatever this is, it is not the load balancer. The load balancer is doing precisely what it says on the tin.

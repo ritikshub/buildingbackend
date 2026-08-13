@@ -2,11 +2,6 @@
 
 > Three different diseases wear the same costume — "the build is bad." Measured here with a miniature OCI builder: moving two lines of a Dockerfile took a one-line code change from **551.21 s and 215.16 MB rebuilt down to 3.21 s and 410.4 KB — 171.6x faster, 537x fewer bytes** — and then the honest reverse, where changing the *lockfile* instead collapses that lead to **1.16x**. A `rm -rf` that deleted **30.38 MB** of files made the image **64 bytes bigger** and left the deploy key it "removed" sitting in layer 2, recovered verbatim. And the same source built twice produced two different images until three specific things were normalised, after which both builds landed on the identical digest `sha256:280fe298a8fa…`.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [What a Container Actually Is](../02-what-a-container-actually-is/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 It is 16:40 on a Thursday. You changed one line in `src/routes.py` — a log message — and pushed. The pipeline has been running for nine minutes. You are watching a progress bar reinstall `gcc`.

@@ -2,11 +2,6 @@
 
 > Every byte your backend ever sends ends its journey as a physical event — a voltage on copper, a pulse of light in glass, a radio wave in air. This is the layer where bits stop being an abstraction and become physics.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Lesson 01 — the OSI / TCP-IP models](../01-osi-and-tcp-ip-models/). You should know that a network is described as a stack of layers and that the bottom one is called the physical layer.
-**Time:** ~60 minutes
-
 ## The Problem
 
 In Lesson 01 you learned the network is a stack of layers, and that the very

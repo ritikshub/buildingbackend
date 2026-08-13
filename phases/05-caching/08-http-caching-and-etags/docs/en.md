@@ -2,11 +2,6 @@
 
 > Browsers and CDNs cache billions of responses without any custom code — because the answer travels *with* the answer. A handful of HTTP headers tell every cache in the chain whether it may store a response, for how long, and how to check — for free — whether its copy is still good. This is the protocol lesson 7 was quietly built on.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [CDNs & Edge Caching](../07-cdns-and-edge-caching/), [HTTP Server from a TCP Socket](../../01-networking-and-protocols/09-http-server-from-tcp/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 The browser cache and the CDN from lesson 7 are only useful if they know the rules: *Can

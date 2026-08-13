@@ -2,11 +2,6 @@
 
 > Your code works on your laptop because you can *see* it — you read the error, you add a `print`, you step through a debugger. In production you can do none of that: the process is on a machine you're not sitting at, serving thousands of strangers, and it will not reproduce the bug for you. Observability is how you get your eyes back. This lesson explains what actually went dark, why "monitoring" alone stopped being enough, and what logs, metrics, and traces each really are — before you build any of them.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** none
-**Time:** ~50 minutes
-
 ## The Problem
 
 It's 03:14. Your phone buzzes: **"Checkout is broken."** That's the entire report. You open your laptop and try to answer three questions that a user has already decided the answer to:

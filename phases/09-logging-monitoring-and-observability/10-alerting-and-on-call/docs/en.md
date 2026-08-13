@@ -2,11 +2,6 @@
 
 > An alert is not a message. It is an **interrupt on a human being's life** — it ends a dinner, ends a night's sleep, ends the only two hours of deep work someone got today. That is an extraordinarily expensive thing to spend, and most of what teams alert on is not worth it. This lesson is about spending it well: what earns a page, what earns a ticket, what earns nothing at all, and how to run an on-call rotation people can survive for years.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [SLIs, SLOs & Error Budgets](../09-slis-slos-and-error-budgets/), [Prometheus: Pull, Exposition & PromQL](../06-prometheus-and-promql/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 It is 06:40 and Priya has been on-call for three days. She counts what arrived overnight: **41

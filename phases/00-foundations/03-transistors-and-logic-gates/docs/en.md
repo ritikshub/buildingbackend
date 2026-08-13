@@ -2,11 +2,6 @@
 
 > A computer has no idea what a number is. It only has switches. This is the story of how one tiny electrical switch — the transistor — becomes logic, and how logic becomes everything a computer does.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Bits & Bytes](../01-bits-and-bytes/)
-**Time:** ~50 minutes
-
 ## The Problem
 
 Lesson 1 said a computer is a huge pile of on/off switches, and every bit is one switch.

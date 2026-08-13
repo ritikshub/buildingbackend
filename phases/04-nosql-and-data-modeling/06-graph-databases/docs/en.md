@@ -2,11 +2,6 @@
 
 > Sometimes the connections *between* your records matter more than the records themselves — "friends of friends," "shortest path from A to B," "every account within four hops of this stolen card." In a relational database each hop is another join and the cost explodes; in a graph database a relationship is a pointer you follow in `O(1)`, so a traversal costs what the *answer* costs, not what the whole table costs. Make relationships first-class and a class of queries goes from "melts the server" to "instant."
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [When Not to Use SQL](../01-when-not-to-use-sql/), [Key-Value Stores](../02-key-value-stores/), [Keys & Relationships](../../03-relational-databases/05-keys-and-relationships/), [Indexes & the B-Tree](../../03-relational-databases/09-indexes-and-the-btree/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 You're building the "People you may know" feature for a social network. The data is simple — a

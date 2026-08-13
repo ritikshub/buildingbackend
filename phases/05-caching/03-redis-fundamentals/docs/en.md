@@ -2,11 +2,6 @@
 
 > An in-process cache dies when your process dies and disagrees with every other instance. Redis is the same idea — a hash map — moved onto its own server so the whole fleet shares one copy. Under the hood it's simpler than its reputation: a big dictionary, a tiny wire protocol, and one thread.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Build an LRU Cache](../02-build-an-lru-cache/), [HTTP Server from a TCP Socket](../../01-networking-and-protocols/09-http-server-from-tcp/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 The in-process cache from lesson 2 is the fastest cache there is — a map in your own

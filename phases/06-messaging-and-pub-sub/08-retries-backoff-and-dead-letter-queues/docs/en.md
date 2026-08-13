@@ -2,11 +2,6 @@
 
 > Two failures land in your consumer thirty seconds apart and look identical from the inside: an exception, a stack trace, an unacknowledged message. One of them heals if you wait two seconds. The other will never succeed, not in two seconds and not in two years — and because delivery is at-least-once, the broker will hand it back to you forever, blocking every message behind it. Telling these apart, and choosing what happens next, is the difference between a consumer that survives a bad afternoon and one that turns a brief dependency wobble into a six-hour outage of your own making.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Ordering, Partition Keys & Parallel Consumers](../07-ordering-partition-keys-and-parallel-consumers/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Your payments consumer is correct. It reads from the topic, charges the card, writes the receipt, acknowledges the message. It has been correct for eight months. Then, in the same week, it fails twice — in two ways that look the same in the logs and demand exactly opposite responses.

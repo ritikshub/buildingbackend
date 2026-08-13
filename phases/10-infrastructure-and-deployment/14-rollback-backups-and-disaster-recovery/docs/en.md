@@ -2,11 +2,6 @@
 
 > "We can always roll back" is a sentence with a hidden assumption, and this lesson measures it: across nine releases of a realistic history, **exactly one is a rollback target you can actually reach** — the other eight are blocked by two irreversible changes nobody flagged at review. Then the other half. A backup job returned exit code 0 for **31 consecutive nights** while silently omitting a table; the restore that discovered it lost **9,120 payment rows**. And an RTO nobody had timed: a measured **30.7 MB/s** of restore throughput turns a 2 TB database into an **18h 05m** recovery against a stated four-hour target.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Zero-Downtime Schema & Contract Changes](../13-zero-downtime-schema-changes/), [Config, Environments & the Twelve-Factor App](../05-config-and-twelve-factor/), [Durability: Write-Ahead Logging](../../03-relational-databases/13-write-ahead-logging/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Three scenes. They escalate, and each one is the ordinary consequence of a decision that looked correct when it was made.

@@ -2,11 +2,6 @@
 
 > Replicas scale reads. Nothing scales writes except splitting the data across machines that do not know about each other — and the moment you do that, you lose transactions, joins, global uniqueness, and the ability to run a query that does not carry the shard key. Measured here: hashing 500 tenants across 8 shards spread them perfectly and still put **47.7% of all writes on one machine**, a query touching 8 shards has a p99 of **409 ms against a single shard's 61 ms**, and adding one machine to an 8-shard `hash % N` layout moves **88.9% of the database**. The shard key is the most expensive decision in the system and you make it on day one.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Read Replicas & Replication Lag](../07-read-replicas-and-replication-lag/), [Indexes & the B-Tree](../../03-relational-databases/09-indexes-and-the-btree/), [Data Modeling by Access Pattern](../../04-nosql-and-data-modeling/07-data-modeling-by-access-pattern/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 Eighteen months ago the writes outgrew the machine. Not the storage — storage you can buy. **Writes.** The primary sat at 84% CPU pushing 30,000 inserts a second, the write-ahead log was the disk's whole budget, and the next instance size up was 30% more CPU for 2.2× the money. You had already done the cheap things: fixed the two sequential scans, added the covering index, moved reporting to a read replica, put the product catalogue in Redis. Lesson 7 gave you three replicas and they absorbed every read in the system. None of that touched the write path, because **every replica replays every write.** Adding a replica adds write work; it does not remove any.

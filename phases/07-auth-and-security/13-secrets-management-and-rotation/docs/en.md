@@ -2,11 +2,6 @@
 
 > This entire phase runs on secrets: the JWT signing key, the password pepper, API keys, webhook secrets, the database password, TLS private keys. Every mechanism you built assumed those secrets were, well, *secret* — and the fastest way to undo all of it is to commit one to git. This final lesson is about the keys that guard everything else: where they must never live, where they should, how they're encrypted with **envelope encryption**, and how to **rotate** them so a leaked key doesn't stay valid forever. Secrets management is where a well-built security system quietly succeeds or catastrophically fails.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Cryptographic Building Blocks](../02-cryptographic-building-blocks/) · [API Keys, HMAC Signing & Webhooks](../08-api-keys-hmac-and-webhooks/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 Count the secrets this phase has already relied on: the HMAC key that signs JWTs ([Lesson 6](../06-jwt-and-token-auth/)), the pepper that protects password hashes ([Lesson 3](../03-password-storage-and-hashing/)), API keys and the webhook signing secret ([Lesson 8](../08-api-keys-hmac-and-webhooks/)), OAuth client secrets ([Lesson 7](../07-oauth2-and-oidc/)), the session-signing key ([Lesson 5](../05-sessions-and-secure-cookies/)), plus the database password and TLS private key underneath it all. Every one is a master key to something important, and every one leaks the same handful of ways:

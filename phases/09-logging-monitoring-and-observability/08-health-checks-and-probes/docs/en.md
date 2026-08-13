@@ -2,11 +2,6 @@
 
 > Every signal you've built so far in this phase was for a human to read. A health check is different: nobody reads it. A load balancer and an orchestrator poll it, see a status code, and *act* — routing traffic to you, or killing your process — with no human in the loop. This lesson is about getting those semantics exactly right, because the classic way to turn a 30-second database blip into a two-hour outage is a health check that told the automation the wrong thing.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Metrics: Counters, Gauges & Histograms from Scratch](../05-metrics-from-scratch/), [HTTP in Depth](../../01-networking-and-protocols/08-http-in-depth/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 Four incidents. Every one of them is a real, repeatedly-reproduced production failure, and every one is caused by a health check that was technically working.

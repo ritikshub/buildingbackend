@@ -2,11 +2,6 @@
 
 > A test that reads `datetime.now()` is not one test. Measured here: the same subscription-renewal test, evaluated at every one of the **8,784 hours of 2024**, computes the wrong answer at **1,454 of them — 16.6%** — and CI picks which hour you get. Two more results worth the click. A **frozen clock cannot test a timeout**: freezing reached 4 of 6 behaviours, and the two it missed were not slow, they were unreachable. And shuffling a 200-test suite finds *some* order dependency in **3 runs** at 99% confidence — but finding the rarest of the three takes **182 shuffled runs**, which at one CI run per merge is weeks.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Designing for Testability](../05-designing-for-testability/), [Test Data & Fixtures](../07-test-data-and-fixtures/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 The board has three cards on it and they have been there for eleven days.

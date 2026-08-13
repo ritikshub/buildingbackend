@@ -2,11 +2,6 @@
 
 > HTTP is just text over a TCP connection — a request you can type by hand and a reply you can read with your eyes. Learn its four moving parts and every web framework stops being magic.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons 05 and 07 — TCP and the application layer. You should know that TCP (Transmission Control Protocol) gives you a reliable, ordered byte stream, and that an application protocol is the agreed-upon language two programs speak over that stream.
-**Time:** ~75 minutes
-
 ## The Problem
 
 You type `example.com` and a page appears. Underneath, your browser opened a TCP

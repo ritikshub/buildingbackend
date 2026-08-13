@@ -2,11 +2,6 @@
 
 > Change one attribute — the network's address range, at the root of the dependency graph — and the plan proposes to replace **6 of 7 resources**, including a 100 GB production database that nobody edited and nobody mentioned. Measured here: `Plan: 6 to add, 1 to change, 6 to destroy`, and the one lifecycle line that refused the whole thing before it ran. Then the other half of the story: four console clicks at 02:40, **3 of 7 resources drifting**, one perfectly healthy server destroyed as collateral, and one object that exists in the cloud, in no state file, and is therefore invisible to every command you can run.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Config, Environments & the Twelve-Factor App](../05-config-and-twelve-factor/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 **Scene one.** You have inherited a production environment. It works. Nobody knows how it got there.

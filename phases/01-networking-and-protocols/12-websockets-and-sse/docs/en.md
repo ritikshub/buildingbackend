@@ -2,11 +2,6 @@
 
 > Plain HTTP only answers when spoken to — the server cannot start a sentence. WebSockets and Server-Sent Events are the two ways to let the server push, and both begin life as an ordinary HTTP request.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Phase 1 · Lessons 08–09 — HTTP. You should know that an HTTP (HyperText Transfer Protocol) message is a request the client sends and a response the server sends back, that both carry headers, and that a status line like `200 OK` opens the response.
-**Time:** ~75 minutes
-
 ## The Problem
 
 You are building a chat app. Alice sends a message; Bob should see it *now*.

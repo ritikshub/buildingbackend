@@ -2,11 +2,6 @@
 
 > One customer ships a bug. Not an attack — a regex that backtracks. On a shared fleet of 8 workers it took down **all 800 customers**. Split into 4 fixed shards it took down **189**. Assigned a random 2-of-8 combination it took down **21 — 2.63%** — and 339 more ran at half capacity without a single failed request. Same hardware, same bug, same afternoon. The difference is one line of assignment logic and a piece of combinatorics you can do on paper.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Sharding the Data Tier](../08-sharding-the-data-tier/), [What One Machine Can Actually Do](../01-what-one-machine-can-do/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 You run a document-processing API. Eight worker machines behind a load balancer, 800 paying customers, and a comfortable 40% CPU. The architecture diagram has the word "horizontally scalable" on it and it is not lying.

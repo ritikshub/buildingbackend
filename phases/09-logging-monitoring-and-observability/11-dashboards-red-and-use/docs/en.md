@@ -2,11 +2,6 @@
 
 > A dashboard is not a picture of your system — it is a set of pre-answered questions, and a panel that answers no question is decoration you pay for in incident minutes. Two frameworks turn a wall of graphs into an instrument you can read under stress: **RED** for the services you write, **USE** for the resources they depend on. This lesson builds a Grafana dashboard from a declarative spec, then lints it against its own rules.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Prometheus: Pull, Exposition & PromQL](../06-prometheus-and-promql/), [SLIs, SLOs & Error Budgets](../09-slis-slos-and-error-budgets/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 An incident starts at 03:07. You open the dashboard folder and there are **214 dashboards**, six of them named some variant of *Service Overview*. You pick one. It has **40 panels** in no particular order. Three of them are permanently blank — someone renamed a metric eight months ago and nothing told anyone. And the panel your eye lands on first, top-left, where attention is most expensive, is **average CPU across the fleet**.

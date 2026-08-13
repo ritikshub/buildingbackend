@@ -2,11 +2,6 @@
 
 > You now know the CPU and the RAM. This is how your *software* actually gets onto them — how bytes on disk wake up, become a running process, and get managed by the operating system.
 
-**Type:** Learn
-**Languages:** Python
-**Prerequisites:** [The CPU](../05-the-cpu/), [RAM & the Memory Hierarchy](../06-ram-and-memory-hierarchy/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 You've met the hardware: a CPU that runs a fetch–decode–execute loop (lesson 5), and RAM

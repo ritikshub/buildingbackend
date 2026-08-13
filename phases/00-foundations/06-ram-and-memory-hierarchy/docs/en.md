@@ -2,11 +2,6 @@
 
 > Registers hold a handful of numbers. Your program needs millions. RAM is where they live — fast, forgetful, and surprisingly expensive. And it's just one rung on a ladder that explains most performance mysteries.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The CPU](../05-the-cpu/)
-**Time:** ~50 minutes
-
 ## The Problem
 
 The CPU has only a handful of registers, but a running program juggles millions of

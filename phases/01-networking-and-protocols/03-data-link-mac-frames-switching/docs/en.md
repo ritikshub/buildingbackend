@@ -2,11 +2,6 @@
 
 > The network layer knows how to reach a machine across the whole internet. But the very first hop — from your laptop to the box on the other end of the cable — is handled one layer down, by hardware addresses and frames you can build by hand.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons 01–02 — the physical layer (bits on a wire) and the layered model. You should know that data travels in chunks and that a network has more than one machine on it.
-**Time:** ~60 minutes
-
 ## The Problem
 
 Picture the simplest possible network: a few computers plugged into the same

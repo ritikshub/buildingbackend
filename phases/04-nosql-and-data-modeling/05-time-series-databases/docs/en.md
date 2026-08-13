@@ -2,11 +2,6 @@
 
 > Metrics, sensor readings, traces, financial ticks — timestamped points arriving by the billion, written once and never changed, always queried by time range. A general database drowns in them; a time-series database is the store shaped for exactly this one data pattern. Its power comes from three tricks — bucket by time, compress the timestamps to a bit each, XOR the values — that a store *not* built for time can't play.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [When Not to Use SQL](../01-when-not-to-use-sql/), [Wide-Column Stores](../04-wide-column-stores/), [How Data Lives on Disk: Pages, Heaps & the Buffer Pool](../../03-relational-databases/08-storage-pages-and-heaps/), [Durability: Write-Ahead Logging](../../03-relational-databases/13-write-ahead-logging/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 You're running 10,000 servers, and every one reports its CPU usage, memory, disk, and a hundred

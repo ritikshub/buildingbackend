@@ -2,11 +2,6 @@
 
 > Never return an unbounded collection. And the offset-vs-cursor choice matters more than any other decision in your collection endpoints.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [URLs, Verbs & Status Codes](../02-urls-verbs-status-codes/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Every collection endpoint eventually needs filtering, sorting, and paging. There's

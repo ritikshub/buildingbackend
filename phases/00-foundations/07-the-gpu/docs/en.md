@@ -2,11 +2,6 @@
 
 > A CPU has a few very fast, very clever cores. A GPU has thousands of simple ones. That one difference is why GPUs draw your games, train AI, and cost a fortune.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [The CPU](../05-the-cpu/)
-**Time:** ~40 minutes
-
 ## The Problem
 
 You know the CPU now. But "GPU" is everywhere — gaming, AI, video, crypto — and it's often

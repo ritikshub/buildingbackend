@@ -2,11 +2,6 @@
 
 > HTTP/1.1 sends one request at a time down a connection and writes its headers out in full text every time. HTTP/2 turns that connection into many parallel streams of compact binary frames — and HTTP/3 moves the whole thing off TCP to dodge a stall TCP can't avoid.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons 05 and 08 — TCP/UDP and HTTP/1.1. You should know that TCP (Transmission Control Protocol) is a reliable, ordered byte stream, that UDP (User Datagram Protocol) is fire-and-forget, and that an HTTP (HyperText Transfer Protocol) request is a method, a path, headers, and an optional body.
-**Time:** ~60 minutes
-
 ## The Problem
 
 Open a modern web page and your browser needs a hundred things at once: the HTML,

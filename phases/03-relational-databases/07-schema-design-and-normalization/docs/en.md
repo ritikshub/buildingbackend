@@ -2,11 +2,6 @@
 
 > Store every fact in exactly one place. That single discipline — normalization — is what stops your data from quietly contradicting itself, and it falls out of one question asked over and over: *what does this column actually depend on?*
 
-**Type:** Learn
-**Languages:** SQL
-**Prerequisites:** [Constraints & Data Integrity](../06-constraints-and-integrity/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 The naïve instinct, when you have orders to store, is one big table with everything on it:

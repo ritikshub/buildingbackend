@@ -2,11 +2,6 @@
 
 > Every request your backend serves arrives with two questions attached, and almost every breach is a wrong answer to one of them: *who is this?* (authentication) and *what are they allowed to do?* (authorization). This lesson pulls those two apart — they fail differently, they return different status codes, they are fixed by different code — and then hands you the five ideas the rest of the phase runs on: the CIA triad, trust boundaries, threat modeling, least privilege, and the one rule that outranks all the others, *never trust the client*.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [HTTP in Depth](../../01-networking-and-protocols/08-http-in-depth/) and [TLS, Certificates & mTLS](../../01-networking-and-protocols/10-tls-certificates-mtls/) give useful background, but this lesson starts from first principles.
-**Time:** ~50 minutes
-
 ## The Problem
 
 A two-person team ships **AcmeNotes**, a tiny JSON API for private notes. It has a login endpoint that returns a token, and a notes endpoint that returns a note. It worked in the demo, the investors clapped, and it went live on a Friday. Here is what an attacker did to it over the weekend, in the order they found it:

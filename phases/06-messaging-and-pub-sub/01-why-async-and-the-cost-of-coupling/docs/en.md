@@ -2,11 +2,6 @@
 
 > Two services need to talk, and the obvious way is a phone call: A rings B and holds the line until B answers. It works beautifully until the day B is slow — and then A is slow, and A's callers are slow, and an outage nobody can locate is spreading up the call graph one held thread at a time. Asynchronous messaging is the difference between a phone call and voicemail. This lesson is about why voicemail exists, exactly what it costs, and how to tell which conversations need which.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [HTTP in Depth](../../01-networking-and-protocols/08-http-in-depth/), [Idempotency & Safe Retries](../../02-api-design/07-idempotency-safe-retries/)
-**Time:** ~50 minutes
-
 ## The Problem
 
 Everything you have built in this curriculum so far is a **synchronous request/response**. A client opens a TCP (Transmission Control Protocol) connection, sends an HTTP (HyperText Transfer Protocol) request, and *blocks* — the connection stays open, a thread or coroutine waits — until a response comes back. Phase 1 built the sockets; Phase 2 built the API on top. For "give me this user's profile *now*", it is exactly right: the caller literally cannot proceed without the answer.

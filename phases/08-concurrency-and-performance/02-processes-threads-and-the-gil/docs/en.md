@@ -2,11 +2,6 @@
 
 > Four threads on a ten-core machine made a CPU-heavy workload exactly **1.00x** faster in this lesson's measurements — not a single percent of gain. The identical four threads on an I/O-heavy workload gave **3.95x**, and sixteen gave **14.73x**. Same language, same machine, same `threading.Thread`. The entire difference is one mutex inside CPython called the GIL, and until you know precisely what it locks, every concurrency decision you make is a coin flip. This lesson measures a process, a thread, a context switch and the GIL, and turns that coin flip into a rule you can apply in ten seconds.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Concurrency?](../01-why-concurrency/), [How a Computer Runs a Program](../../00-foundations/09-how-a-computer-runs-a-program/), [RAM & the Memory Hierarchy](../../00-foundations/06-ram-and-memory-hierarchy/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 Lesson 1 left you with a machine that is mostly idle and a queue that is mostly full. The CPU sits at 8% while p99 latency climbs, because your code is standing in line: one request at a time, and most of that time spent waiting on a database that is not even breathing hard. The diagnosis was clean. The obvious fix is one word: **threads**.

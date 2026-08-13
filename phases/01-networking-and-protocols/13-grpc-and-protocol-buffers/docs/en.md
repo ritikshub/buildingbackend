@@ -2,11 +2,6 @@
 
 > JSON over HTTP sends field *names* as text on every request. gRPC sends numbered fields as compact binary over one multiplexed HTTP/2 connection — and it starts with a serialization format small enough to decode by hand.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons 08 and 11 — HTTP and HTTP/2 (gRPC rides on HTTP/2). You should know that HTTP/2 (Hypertext Transfer Protocol version 2) multiplexes many independent streams over one TCP connection, and that a byte is 8 bits.
-**Time:** ~90 minutes
-
 ## The Problem
 
 You have two services that need to talk. The default answer in 2015 was REST

@@ -2,11 +2,6 @@
 
 > Your schema is not carved in stone — you'll add columns, tables, and constraints for as long as the product lives. A migration is how you make those changes **versioned, repeatable, and reviewable**, so the same change runs identically on your laptop, in CI, and on the production database serving live traffic.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Constraints & Data Integrity](../06-constraints-and-integrity/) · [Transactions & ACID](../11-transactions-and-acid/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 You shipped v1 with a `users` table. Now v2 needs a `phone` column, a new `addresses`

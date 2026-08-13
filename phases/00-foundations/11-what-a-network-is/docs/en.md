@@ -2,11 +2,6 @@
 
 > Everything so far happened inside one computer. Backend engineering is about computers talking to each other. A network is just that: a way for one machine to send bytes to another.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [How a Computer Runs a Program](../09-how-a-computer-runs-a-program/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 One computer is useful. But the whole point of backend engineering is *many* computers

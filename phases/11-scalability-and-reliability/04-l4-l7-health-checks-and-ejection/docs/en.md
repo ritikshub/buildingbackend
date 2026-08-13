@@ -2,11 +2,6 @@
 
 > Your load balancer divided 24 client connections across 8 backends perfectly evenly — three each, no bug, no misconfiguration. Measured here: the hottest backend still took **22.6% of the requests and the coldest 6.8%, a 3.3× spread**, and a ninth instance that joined a healthy pool received **0 requests in 600 seconds**. Then the failure with a body count: a fleet with 8% headroom left, nothing crashed and no deploy out, health-checked itself from **20 healthy instances to 0 in 44 seconds** and delivered 21.3% of its traffic on time. Two knobs — neither of which adds a single request per second of capacity — put that back to 99.7%.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Load Balancing Algorithms](../03-load-balancing-algorithms/), [Transport Layer: TCP vs UDP](../../01-networking-and-protocols/05-transport-layer-tcp-vs-udp/), [Health Checks, Readiness & Graceful Shutdown](../../09-logging-monitoring-and-observability/08-health-checks-and-probes/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 The migration was uncontroversial. Your internal services talked HTTP/1.1 (Hypertext Transfer Protocol version 1.1, one request per connection at a time) and you moved them to gRPC — a remote-procedure-call framework that runs over HTTP/2 and multiplexes many concurrent requests down a single connection. The benchmark was unambiguous: fewer connections, no per-request handshake, header compression, 40% less CPU in the network stack. It shipped on a Tuesday.

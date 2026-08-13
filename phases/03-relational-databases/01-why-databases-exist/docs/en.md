@@ -2,11 +2,6 @@
 
 > A running program's data lives in memory, and memory forgets the instant the power blinks. A database is the machinery we built so that data can *outlive the program that made it* — and be found, shared, and trusted while it does.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** none
-**Time:** ~50 minutes
-
 ## The Problem
 
 Write a program that adds a user. Run it. The user exists — you can print it, update

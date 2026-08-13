@@ -2,11 +2,6 @@
 
 > An autoscaler is a feedback control loop, and every complaint you have about yours is a named control-theory phenomenon with a known cause. Measured here: the same controller against the same traffic, changed in exactly one way — 210 seconds of dead time instead of zero — went from parking on the correct 24 instances all afternoon to swinging between 6 and 145 on a plateau where the traffic never moved, launching **539 instances instead of 33** and missing the latency objective for **42.7% of requests**. Then the one that ends outages badly: during a retry storm, the autoscaler added capacity until its connection pools cut the database's own throughput from **426 to 247 queries per second**, and goodput stayed at **exactly zero for the entire run**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Capacity Planning](../12-capacity-planning/), [Stateless Services](../06-stateless-services/), [Backpressure, Queueing & Load Shedding](../../08-concurrency-and-performance/11-backpressure-and-load-shedding/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Your service holds CPU at 60%. That is the setpoint somebody typed into a form eighteen months ago, and it has been fine.

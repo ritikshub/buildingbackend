@@ -2,11 +2,6 @@
 
 > A customer is charged twice, and nothing broke. The broker followed its contract, the consumer followed its contract, the network dropped one packet on the way back, and ninety rupees left an account that owed nothing. This lesson proves that exactly-once *delivery* is impossible — not hard, impossible — and then builds the thing that actually works: a consumer for which being told twice and being told once produce the same result.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The Log: Offsets, Replay & Retention](../05-the-log-offsets-and-replay/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 Your `payments` consumer reads a queue. Each message says *charge card X, $90.00, for order 1042*. It has run in production for eight months. It has never thrown an exception, never dead-lettered a message, never paged anyone. Its dashboards are green.

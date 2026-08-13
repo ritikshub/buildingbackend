@@ -2,11 +2,6 @@
 
 > A cache with no memory limit is a memory leak with good intentions. The moment you bound it, you need a rule for what to forget — and "forget whatever I touched longest ago" is the one that best matches how programs actually behave.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why & Where to Cache](../01-why-and-where-to-cache/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 The simplest cache is a map: `cache[key] = value`, check it before doing the expensive

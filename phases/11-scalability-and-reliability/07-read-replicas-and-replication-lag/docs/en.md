@@ -2,11 +2,6 @@
 
 > You add read replicas and the read problem disappears. What arrives instead is a class of bug that never reproduces: measured here, **61.65% of reads that follow a write return the old value** when the redirect takes 12 ms and the replicas are 12–33 ms behind, and a page that fans out to eight widgets shows a user **time running backwards in 3,857 of 4,000 sessions**. Then the primary dies mid-batch and **387 commits that returned 200 OK are simply gone, with zero errors returned to anyone.** This lesson is the consistency models taught through the bugs they produce, and the one fix — pinning reads to a log position — that removes the whole class for +0.30 ms.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Stateless Services: Where the State Actually Went](../06-stateless-services/), [Write-Ahead Logging](../../03-relational-databases/13-write-ahead-logging/), [Transactions & ACID](../../03-relational-databases/11-transactions-and-acid/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 Six weeks ago you added three read replicas. It worked exactly as advertised. Primary CPU went from 78% to 31%, the p99 on your read endpoints halved, the nightly analytics job stopped competing with checkout traffic, and the change was so uneventful that nobody has thought about the replicas since. They are green on the dashboard. Their lag metric reads 12 milliseconds.

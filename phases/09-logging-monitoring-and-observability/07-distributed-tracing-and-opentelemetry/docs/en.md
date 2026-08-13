@@ -2,11 +2,6 @@
 
 > Metrics told you the 99th percentile exploded. Correlated logs let you pull every line for the request. You still cannot say **where the 4.2 seconds went**, because a log line is a point in time and latency is an *interval* — and the request touched eight services on machines whose clocks disagree. A trace is the missing shape: one request, drawn as nested intervals on one timeline. This lesson builds a tracer, renders a real waterfall, and makes the head-versus-tail sampling trade-off numeric.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Correlation: Request IDs, Trace Context & Propagation](../03-correlation-and-request-context/), [Prometheus: Pull, Exposition & PromQL](../06-prometheus-and-promql/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 It is 03:14 again. A checkout took **4.2 seconds**. Your instrumentation is genuinely good: the

@@ -2,11 +2,6 @@
 
 > XSS, in the last lesson, was untrusted data getting interpreted as code — in the *browser*. This lesson meets the same root cause on the *server*, where it's older and often more devastating: **injection**. SQL injection, command injection, SSRF, and path traversal are all one mistake — user data crossing into an interpreter (a database, a shell, a URL fetcher, the filesystem) that can't tell your instructions from the attacker's. You'll run each attack against real code and fix it with the one durable defense — **separate code from data** — and then use the **OWASP Top 10** as a map of everything this entire phase has been dismantling.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The Browser Trust Boundary: CORS, CSRF & XSS](../10-browser-trust-boundary-cors-csrf-xss/) · [Authentication, Authorization & the Security Mindset](../01-authn-authz-and-the-security-mindset/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 A user-search endpoint builds its query the obvious way — by putting the search term into the SQL string:

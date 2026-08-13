@@ -2,11 +2,6 @@
 
 > The fastest query is the one you never run. A cache is a copy of an expensive answer, kept close to whoever needs it, so the expensive work happens once instead of every time.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** none
-**Time:** ~45 minutes
-
 ## The Problem
 
 Your API asks the database the same question thousands of times a second: *what's on

@@ -2,11 +2,6 @@
 
 > You put a machine in the middle of every request, and two things broke that nobody warned you about. Your admin IP allowlist started returning `403` to your own office, because every request now arrives from the proxy's address — three distinct clients collapsed to **one** at the backend. And your deploy started dropping requests: killing a backend that had three requests inside it cost **15 failed requests**, while draining it properly — stop new traffic, wait ~400 ms, then stop — cost **zero**. Same removal, same traffic, one added `while inflight > 0`. This lesson is the machine in the middle: what it can see, what it terminates, what it rewrites, and how it removes a backend without dropping a request.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Service Discovery & Health-Aware Routing](../08-service-discovery-and-routing/), [Build an HTTP Server from TCP](../../01-networking-and-protocols/09-http-server-from-tcp/), [TLS, Certificates & mTLS](../../01-networking-and-protocols/10-tls-certificates-mtls/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 You have one public IP address, one TLS certificate, and six backend services whose addresses change every deploy. Something has to sit at the front door. You install a reverse proxy, point DNS at it, and it works immediately — which is the dangerous part, because the two failures below are not configuration mistakes. They are direct consequences of the fact that there is now a machine in the middle.

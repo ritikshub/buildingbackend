@@ -2,11 +2,6 @@
 
 > Four lines of code appear in almost every service you will ever read: insert the row, commit, publish the event. They are broken. Not subtly, not rarely — broken in a way that silently loses customer orders and is discovered weeks later by a support ticket. This lesson reproduces the bug with a real database and a real crash, then fixes it with the two patterns that actually work: a transactional outbox, and Change Data Capture — which turns out to be the realisation that your database has been writing exactly the event log you need since the day you installed it.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Backpressure, Consumer Lag & Flow Control](../09-backpressure-lag-and-flow-control/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 Here is the code. You have written it, reviewed it, and approved it.

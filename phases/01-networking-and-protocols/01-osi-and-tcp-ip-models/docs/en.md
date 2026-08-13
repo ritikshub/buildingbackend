@@ -2,11 +2,6 @@
 
 > Networking works because nobody builds the whole thing at once. It is sliced into layers, each doing one job and trusting the layer below — so you can swap your Wi-Fi for a cable and every app keeps running, untouched.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** none — this is the first lesson of Phase 1. If you have never met the word *packet*, you are in the right place; we define every term as it appears.
-**Time:** ~50 minutes
-
 ## The Problem
 
 Right now, bytes are leaving your machine, crossing Wi-Fi to a router, hopping through fiber under an ocean, passing through a dozen machines built by different companies in different decades, and arriving — in order, intact — at a server you have never seen. Nobody coordinated all of that. No single program knows the whole route. Yet it works billions of times a second.

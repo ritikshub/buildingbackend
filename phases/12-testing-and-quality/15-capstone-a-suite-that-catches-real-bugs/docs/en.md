@@ -2,11 +2,6 @@
 
 > Nine layers of testing — types, unit, fakes, integration, determinism, contract, async, property-based, fault injection — 52 checks, **195 seconds of CI**, and every technique this phase spent fourteen lessons building. Run against 31 real bugs seeded into one order service, it catches **28**. Three survive everything, and one of them is caught by a **fourteen-line check that uses no technique at all** — it just asserts an invoice somebody worked out from the spec by hand, and it kills **7 of the 31** on its own. Then the result that dissolves every "unit vs integration" argument you have ever had: static typing is worth **2 bugs when you build it first and 0 when you build it last**, the same nine layers reordered give **four different answers**, and the exact order-free ranking agrees with build order on **1 of 9 positions**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [The Shape of a Test Suite](../02-the-shape-of-a-test-suite/) · [Test Doubles](../04-test-doubles/) · [Integration Testing Against a Real Database](../06-integration-testing-real-database/) · [Flaky Tests: The Trust Arithmetic](../09-flaky-tests/) · [Testing Async & Event-Driven Systems](../11-testing-async-and-event-driven/) · [Coverage Lies, Mutation Testing Doesn't](../13-coverage-and-mutation-testing/) · [Chaos Engineering & Testing in Production](../14-chaos-engineering-and-testing-in-production/)
-**Time:** ~120 minutes
-
 ## The Problem
 
 It is 09:40 on a Monday and you have inherited a service.

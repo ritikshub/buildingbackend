@@ -2,11 +2,6 @@
 
 > Take one dependency and kill it outright: **0 failed requests, 0.0 minutes of error budget**, and the circuit breaker trips **10 times** doing its job. Take the same dependency and make it merely **5× slower** for the same 20 seconds: **2,744 failed requests, 130.7 minutes of error budget**, a median user latency of **2,006 ms**, a queue **675 deep** on a service two hops away — and the breaker trips **zero** times, because a slow dependency does not produce errors to count. Then the result that should change your retry config today: against a 30-second latency spike, adding retries was **worse than having no defence at all** — 267.8 minutes of budget against 230.1 — and the retried system was the only one of five that **never recovered after the fault was removed**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Testing Async & Event-Driven Systems](../11-testing-async-and-event-driven/), [SLIs, SLOs & Error Budgets](../../09-logging-monitoring-and-observability/09-slis-slos-and-error-budgets/), [Failure Domains, Blast Radius & Shuffle Sharding](../../11-scalability-and-reliability/09-failure-domains-and-shuffle-sharding/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 **09:14.** The architecture review closes with the resilience slide, and it is a good slide. Every outbound call has a timeout. Every timeout has a retry with exponential backoff. Every retry sits behind a circuit breaker with a documented threshold. Somebody wrote all of it, somebody else reviewed all of it, and all of it is in the repository under `resilience/`.

@@ -2,11 +2,6 @@
 
 > A queue forgets. The instant a consumer says "got it", the message is gone — which is exactly what you want until the morning you discover your consumer has been silently writing garbage for six hours and there is nothing left to fix it with. This lesson takes one small idea — *stop deleting on acknowledgement* — and follows it all the way down. What comes out is the third broker shape: an ordered, immutable, replayable log where the reader, not the broker, remembers where it is. You will build one, rewind it, expire it, compact it, and crash it.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Pub/Sub: Topics, Subscriptions & Fan-Out](../04-pub-sub-topics-and-fan-out/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 The queue of [Lesson 3](../03-build-a-message-queue/) and the topic of [Lesson 4](../04-pub-sub-topics-and-fan-out/) look like different things, but they share one design decision so deeply that it is easy to miss: **a message is destroyed once it has been acknowledged.** The queue deletes it after the single consumer acks. The topic deletes each subscriber's copy after that subscriber acks. In both, the broker's job is to hold a message *until delivery is confirmed*, and then to forget it. Delivery is the goal; storage is a temporary inconvenience on the way there.

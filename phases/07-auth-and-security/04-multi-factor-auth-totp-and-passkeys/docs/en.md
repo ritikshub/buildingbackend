@@ -2,11 +2,6 @@
 
 > A password is a shared secret, and shared secrets get phished on a fake login page, reused from a site that already leaked, and guessed in bulk — none of which the world's best Argon2 hash can stop, because the attacker never touches your database. A second factor is proof of identity the attacker *can't* obtain that way. This lesson builds the six digits in your authenticator app from scratch — they're just an HMAC over the clock — verifies it against the official RFC test vectors, then explains passkeys (WebAuthn), the phishing-proof successor that deletes the shared secret entirely.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Cryptographic Building Blocks](../02-cryptographic-building-blocks/) · [Password Storage & Hashing](../03-password-storage-and-hashing/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 You did everything in Lesson 3 right: Argon2id, per-user salts, a pepper in a separate vault, breach screening at signup. Your password *storage* is excellent. And your users still get their accounts taken over, because the three most common ways a password reaches an attacker never involve your database at all:

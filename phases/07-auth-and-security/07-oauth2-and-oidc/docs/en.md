@@ -2,11 +2,6 @@
 
 > "Sign in with Google" and "let this app access your calendar" look like one feature, and conflating them is the most common security mistake in this whole area. OAuth 2.0 answers a question a password can't: *how do I let one app act on my behalf at another service without handing it my password?* That is **delegation**, not login. This lesson builds the Authorization Code flow with PKCE from scratch — the one flow you should actually use — and then shows how **OIDC** layers a real login system (an ID token, the JWT from Lesson 6) on top, so you finally see why the two are different and where each belongs.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [JWT & Token Auth from Scratch](../06-jwt-and-token-auth/) · [Sessions & Secure Cookies](../05-sessions-and-secure-cookies/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 You're building a photo-printing app. To print someone's photos, you need to read them from their Google Photos. How does the user let you in?

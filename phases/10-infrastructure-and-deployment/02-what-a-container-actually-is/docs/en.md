@@ -2,11 +2,6 @@
 
 > There is no "container" object in Linux. There is a process, and the kernel tells it three lies — about what it can see, what it may use, and what its disk is. Measured here from inside one: **41,943,040 bytes copied to change a single byte** of a file that lives in an image layer; **14 of 41 capabilities held**, so every one of six `unshare()` calls fails with EPERM even as root; **65.9 MB of page cache billed to a cgroup** whose heap never grew; and a process that ignores `SIGTERM` burning the entire grace period before dying to `SIGKILL` with **8 in-flight requests severed** and nothing in the error rate to show for it.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Where Code Actually Runs](../01-where-code-actually-runs/), [How a Computer Runs a Program](../../00-foundations/09-how-a-computer-runs-a-program/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 It is 09:40 on a Tuesday and you are watching a routine rolling update replace 40 pods of a checkout service. The deploy is green. Every new pod passes its readiness probe. The dashboard shows no elevated error rate — 0.02%, same as yesterday.

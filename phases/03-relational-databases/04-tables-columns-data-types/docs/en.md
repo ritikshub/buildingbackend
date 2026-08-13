@@ -2,11 +2,6 @@
 
 > A column's type is a promise the database enforces on every value that will ever live there. Choose it well and the database catches your bugs, packs your data tightly, and sorts it correctly. Choose "just make it text" and you inherit all three problems forever.
 
-**Type:** Learn
-**Languages:** SQL
-**Prerequisites:** [The Relational Model](../03-the-relational-model/)
-**Time:** ~55 minutes
-
 ## The Problem
 
 You're defining a table for users. Easy — `id`, `name`, `email`, `age`, `created`,

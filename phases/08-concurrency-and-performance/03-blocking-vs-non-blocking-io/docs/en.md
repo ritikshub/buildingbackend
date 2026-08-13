@@ -2,11 +2,6 @@
 
 > A parked thread costs zero CPU — that is the good news and the trap. It still costs 8 MiB of reserved address space and 16.2 µs every time the scheduler touches it, so 10,000 idle WebSocket connections cost you 78 GiB of address space and 162 ms of pure scheduler work per wakeup round to do *nothing*. This lesson traces one `recv()` into the kernel to show exactly where that bill comes from, then rebuilds the same server on one thread with `selectors` and measures it: 600 requests in 116.6 ms on a single thread against 235.6 ms on 150, and an `epoll_wait()` that costs 0.9 µs whether it watches 11 descriptors or 1,001 while `select()` climbs to 40.7 µs and then refuses to run at all.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Processes, Threads & the GIL](../02-processes-threads-and-the-gil/), [Transport Layer: TCP vs UDP](../../01-networking-and-protocols/05-transport-layer-tcp-vs-udp/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 Lesson 2 ended with a clean result: threads are the wrong tool for CPU-bound work and the right tool for I/O-bound work. A thread that is waiting on the network releases the GIL (Global Interpreter Lock, the mutex that lets only one Python thread execute bytecode at a time), so while it waits, the others run. Waiting is what a backend does almost all of the time. So the obvious server design writes itself, and it is the design every tutorial ships:

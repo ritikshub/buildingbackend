@@ -2,11 +2,6 @@
 
 > RAM forgets everything when the power goes out. Files are how a computer remembers — and a file is, you guessed it, just a named pile of bytes.
 
-**Type:** Learn
-**Languages:** Python
-**Prerequisites:** [How a Computer Runs a Program](../09-how-a-computer-runs-a-program/)
-**Time:** ~40 minutes
-
 ## The Problem
 
 Last lesson: RAM is fast but **volatile** — kill the power and it's wiped. So how does

@@ -2,11 +2,6 @@
 
 > Every photo, message, and bank balance a computer has ever touched is, underneath, just a pattern of on/off switches. Once you can read that pattern, nothing about computers is magic anymore.
 
-**Type:** Learn
-**Languages:** Python
-**Prerequisites:** none — this is the very first lesson
-**Time:** ~40 minutes
-
 ## The Problem
 
 A computer is, at its heart, a huge collection of tiny electrical switches. Each

@@ -2,11 +2,6 @@
 
 > The same fleet, the same traffic, the same broken release — pushed four different ways. Recreate cost **9,689 user-facing errors**, rolling **452**, blue-green **162**, and a 5% canary with automated analysis **20**. Blue-green *detected the problem fastest of the three that got a signal at all* and still cost 8.1× more than the canary, because blast radius is exposure × time and it optimised only the clock. Then the part nobody measures: a 1% canary baked for five minutes on a 60 req/s service sees 180 requests, has **41.9% statistical power**, and promoted a genuinely broken release **five times out of eight**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Reverse Proxies, Load Balancers & Ingress](../09-reverse-proxies-and-load-balancers/), [Orchestration: Control Loops, Schedulers & Kubernetes](../07-orchestration-and-kubernetes/), [SLIs, SLOs & Error Budgets](../../09-logging-monitoring-and-observability/09-slis-slos-and-error-budgets/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 Two scenes. Both real. The loud one is the one everybody remembers, and the quiet one is the one that costs more.

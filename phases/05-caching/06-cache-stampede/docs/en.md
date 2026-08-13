@@ -2,11 +2,6 @@
 
 > The cache was protecting the database from a million reads a minute. Then the one hot key expired, and in the same millisecond all those reads became database queries. The cache didn't just stop helping — it handed the database a synchronized punch it was never sized to take.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Invalidation & TTLs](../05-invalidation-and-ttls/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Picture the front-page article. Its cache entry serves 50,000 reads a second, every one

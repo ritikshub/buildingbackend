@@ -2,11 +2,6 @@
 
 > You type a name; the machine needs a number. DNS is the distributed database that turns `example.com` into `93.184.216.34` — and it is just a request-and-reply protocol you can build by hand.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons 04–05 — IP and the transport layer. You should know that an IP (Internet Protocol) address identifies a machine, and that DNS uses UDP (User Datagram Protocol) port 53.
-**Time:** ~60 minutes
-
 ## The Problem
 
 Every connection your computer makes ends at an IP address — a number like

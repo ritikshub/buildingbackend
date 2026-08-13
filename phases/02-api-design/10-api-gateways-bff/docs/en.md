@@ -2,11 +2,6 @@
 
 > Once you have many services, someone has to own the front door — TLS, auth, rate limits, routing — so each service doesn't reinvent it, and each frontend doesn't drown talking to all of them.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [REST Principles & Resource Modeling](../01-rest-principles-resource-modeling/) · [Rate Limiting & Quotas](../09-rate-limiting-quotas/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 A single service is simple: the client talks to one address. Split it into ten

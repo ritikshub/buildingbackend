@@ -2,11 +2,6 @@
 
 > Most of the auth in this phase assumed a human at a keyboard. But a huge share of backend traffic has no user at all — one service calling another, a cron job hitting your API, a `payment_succeeded` webhook arriving from Stripe. This is **machine identity**, and it has its own toolkit: **API keys** done right (prefixed, hashed at rest, scoped, rotatable), **HMAC request signing** so a request can't be tampered or replayed, and **webhook verification** so you can trust a POST that arrives at a public URL claiming to be from someone you trust. You'll build all three from the standard library.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Cryptographic Building Blocks](../02-cryptographic-building-blocks/) · [JWT & Token Auth from Scratch](../06-jwt-and-token-auth/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 Two machine-to-machine situations, both of which the browser-centric tools so far don't cover.

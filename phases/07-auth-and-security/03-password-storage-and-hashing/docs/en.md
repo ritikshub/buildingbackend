@@ -2,11 +2,6 @@
 
 > Plan for the day your user table leaks, because eventually one will. When it does, the difference between a footnote and a front-page breach is entirely how you stored the passwords. This lesson turns a password into something that survives theft — salted so identical passwords don't match and rainbow tables die, and *deliberately slow and memory-hard* so a GPU that guesses ten billion fast hashes a second manages only a few thousand of yours. You'll build a real salted, work-factored hasher from the standard library, then ship Argon2.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Cryptographic Building Blocks](../02-cryptographic-building-blocks/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 A mid-sized company's `users` table leaks — a backup left on a public bucket, an SQL injection, a compromised admin laptop. This is not a hypothetical; it is the single most common way credentials reach attackers, and it happens to careful teams. The only variable you control ahead of time is *what the attacker gets when they open that file.* Here is the same leak under four storage schemes, from the attacker's side of the table:

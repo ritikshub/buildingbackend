@@ -2,11 +2,6 @@
 
 > Twelve lessons, twelve failures, twelve fixes — each demonstrated alone, on a clean bench, with one thing broken at a time. Production does not work that way. Production hands you a rebalance *during* a retry storm, a poison message *while* a relay is dead, and a lag graph that looks identical whether the problem is upstream or downstream. This lesson builds the whole pipeline and breaks nine things at once, then proves four invariants still hold — and then removes the idempotency and runs the identical faults again, so you can see exactly what those mechanisms were holding up.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Schema Evolution & Event Contracts](../12-schema-evolution-and-event-contracts/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 You have solved every problem in this phase. You have an envelope with a `message_id`, a broker that acks after processing, a partition key, an idempotent consumer, a dead-letter queue, a lag dashboard, and a transactional outbox. Each one was demonstrated in isolation, against a single injected fault, with everything else healthy.

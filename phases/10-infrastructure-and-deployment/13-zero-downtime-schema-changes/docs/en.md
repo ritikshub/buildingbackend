@@ -2,11 +2,6 @@
 
 > The rename took microseconds. The incompatibility lasted ninety seconds — and it produced two kinds of damage, not one. Measured here: the same column rename through a mixed fleet cost **202 failed requests, 125 wrong answers, and 90 permanently corrupted exported rows**; staged as expand/migrate/contract over five separately deployable steps, the identical 1,700 requests produced **0, 0 and 0**. Then the mechanism nobody teaches: a one-millisecond `ALTER` that was merely *waiting* for a lock stalled **42 innocent queries for 51.7 query-seconds**, and one setting cut that to 4 and 0.08.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Deployment Strategies](../11-deployment-strategies/), [Migrations & Schema Evolution](../../03-relational-databases/15-migrations-and-schema-evolution/), [Isolation, Concurrency & MVCC](../../03-relational-databases/12-isolation-levels-and-mvcc/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 **15:40.** A migration runs as part of a normal deploy. It is one line — a type widening on `orders.total_cents`, reviewed by two people, tested in CI (Continuous Integration), applied to staging that morning without incident. In production it takes the lock and does not give it back for four minutes. Checkout returns 500s. The status page goes yellow. Somebody kills the migration at 15:44, the site recovers, and the incident review concludes that the table was "too big for an online change."

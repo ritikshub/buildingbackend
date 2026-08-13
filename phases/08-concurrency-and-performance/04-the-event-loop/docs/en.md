@@ -2,11 +2,6 @@
 
 > Lesson 3's selector server handles a thousand connections on one thread, and its state lives in dictionaries keyed by file descriptor with every step of every request as a branch in one dispatch function. That is not a server; it is a runtime you wrote by accident. This lesson writes it deliberately — a real event loop with a timer heap, a ready queue and a cross-thread wakeup — and then measures the one rule the whole design rests on: a single handler calling `time.sleep(0.5)` moved the p99 of 23 *unrelated* connections from 11.36 ms to 485.00 ms, 43x worse, while p50 never budged.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Blocking vs Non-Blocking I/O](../03-blocking-vs-non-blocking-io/)
-**Time:** ~85 minutes
-
 ## The Problem
 
 The selector server from Lesson 3 works. One thread, one `select()` call, hundreds of concurrent connections, and none of the per-connection memory cost that made the thread-per-connection design fall over. It scales. Read the code again anyway.

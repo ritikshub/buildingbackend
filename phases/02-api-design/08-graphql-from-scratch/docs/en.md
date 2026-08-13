@@ -2,11 +2,6 @@
 
 > One endpoint, many shapes. The client declares the exact tree of data it wants — which fixes over-fetching and waterfalls, and creates a brand-new class of caching and security problems.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [REST Principles & Resource Modeling](../01-rest-principles-resource-modeling/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 REST has three pains that worsen as clients diversify (web, iOS, Android, partners):

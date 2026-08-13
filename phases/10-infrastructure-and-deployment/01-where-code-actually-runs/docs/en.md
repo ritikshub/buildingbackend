@@ -2,11 +2,6 @@
 
 > "It works on my laptop" is not a joke about carelessness. It is a statement about ambient state — a library, a locale, a working directory, a port, a CPU count — that your laptop handed your process for free and production does not. Measured here, inside a real container: `os.cpu_count()` reported **10** while the process was allowed to run on **2** CPUs, and a worker pool sized from that first number took **6.3× longer to return its first answer**, held **5.0× the memory**, and bought **no extra throughput at all**. Nothing errored. This lesson is the ladder of places code can run — bare metal, virtual machine, container, serverless, managed service — and what each rung stops giving you for free.
 
-**Type:** Learn
-**Languages:** Python
-**Prerequisites:** [How a Computer Runs a Program](../../00-foundations/09-how-a-computer-runs-a-program/), [Files & the Filesystem](../../00-foundations/10-files-and-the-filesystem/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 It is 09:40 on a Tuesday. The service has passed review, passed CI (Continuous Integration — the automated build-and-test pipeline), and run on your laptop every day for three weeks. You deploy it. Here is the morning, in order.

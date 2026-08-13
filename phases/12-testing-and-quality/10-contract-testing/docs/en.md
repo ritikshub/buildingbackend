@@ -2,11 +2,6 @@
 
 > A consumer that tolerantly coerces whatever the provider sends raised **zero exceptions across twelve consecutive provider releases** — and issued **226 wrong receipts**, understating what it billed by **101,132,788 minor units**, with nothing in any log. The strict consumer next to it went down loudly on six of those twelve. Neither of them noticed the release where `total_cents` quietly started meaning dollars. Meanwhile the shared integration environment that was supposed to catch all of this could answer a question on **42.4% of days**, with a longest unbroken red stretch of **52 days**. This lesson builds the thing that works instead: a contract recorded by the consumer, verified by the provider, alone, in about 150 lines.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Test Doubles: Mocks, Stubs, Fakes & the Lies They Tell](../04-test-doubles/), [OpenAPI & Contract-First Design](../../02-api-design/06-openapi-contract-first/), [Schema Evolution & Event Contracts](../../06-messaging-and-pub-sub/12-schema-evolution-and-event-contracts/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 **14:20.** The orders team ships `orders@4.2.0`. The change is one line in a serializer: the JSON field `total_cents` becomes `amount_cents`, because "cents" was wrong for the three markets that do not have cents and somebody finally cleaned it up. It is behind a minor version bump, which the team believes is fine, because they checked and nothing in *their* repository reads the old name.

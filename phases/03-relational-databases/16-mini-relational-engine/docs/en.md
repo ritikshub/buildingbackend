@@ -2,11 +2,6 @@
 
 > You've built the pieces — a page store, a B-tree index, a transaction manager, a write-ahead log. A database *is* those pieces, composed. In this capstone we assemble them into one small engine that stores rows, finds them by key, scans them in order, and survives a crash. No frameworks, ~200 lines, and nothing left as magic.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Indexes & the B-Tree](../09-indexes-and-the-btree/) · [Transactions & ACID](../11-transactions-and-acid/) · [Write-Ahead Logging](../13-write-ahead-logging/)
-**Time:** ~120 minutes
-
 ## The Problem
 
 Across this phase you built a database's organs in isolation: rows in **pages** and a **heap

@@ -2,11 +2,6 @@
 
 > "Stateless" does not mean there is no state. It means no state that only **one** instance has. Scaling a working service from one instance to six is measured here to produce an **85.0% logout rate**, a rate limiter that enforces **600 requests per minute against a written policy of 100**, and a nightly job that runs **126 times instead of 21** — all from code that was correct, tested, and unchanged. This lesson is the inventory of where the state has to go instead, and what each destination actually costs you.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Service Discovery, Client-Side Balancing & Subsetting](../05-service-discovery-and-subsetting/), [Sessions & Secure Cookies](../../07-auth-and-security/05-sessions-and-secure-cookies/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 The service has been in production for nine months on a single instance and it has been flawless. Today marketing bought a television spot, so at 11:00 you set the replica count to six. The deploy is green. Every health check passes. Then this happens, in this order.

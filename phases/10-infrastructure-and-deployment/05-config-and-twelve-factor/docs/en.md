@@ -2,11 +2,6 @@
 
 > Nobody in the incident channel can answer "which value is actually live right now?" — and the reason is that four layers all set the same key and none of them can be introspected. This lesson builds the answer: a resolver that reports the effective value *and* its source for every key, a boot check that caught **7 configuration defects in 0.2 ms before a socket was opened**, and a release identity that gave **one immutable artifact 4 distinct release ids** — because a config change is a deploy, and "roll back" needs a target.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Images, Layers & the Reproducible Build](../03-images-layers-and-builds/), [Secrets Management & Rotation](../../07-auth-and-security/13-secrets-management-and-rotation/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 **03:04.** Checkout p99 has been climbing for forty minutes. Someone notices that the downstream timeout looks wrong in the traces — requests are hanging around for three seconds when the budget is supposed to be one and a half. So the question goes into the channel, and it is the simplest question in the world:

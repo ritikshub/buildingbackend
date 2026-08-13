@@ -2,11 +2,6 @@
 
 > Lesson 2 made every log line queryable. It did not make the lines *belong to each other* — and a server handling 200 requests at once writes 200 stories into one stream, shuffled. Correlation is the fix: one identifier, minted once, that survives every function call, thread, queue, and network hop. The industry agreed on its exact byte layout so your service and a stranger's can share it.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Logs: From `print()` to Structured Events](../02-structured-logging/), [HTTP in Depth](../../01-networking-and-protocols/08-http-in-depth/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 Your logger is good now: every line a JSON object, every field typed and queryable. At 03:14 the

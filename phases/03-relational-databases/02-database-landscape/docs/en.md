@@ -2,11 +2,6 @@
 
 > "Database" is not one thing. It's a family of tools shaped by different questions — and the reason the relational one became the default is worth understanding *before* you commit to it.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [Why Databases Exist](../01-why-databases-exist/)
-**Time:** ~50 minutes
-
 ## The Problem
 
 The last lesson argued that you need *a database*. But walk into any system-design

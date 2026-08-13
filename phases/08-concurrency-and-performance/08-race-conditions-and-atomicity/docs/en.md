@@ -2,11 +2,6 @@
 
 > Eight threads increment a shared counter 100,000 times each. The answer is 800,000. Run it in this lesson and you get 214,734. Run it twenty more times and you get twenty distinct answers between 173,818 and 258,773 — not one of them correct, and not one exception raised. The same shape is a double-charged card and an oversold last seat. This lesson is about why that happens, what "atomic" actually means, and why the fix comes from finding the invariant rather than from testing until it stops.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Processes, Threads & the GIL](../02-processes-threads-and-the-gil/), [Thread Pools & Work Queues](../07-thread-pools-and-work-queues/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 Here is a program a beginner could write on their second day of threading. A counter starts at zero. Eight threads each add one to it, a hundred thousand times. Then you print it.

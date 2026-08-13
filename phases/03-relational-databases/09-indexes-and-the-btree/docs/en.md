@@ -2,11 +2,6 @@
 
 > A full scan reads every page to find one row. An index is a sorted map you keep on the side so you can jump almost straight to it — and the structure that makes it work on disk, the B-tree, keeps *any* row on a huge table just three or four page-reads away.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [How Data Lives on Disk](../08-storage-pages-and-heaps/)
-**Time:** ~90 minutes
-
 ## The Problem
 
 Last lesson's heap file has a painful property: to find "the user with email

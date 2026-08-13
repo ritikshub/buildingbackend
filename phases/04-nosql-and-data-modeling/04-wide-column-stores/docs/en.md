@@ -2,11 +2,6 @@
 
 > When you need to absorb a million writes a second, forever, across a hundred cheap machines, no single-primary database can help you — the bottleneck is physics, not tuning. Wide-column stores answer with two ideas: spread every row across the cluster by a partition key so there is no single primary, and replace the B-tree's in-place updates with an append-only engine (the LSM-tree) that turns every write into a cheap sequential append. The price is joins, ad-hoc queries, and strong consistency by default. You design the tables around your queries, not the other way round.
 
-**Type:** Learn
-**Languages:** —
-**Prerequisites:** [When Not to Use SQL](../01-when-not-to-use-sql/), [Key-Value Stores](../02-key-value-stores/), [How Data Lives on Disk: Pages, Heaps & the Buffer Pool](../../03-relational-databases/08-storage-pages-and-heaps/), [Indexes & the B-Tree](../../03-relational-databases/09-indexes-and-the-btree/)
-**Time:** ~45 minutes
-
 ## The Problem
 
 You're building the backend for a messaging app. Every message sent — billions a day — must be

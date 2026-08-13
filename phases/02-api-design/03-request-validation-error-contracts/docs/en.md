@@ -2,11 +2,6 @@
 
 > A client should be able to write one error handler for your whole API. That only works if every error shares one envelope with a frozen machine-readable code.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [URLs, Verbs & Status Codes](../02-urls-verbs-status-codes/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Clients need three things from an error: an HTTP status for coarse routing (retry?

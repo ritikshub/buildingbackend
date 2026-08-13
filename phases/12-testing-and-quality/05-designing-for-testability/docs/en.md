@@ -2,11 +2,6 @@
 
 > One branch in a 60-line `process_order()` decides which way a half-cent rounds. This lesson scans **2,000,000 amounts** and finds that **exactly 0 of them** can reach that branch through the function as written — not "we forgot to test it", but *arithmetically impossible*, because the payment sandbox quotes one fixed rate whose lowest-terms denominator is odd. On a day the real rate is 1.125 that same branch decides **12.5% of transactions**. Refactoring nothing but *who chooses the inputs* — same arithmetic, **240 of 240 cases byte-identical** — takes reachable behaviours from **15 of 24 to 24 of 24**, cuts one test's setup from **11 lines and 4 doubles to 2 lines and 0**, and raises the mutation kill rate of the *same 14 tests* from **57.8% to 73.4%**. Hard to test is not a testing problem. It is a design defect with a measurable size.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Test Doubles: Mocks, Stubs, Fakes & the Lies They Tell](../04-test-doubles/), [Connection Pooling & N+1](../../03-relational-databases/14-connection-pooling-and-n-plus-1/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 **Tuesday, 09:12.** Finance opens a ticket. Their reconciliation against the payment provider is out by **one penny on 312 invoices** — all of them Tuesday's, none of them Monday's. Not a crash, not an alert, not a failed request. Every one of those 312 invoices was issued by a service with a green build and a coverage report nobody had any reason to doubt.

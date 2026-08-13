@@ -2,11 +2,6 @@
 
 > The link layer moves a frame to the machine next to you. The network layer moves a packet to a machine on the far side of the planet — across networks it has never seen — using one global addressing scheme and one decision repeated at every hop.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Phase 1 · Lessons 01–03 — the OSI / TCP-IP layered models and the link layer. You should know that a MAC (Media Access Control) address is a hardware address that only has meaning on the local link.
-**Time:** ~75 minutes
-
 ## The Problem
 
 A MAC address gets a frame to the machine on the *same* wire or Wi-Fi. But the

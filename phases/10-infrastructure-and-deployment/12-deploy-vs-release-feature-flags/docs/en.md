@@ -2,11 +2,6 @@
 
 > A rollback that cannot happen: your deploy carried 40 merged changes, one of them is erroring, and reverting removes all 40 — including the fix another team shipped this morning. The cause is not the bad change. It is that **deploy and release were the same event**, so the only lever you own is all-or-nothing. Measured here: separating them takes time-to-mitigate from **304 seconds to 4.3 seconds (71×)**, and doing the separation wrong — re-rolling the dice on every request — turns a 10% rollout into one that reaches **98.52% of your users**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Deployment Strategies: Rolling, Blue-Green & Canary](../11-deployment-strategies/), [Config, Environments & the Twelve-Factor App](../05-config-and-twelve-factor/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 It is 14:31. The graph that matters — errors on `POST /checkout` — went from flat to 4% eleven minutes ago, and eleven minutes ago is exactly when your deploy finished. So you know what did it. You are already typing the rollback command.

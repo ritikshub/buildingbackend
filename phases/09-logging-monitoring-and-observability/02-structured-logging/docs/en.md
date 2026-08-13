@@ -2,11 +2,6 @@
 
 > A prose log line is written for a human reading one line, and then read by a machine searching a billion of them. That mismatch is why "grep the logs" stops working somewhere around your tenth server. This lesson turns `print("order failed")` into an event with typed fields you can group, count and filter — then collapses a dozen chatty lines per request into one wide event that answers questions you haven't thought of yet.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Systems Go Dark: Monitoring, Observability & the Three Pillars](../01-why-systems-go-dark/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 It's 03:14 again, and this time you *do* have logs. You SSH to `web-07`, `tail` the file, and this is what production actually looks like:

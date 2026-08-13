@@ -2,11 +2,6 @@
 
 > Lesson 8 ended by wrapping the shared counter in one lock and finally getting the right answer. That is where most codebases stop, and it is why they stop scaling. In this lesson's measurement, eight threads sharing one global lock managed **11,004 writes per second** and spent **3.15 thread-seconds** of a 0.9-second run doing nothing but waiting; the identical work spread across 16 striped locks reached **59,931 writes per second** with a mean wait of 12.4 microseconds instead of 327.8. A lock is not one tool, it is seven — and "just use a lock" does not answer how you wait for work without spinning, how you admit twenty readers but one writer, or how you cap concurrent calls to a fragile dependency at eight.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Race Conditions, Atomicity & Critical Sections](../08-race-conditions-and-atomicity/)
-**Time:** ~80 minutes
-
 ## The Problem
 
 You fixed the race. The counter is correct, the tests pass, and the fix was one line: put a lock around the critical section. Ship it.

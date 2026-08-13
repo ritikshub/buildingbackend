@@ -2,11 +2,6 @@
 
 > Opening a database connection costs a TCP handshake, a TLS handshake, an authentication round trip and a whole server-side process — about 6 ms and several megabytes, to run a query that takes 1 ms. So everyone pools. Then the second, more expensive lesson arrives: a pool is not a cache, it is **the concurrency limit your database sees**, and it multiplies by every worker process and every replica you run. This lesson measures both — reuse was 6.2x faster, and widening the pool 5x past its measured knee bought **22% less throughput and 5.8x the database-side p99**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Locks & Coordination Primitives](../09-locks-and-coordination-primitives/), [Backpressure & Load Shedding](../11-backpressure-and-load-shedding/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 Your handler opens a connection, runs one query, and closes it. Here is the bill, in order.

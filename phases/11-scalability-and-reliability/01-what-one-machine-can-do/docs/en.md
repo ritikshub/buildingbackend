@@ -2,11 +2,6 @@
 
 > Before you distribute anything, you owe yourself one number: the honest ceiling of a single box, and how far below it you are. This lesson measures that ceiling on the machine it runs on — and then measures the gap. The same workload, byte-identical output, no new dependency and no new algorithm, ran **10.5x faster** after four ordinary habits were removed: **27 machines became 3**. Most "we need to scale out" moments are a constant factor wearing a purchase order.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Concurrency? Latency, Throughput & Little's Law](../../08-concurrency-and-performance/01-why-concurrency/), [RAM & the Memory Hierarchy](../../00-foundations/06-ram-and-memory-hierarchy/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 A team serves 12,000 requests per second. They run forty 8-vCPU instances behind a load balancer, and the bill for those instances is **$19,000 a month** — about $475 per instance, before the load balancer, before the cross-zone data transfer, before the two engineers whose week is now partly about keeping forty things identical.

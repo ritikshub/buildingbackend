@@ -2,11 +2,6 @@
 
 > A machine dies at 02:00 and forty containers go with it. The transferable idea is not Kubernetes — it is a loop that observes what is running, subtracts it from what should be running, and closes the gap without being asked. Measured here: that loop restored full capacity in 2 ticks with nobody awake. Measured also: the same machine death cost **66.7% of serving capacity when the replicas were bin-packed and 16.7% when they were spread** — a 4× difference decided by a scheduler flag, months before the failure. And the property that makes the loop survivable at all: with 20% of failure events dropped, an event-driven reconciler converged in **5 of 10 runs**; the one that re-observes state converged in **10 of 10**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Infrastructure as Code: Desired State, Plan, Apply & Drift](../06-infrastructure-as-code/), [What a Container Actually Is](../02-what-a-container-actually-is/)
-**Time:** ~95 minutes
-
 ## The Problem
 
 You run forty containers across six machines. It works. You built it with the tools from the last six lessons: images pinned by digest, config in the environment, machines declared in code. Deploys are a script that SSHes to each host in turn and restarts things. It is not elegant but it is honest, and you understand every line of it.

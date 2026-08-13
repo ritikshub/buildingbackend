@@ -2,11 +2,6 @@
 
 > Relational modeling lets you store data cleanly first and figure out the queries later — the planner adapts. Every NoSQL store takes that freedom away: no joins, look up by key, and the query you didn't design for is a full-table scan or simply impossible. So you invert the whole process — **list the queries first, then design the keys so each one is a single cheap lookup.** This is the meta-skill the whole phase was building toward, and single-table design is its sharpest edge.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Key-Value Stores](../02-key-value-stores/), [Document Databases](../03-document-databases/), [Wide-Column Stores](../04-wide-column-stores/), [Schema Design & Normalization](../../03-relational-databases/07-schema-design-and-normalization/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 You've now met every NoSQL family — key-value, document, wide-column, time-series, graph — and each

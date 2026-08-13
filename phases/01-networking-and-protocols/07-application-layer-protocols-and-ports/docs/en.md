@@ -2,11 +2,6 @@
 
 > The transport layer moves bytes between programs. The application layer decides what those bytes *mean* — the verbs, replies, and rules two programs agree on so a stream of bytes becomes a request for a web page or the delivery of an email.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons 05–06 — the transport layer and DNS. You should know that TCP (Transmission Control Protocol) gives you a reliable byte stream, that UDP (User Datagram Protocol) gives you best-effort datagrams, and that a port is a 16-bit number that selects a program on a machine.
-**Time:** ~75 minutes
-
 ## The Problem
 
 You built a TCP connection in Lesson 05. It hands you a reliable, ordered stream

@@ -2,11 +2,6 @@
 
 > Lesson 1 established that a message is the only thing a producer and a consumer share. That is a much sharper constraint than it sounds: two services, possibly written by different teams in different languages and deployed years apart, must agree on a sequence of bytes — and on nothing else. No shared types, no shared memory, no chance to ask a follow-up question. This lesson dissects that sequence of bytes: the envelope the broker reads, the payload it must never open, and a serialization decision that is measured here at a 4x difference in your bandwidth bill.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Async? Coupling and the Cost of the Direct Call](../01-why-async-and-the-cost-of-coupling/)
-**Time:** ~65 minutes
-
 ## The Problem
 
 You have accepted the argument from Lesson 1. `orders` will stop calling `email` directly and publish a message instead. So you sit down to write the publish call, and immediately face a question the synchronous version never asked: **what, exactly, goes on the wire?**

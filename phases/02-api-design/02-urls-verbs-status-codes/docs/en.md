@@ -2,11 +2,6 @@
 
 > The method + URI pair replaces an infinite vocabulary of RPC function names with a small grammar everything already understands.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [REST Principles & Resource Modeling](../01-rest-principles-resource-modeling/)
-**Time:** ~60 minutes
-
 ## The Problem
 
 Once resources are nouns, the verbs come from HTTP. But which method creates vs.

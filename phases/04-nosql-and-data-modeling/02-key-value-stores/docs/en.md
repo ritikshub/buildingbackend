@@ -2,11 +2,6 @@
 
 > Throw away every query except one — "give me the value for this key" — and something surprising happens: the database gets radically faster, and it becomes almost trivial to spread across a thousand machines. A key-value store is a dictionary that survives restarts and scales to the moon. Its power comes entirely from what it refuses to do.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [When Not to Use SQL](../01-when-not-to-use-sql/), [How Data Lives on Disk: Pages, Heaps & the Buffer Pool](../../03-relational-databases/08-storage-pages-and-heaps/), [Indexes & the B-Tree](../../03-relational-databases/09-indexes-and-the-btree/)
-**Time:** ~75 minutes
-
 ## The Problem
 
 You need to store 50 million user sessions. Each one is looked up by a single session id, read

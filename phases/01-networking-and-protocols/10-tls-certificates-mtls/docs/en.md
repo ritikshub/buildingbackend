@@ -2,11 +2,6 @@
 
 > TCP delivers your bytes reliably — but in the clear, to whoever answers. TLS wraps that same stream so it is private, tamper-evident, and provably going to the server you meant.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** Lessons 05, 08–09 — TCP and HTTP. You should know that TCP (Transmission Control Protocol) gives you a reliable byte stream, and that HTTP (HyperText Transfer Protocol) is text sent over it. HTTPS is simply HTTP over TLS.
-**Time:** ~90 minutes
-
 ## The Problem
 
 You built a TCP echo server in Lesson 05 and spoke HTTP over it in Lessons 08–09.

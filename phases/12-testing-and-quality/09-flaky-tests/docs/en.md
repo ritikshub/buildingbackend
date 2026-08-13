@@ -2,11 +2,6 @@
 
 > A 0.2% per-test flake rate sounds like a rounding error. At 3,000 tests it means a clean commit comes back green **0.25% of the time** — the suite is red 99.75% of the time and nobody wrote a bug. Then it gets worse, because the arithmetic is not the interesting part: measured here, a red build in that suite carries **0.003 bits** of evidence about whether a real bug exists, against 4.32 bits in a deterministic one, and an engineer who learns that stops investigating. Effective suite power fell **87.5% → 16.2%** without a single test being edited. And the standard fix makes it worse in the one way that matters: blanket `--reruns 2` left **2 of 6 genuine product races completely undiscovered after 100 days** while making the build look healthier than ever.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Determinism: Time, Randomness, IDs & Order](../08-determinism-time-randomness-order/), [CI/CD: From Commit to Artifact to Environment](../../10-infrastructure-and-deployment/10-ci-cd-pipelines/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 It is 16:12 on a Thursday and the deploy train leaves at 17:00.

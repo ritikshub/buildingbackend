@@ -2,11 +2,6 @@
 
 > Two teams, one service, one bug budget. Team A's 4,000 unit tests run in **40 seconds** and have a **hard ceiling of 34%** of the defect population — not a low score, a ceiling, because a unit test's scope is one function and a wiring defect lives on the edge between two. Team B's 180 end-to-end tests reach **95.7%** and turn a clean build green **11.4%** of the time, so nobody reads a red build. Then the result nobody computes: solve the allocation numerically at a fixed CI budget and the optimum is a **pyramid by test count and never a pyramid by CI seconds** — at 600 s it is 6.1% unit tests holding 0.1% of the budget. Same 600 seconds, the best and worst named shapes are **52.6 points of detection apart**.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Why Tests Exist: The Cost of Finding a Bug Late](../01-why-tests-exist/), [CI/CD: From Commit to Artifact to Environment](../../10-infrastructure-and-deployment/10-ci-cd-pipelines/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 The orders service was split between two teams in a reorg eighteen months ago. Same codebase at the fork, same language, same deploy pipeline, same on-call rota, same rough number of engineers. Nobody wrote a testing strategy document. Both teams just started adding tests, and today the two halves of one service are as different as two companies.

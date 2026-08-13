@@ -2,11 +2,6 @@
 
 > A REST endpoint's breaking change hurts until the last client upgrades. An event's breaking change hurts forever, because the log still holds every message you ever wrote and one of them was written under a schema nobody remembers. This lesson is about the contract you signed with your own past — how to keep it, how to tell which changes break it, and how to read a message written ninety days and three schema versions ago.
 
-**Type:** Build
-**Languages:** Python
-**Prerequisites:** [Event-Driven Architecture: Commands, Choreography & Sagas](../11-event-driven-architecture/)
-**Time:** ~70 minutes
-
 ## The Problem
 
 Your `OrderPlaced` event has been in production for a year. Six services consume it. Then three things happen, in this order, each worse than the last.
