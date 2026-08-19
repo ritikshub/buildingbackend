@@ -605,6 +605,450 @@
       gap: 8px;
     }
 
+    /* ===================================================================
+       The Library
+       -------------------------------------------------------------------
+       Every phase is a rack. Every lesson is a book standing on it. The
+       geometry is not decoration for its own sake — each dimension is read
+       off the lesson:
+
+         spine WIDTH   ← word count. A thick book is a long lesson.
+         spine HEIGHT  ← deterministic jitter from the lesson path, so the
+                         shelf looks hand-shelved rather than extruded, and
+                         looks the SAME on every visit.
+         lying FLAT    ← the phase capstone. The finished work rests on top
+                         of the pile at the end of its shelf.
+         RIBBON        ← you have marked the lesson done (localStorage).
+
+       Colour, lettering, spine banding and the little foot ornament are all
+       hash-picked per lesson from fixed sets, which is what buys the
+       "someone painted these one at a time" look without 169 hand-drawn
+       assets. Swap PIGMENTS for real scanned washes later and nothing else
+       in this file has to change.
+    =================================================================== */
+
+    /* The key to the shelf: what the shapes actually mean. It sits where the
+       list view's own legend sits, so switching views does not move the page
+       out from under you. */
+    .library-key {
+      padding: 32px 0 72px;
+      display: flex;
+      gap: 8px 26px;
+      flex-wrap: wrap;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+    .library-key b { color: var(--ink-soft); font-weight: 500; }
+    .key-swatch {
+      display: inline-block;
+      width: 9px; height: 15px;
+      vertical-align: -3px;
+      margin-right: 6px;
+      border: 1px solid var(--rule-soft);
+      background: var(--ink-mute);
+    }
+    .key-swatch.thick { width: 17px; }
+    .key-swatch.ribbon { background: var(--ember-bright); width: 5px; }
+
+    /* ── The rack ─────────────────────────────────────────────────── */
+
+    .rack {
+      margin-bottom: 20px;
+      /* `clip` rather than `hidden`: it stops a mis-measured row from giving
+         the page a horizontal scrollbar, while still letting a hovered book
+         rise up out of the shelf. */
+      overflow-x: clip;
+    }
+
+    /* A phase gets as many planks as it needs. Each plank is cut to the row of
+       books standing on it, so a shelf is never two thirds empty, and a long
+       phase simply carries on onto the shelf below — which is what a real
+       bookcase does and what makes the whole thing responsive with no
+       horizontal scrolling anywhere. */
+    .shelf-row { position: relative; margin-bottom: 2px; }
+    .shelf-row:last-child { margin-bottom: 0; }
+    /* The dark line books cast where they meet the board. Without it they look
+       pasted above the shelf rather than standing on it. */
+    .shelf-row::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 14px;
+      bottom: 14px;
+      height: 5px;
+      background: linear-gradient(180deg, rgba(30, 24, 23, 0) 0%, rgba(30, 24, 23, 0.20) 100%);
+      pointer-events: none;
+    }
+
+    .rack-strip {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      /* Headroom so a hovered book can rise clear of the plank above it. */
+      padding: 16px 14px 0 0;
+    }
+
+    /* The shelf board the books stand on. */
+    .shelf {
+      position: relative;
+      height: 14px;
+      border-radius: 1px;
+      background:
+        linear-gradient(180deg, var(--wood-lit) 0 4px, var(--wood) 4px 100%);
+      box-shadow: 0 4px 9px -6px rgba(30, 24, 23, 0.5);
+    }
+    .shelf::before {
+      /* The lit front lip, so the board reads as a solid plank end-on. */
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 1px;
+      background: var(--wood-lip);
+      opacity: 0.65;
+    }
+    .shelf-plate {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 1px 6px;
+      background: var(--plate-bg);
+      border: 1px solid var(--plate-edge);
+      border-radius: 1px;
+      font-family: var(--font-mono);
+      font-size: 0.5rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--plate-ink);
+      white-space: nowrap;
+      box-shadow: 0 1px 0 rgba(30, 24, 23, 0.25);
+    }
+    .shelf-plate .plate-num { color: var(--ember); font-weight: 700; }
+    .shelf-plate .plate-count { opacity: 0.6; }
+
+    :root {
+      --wood: #b98a58;
+      --wood-lit: #c9a071;
+      --wood-lip: #e0c197;
+      --plate-bg: #efe7d3;
+      --plate-edge: rgba(30, 24, 23, 0.35);
+      --plate-ink: #4a4340;
+    }
+    [data-theme="dark"] {
+      --wood: #4d3928;
+      --wood-lit: #5e4732;
+      --wood-lip: #7d6046;
+      --plate-bg: #2b241d;
+      --plate-edge: rgba(236, 231, 218, 0.28);
+      --plate-ink: #b0a89a;
+    }
+
+    /* ── A book ───────────────────────────────────────────────────── */
+
+    .book {
+      position: relative;
+      flex: 0 0 auto;
+      width: var(--w);
+      height: var(--h);
+      display: block;
+      text-decoration: none;
+      transform-origin: bottom center;
+      transform: rotate(var(--rot, 0deg)) translateY(0);
+      transition: transform 220ms cubic-bezier(0.34, 1.4, 0.5, 1), filter 220ms ease;
+      cursor: pointer;
+    }
+    /* A book pulls up out of the shelf, the way you'd tip one out with a
+       finger before taking it. */
+    .book:hover,
+    .book:focus-visible {
+      transform: rotate(var(--rot, 0deg)) translateY(-9px);
+      z-index: 3;
+      outline: none;
+    }
+    .book:focus-visible .paint { box-shadow: 0 0 0 2px var(--ember-bright); }
+    .book:hover { filter: drop-shadow(0 6px 6px rgba(30, 24, 23, 0.28)); }
+
+    /* The painted body. This layer — and only this layer — takes the
+       displacement filter, so the edges wobble like a brush line while the
+       lettering above it stays perfectly crisp. */
+    .paint {
+      position: absolute;
+      inset: 0;
+      border-radius: 1px 1px 1px 1px;
+      background:
+        radial-gradient(115% 80% at 28% 12%, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0) 62%),
+        linear-gradient(95deg, rgba(255, 255, 255, 0.10) 0 22%, rgba(0, 0, 0, 0.06) 60%, rgba(0, 0, 0, 0.12) 100%),
+        var(--bg);
+      box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--deep) 55%, transparent),
+        inset 0 -8px 7px -7px var(--deep),
+        inset 0 8px 7px -7px var(--deep),
+        inset -4px 0 5px -4px var(--deep);
+    }
+    [data-paint="on"] .paint { filter: url(#wcEdge); }
+
+    /* Pigment granulation: the speckle a wash leaves as it dries. */
+    .paint::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+      opacity: 0.14;
+      pointer-events: none;
+    }
+    [data-theme="dark"] .paint { filter: saturate(0.92) brightness(0.84); }
+    html[data-theme="dark"][data-paint="on"] .paint { filter: url(#wcEdge) saturate(0.92) brightness(0.84); }
+
+    /* Spine banding — head/foot blocks, rules and label panels, hash-picked
+       so no two neighbours are dressed the same way. */
+    .band {
+      position: absolute;
+      left: 0; right: 0;
+      background: var(--deep);
+      opacity: 0.42;
+      pointer-events: none;
+    }
+    .band.head { top: 9%; height: 3px; }
+    .band.foot { bottom: 9%; height: 3px; }
+    .band.block-foot { bottom: 0; height: 22%; opacity: 0.3; border-radius: 0 0 1px 1px; }
+    .band.rule { height: 1px; opacity: 0.55; }
+    .band.panel {
+      top: 18%; bottom: 18%;
+      left: 2px; right: 2px;
+      background: var(--panel);
+      opacity: 1;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--deep) 45%, transparent);
+      border-radius: 1px;
+    }
+
+    /* The lettering. */
+    .title {
+      position: absolute;
+      inset: 7px 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      overflow: hidden;
+      color: var(--tx);
+      font-size: var(--fs);
+      line-height: 1.25;
+      text-align: center;
+      pointer-events: none;
+      text-shadow: 0 0 1px color-mix(in srgb, var(--bg) 60%, transparent);
+    }
+    .book[data-dir="up"] .title { transform: rotate(180deg); }
+    .book[data-panel="1"] .title { color: var(--panel-ink); }
+
+    .st-display { font-family: var(--font-display); font-weight: 500; }
+    .st-caps    { font-family: var(--font-body); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+    .st-mono    { font-family: var(--font-mono); font-weight: 500; text-transform: uppercase; letter-spacing: 0.015em; }
+    .st-heavy   { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.01em; }
+
+    /* Foot ornament — the little painted mark near the bottom of a spine. */
+    .orn {
+      position: absolute;
+      left: 50%;
+      bottom: 3px;
+      width: 7px;
+      height: 7px;
+      transform: translateX(-50%);
+      color: var(--tx);
+      opacity: 0.62;
+      pointer-events: none;
+    }
+    .book[data-orn-top="1"] .orn { bottom: auto; top: 3px; }
+    /* Reserve the ornament's end of the spine so a mark never lands on a word.
+       (An `up` title is the same box rotated 180deg, so the inset goes on the
+       physical edge either way.) */
+    .book[data-orn="1"][data-orn-top="0"] .title { bottom: 13px; }
+    .book[data-orn="1"][data-orn-top="1"] .title { top: 13px; }
+    .book.flat[data-orn="1"] .title { inset: 1px 14px 1px 7px; }
+    .orn svg { width: 100%; height: 100%; display: block; }
+
+    /* Read-it ribbon: a marker tucked over the head of the spine. */
+    /* A lesson with nothing written yet is a blank volume: paper, an outline,
+       no wash and no destination. It holds its place on the shelf without
+       pretending to be readable. */
+    .book.ghost { cursor: default; }
+    .book.ghost:hover { filter: none; }
+    .book.ghost:hover, .book.ghost:focus-visible { transform: rotate(var(--rot, 0deg)) translateY(-5px); }
+    .book.ghost .paint {
+      background: var(--bg-surface);
+      box-shadow: inset 0 0 0 1px var(--rule-soft);
+      opacity: 0.85;
+    }
+    .book.ghost .paint::after { opacity: 0.06; }
+    .book.ghost .title { color: var(--ink-mute); }
+    /* An unbound volume has no printed banding either. */
+    .book.ghost .band { background: var(--ink-mute); opacity: 0.1; box-shadow: none; }
+
+    .ribbon {
+      position: absolute;
+      top: -3px;
+      right: 2px;
+      width: 4px;
+      height: 17px;
+      background: var(--ember-bright);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+      box-shadow: 0 1px 2px rgba(30, 24, 23, 0.35);
+      pointer-events: none;
+    }
+
+    /* ── Books lying flat: the capstone pile at the end of a shelf ──── */
+
+    .pile {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+      align-self: flex-end;
+      margin-left: 6px;
+      gap: 1px;
+    }
+    .book.flat {
+      width: var(--fw);
+      height: var(--fh);
+      transform-origin: center;
+      transform: rotate(var(--rot, 0deg));
+    }
+    .book.flat:hover,
+    .book.flat:focus-visible { transform: rotate(var(--rot, 0deg)) translateX(6px); }
+    .book.flat .title {
+      writing-mode: horizontal-tb;
+      inset: 1px 7px;
+    }
+    .book.flat[data-dir="up"] .title { transform: none; }
+    .book.flat .orn { bottom: 50%; left: auto; right: 3px; transform: translateY(50%); }
+    .book.flat .ribbon {
+      top: 2px; right: auto; left: -3px;
+      width: 17px; height: 4px;
+      clip-path: polygon(0 0, 100% 0, 82% 50%, 100% 100%, 0 100%);
+    }
+    .book.flat .band.head { top: auto; left: 9%; right: auto; bottom: 0; width: 3px; height: auto; }
+    .book.flat .band.foot { bottom: 0; right: 9%; left: auto; top: 0; width: 3px; height: auto; }
+    .book.flat .band.block-foot { top: 0; bottom: 0; left: auto; right: 0; width: 22%; height: auto; }
+    .book.flat .band.panel { inset: 2px 18%; }
+
+    /* ── Hover card ───────────────────────────────────────────────── */
+
+    /* One shared card, positioned in the viewport, so it is never clipped by
+       a rack's horizontal scroller. */
+    /* One shared card, positioned in the viewport so it is never clipped by a
+       shelf. It says the full title and how long the chapter is — the spine
+       and the plank already told you everything else. */
+    .library-card {
+      position: fixed;
+      z-index: 60;
+      max-width: 260px;
+      padding: 8px 12px 9px;
+      background: var(--modal-bg);
+      border: 1px solid var(--rule);
+      box-shadow: 3px 3px 0 var(--shadow-color);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 120ms ease, transform 120ms ease;
+      pointer-events: none;
+    }
+    .library-card.show { opacity: 1; transform: translateY(0); }
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 0.94rem;
+      line-height: 1.25;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    /* Only the handful of very long titles need to wrap. */
+    .library-card.wrap .card-name { white-space: normal; }
+    .card-meta {
+      margin-top: 3px;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    .wc-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+    @media (max-width: 720px) {
+      .rack-strip { padding-top: 14px; }
+      .shelf-plate { font-size: 0.56rem; left: 8px; }
+      .library-card { width: 250px; }
+      .library-key { padding: 24px 0 48px; font-size: 0.66rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .book, .library-card { transition: none; }
+    }
+
+    /* ── Switching between the list and the shelves ───────────────── */
+
+    .toc-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px 32px;
+      flex-wrap: wrap;
+    }
+
+    .view-switch {
+      display: inline-flex;
+      border: 1px solid var(--rule);
+      background: var(--bg-surface);
+      flex: 0 0 auto;
+    }
+    .view-btn {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      border-right: 1px solid var(--rule-soft);
+      padding: 7px 15px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .view-btn:last-child { border-right: 0; }
+    .view-btn:hover { background: var(--ember-tint); color: var(--ink); }
+    .view-btn[aria-selected="true"] {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .view-btn:focus-visible { outline: 2px solid var(--ember-bright); outline-offset: 2px; }
+
+    .library-view {
+      padding-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 0 44px;
+    }
+    .library-view .rack { flex: 0 0 auto; }
+
+    /* `hidden` is only a UA rule, so it loses to any `display` these elements
+       set for themselves. Say it again where it will actually win. */
+    .toc-list[hidden],
+    .library-view[hidden],
+    .legend[hidden],
+    .library-key[hidden] { display: none; }
+
+    @media (max-width: 560px) {
+      .toc-head { flex-direction: column; }
+      .view-switch { align-self: flex-start; }
+    }
+
     .colophon {
       padding-top: 48px;
       padding-bottom: 48px;
@@ -975,13 +1419,32 @@
 
 
     <section class="toc container" id="contents">
-      <div class="toc-title reveal reveal--left">Curriculum · 13 phases · 164 lessons</div>
-      <div class="toc-subtitle reveal" style="--stagger-delay: 80ms;">Tap a phase to expand its lessons.</div>
-      <div class="toc-list" id="phasesGrid"></div>
-      <div class="legend">
+      <div class="toc-head">
+        <div>
+          <div class="toc-title reveal reveal--left">Curriculum · 13 phases · 164 lessons</div>
+          <div class="toc-subtitle reveal" style="--stagger-delay: 80ms;" id="tocSubtitle">Tap a phase to expand its lessons.</div>
+        </div>
+        <!-- Same curriculum, two ways of looking at it. The list is the
+             default; the shelves are drawn on first request. -->
+        <div class="view-switch reveal" role="tablist" aria-label="Curriculum view">
+          <button class="view-btn" type="button" role="tab" id="viewListBtn" data-view="list" aria-selected="true" aria-controls="phasesGrid">List</button>
+          <button class="view-btn" type="button" role="tab" id="viewLibraryBtn" data-view="library" aria-selected="false" aria-controls="libraryView">Library</button>
+        </div>
+      </div>
+
+      <div class="toc-list" id="phasesGrid" role="tabpanel" aria-labelledby="viewListBtn"></div>
+      <div class="library-view" id="libraryView" role="tabpanel" aria-labelledby="viewLibraryBtn" hidden></div>
+
+      <div class="legend" id="listLegend">
         <span class="legend-item"><span class="toc-status complete"></span> Complete</span>
         <span class="legend-item"><span class="toc-status in-progress"></span> In progress</span>
         <span class="legend-item"><span class="toc-status planned"></span> Planned</span>
+      </div>
+      <div class="library-key" id="libraryLegend" hidden>
+        <span><span class="key-swatch"></span><b>Thin</b> &mdash; short lesson</span>
+        <span><span class="key-swatch thick"></span><b>Thick</b> &mdash; long lesson</span>
+        <span><span class="key-swatch ribbon"></span><b>Ribbon</b> &mdash; you marked it done</span>
+        <span><b>Lying flat</b> &mdash; the phase capstone</span>
       </div>
     </section>
 
@@ -1061,6 +1524,7 @@
   <script src="header.js?v=20260813d" defer></script>
   <script src="cmdpalette.js?v=20260813d" defer></script>
   <script src="app.js?v=20260813m"></script>
+  <script src="library.js?v=20260819a" defer></script>
   <script>
   /**
    * Homepage topic finder.

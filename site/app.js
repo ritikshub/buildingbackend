@@ -13,6 +13,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     initThemeToggle();
     renderPhases();
+    initViewSwitch();
     initStaggerIndex();
     initModal();
     initCopyButton();
@@ -39,6 +40,68 @@
       updateThemeIcon();
     });
     updateThemeIcon();
+  }
+
+  /* The contents section holds the same curriculum twice: the list, and the
+     bookcase. The list is the default and stays the fallback — the shelves are
+     only drawn the first time someone asks for them, since 169 painted spines
+     is real work and most visits never switch. The choice sticks, so coming
+     back to the page keeps the view you left it in. */
+  function initViewSwitch() {
+    var buttons = document.querySelectorAll('.view-btn');
+    if (!buttons.length) return;
+
+    var listView = document.getElementById('phasesGrid');
+    var libraryView = document.getElementById('libraryView');
+    var listLegend = document.getElementById('listLegend');
+    var libraryLegend = document.getElementById('libraryLegend');
+    var subtitle = document.getElementById('tocSubtitle');
+    if (!listView || !libraryView) return;
+
+    var COPY = {
+      list: 'Tap a phase to expand its lessons.',
+      library: 'One shelf per phase, one spine per lesson. Hover for the full title, click to open the chapter.'
+    };
+
+    function show(view) {
+      var library = view === 'library';
+
+      // The shelves need a laid-out, visible box to measure before they can
+      // work out how many books fit on a plank, so unhide first, draw second.
+      libraryView.hidden = !library;
+      listView.hidden = library;
+      if (listLegend) listLegend.hidden = library;
+      if (libraryLegend) libraryLegend.hidden = !library;
+      if (subtitle) subtitle.textContent = COPY[view];
+
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute('aria-selected', buttons[i].getAttribute('data-view') === view ? 'true' : 'false');
+      }
+
+      if (library && window.BELibrary) window.BELibrary.mount(libraryView);
+
+      try { localStorage.setItem('curriculumView', view); } catch (e) {}
+    }
+
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener('click', function () {
+        show(this.getAttribute('data-view'));
+      });
+    }
+
+    var saved;
+    try { saved = localStorage.getItem('curriculumView'); } catch (e) {}
+    if (saved === 'library') show('library');
+
+    // Books are laid out in pixels, so a resize can change how many fit on a
+    // shelf. Only the visible view is worth re-chunking.
+    var t = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(t);
+      t = setTimeout(function () {
+        if (!libraryView.hidden && window.BELibrary) window.BELibrary.reflow(libraryView);
+      }, 180);
+    });
   }
 
   function renderPhases() {
