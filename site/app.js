@@ -66,6 +66,11 @@
     function show(view) {
       var library = view === 'library';
 
+      // The shelves live in library.js. If it failed to load — a 404, a stale
+      // cache, a blocked request — stay on the list rather than swapping it out
+      // for an empty box, which just looks like a dead button.
+      if (library && !window.BELibrary) return;
+
       // The shelves need a laid-out, visible box to measure before they can
       // work out how many books fit on a plank, so unhide first, draw second.
       libraryView.hidden = !library;
