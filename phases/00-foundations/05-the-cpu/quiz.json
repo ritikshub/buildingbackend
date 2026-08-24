@@ -4,7 +4,7 @@
     "question": "What three steps does a CPU repeat over and over?",
     "options": ["Open, read, close", "Fetch, decode, execute", "Connect, send, receive", "Compress, store, delete"],
     "correct": 1,
-    "explanation": "The CPU runs the fetch-decode-execute cycle: fetch the next instruction from memory, decode what it means, execute it, then repeat — billions of times a second."
+    "explanation": "The CPU runs the fetch-decode-execute cycle: fetch the next instruction from memory, decode what it means, execute it, then repeat, billions of times a second."
   },
   {
     "stage": "check",
@@ -23,7 +23,7 @@
   {
     "stage": "post",
     "question": "Why can a 3 GHz CPU sometimes beat a 4 GHz one?",
-    "options": ["It can't — more GHz always wins", "Because a CPU can do more work per tick (higher IPC), so fewer-but-more-productive ticks can win", "Because it has less RAM", "Because it is newer"],
+    "options": ["It can't; more GHz always wins", "Because a CPU can do more work per tick (higher IPC), so fewer-but-more-productive ticks can win", "Because it has less RAM", "Because it is newer"],
     "correct": 1,
     "explanation": "Clock speed is only one dimension. A CPU that completes more instructions per cycle (IPC) does more work each tick, so a well-designed 3 GHz chip can outrun a less efficient 4 GHz one."
   },

@@ -1,5 +1,5 @@
 """
-The CPU — a tiny fetch-decode-execute simulator.
+The CPU: a tiny fetch-decode-execute simulator.
 Lesson: phases/00-foundations/05-the-cpu/docs/en.md
 
 A CPU repeats one loop: fetch the next instruction, decode it, execute it. This

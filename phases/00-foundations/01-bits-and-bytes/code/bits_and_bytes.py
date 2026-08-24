@@ -1,5 +1,5 @@
 """
-Bits & Bytes — see the binary and hex behind ordinary numbers.
+Bits & Bytes: see the binary and hex behind ordinary numbers.
 Lesson: phases/00-foundations/01-bits-and-bytes/docs/en.md
 
 A tiny, dependency-free tour: convert between decimal, binary, and hex, and show

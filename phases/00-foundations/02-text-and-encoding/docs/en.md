@@ -1,18 +1,18 @@
 # Text & Encoding: ASCII to UTF-8
 
-> A byte is just a number. Text only exists because everyone agreed which number means which letter. That agreement is an *encoding* — and getting it wrong is exactly why you sometimes see � instead of an emoji.
+> A byte is just a number. Text only exists because everyone agreed which number means which letter. That agreement is an *encoding*, and getting it wrong is exactly why you sometimes see � instead of an emoji.
 
 ## The Problem
 
 Last lesson ended on a promise: **all data is bytes, plus an agreement about how to
 read them.** You saw how a byte holds a number from 0 to 255. But the words you're
-reading right now aren't numbers — they're letters. So:
+reading right now aren't numbers; they're letters. So:
 
 1. How does the number `72` become the letter **H**?
-2. One byte only holds 256 different values. The world has **150,000+** characters —
+2. One byte only holds 256 different values. The world has **150,000+** characters:
    every alphabet, Chinese, Arabic, emoji. How do you fit all of that into bytes?
 
-The answers — ASCII and UTF-8 — are two of the most important "agreements" in all of
+The answers, ASCII and UTF-8, are two of the most important "agreements" in all of
 computing. Every web page, every **API** (application programming interface) response, and
 every database row depends on them.
 
@@ -35,9 +35,9 @@ A character fits in 7 bits, so comfortably in one byte.
 | `9` | 57 |
 | space | 32 |
 
-So the text `Hi` is really the two bytes `72 105`. That's the whole trick — **text is
+So the text `Hi` is really the two bytes `72 105`. That's the whole trick: **text is
 just numbers, and ASCII is the lookup table.** A couple of patterns worth noticing
-(they're not accidents — the designers planned them):
+(they're not accidents; the designers planned them):
 
 - Uppercase and lowercase are exactly **32 apart** (`A`=65, `a`=97). Flipping one bit
   changes case.
@@ -45,7 +45,7 @@ just numbers, and ASCII is the lookup table.** A couple of patterns worth notici
 
 ### The problem with ASCII: it's tiny
 
-ASCII has room for 128 characters — enough for English. But "é", "ñ", "日", "🙂"?
+ASCII has room for 128 characters, enough for English. But "é", "ñ", "日", "🙂"?
 Not a chance. Even stretching to a full byte (256 values) only buys a little more.
 The world's writing needs *hundreds of thousands* of characters. One byte can't do it.
 
@@ -62,11 +62,11 @@ every language a unique number**, called a **code point**. Code points are writt
 | `€` | U+20AC | 8364 |
 | `😀` | U+1F600 | 128512 |
 
-Notice `A` is still 65 — Unicode kept ASCII's numbers for the first 128 characters on
-purpose. But here's the key distinction, and it trips up almost everyone at first:
+Notice `A` is still 65, because Unicode kept ASCII's numbers for the first 128
+characters on purpose. But here's the key distinction, and it trips up almost everyone at first:
 
 > **Unicode says which number a character *is*. It does *not* say how to store that
-> number as bytes.** That second job — turning code points into bytes — is what an
+> number as bytes.** That second job (turning code points into bytes) is what an
 > **encoding** does. The most important one is **UTF-8**.
 
 ### UTF-8: how code points become bytes
@@ -90,7 +90,7 @@ of bytes.
     <text x="450" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">UTF-8 slices a code point's bits into a byte template that describes itself</text>
 
     <rect x="16" y="40" width="868" height="72" rx="11" fill="#c94a12" fill-opacity="0.06" stroke="#c94a12" stroke-opacity="0.7" stroke-width="1.8"/>
-    <text x="32" y="60" font-size="10.5" font-weight="700" fill="#c94a12">1 · THE CHARACTER — a code point is a number, not yet bytes</text>
+    <text x="32" y="60" font-size="10.5" font-weight="700" fill="#c94a12">1 · THE CHARACTER: a code point is a number, not yet bytes</text>
     <text x="450" y="90" text-anchor="middle" font-size="15" fill="currentColor"><tspan font-size="21" font-weight="700" fill="#c94a12">é</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#c94a12">U+00E9</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#c94a12">233</tspan><tspan>&#x2003;=&#x2003;</tspan><tspan font-weight="700" fill="#c94a12">11101001</tspan><tspan font-size="10">&#x2003;(8 bits)</tspan></text>
     <text x="450" y="106" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.8">Unicode gives the number. UTF-8 decides how that number becomes bytes.</text>
 
@@ -176,9 +176,9 @@ of bytes.
     <text x="316" y="336" text-anchor="middle" font-size="9" fill="currentColor">0xC3 = 195 · 110… = 2-byte character</text>
     <text x="584" y="336" text-anchor="middle" font-size="9" fill="currentColor">0xA9 = 169 · 10… = continuation byte</text>
     <text x="450" y="360" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.9">Decoding runs backwards: throw away 110 and 10, concatenate 00011 + 101001 = 00011101001 = 233 = é again.</text>
-    <text x="450" y="378" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.75">Trace one bit: the last 1 of 11101001 is still the last 1 of byte 2 — the bits are moved, never changed.</text>
+    <text x="450" y="378" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.75">Trace one bit: the last 1 of 11101001 is still the last 1 of byte 2; the bits are moved, never changed.</text>
 
-    <text x="450" y="404" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">3 · EVERY BYTE ANNOUNCES ITS OWN ROLE — the leading 1s of the first byte are the length</text>
+    <text x="450" y="404" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">3 · EVERY BYTE ANNOUNCES ITS OWN ROLE: the leading 1s of the first byte are the length</text>
     <rect x="16" y="414" width="868" height="124" rx="11" fill="#7f7f7f" fill-opacity="0.06" stroke="#7f7f7f" stroke-opacity="0.6" stroke-width="1.6" fill-rule="evenodd"/>
     <rect x="24" y="464" width="852" height="24" rx="5" fill="#c94a12" fill-opacity="0.09"/>
     <g font-size="9" fill="currentColor" opacity="0.75">
@@ -218,10 +218,10 @@ of bytes.
       <rect x="16" y="604" width="430" height="96" rx="10" fill="#0fa07f" fill-opacity="0.07" stroke="#0fa07f" stroke-opacity="0.8"/>
       <rect x="470" y="604" width="414" height="96" rx="10" fill="#e0930f" fill-opacity="0.07" stroke="#e0930f" stroke-opacity="0.8"/>
     </g>
-    <text x="231" y="624" text-anchor="middle" font-size="10" font-weight="700" fill="#0fa07f">ASCII IS A 1-BYTE SUBSET — UTF-8 IS BACKWARD-COMPATIBLE</text>
+    <text x="231" y="624" text-anchor="middle" font-size="10" font-weight="700" fill="#0fa07f">ASCII IS A 1-BYTE SUBSET, SO UTF-8 IS BACKWARD-COMPATIBLE</text>
     <text x="231" y="648" text-anchor="middle" font-size="11.5" fill="currentColor"><tspan font-weight="700" fill="#c94a12">A</tspan> = U+0041 = 65 → <tspan fill="#e0930f" font-weight="700">0</tspan><tspan fill="#c94a12" font-weight="700">1000001</tspan> = <tspan fill="#0fa07f" font-weight="700">0x41</tspan></text>
     <text x="231" y="668" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">code points 0–127 need nothing but a single leading 0</text>
-    <text x="231" y="686" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.75">plain English UTF-8 is byte-for-byte ASCII — why UTF-8 won</text>
+    <text x="231" y="686" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.75">plain English UTF-8 is byte-for-byte ASCII, which is why UTF-8 won</text>
 
     <text x="677" y="624" text-anchor="middle" font-size="10" font-weight="700" fill="#e0930f">SO CHARACTER COUNT ≠ BYTE COUNT</text>
     <g font-size="10.5" text-anchor="middle" fill="currentColor">
@@ -237,11 +237,11 @@ of bytes.
       <text x="573" y="666" fill="#7f7f7f">63</text><text x="625" y="666" fill="#7f7f7f">61</text><text x="677" y="666" fill="#7f7f7f">66</text>
       <text x="729" y="666" fill="#0fa07f">C3</text><text x="781" y="666" fill="#0fa07f">A9</text>
     </g>
-    <text x="677" y="690" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.8">4 characters, 5 bytes — a byte limit and a character limit differ</text>
+    <text x="677" y="690" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.8">4 characters, 5 bytes, so a byte limit and a character limit differ</text>
 
     <text x="450" y="720" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.9">Every byte says what it is: how long the character is, or that it is the middle of one.</text>
-    <text x="450" y="738" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.9">That self-description is why UTF-8 survives a truncated stream — and why a byte limit is not a character limit.</text>
-    <text x="450" y="756" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.72">Decode with a different table than the one that encoded, and you get mojibake — the bytes were never wrong.</text>
+    <text x="450" y="738" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.9">That self-description is why UTF-8 survives a truncated stream, and why a byte limit is not a character limit.</text>
+    <text x="450" y="756" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.72">Decode with a different table than the one that encoded, and you get mojibake; the bytes were never wrong.</text>
   </g>
 </svg>
 ```
@@ -249,7 +249,7 @@ of bytes.
 One direct consequence you *will* hit as a backend engineer: **the number of
 characters is not the number of bytes.** The word `café` is 4 characters but **5
 bytes** in UTF-8 (because `é` is two bytes). A length limit measured in bytes and one
-measured in characters are different limits — mixing them up truncates people's
+measured in characters are different limits, and mixing them up truncates people's
 names and breaks emoji.
 
 ### How UTF-8 packs a code point into bytes
@@ -273,8 +273,8 @@ Read the leading bits of any byte and you instantly know its role:
 - Starts with **`10`** → a **continuation** byte, the middle of a character.
 
 Because continuation bytes are clearly marked, a program can jump into the middle of a
-stream and **resynchronize** to the next character boundary — one reason UTF-8 is so
-robust. Here's `é` encoded step by step:
+stream and **resynchronize** to the next character boundary, which is one reason
+UTF-8 is so robust. Here's `é` encoded step by step:
 
 ```text
 é  =  U+00E9  =  233  =  binary 11101001  →  pad to 11 bits  →  00011 101001   (5 + 6)
@@ -286,7 +286,7 @@ the two bytes:     11000011    10101001   =   0xC3  0xA9
 
 Those are exactly the two bytes the demo printed for `é`. The wrapper bits (`110…`,
 `10…`) are pure bookkeeping that let any reader regroup the bytes back into the one
-number — and the number is the character.
+number, and the number is the character.
 
 ### Mojibake: what a wrong encoding looks like
 
@@ -295,14 +295,14 @@ but **read back** as a different encoding (a common one is Latin-1), each byte g
 looked up in the wrong table and you get garbage:
 
 - `café` written in UTF-8 is the bytes `63 61 66 C3 A9`.
-- Read those same bytes back as Latin-1 and you get **`café`** — the classic garble
+- Read those same bytes back as Latin-1 and you get **`café`**, the classic garble
   called **mojibake**.
 - When a program can't even make sense of the bytes, it shows the **replacement
   character** `�`.
 
 That ugly `Ã©` in an email, or a `�` where an emoji should be, is almost always this:
 **someone read bytes with a different encoding than the one that wrote them.** The
-fix is never "retype it" — it's "decode with the right encoding."
+fix is never "retype it"; it's "decode with the right encoding."
 
 This is why **HTTP** (hypertext transfer protocol) responses carry a header like
 `Content-Type: text/html; charset=utf-8`,
@@ -314,8 +314,8 @@ standard backend advice. You're keeping everyone reading from the same table.
 Run [`code/text_and_encoding.py`](../code/text_and_encoding.py):
 
 ```python
-print(ord("H"))          # 72   — the code point of a character
-print(chr(72))           # H    — the character for a code point
+print(ord("H"))          # 72   : the code point of a character
+print(chr(72))           # H    : the character for a code point
 
 for s in ["Hi", "café", "😀"]:
     b = s.encode("utf-8")            # text -> bytes
@@ -346,5 +346,5 @@ print(b.decode("latin-1"))           # cafÃ©  (wrong encoding = mojibake)
 - **Mojibake** (`café`, `�`) happens when bytes are decoded with the wrong encoding.
   Use **UTF-8 everywhere** so reader and writer share one table.
 
-Next: [Transistors & Logic Gates](../03-transistors-and-logic-gates/) — the physical switch
-every one of these bits actually lives on.
+Next: [Transistors & Logic Gates](../03-transistors-and-logic-gates/), the physical
+switch every one of these bits actually lives on.

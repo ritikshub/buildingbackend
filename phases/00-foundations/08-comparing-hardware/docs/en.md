@@ -1,12 +1,12 @@
 # Comparing Hardware: Speed, Units & Cost
 
-> GHz, FLOPS, GB, GB/s, IOPS, ms — hardware is sold in a soup of units. This lesson decodes them so you can compare a CPU, a GPU, RAM, and a disk on the same page, and know why each costs what it does.
+> GHz, FLOPS, GB, GB/s, IOPS, ms: hardware is sold in a soup of units. This lesson decodes them so you can compare a CPU, a GPU, RAM, and a disk on the same page, and know why each costs what it does.
 
 ## The Problem
 
 You've now met the CPU, RAM, the GPU, and storage. But how do you actually **compare**
-them, or predict whether something will be fast? Each is sold in a different unit — GHz,
-FLOPS, GB, GB/s, IOPS, milliseconds — and mixing them up leads to buying the wrong machine
+them, or predict whether something will be fast? Each is sold in a different unit (GHz,
+FLOPS, GB, GB/s, IOPS, milliseconds) and mixing them up leads to buying the wrong machine
 or chasing the wrong bottleneck. Let's decode the units and turn them into real time.
 
 ## The Concept
@@ -35,7 +35,7 @@ but only moves a few bytes at a time. You care about *both*, for different reaso
     <marker id="p0l08a-ams" markerWidth="9" markerHeight="9" refX="1" refY="3" orient="auto"><path d="M7,0 L0,3 L7,6 Z" fill="#e0930f"/></marker>
     <marker id="p0l08a-ame" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
   </defs>
-  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Every hardware spec is either throughput or latency — and they move independently</text>
+  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Every hardware spec is either throughput or latency, and they move independently</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <g fill="none" stroke-linejoin="round" stroke-width="1.9">
       <rect x="16" y="48" width="424" height="252" rx="12" fill="#0fa07f" fill-opacity="0.07" stroke="#0fa07f"/>
@@ -54,17 +54,17 @@ but only moves a few bytes at a time. You care about *both*, for different reaso
       <text x="32" y="268">IOPS</text>
     </g>
     <g fill="currentColor" font-size="9">
-      <text x="118" y="124">ticks per second — CPU clock speed</text>
+      <text x="118" y="124">ticks per second: CPU clock speed</text>
       <text x="118" y="160">floating-point operations per second</text>
-      <text x="118" y="196">gigabytes per second — bandwidth</text>
-      <text x="118" y="232">megabits per second — network speed</text>
+      <text x="118" y="196">gigabytes per second: bandwidth</text>
+      <text x="118" y="232">megabits per second: network speed</text>
       <text x="118" y="268">input/output operations per second</text>
     </g>
     <g fill="currentColor" font-size="8.5" opacity="0.7">
       <text x="118" y="137">3.5 GHz = 3.5 billion ticks per second</text>
-      <text x="118" y="173">compute throughput — GPUs, machine learning</text>
+      <text x="118" y="173">compute throughput: GPUs, machine learning</text>
       <text x="118" y="209">how fast data moves: RAM, disk</text>
-      <text x="118" y="245">note the little b — BITS, not bytes</text>
+      <text x="118" y="245">note the little b: BITS, not bytes</text>
       <text x="118" y="281">a disk's random-access rate</text>
     </g>
 
@@ -78,9 +78,9 @@ but only moves a few bytes at a time. You care about *both*, for different reaso
       <text x="476" y="196">ms</text>
     </g>
     <g fill="currentColor" font-size="9">
-      <text x="530" y="124">nanoseconds — one billionth of a second</text>
-      <text x="530" y="160">microseconds — one millionth of a second</text>
-      <text x="530" y="196">milliseconds — one thousandth of a second</text>
+      <text x="530" y="124">nanoseconds: one billionth of a second</text>
+      <text x="530" y="160">microseconds: one millionth of a second</text>
+      <text x="530" y="196">milliseconds: one thousandth of a second</text>
     </g>
     <g fill="currentColor" font-size="8.5" opacity="0.7">
       <text x="530" y="137">a register, CPU cache, or RAM read (lesson 6)</text>
@@ -88,7 +88,7 @@ but only moves a few bytes at a time. You care about *both*, for different reaso
       <text x="530" y="209">a disk seek or a network round trip</text>
     </g>
     <text x="476" y="240" font-size="9" font-weight="700" fill="#e0930f">Independent of throughput:</text>
-    <text x="476" y="256" font-size="9" fill="currentColor" opacity="0.85">a wider pipe moves MORE per second —</text>
+    <text x="476" y="256" font-size="9" fill="currentColor" opacity="0.85">a wider pipe moves MORE per second,</text>
     <text x="476" y="270" font-size="9" fill="currentColor" opacity="0.85">it does not move any ONE thing sooner.</text>
     <text x="476" y="288" font-size="8.5" fill="currentColor" opacity="0.7">That is how something can be fast and slow at once.</text>
 
@@ -99,7 +99,7 @@ but only moves a few bytes at a time. You care about *both*, for different reaso
     <text x="168" y="362" font-size="10" font-weight="700" text-anchor="end" fill="#0fa07f">WIDE</text>
     <text x="168" y="376" font-size="9" text-anchor="end" fill="#0fa07f" opacity="0.9">high</text>
     <text x="168" y="390" font-size="9" text-anchor="end" fill="#0fa07f" opacity="0.9">throughput</text>
-    <text x="480" y="368" font-size="10.5" font-weight="700" text-anchor="middle" fill="currentColor">SSD / disk — streams ~500 MB/s (megabytes per second)</text>
+    <text x="480" y="368" font-size="10.5" font-weight="700" text-anchor="middle" fill="currentColor">SSD / disk: streams ~500 MB/s (megabytes per second)</text>
     <text x="480" y="386" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.8">1 GB arrives in ~2 s once the stream is flowing</text>
     <text x="480" y="414" font-size="9.5" font-weight="700" text-anchor="middle" fill="#e0930f">LONG = HIGH LATENCY</text>
     <path d="M196 422 L764 422" stroke="#e0930f" stroke-width="1.6" fill="none" marker-start="url(#p0l08a-ams)" marker-end="url(#p0l08a-ame)"/>
@@ -109,17 +109,17 @@ but only moves a few bytes at a time. You care about *both*, for different reaso
     <path d="M176 466 L188 466 M182 466 L182 480 M176 480 L188 480" stroke="#0fa07f" stroke-width="1.5" fill="none"/>
     <text x="168" y="470" font-size="10" font-weight="700" text-anchor="end" fill="#0fa07f">THIN</text>
     <text x="168" y="484" font-size="9" text-anchor="end" fill="#0fa07f" opacity="0.9">low throughput</text>
-    <text x="344" y="474" font-size="10.5" font-weight="700" fill="currentColor">CPU register — a few bytes at a time</text>
+    <text x="344" y="474" font-size="10.5" font-weight="700" fill="currentColor">CPU register: a few bytes at a time</text>
     <text x="344" y="494" font-size="9" fill="currentColor" opacity="0.85">answers almost instantly, but moves almost nothing per second</text>
     <path d="M196 502 L328 502" stroke="#e0930f" stroke-width="1.6" fill="none" marker-start="url(#p0l08a-ams)" marker-end="url(#p0l08a-ame)"/>
     <text x="262" y="518" font-size="9.5" font-weight="700" text-anchor="middle" fill="#e0930f">SHORT = LOW LATENCY</text>
 
     <rect x="16" y="536" width="868" height="46" rx="10" fill="#7f7f7f" fill-opacity="0.09" stroke="#7f7f7f" stroke-opacity="0.6" stroke-width="1.6"/>
     <text x="32" y="554" font-size="10" font-weight="700" fill="#e0930f">The bits-vs-bytes trap:</text>
-    <text x="188" y="554" font-size="9.5" fill="currentColor">network speed is in bits (Mbps), storage and RAM in bytes (MB/s) — and 8 bits = 1 byte.</text>
+    <text x="188" y="554" font-size="9.5" fill="currentColor">network speed is in bits (Mbps), storage and RAM in bytes (MB/s), and 8 bits = 1 byte.</text>
     <text x="188" y="570" font-size="9.5" fill="currentColor" opacity="0.85">So 100 Mbps = 12.5 MB/s. Expect a 100 MB file in 1 s and you will wait ~8.</text>
   </g>
-  <text x="450" y="602" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Reading 1 GB: ~0.05 s from RAM (~20 GB/s), ~2 s from an SSD (~500 MB/s), ~80 s over 100 Mbps — a 1600× spread.</text>
+  <text x="450" y="602" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Reading 1 GB: ~0.05 s from RAM (~20 GB/s), ~2 s from an SSD (~500 MB/s), ~80 s over 100 Mbps: a 1600× spread.</text>
   <text x="450" y="620" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.75">Throughput tells you how many you can serve; latency tells you how long each one waits. Spend on the axis you are actually bound by.</text>
 </svg>
 ```
@@ -142,20 +142,20 @@ different places?
 | SSD | ~500 MB/s | ~2 s |
 | 100 Mbps network | 12.5 MB/s | ~80 s |
 
-Same gigabyte, a **1600×** spread — the memory hierarchy (lesson 6) made concrete in
+Same gigabyte, a **1600×** spread: the memory hierarchy (lesson 6) made concrete in
 seconds. This is *why* "keep hot data in RAM" and "reduce what you send over the network"
 aren't slogans; they're 1000× decisions.
 
 ### Cost, and why each part is priced the way it is
 
-You pay for the **scarce** property — speed and parallelism, not raw capacity:
+You pay for the **scarce** property, which is speed and parallelism, not raw capacity:
 
 | Part | Priced by | Why it's (relatively) expensive |
 |---|---|---|
 | CPU | per core + single-thread speed | complex cores, top clock speeds, low yield on big dies |
 | RAM | per GB | fast + volatile: constant power, refresh, precise circuitry (lesson 6) |
 | GPU | the whole card | huge die + fast VRAM (video memory) + heavy AI demand (lesson 7) |
-| SSD / HDD | per GB (cheapest) | dense, persistent, no power to hold data — but slow |
+| SSD / HDD | per GB (cheapest) | dense, persistent, no power to hold data, but slow |
 
 Rule of thumb: **fast and parallel costs more than big and slow.** A terabyte of disk is
 cheaper than 32 GB of RAM because you're paying for speed, not space.
@@ -168,7 +168,7 @@ Every workload is limited by *one* resource at a time. Find it, then spend there
 - **Memory-bound** (out of RAM / thrashing) → more RAM or better locality.
 - **I/O-bound** (waiting on disk or network) → faster storage, a cache, or fewer round trips.
 
-Don't overpay for a dimension you don't need — a GPU won't speed up a disk-bound API, and
+Don't overpay for a dimension you don't need: a GPU won't speed up a disk-bound API, and
 more RAM won't help a CPU-pegged one.
 
 ## Build It
@@ -208,10 +208,10 @@ for name, bw in {
   **throughput** vs **latency**.
 - **Bits vs bytes:** network = bits (Mbps), storage/RAM = bytes (MB/s); divide by 8 to
   convert. A classic, costly mix-up.
-- Turn units into **time**: reading 1 GB spans ~0.05 s (RAM) to ~80 s (100 Mbps) — the
+- Turn units into **time**: reading 1 GB spans ~0.05 s (RAM) to ~80 s (100 Mbps), the
   hierarchy in seconds.
 - You pay for **speed and parallelism, not capacity**; **match the hardware to the
   bottleneck** (CPU-, memory-, or I/O-bound) instead of overspending on the wrong axis.
 
-Next: [How a Computer Runs a Program](../09-how-a-computer-runs-a-program/) — how the OS puts
+Next: [How a Computer Runs a Program](../09-how-a-computer-runs-a-program/), how the OS puts
 all this hardware to work running your software.

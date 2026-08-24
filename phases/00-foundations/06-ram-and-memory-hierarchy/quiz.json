@@ -2,9 +2,9 @@
   {
     "stage": "check",
     "question": "Why does DRAM lose its contents when the power is turned off?",
-    "options": ["The files move to disk", "Each bit is stored as a charge in a capacitor, and the charge disappears without power", "The CPU deletes it on shutdown", "It doesn't — RAM is permanent"],
+    "options": ["The files move to disk", "Each bit is stored as a charge in a capacitor, and the charge disappears without power", "The CPU deletes it on shutdown", "It doesn't; RAM is permanent"],
     "correct": 1,
-    "explanation": "DRAM stores each bit as an electrical charge in a tiny capacitor. The charge leaks (so it must be refreshed) and vanishes entirely when power is cut — which is why RAM is volatile."
+    "explanation": "DRAM stores each bit as an electrical charge in a tiny capacitor. The charge leaks (so it must be refreshed) and vanishes entirely when power is cut, which is why RAM is volatile."
   },
   {
     "stage": "check",
@@ -23,7 +23,7 @@
   {
     "stage": "post",
     "question": "What property of programs makes caching effective?",
-    "options": ["Programs access data randomly", "Locality — programs tend to reuse recently-used data and data near it, so a small cache of hot data catches most reads", "Programs never repeat a read", "Caching works only for images"],
+    "options": ["Programs access data randomly", "Locality: programs tend to reuse recently-used data and data near it, so a small cache of hot data catches most reads", "Programs never repeat a read", "Caching works only for images"],
     "correct": 1,
     "explanation": "Temporal locality (reusing recent data) and spatial locality (using nearby data) mean a small fast cache of hot data satisfies most requests, so few reads pay the slow price. It's the basis of all caching."
   },
@@ -32,6 +32,6 @@
     "question": "Your API is slow because it reads the same few database rows on every request. Which idea fixes it?",
     "options": ["Buy a faster disk", "Cache those hot rows in fast memory (e.g. RAM/Redis) so most requests skip the slow database read", "Add more CPU cores", "Delete the rows"],
     "correct": 1,
-    "explanation": "Those hot rows have strong locality, so moving them up the hierarchy into a fast cache (in-memory or Redis) means most requests are served from fast memory and rarely touch the slow database — exactly the demo in this lesson."
+    "explanation": "Those hot rows have strong locality, so moving them up the hierarchy into a fast cache (in-memory or Redis) means most requests are served from fast memory and rarely touch the slow database, exactly the demo in this lesson."
   }
 ]

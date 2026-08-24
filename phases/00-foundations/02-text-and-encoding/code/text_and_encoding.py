@@ -1,5 +1,5 @@
 """
-Text & Encoding — how bytes become letters (and back).
+Text & Encoding: how bytes become letters (and back).
 Lesson: phases/00-foundations/02-text-and-encoding/docs/en.md
 
 Shows ASCII code points, UTF-8 encoding of text into bytes, why character count

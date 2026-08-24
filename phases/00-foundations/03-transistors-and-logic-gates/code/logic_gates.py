@@ -1,9 +1,9 @@
 """
-Transistors & Logic Gates — build arithmetic out of pure logic.
+Transistors & Logic Gates: build arithmetic out of pure logic.
 Lesson: phases/00-foundations/03-transistors-and-logic-gates/docs/en.md
 
 Define the basic gates, build an adder from ONLY AND/OR/NOT, and add real
-numbers with it — the same idea a CPU implements in transistors.
+numbers with it, the same idea a CPU implements in transistors.
 Run: python logic_gates.py
 """
 

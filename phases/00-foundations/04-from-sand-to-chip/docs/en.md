@@ -1,10 +1,10 @@
 # From Sand to Chip: How Processors Are Made
 
-> The chip running this page started as sand. Turning sand into a processor with billions of switches is the most precise manufacturing humanity does — which is exactly why good chips cost a fortune.
+> The chip running this page started as sand. Turning sand into a processor with billions of switches is the most precise manufacturing humanity does, which is exactly why good chips cost a fortune.
 
 ## The Problem
 
-Last lesson: a processor is billions of transistors. That raises an obvious question —
+Last lesson: a processor is billions of transistors. That raises an obvious question:
 **how on earth do you build billions of microscopic switches** on a sliver the size of a
 fingernail? And why does a cutting-edge chip cost hundreds of millions to design, in a
 factory that costs tens of billions? Understanding this explains a lot about why hardware
@@ -15,7 +15,7 @@ is priced the way it is (the theme of lesson 8).
 ### Silicon: sand you can turn into switches
 
 Chips are made from **silicon**, which comes from ordinary **sand** (silicon dioxide).
-Silicon is a **semiconductor** — it conducts electricity *sometimes*, depending on how
+Silicon is a **semiconductor**: it conducts electricity *sometimes*, depending on how
 it's treated. That "sometimes" is the whole point: it's exactly what you need to build a
 switch. By adding tiny amounts of other elements (**doping**), engineers tune silicon to
 conduct or not, forming transistors.
@@ -30,8 +30,8 @@ conduct or not, forming transistors.
     <clipPath id="p0l04a-wclip"><ellipse cx="667" cy="148" rx="32" ry="20"/></clipPath>
   </defs>
 
-  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Sand becomes a chip in six steps — and what you pay for is precision, not the sand</text>
-  <text x="450" y="45" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.8">Silicon is a semiconductor: it conducts only sometimes, which is exactly what a switch needs — doping tunes it.</text>
+  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Sand becomes a chip in six steps, and what you pay for is precision, not the sand</text>
+  <text x="450" y="45" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.8">Silicon is a semiconductor: it conducts only sometimes, which is exactly what a switch needs; doping tunes it.</text>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
@@ -139,11 +139,11 @@ conduct or not, forming transistors.
       <text x="229" y="204">in a BILLION</text>
 
       <text x="375" y="184">grown into one large</text>
-      <text x="375" y="194">crystal cylinder —</text>
+      <text x="375" y="194">crystal cylinder,</text>
       <text x="375" y="204">the ingot</text>
 
       <text x="521" y="184">sliced into thin round</text>
-      <text x="521" y="194">wafers — like cutting</text>
+      <text x="521" y="194">wafers, like cutting</text>
       <text x="521" y="204">a salami</text>
 
       <text x="667" y="184">photolithography:</text>
@@ -164,17 +164,17 @@ conduct or not, forming transistors.
       <text x="813" y="221" fill="#e0930f">one flaw = a dead die</text>
     </g>
 
-    <text x="450" y="250" text-anchor="middle" font-size="8.5" font-weight="700" fill="#7c5cff">one material, one continuous process — each step adds precision, never material</text>
+    <text x="450" y="250" text-anchor="middle" font-size="8.5" font-weight="700" fill="#7c5cff">one material, one continuous process: each step adds precision, never material</text>
     <g fill="none" stroke="#7c5cff" stroke-width="1.7">
       <path d="M20 256 L874 256" marker-end="url(#p0l04a-arp)"/>
     </g>
 
     <rect x="16" y="268" width="868" height="60" rx="10" fill="#7c5cff" fill-opacity="0.06" stroke="#7c5cff" stroke-opacity="0.55" stroke-width="1.4"/>
-    <text x="450" y="288" text-anchor="middle" font-size="10" font-weight="700" fill="#7c5cff">Why step 5 is the hard one: the features are a few NANOMETERS wide — smaller than a virus, thinner than the wavelength of visible light.</text>
+    <text x="450" y="288" text-anchor="middle" font-size="10" font-weight="700" fill="#7c5cff">Why step 5 is the hard one: the features are a few NANOMETERS wide, smaller than a virus and thinner than the wavelength of visible light.</text>
     <text x="450" y="303" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.9">So cutting-edge fabs print with EUV (extreme ultraviolet) light, and a modern chip stacks dozens of such layers with nanometer precision.</text>
-    <text x="450" y="319" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.72">"3nm process" is a marketing label for a manufacturing generation, not a measurement — the printed features are larger than 3 nm.</text>
+    <text x="450" y="319" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.72">"3nm process" is a marketing label for a manufacturing generation, not a measurement; the printed features are larger than 3 nm.</text>
 
-    <text x="450" y="350" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e0930f">What you are actually paying for — none of it is the sand</text>
+    <text x="450" y="350" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e0930f">What you are actually paying for, and none of it is the sand</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.6">
       <rect x="16" y="360" width="208" height="78" rx="10" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f"/>
@@ -197,7 +197,7 @@ conduct or not, forming transistors.
     <g text-anchor="middle" font-size="8" fill="currentColor" opacity="0.88">
       <text x="120" y="418">to build one modern</text>
       <text x="120" y="430">chip factory</text>
-      <text x="340" y="418">each — EUV = extreme ultraviolet</text>
+      <text x="340" y="418">each (EUV = extreme ultraviolet)</text>
       <text x="340" y="430">and only ONE company makes them</text>
       <text x="560" y="418">spent on a leading-edge design</text>
       <text x="560" y="430">before a single one is sold</text>
@@ -206,7 +206,7 @@ conduct or not, forming transistors.
     </g>
   </g>
 
-  <text x="450" y="460" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">The price of a high-end CPU is not the sand — it is the precision, research and low yield behind each working die.</text>
+  <text x="450" y="460" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">The price of a high-end CPU is not the sand; it is the precision, research and low yield behind each working die.</text>
   <text x="450" y="479" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.75">Only a handful of companies on Earth can manufacture at the cutting edge (TSMC, Samsung, Intel).</text>
 </svg>
 ```
@@ -214,25 +214,26 @@ conduct or not, forming transistors.
 1. **Purify** the silicon to astonishing purity (fewer than one foreign atom in a billion).
 2. **Grow** it into a single large crystal cylinder called an **ingot**.
 3. **Slice** the ingot into thin, round **wafers** (like cutting a salami).
-4. **Print** the transistor patterns onto the wafer — this is the hard part (below).
+4. **Print** the transistor patterns onto the wafer; this is the hard part (below).
 5. **Dice** the finished wafer into dozens or hundreds of individual **chips** (dies).
 
 ### Photolithography: printing with light
 
-The transistors aren't placed one by one — there are billions. Instead they're **printed
+The transistors aren't placed one by one; there are billions. Instead they're **printed
 all at once** using **photolithography**: light is shone through a patterned mask onto a
 light-sensitive coating on the wafer, etching the pattern. This repeats **layer upon
 layer** (a modern chip has dozens of layers stacked with nanometer precision).
 
-The features are unimaginably small — a few **nanometers** wide, smaller than a virus,
+The features are unimaginably small: a few **nanometers** wide, smaller than a virus,
 thinner than the wavelength of visible light (which is why cutting-edge fabs use
 **extreme ultraviolet**, EUV, light). When you hear "3nm process," treat that number as a
-**marketing label** for a manufacturing generation, not a literal measurement — the actual
+**marketing label** for a manufacturing generation, not a literal measurement; the actual
 printed features are larger than 3 nm.
 
 ### Yield, and why chips are so expensive
 
-Not every chip on a wafer works — a single speck of dust or a tiny flaw ruins a die. The
+Not every chip on a wafer works, because a single speck of dust or a tiny flaw ruins
+a die. The
 fraction that come out good is the **yield**, and it drives cost enormously. Put together:
 
 - A modern **fab** (fabrication plant) costs **$10–20 billion** to build.
@@ -243,23 +244,23 @@ fraction that come out good is the **yield**, and it drives cost enormously. Put
 - Only a **handful of companies** on Earth can manufacture at the cutting edge (TSMC,
   Samsung, Intel).
 
-So the price of a high-end CPU or GPU isn't the sand — it's the fifty billion dollars of
+So the price of a high-end CPU or GPU isn't the sand; it's the fifty billion dollars of
 precision, research, and low yield behind each working die.
 
 ### Moore's Law: why it kept getting better (and is slowing)
 
-For decades, the number of transistors on a chip **roughly doubled every ~2 years** — an
+For decades, the number of transistors on a chip **roughly doubled every ~2 years**, an
 observation called **Moore's Law**. That doubling is *why* computers got dramatically
 faster and cheaper year after year: more transistors in the same space means more
 computing for your money. Lately the doubling has slowed, because features are approaching
-the size of individual atoms and the physics (and cost) get brutal — which is part of why
+the size of individual atoms and the physics (and cost) get brutal, which is part of why
 progress increasingly comes from *design* (more cores, specialized chips like GPUs) rather
 than just smaller transistors.
 
 ## Think about it
 
-1. Why is a semiconductor like silicon — rather than a metal (always conducts) or plastic
-   (never conducts) — the right material for a switch?
+1. Why is a semiconductor like silicon, rather than a metal (always conducts) or
+   plastic (never conducts), the right material for a switch?
 2. Two chips are physically identical in size, but one has far more transistors. What did
    the manufacturer most likely change?
 3. The raw sand is nearly free. So what are you actually paying for in a $1,000 processor?
@@ -270,12 +271,12 @@ than just smaller transistors.
   **doping** to form transistors.
 - Manufacturing: purify → grow an **ingot** → slice into **wafers** → **photolithography**
   prints transistor patterns layer by layer → **dice** into chips.
-- Features are a few **nanometers** wide, printed with **EUV** light — the most precise
+- Features are a few **nanometers** wide, printed with **EUV** light, the most precise
   manufacturing there is.
 - Chips are expensive because of **fabs ($10–20B), EUV machines ($150M+), design costs, and
-  yield** — not the raw materials.
+  yield**, not the raw materials.
 - **Moore's Law** (transistor counts doubling ~every 2 years) drove decades of speedups and
   is now slowing as features near atomic scale.
 
-Next: [The CPU](../05-the-cpu/) — how those transistors are arranged into the chip that runs
+Next: [The CPU](../05-the-cpu/), how those transistors are arranged into the chip that runs
 your programs.

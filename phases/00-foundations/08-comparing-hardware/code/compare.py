@@ -1,5 +1,5 @@
 """
-Comparing Hardware — turn units into real time, and dodge the bits/bytes trap.
+Comparing Hardware: turn units into real time, and dodge the bits/bytes trap.
 Lesson: phases/00-foundations/08-comparing-hardware/docs/en.md
 
 Given a data size and a bandwidth, compute how long a transfer takes; convert

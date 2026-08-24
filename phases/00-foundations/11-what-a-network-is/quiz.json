@@ -9,7 +9,7 @@
   {
     "stage": "check",
     "question": "Why does 'inter-net' describe how the internet is built?",
-    "options": ["It is run by one central super-computer", "It is a network OF networks — many independent networks linked to pass each other's traffic", "It is a single very long cable", "It only connects two computers"],
+    "options": ["It is run by one central super-computer", "It is a network OF networks: many independent networks linked to pass each other's traffic", "It is a single very long cable", "It only connects two computers"],
     "correct": 1,
     "explanation": "The internet is a network of networks: countless independent networks that agree to forward each other's traffic. There is no central computer running it."
   },
@@ -25,7 +25,7 @@
     "question": "What is the difference between a switch and a router?",
     "options": ["They are the same device", "A switch connects devices within one local network; a router connects different networks and forwards packets between them", "A router is only used at home", "A switch connects to the internet directly"],
     "correct": 1,
-    "explanation": "A switch moves packets among devices inside a single local network. A router connects separate networks and forwards packets hop by hop toward their destination — the internet is a huge chain of routers."
+    "explanation": "A switch moves packets among devices inside a single local network. A router connects separate networks and forwards packets hop by hop toward their destination, and the internet is a huge chain of routers."
   },
   {
     "stage": "post",

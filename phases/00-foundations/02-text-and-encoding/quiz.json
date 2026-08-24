@@ -18,7 +18,7 @@
     "question": "Why does the word 'café' take 5 bytes in UTF-8 even though it is 4 characters?",
     "options": ["UTF-8 adds a byte at the end", "'é' is not ASCII, so UTF-8 stores it as 2 bytes", "All characters are 2 bytes", "It is a bug"],
     "correct": 1,
-    "explanation": "UTF-8 is variable-length. 'c', 'a', 'f' are ASCII (1 byte each), but 'é' has a larger code point (U+00E9) that UTF-8 stores in 2 bytes — so 4 characters become 5 bytes. Character count is not byte count."
+    "explanation": "UTF-8 is variable-length. 'c', 'a', 'f' are ASCII (1 byte each), but 'é' has a larger code point (U+00E9) that UTF-8 stores in 2 bytes, so 4 characters become 5 bytes. Character count is not byte count."
   },
   {
     "stage": "post",

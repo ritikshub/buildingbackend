@@ -1,11 +1,11 @@
 # Files & the Filesystem
 
-> RAM forgets everything when the power goes out. Files are how a computer remembers — and a file is, you guessed it, just a named pile of bytes.
+> RAM forgets everything when the power goes out. Files are how a computer remembers, and a file is, you guessed it, just a named pile of bytes.
 
 ## The Problem
 
-Last lesson: RAM is fast but **volatile** — kill the power and it's wiped. So how does
-anything survive? Your photos, your code, a database's records — they're all still
+Last lesson: RAM is fast but **volatile**: kill the power and it's wiped. So how does
+anything survive? Your photos, your code, a database's records are all still
 there tomorrow. Where do they live, and how does the computer find one specific thing
 among millions?
 
@@ -24,7 +24,7 @@ after the power cycle.
 
 There is **no real difference between a "text file" and a "binary file."** Both are
 just bytes. "Text file" only means *the bytes are intended to be read with a text
-encoding* (lesson 2) — open a `.png` in a text editor and you see garbage because
+encoding* (lesson 2). Open a `.png` in a text editor and you see garbage because
 those bytes were never meant for that table. Underneath, it's all bytes.
 
 ### The filesystem: a tree of folders
@@ -39,7 +39,7 @@ directories:
     <marker id="p0l10a-ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker>
     <marker id="p0l10a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
   </defs>
-  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">A path IS the route through the tree — walk the edges, collect the names</text>
+  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">A path IS the route through the tree: walk the edges, collect the names</text>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
@@ -164,49 +164,49 @@ directories:
 
     <!-- absolute vs relative -->
     <rect x="20" y="436" width="860" height="88" rx="11" fill="#c94a12" fill-opacity="0.05" stroke="#c94a12" stroke-opacity="0.55" stroke-width="1.7"/>
-    <text x="36" y="458" font-size="11" font-weight="700" fill="#c94a12">Working directory (cwd) = /home/user — a relative path only means something from HERE</text>
+    <text x="36" y="458" font-size="11" font-weight="700" fill="#c94a12">Working directory (cwd) = /home/user, so a relative path only means something from HERE</text>
 
     <text x="36" y="480" font-size="9.5" font-weight="700" fill="#0fa07f">ABSOLUTE</text>
     <text x="104" y="480" font-size="11" fill="currentColor">/home/user/projects/server.py</text>
-    <text x="312" y="480" font-size="8.5" fill="currentColor" opacity="0.8">works from any cwd — it starts at /</text>
+    <text x="312" y="480" font-size="8.5" fill="currentColor" opacity="0.8">works from any cwd, because it starts at /</text>
     <text x="560" y="480" font-size="8.5" fill="currentColor" opacity="0.8">· /home/user/notes.txt</text>
 
     <text x="36" y="498" font-size="9.5" font-weight="700" fill="#c94a12">RELATIVE</text>
     <text x="104" y="498" font-size="11" fill="currentColor">projects/server.py</text>
-    <text x="312" y="498" font-size="8.5" fill="currentColor" opacity="0.8">shorter — breaks the moment cwd changes</text>
+    <text x="312" y="498" font-size="8.5" fill="currentColor" opacity="0.8">shorter, but breaks the moment cwd changes</text>
     <text x="560" y="498" font-size="8.5" fill="currentColor" opacity="0.8">· notes.txt</text>
 
-    <text x="36" y="516" font-size="9" fill="#d64545">Wrong cwd + relative path = "file not found" while you can see the file sitting right there — the classic beginner bug.</text>
+    <text x="36" y="516" font-size="9" fill="#d64545">Wrong cwd + relative path = "file not found" while you can see the file sitting right there: the classic beginner bug.</text>
   </g>
 
-  <text x="450" y="548" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">A path is not a label stuck on a file — it is the sequence of edges you walk to reach it.</text>
+  <text x="450" y="548" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">A path is not a label stuck on a file; it is the sequence of edges you walk to reach it.</text>
   <text x="450" y="568" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.75">A directory is just a table of names → inode numbers: notes.txt → 8814, server.py → 8815.</text>
 </svg>
 ```
 
-You point at any file with a **path** — the route through the tree:
+You point at any file with a **path**, the route through the tree:
 
 - **Absolute path** starts from the root (`/` on Linux/macOS): `/home/user/notes.txt`.
   It's unambiguous from anywhere.
 - **Relative path** starts from wherever you currently are (the *working directory*):
   `notes.txt` or `projects/server.py`. Shorter, but only meaningful relative to "here."
 
-A `.` means "current directory," `..` means "parent directory." Getting paths wrong —
-absolute vs relative, wrong working directory — is one of the most common beginner (and
+A `.` means "current directory," `..` means "parent directory." Getting paths wrong
+(absolute vs relative, wrong working directory) is one of the most common beginner (and
 not-so-beginner) bugs.
 
 ### Extensions are hints, not truth
 
-The `.txt` / `.png` / `.json` on the end of a name is a **file extension** — a
-*convention*, not a rule. It hints to the OS and to programs how to open the file. But
+The `.txt` / `.png` / `.json` on the end of a name is a **file extension**, a
+*convention* rather than a rule. It hints to the OS and to programs how to open the file. But
 the bytes decide what a file really is: rename `photo.png` to `photo.txt` and it's
 still a PNG image; you've only changed the hint. Trusting extensions blindly is, in
 fact, a security hole we revisit in Phase 7.
 
 ### Metadata: the file's label
 
-Beyond its bytes, a file carries **metadata** — information *about* the file that the
-filesystem tracks: its **name**, **size** (in bytes — lesson 1 units!), timestamps
+Beyond its bytes, a file carries **metadata**, information *about* the file that the
+filesystem tracks: its **name**, **size** (in bytes, from lesson 1), timestamps
 (created/modified), and **permissions** (who may read, write, or execute it).
 Permissions are the filesystem's first line of security; you'll meet them again when a
 server needs to read a secret file but not let the world read it.
@@ -214,7 +214,7 @@ server needs to read a secret file but not let the world read it.
 ### What's actually on the disk: blocks and inodes
 
 Zoom in one more level. A disk is divided into fixed-size **blocks** (often 4 KB). A
-file's bytes are stored across some set of blocks — not necessarily next to each other. So
+file's bytes are stored across some set of blocks, not necessarily next to each other. So
 how does the system find them? With an **inode** (index node): a small record holding the
 file's **metadata** plus **pointers to the blocks** that make up its contents.
 
@@ -227,22 +227,22 @@ A **directory** is then just a table mapping **names → inode numbers**:
 
 Two things suddenly make sense:
 
-- **Renaming a file is cheap** and never touches the data — you only change a name→inode
+- **Renaming a file is cheap** and never touches the data: you only change a name→inode
   entry in the directory, not the blocks.
 - **The name and the file are separate things.** One inode can even have two names (a
   "hard link"). The bytes live in the blocks; names are just labels pointing at the inode.
 
 This is the shape everything durable builds on: bytes live in blocks, and an index points
-at them — foreshadowing the B-tree and write-ahead-log lessons in Phase 3.
+at them, foreshadowing the B-tree and write-ahead-log lessons in Phase 3.
 
 ### Reading and writing
 
-A program doesn't touch the disk directly — the **OS** (operating system) mediates every access (lesson 9).
+A program doesn't touch the disk directly; the **OS** (operating system) mediates every access (lesson 9).
 The pattern is always the same three steps:
 
-1. **Open** the file (by path) — the OS checks permissions and gives you a handle.
+1. **Open** the file (by path): the OS checks permissions and gives you a handle.
 2. **Read** bytes from it, or **write** bytes to it.
-3. **Close** it — flush anything pending and release the handle.
+3. **Close** it: flush anything pending and release the handle.
 
 Most languages wrap this so you can't forget to close (Python's `with` block, below).
 
@@ -254,12 +254,12 @@ Most languages wrap this so you can't forget to close (Python's `with` block, be
 - **Logs** are files the server appends to (Phase 9).
 - **Uploads** are user files you store and serve.
 - A **database** (Phase 3) is, underneath all its cleverness, a set of carefully managed
-  files on disk — which is exactly why the write-ahead log and B-tree lessons later make
+  files on disk, which is exactly why the write-ahead log and B-tree lessons later make
   sense.
 
 ## Try It
 
-Run [`code/files.py`](../code/files.py) — it writes bytes to a file, reads them back,
+Run [`code/files.py`](../code/files.py): it writes bytes to a file, reads them back,
 and inspects the file's metadata:
 
 ```python
@@ -267,12 +267,12 @@ from pathlib import Path
 
 path = Path("hello.txt")
 
-path.write_text("hi there\n", encoding="utf-8")   # open, write bytes, close — in one call
+path.write_text("hi there\n", encoding="utf-8")   # open, write bytes, close: one call
 print("exists?", path.exists())
 print("size (bytes):", path.stat().st_size)        # metadata: byte count
 print("contents:", path.read_text(encoding="utf-8"))
 
-# It's just bytes — read the SAME file as raw bytes:
+# It's just bytes: read the SAME file as raw bytes:
 print("raw bytes:", path.read_bytes())             # b'hi there\n'
 path.unlink()                                       # delete it, leave no mess
 ```
@@ -282,19 +282,19 @@ path.unlink()                                       # delete it, leave no mess
 1. You rename `report.pdf` to `report.txt`. Is it now a text file? What actually changed?
 2. A program says "file not found," but you can see the file in your folder. What's the
    most likely cause involving paths?
-3. `hello.txt` is 9 bytes and contains `hi there` plus a newline. Count the bytes — does 9
+3. `hello.txt` is 9 bytes and contains `hi there` plus a newline. Count the bytes: does 9
    check out?
 
 ## Key takeaways
 
 - A **file** is a named sequence of bytes on persistent storage; "text" vs "binary" is
   just *intended interpretation*, not a real difference.
-- The **filesystem** is a tree of **directories**; a **path** locates a file —
+- The **filesystem** is a tree of **directories**; a **path** locates a file, either
   **absolute** (from `/`) or **relative** (from the current directory).
-- **Extensions** (`.png`, `.json`) are hints, not truth — the bytes decide.
+- **Extensions** (`.png`, `.json`) are hints, not truth; the bytes decide.
 - Files carry **metadata**: name, size, timestamps, and **permissions** (read/write/execute).
 - Access is **open → read/write → close**, always mediated by the OS. Config, logs,
   uploads, and even **databases** are all files underneath.
 
-Next: [What a Network Is](../11-what-a-network-is/) — now that one computer makes sense,
+Next: [What a Network Is](../11-what-a-network-is/). Now that one computer makes sense,
 how do two of them talk?

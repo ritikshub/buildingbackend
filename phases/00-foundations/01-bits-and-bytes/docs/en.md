@@ -12,7 +12,7 @@ switch for the letter "A", no switch for the colour red, no switch for the numbe
 So here is the puzzle this whole field is built on: **using only "on" and "off",
 how do you represent a number? A word? A photo? A bank balance?**
 
-Every single thing in this curriculum — HTTP requests, databases, encryption — is
+Every single thing in this curriculum (HTTP requests, databases, encryption) is
 ultimately built on the answer. So we start exactly there.
 
 ## The Concept
@@ -20,7 +20,7 @@ ultimately built on the answer. So we start exactly there.
 ### A bit: one switch
 
 The smallest piece of information a computer has is a single switch. We call it a
-**bit** (short for *binary digit*). We don't write it as "on/off" — we write it as
+**bit** (short for *binary digit*). We don't write it as "on/off"; we write it as
 a number:
 
 - **0** means off.
@@ -32,7 +32,7 @@ or no, true or false). The power comes from lining up many bits in a row.
 ### Counting with only 0 and 1
 
 You already know how to count. You just do it in **base 10** (decimal): you have
-ten symbols, `0` through `9`, and when you run out you carry over to a new column —
+ten symbols, `0` through `9`, and when you run out you carry over to a new column:
 `9`, then `10`, then `11`. Each column is worth ten times the one to its right:
 ones, tens, hundreds.
 
@@ -61,8 +61,8 @@ Counting up from zero looks like this:
 | 7 | 111 |
 | 8 | 1000 |
 
-Notice the pattern: every time you need a new column, the value doubles — 1, 2, 4,
-8, 16, 32… These are the **powers of two**, and they show up everywhere in this
+Notice the pattern: every time you need a new column, the value doubles into 1, 2,
+4, 8, 16, 32… These are the **powers of two**, and they show up everywhere in this
 field once you start looking.
 
 ### A byte: eight bits together
@@ -70,7 +70,7 @@ field once you start looking.
 One bit is tiny, so computers almost never work with a single bit. They work with
 groups of **8 bits**, and a group of 8 bits has its own name: a **byte**.
 
-Why 8? History and convenience — 8 bits turned out to be a handy chunk, enough to
+Why 8? History and convenience: 8 bits turned out to be a handy chunk, enough to
 represent a useful range of values, and hardware standardised around it.
 
 How many different patterns can 8 on/off switches make? Each bit doubles the
@@ -80,7 +80,7 @@ value from **0 to 255** (that's 256 values counting zero).
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="70 0 620 268" width="100%" style="max-width:620px" role="img" aria-label="One byte drawn as eight switches in a row. Above each switch is its place value, doubling from right to left: 128, 64, 32, 16, 8, 4, 2, 1. The switches hold the pattern 0, 0, 0, 0, 1, 0, 1, 1. Only the switches holding a 1 contribute, and each contributes its place value: 8, then 2, then 1. Adding those gives 8 plus 2 plus 1 equals 11, so binary 00001011 is the number 11. All eight switches off is 0 and all eight on is 255, which is the whole range of one byte.">
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
-    <text x="422" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">A byte is eight switches — add the columns holding a 1</text>
+    <text x="422" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">A byte is eight switches: add the columns holding a 1</text>
 
     <g text-anchor="middle" font-size="14" font-weight="700" fill="#c94a12">
       <text x="205" y="66">128</text><text x="267" y="66">64</text><text x="329" y="66">32</text><text x="391" y="66">16</text>
@@ -127,7 +127,7 @@ value from **0 to 255** (that's 256 values counting zero).
     <path d="M178 170 L666 170" fill="none" stroke="#0fa07f" stroke-width="1.6" stroke-opacity="0.8"/>
     <text x="422" y="197" text-anchor="middle" font-size="16" font-weight="700"><tspan fill="#7f7f7f">00001011</tspan><tspan fill="currentColor" opacity="0.6">&#x2003;=&#x2003;</tspan><tspan fill="#0fa07f">8 + 2 + 1 = 11</tspan></text>
 
-    <text x="422" y="230" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.85">All eight switches off = 0, all eight on = 255 — that is the whole range of one byte.</text>
+    <text x="422" y="230" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.85">All eight switches off = 0, all eight on = 255. That is the whole range of one byte.</text>
     <text x="422" y="248" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.72">The number only exists because we agree what each column is worth.</text>
   </g>
 </svg>
@@ -136,12 +136,12 @@ value from **0 to 255** (that's 256 values counting zero).
 That's where the familiar units come from: a **kilobyte (KB)** is about a thousand
 bytes, a **megabyte (MB)** about a million, a **gigabyte (GB)** about a billion.
 (Small print: computers sometimes count in 1024s rather than 1000s because 1024 is
-a round number in binary — 2¹⁰. Don't worry about that yet; "roughly a thousand"
+a round number in binary (2¹⁰). Don't worry about that yet; "roughly a thousand"
 is the right mental model for now.)
 
 ### Hexadecimal: a shorthand for humans
 
-Writing bytes as 8 binary digits gets tedious fast — `11111111` is hard to read and
+Writing bytes as 8 binary digits gets tedious fast: `11111111` is hard to read and
 easy to miscount. So programmers use a shorthand called **hexadecimal** (base 16,
 usually just "hex").
 
@@ -179,25 +179,25 @@ Two details you'll meet again later:
   top bit as a sign, so a signed byte spans −128 to 127 instead of 0 to 255.
 - **Byte order (endianness).** When a number spans several bytes, machines must agree
   which byte comes first. Network protocols standardize on "big-endian" (most significant
-  byte first) — you'll see it called *network byte order* in Phase 1.
+  byte first); you'll see it called *network byte order* in Phase 1.
 
-You don't need to master these today — just hold onto the rule that **width (how many
-bytes) sets the range**, and it's all still only bits.
+You don't need to master these today. Just hold onto the rule that **width (how
+many bytes) sets the range**, and it's all still only bits.
 
 ### Everything is bytes
 
-Numbers are the easy case — you just saw how a byte holds a number. The big idea is
+Numbers are the easy case: you just saw how a byte holds a number. The big idea is
 that **every other kind of data is also just bytes**, once you agree on a rule for
 what the bytes *mean*:
 
-- **Text** — agree that byte `65` means "A", `66` means "B"… (that's the next lesson).
-- **A colour** — three bytes for how much red, green, and blue.
-- **A photo** — millions of those colour-bytes in a grid.
-- **Sound** — thousands of bytes per second measuring the height of a sound wave.
+- **Text**: agree that byte `65` means "A", `66` means "B"… (that's the next lesson).
+- **A colour**: three bytes for how much red, green, and blue.
+- **A photo**: millions of those colour-bytes in a grid.
+- **Sound**: thousands of bytes per second measuring the height of a sound wave.
 
 The bytes themselves never change. What changes is the **agreement** about how to
-read them. Half of backend engineering is really about those agreements —
-protocols and formats — layered on top of plain bytes.
+read them. Half of backend engineering is really about those agreements
+(protocols and formats) layered on top of plain bytes.
 
 ## Try It
 
@@ -231,8 +231,8 @@ print(0xFF)              # 255  (hex literal)
 - A **byte** is 8 bits and holds a value from **0 to 255** (256 possibilities).
 - **Hex** (base 16) is a human shorthand where 2 digits = 1 byte; you'll see it in
   colours, addresses, and more.
-- **All data is bytes** — text, images, sound — plus an *agreement* about how to
+- **All data is bytes** (text, images, sound) plus an *agreement* about how to
   read them. The rest of the curriculum is those agreements.
 
-Next: [Text & Encoding](../02-text-and-encoding/) — the agreement that turns bytes
+Next: [Text & Encoding](../02-text-and-encoding/), the agreement that turns bytes
 into the letters you're reading right now.

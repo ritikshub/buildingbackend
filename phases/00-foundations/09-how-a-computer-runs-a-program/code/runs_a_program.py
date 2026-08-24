@@ -1,5 +1,5 @@
 """
-How a Computer Runs a Program — see the process you're running inside.
+How a Computer Runs a Program: see the process you're running inside.
 Lesson: phases/00-foundations/03-how-a-computer-runs-a-program/docs/en.md
 
 Your Python script is itself a running process: the OS loaded the python binary
@@ -24,7 +24,7 @@ def main() -> None:
 
     # RAM is volatile: `total` exists only while this process runs. When the
     # process exits, the OS reclaims its memory and the value is gone. To keep
-    # it, you must write it to disk — that's the next lesson.
+    # it, you must write it to disk; that's the next lesson.
 
 
 if __name__ == "__main__":

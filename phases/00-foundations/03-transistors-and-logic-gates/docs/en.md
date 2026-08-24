@@ -1,22 +1,22 @@
 # Transistors & Logic Gates
 
-> A computer has no idea what a number is. It only has switches. This is the story of how one tiny electrical switch — the transistor — becomes logic, and how logic becomes everything a computer does.
+> A computer has no idea what a number is. It only has switches. This is the story of how one tiny electrical switch (the transistor) becomes logic, and how logic becomes everything a computer does.
 
 ## The Problem
 
 Lesson 1 said a computer is a huge pile of on/off switches, and every bit is one switch.
-Fine — but a light switch doesn't *do* anything. How do you get from "a switch is on or
+Fine, but a light switch doesn't *do* anything. How do you get from "a switch is on or
 off" to a machine that adds numbers, makes decisions, and runs your code? What is the
 switch actually *made of*, and how do switches add up to a computer?
 
-This lesson bridges that gap — from a single physical switch to real arithmetic — and
+This lesson bridges that gap, from a single physical switch to real arithmetic, and
 you'll build the arithmetic yourself from nothing but three logic operations.
 
 ## The Concept
 
 ### The transistor: a switch with no moving parts
 
-A **transistor** is a tiny switch made from a special material (silicon — next lesson).
+A **transistor** is a tiny switch made from a special material (silicon, next lesson).
 It has three connections. A small voltage on one of them (the **gate**) controls whether
 electricity can flow between the other two. Apply voltage → current flows (**on**, `1`).
 No voltage → no current (**off**, `0`).
@@ -26,7 +26,7 @@ No voltage → no current (**off**, `0`).
   <defs>
     <marker id="p0l03a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
   </defs>
-  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">A transistor is a switch that a voltage flips — not a finger</text>
+  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">A transistor is a switch that a voltage flips, not a finger</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
@@ -101,8 +101,8 @@ No voltage → no current (**off**, `0`).
     <text x="510" y="219" text-anchor="middle" font-size="12" font-weight="700" fill="#c94a12">in</text>
     <text x="830" y="219" text-anchor="middle" font-size="12" font-weight="700" fill="#e0930f">out = 0</text>
 
-    <text x="230" y="248" text-anchor="middle" font-size="10" font-weight="700" fill="#7c5cff">TRANSISTOR — a switch made of silicon</text>
-    <text x="670" y="248" text-anchor="middle" font-size="10" font-weight="700" fill="#7c5cff">TRANSISTOR — a switch made of silicon</text>
+    <text x="230" y="248" text-anchor="middle" font-size="10" font-weight="700" fill="#7c5cff">TRANSISTOR: a switch made of silicon</text>
+    <text x="670" y="248" text-anchor="middle" font-size="10" font-weight="700" fill="#7c5cff">TRANSISTOR: a switch made of silicon</text>
     <text x="230" y="264" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">3 connections: the gate, plus the two the current flows between</text>
     <text x="670" y="264" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.85">3 connections: the gate, plus the two the current flows between</text>
     <text x="230" y="288" text-anchor="middle" font-size="9.5" font-weight="700" fill="#0fa07f">voltage on the gate → path CLOSED → current → out = 1</text>
@@ -113,23 +113,23 @@ No voltage → no current (**off**, `0`).
       <rect x="460" y="322" width="420" height="62" rx="10" fill="#7c5cff" fill-opacity="0.06" stroke="#7c5cff" stroke-opacity="0.55"/>
     </g>
     <text x="230" y="344" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7c5cff">Controlled by electricity, not a finger</text>
-    <text x="230" y="362" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">so one transistor can flip another —</text>
+    <text x="230" y="362" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">so one transistor can flip another,</text>
     <text x="230" y="375" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">circuits can control themselves</text>
     <text x="670" y="344" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7c5cff">Astonishingly small and fast</text>
-    <text x="670" y="362" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">billions fit on a fingernail-sized chip —</text>
+    <text x="670" y="362" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">billions fit on a fingernail-sized chip,</text>
     <text x="670" y="375" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">each switches billions of times per second</text>
   </g>
   <text x="450" y="408" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">A modern processor is literally billions of these switches wired together.</text>
-  <text x="450" y="428" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">That is the whole hardware story in one sentence — everything else is arrangement.</text>
+  <text x="450" y="428" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">That is the whole hardware story in one sentence; everything else is arrangement.</text>
   <text x="450" y="450" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.72">The gate is perpendicular to the path it controls: it never carries the current, it only decides whether current can pass.</text>
 </svg>
 ```
 
 Two things make it magical compared to a light switch:
 
-- **It's controlled by electricity, not a finger** — so one transistor can flip another,
+- **It's controlled by electricity, not a finger**, so one transistor can flip another,
   and circuits can control themselves.
-- **It's astonishingly small and fast** — billions fit on a fingernail-sized chip, and
+- **It's astonishingly small and fast**: billions fit on a fingernail-sized chip, and
   each can switch billions of times per second.
 
 A modern processor is literally **billions of these switches** wired together. That's the
@@ -137,7 +137,7 @@ whole hardware story in one sentence; everything else is *arrangement*.
 
 ### From switches to logic gates
 
-Wire a few transistors together and they compute **logic** — simple true/false rules. The
+Wire a few transistors together and they compute **logic**, simple true/false rules. The
 basic building blocks are **logic gates**. Here are the three you need, as **truth
 tables** (every input combination and its output):
 
@@ -166,8 +166,8 @@ tables** (every input combination and its output):
 | 1 | 0 | 1 |
 | 1 | 1 | 1 |
 
-A NOT gate is a couple of transistors; AND and OR are a few more each. A neat fact: one gate —
-**NAND** (NOT-AND) — is *universal*: you can build every other gate, and therefore an
+A NOT gate is a couple of transistors; AND and OR are a few more each. A neat fact: one gate,
+**NAND** (NOT-AND), is *universal*: you can build every other gate, and therefore an
 entire computer, out of nothing but NAND gates.
 
 ### From logic to arithmetic: adding with gates
@@ -192,15 +192,15 @@ This little circuit is called a **half-adder**:
     <marker id="p0l03b-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
     <marker id="p0l03b-arm" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
   </defs>
-  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Two gates add two bits — sum is XOR, carry is AND</text>
+  <text x="450" y="26" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Two gates add two bits: sum is XOR, carry is AND</text>
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.8">
       <rect x="16" y="44" width="436" height="306" rx="12" fill="#7c5cff" fill-opacity="0.05" stroke="#7c5cff" stroke-opacity="0.6"/>
       <rect x="472" y="44" width="408" height="306" rx="12" fill="#7f7f7f" fill-opacity="0.05" stroke="#7f7f7f" stroke-opacity="0.6"/>
     </g>
-    <text x="234" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#7c5cff">THE CIRCUIT — a half-adder</text>
-    <text x="676" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" opacity="0.85">THE TRUTH TABLE — adding two single bits</text>
+    <text x="234" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#7c5cff">THE CIRCUIT: a half-adder</text>
+    <text x="676" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" opacity="0.85">THE TRUTH TABLE: adding two single bits</text>
 
     <g fill="none" stroke-linejoin="round" stroke-width="1.7">
       <rect x="26" y="124" width="54" height="32" rx="8" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12"/>
@@ -282,19 +282,19 @@ This little circuit is called a **half-adder**:
       <text x="641" y="139">→</text><text x="641" y="171">→</text><text x="641" y="203">→</text><text x="641" y="235">→</text>
     </g>
 
-    <text x="678" y="272" text-anchor="middle" font-size="10" font-weight="700" fill="#0fa07f">the sum column is exactly XOR — 1 when a and b DIFFER</text>
-    <text x="678" y="292" text-anchor="middle" font-size="10" font-weight="700" fill="#e0930f">the carry column is exactly AND — 1 only when BOTH are 1</text>
+    <text x="678" y="272" text-anchor="middle" font-size="10" font-weight="700" fill="#0fa07f">the sum column is exactly XOR: 1 when a and b DIFFER</text>
+    <text x="678" y="292" text-anchor="middle" font-size="10" font-weight="700" fill="#e0930f">the carry column is exactly AND: 1 only when BOTH are 1</text>
     <text x="678" y="316" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">the boxed last row is the interesting one: 1 + 1 → sum 0, carry 1</text>
     <text x="678" y="333" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.72">which everyday operation does "carry" remind you of?</text>
   </g>
-  <text x="450" y="376" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Chain these — a full-adder that also takes a carry-in — and you can add 8-, 32- or 64-bit numbers.</text>
+  <text x="450" y="376" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Chain these (a full-adder that also takes a carry-in) and you can add 8-, 32- or 64-bit numbers.</text>
   <text x="450" y="396" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">That is literally how a CPU (central processing unit) adds: transistors → gates → arithmetic.</text>
-  <text x="450" y="418" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.72">Both gates see the SAME two bits at the same instant — sum and carry are computed in parallel, not one after the other.</text>
+  <text x="450" y="418" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.72">Both gates see the SAME two bits at the same instant, so sum and carry are computed in parallel, not one after the other.</text>
 </svg>
 ```
 
 Chain these together (a **full-adder** that also takes a carry-in) and you can add
-multi-bit numbers — 8-bit, 32-bit, 64-bit. **That is literally how a CPU** (central
+multi-bit numbers: 8-bit, 32-bit, 64-bit. **That is literally how a CPU** (central
 processing unit) **adds.** Stack
 enough gates and you get subtraction, comparison, memory, and decisions. Every single
 thing your computer does is transistors switching, arranged into gates, arranged into
@@ -302,7 +302,7 @@ arithmetic.
 
 ## Build It
 
-You don't need transistors to prove this — you can build the logic in Python. In
+You don't need transistors to prove this; you can build the logic in Python. In
 [`code/logic_gates.py`](../code/logic_gates.py) we define the gates, then build an adder
 *out of them* and use it to add real numbers:
 
@@ -324,7 +324,7 @@ def add(x, y, width=8):          # add two numbers bit-by-bit, gates only
         result |= s << i
     return result
 
-print(add(5, 6))    # 11 — computed with nothing but AND, OR, NOT
+print(add(5, 6))    # 11, computed with nothing but AND, OR, NOT
 ```
 
 **Think about it:**
@@ -333,18 +333,18 @@ print(add(5, 6))    # 11 — computed with nothing but AND, OR, NOT
 2. Adding `1 + 1` on a single bit gives sum 0, carry 1. Which everyday operation does
    "carry" remind you of?
 3. If every gate is just transistors, and every arithmetic circuit is just gates, what is
-   a CPU — in one sentence?
+   a CPU, in one sentence?
 
 ## Key takeaways
 
 - A **transistor** is a tiny, electrically-controlled switch (on = 1, off = 0). A chip has
   **billions**, switching billions of times a second.
-- Wiring transistors together makes **logic gates** — **NOT**, **AND**, **OR** (and NAND,
+- Wiring transistors together makes **logic gates**: **NOT**, **AND**, **OR** (and NAND,
   which is universal). Truth tables define exactly what each does.
 - Gates combine into **arithmetic**: XOR + AND = a **half-adder** that adds two bits; chain
   them to add any-size numbers. This is how a CPU really adds.
 - Everything a computer does bottoms out here: **transistors → gates → arithmetic → a
   processor.**
 
-Next: [From Sand to Chip](../04-from-sand-to-chip/) — how you actually manufacture billions
+Next: [From Sand to Chip](../04-from-sand-to-chip/), how you actually manufacture billions
 of these switches on a sliver of silicon, and why it costs a fortune.

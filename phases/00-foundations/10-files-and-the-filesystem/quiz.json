@@ -11,12 +11,12 @@
     "question": "What is the difference between an absolute path and a relative path?",
     "options": ["Absolute paths are longer for no reason", "An absolute path starts from the root (/) and is unambiguous anywhere; a relative path starts from the current working directory", "Relative paths only work on Windows", "There is no difference"],
     "correct": 1,
-    "explanation": "An absolute path like /home/user/notes.txt is fixed from the root. A relative path like notes.txt is resolved against wherever the program currently is (its working directory) — a very common source of 'file not found' bugs."
+    "explanation": "An absolute path like /home/user/notes.txt is fixed from the root. A relative path like notes.txt is resolved against wherever the program currently is (its working directory), a very common source of 'file not found' bugs."
   },
   {
     "stage": "check",
     "question": "You rename photo.png to photo.txt. What have you actually changed?",
-    "options": ["The file is now genuinely a text file", "Only the name/extension hint — the bytes are unchanged, so it is still a PNG image", "The image data is deleted", "Nothing at all"],
+    "options": ["The file is now genuinely a text file", "Only the name/extension hint; the bytes are unchanged, so it is still a PNG image", "The image data is deleted", "Nothing at all"],
     "correct": 1,
     "explanation": "An extension is a convention/hint, not the truth. Renaming changes only the hint; the bytes still form a PNG. The bytes decide what a file really is."
   },

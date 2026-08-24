@@ -23,7 +23,7 @@
   {
     "stage": "post",
     "question": "In the model from this lesson, what makes the same bytes mean 'the letter A' in one place and 'a shade of red' in another?",
-    "options": ["The bytes physically change", "An agreement about how to interpret the bytes", "The CPU rewrites them", "Nothing — bytes always mean numbers"],
+    "options": ["The bytes physically change", "An agreement about how to interpret the bytes", "The CPU rewrites them", "Nothing; bytes always mean numbers"],
     "correct": 1,
     "explanation": "The bytes never change; what changes is the agreed rule for reading them (a text encoding, a colour format, etc.). Much of backend engineering is those agreements layered on top of raw bytes."
   },

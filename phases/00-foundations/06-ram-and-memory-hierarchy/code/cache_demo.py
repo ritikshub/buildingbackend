@@ -1,5 +1,5 @@
 """
-RAM & the Memory Hierarchy — a small fast cache in front of a big slow store.
+RAM & the Memory Hierarchy: a small fast cache in front of a big slow store.
 Lesson: phases/00-foundations/06-ram-and-memory-hierarchy/docs/en.md
 
 Models the core idea of the hierarchy: keep hot data on a fast upper rung so
@@ -27,10 +27,10 @@ class Cache:
         self.misses = 0
 
     def get(self, key):
-        if key in self.box:           # cache HIT — fast
+        if key in self.box:           # cache HIT (fast)
             self.hits += 1
             return self.box[key]
-        self.misses += 1              # cache MISS — go to the slow store
+        self.misses += 1              # cache MISS: go to the slow store
         if len(self.box) >= self.size:
             self.box.pop(next(iter(self.box)))   # evict the oldest entry
         self.box[key] = self.store.get(key)

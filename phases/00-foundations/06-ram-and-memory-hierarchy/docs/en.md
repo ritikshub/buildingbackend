@@ -1,12 +1,12 @@
 # RAM & the Memory Hierarchy
 
-> Registers hold a handful of numbers. Your program needs millions. RAM is where they live — fast, forgetful, and surprisingly expensive. And it's just one rung on a ladder that explains most performance mysteries.
+> Registers hold a handful of numbers. Your program needs millions. RAM is where they live: fast, forgetful, and surprisingly expensive. And it's just one rung on a ladder that explains most performance mysteries.
 
 ## The Problem
 
 The CPU has only a handful of registers, but a running program juggles millions of
 values. Where do they all live while the program runs? Why does that memory vanish when
-the power drops — and why does 32 GB of RAM cost more than a 1 TB disk that holds thirty
+the power drops, and why does 32 GB of RAM cost more than a 1 TB disk that holds thirty
 times as much? The answers reveal the **memory hierarchy**, the single idea behind most
 backend performance work.
 
@@ -14,7 +14,7 @@ backend performance work.
 
 ### What RAM is
 
-**RAM** — Random Access Memory — is the computer's **working memory**: it holds the
+**RAM** (Random Access Memory) is the computer's **working memory**: it holds the
 instructions and data of whatever is *currently running*. "Random access" means you can
 read *any* location equally quickly (unlike a tape you'd have to scan through). When the
 CPU needs a value that isn't in a register, it fetches it from RAM.
@@ -25,18 +25,18 @@ The common type, **DRAM**, stores each bit as a tiny electrical **charge in a ca
 guarded by one **transistor** (lesson 3). Two consequences fall straight out of that:
 
 - The charge **leaks away**, so DRAM must be constantly **refreshed** (recharged many times a
-  second) to hold its values — that's the "dynamic" in DRAM.
+  second) to hold its values; that's the "dynamic" in DRAM.
 - When the **power is cut**, the charges vanish and everything is lost. That's why RAM is
   **volatile** (lesson 9's "save your work" in hardware terms).
 
 ### Why RAM costs more per gigabyte than disk
 
 RAM buys **speed** at the expense of **capacity and persistence**: it needs constant power,
-constant refreshing, and fast precise circuitry, all of which cost money and space. Disks —
-**SSD** (solid-state drive) and **HDD** (hard disk drive) — store bits far more densely and
-keep them without power, but they're much slower.
+constant refreshing, and fast precise circuitry, all of which cost money and space. Disks,
+**SSD** (solid-state drive) and **HDD** (hard disk drive), store bits far more densely
+and keep them without power, but they're much slower.
 So you get a trade: a little fast expensive memory (RAM) and a lot of slow cheap storage
-(disk) — never both at once.
+(disk), never both at once.
 
 ### The memory hierarchy: a speed-vs-size pyramid
 
@@ -49,7 +49,7 @@ per byte, but dramatically slower:
     <marker id="p0l06a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
     <marker id="p0l06a-arm" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e0930f"/></marker>
   </defs>
-  <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Not five equal boxes — the five rungs span seven orders of magnitude</text>
+  <text x="450" y="24" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="15" font-weight="700" fill="currentColor">Not five equal boxes: the five rungs span seven orders of magnitude</text>
   <text x="450" y="44" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.85">Drawn to scale on a log axis: each column to the right is 10× slower than the one before it.</text>
 
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
@@ -144,10 +144,10 @@ per byte, but dramatically slower:
 
     <g font-size="7.5" fill="currentColor" opacity="0.62">
       <text x="292" y="113">a stub, because 1 ns is where this scale starts</text>
-      <text x="366" y="157">on the CPU chip itself — holds the hot, recently-used data</text>
-      <text x="450" y="201">Random Access Memory — DRAM leaks charge, so it refreshes; power off wipes it clean</text>
-      <text x="282" y="245">solid-state drive — persistent, no power needed</text>
-      <text x="282" y="289">a spinning platter or a hop across the network — the huge, cheap, slow bottom</text>
+      <text x="366" y="157">on the CPU chip itself; holds the hot, recently-used data</text>
+      <text x="450" y="201">Random Access Memory: DRAM leaks charge, so it refreshes; power off wipes it clean</text>
+      <text x="282" y="245">solid-state drive: persistent, no power needed</text>
+      <text x="282" y="289">a spinning platter or a hop across the network: the huge, cheap, slow bottom</text>
     </g>
 
     <g fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.2">
@@ -159,14 +159,14 @@ per byte, but dramatically slower:
     <g text-anchor="middle" font-size="8" font-weight="700" fill="currentColor" opacity="0.85">
       <text x="314" y="128">up to ×10</text>
       <text x="398" y="172">×10</text>
-      <text x="566" y="216">×1000 — a book on your desk vs. driving to the library</text>
-      <text x="776" y="260">×100 — and another hundredfold</text>
+      <text x="566" y="216">×1000: a book on your desk vs. driving to the library</text>
+      <text x="776" y="260">×100, and another hundredfold</text>
     </g>
   </g>
 
-  <text x="450" y="360" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Every rung ends on a decade line — read straight down to see what that wait feels like at human scale.</text>
+  <text x="450" y="360" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Every rung ends on a decade line, so read straight down to see what that wait feels like at human scale.</text>
   <text x="450" y="378" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Faster is always smaller and costlier per byte: a little fast expensive RAM and a lot of slow cheap disk, never both at once.</text>
-  <text x="450" y="398" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="currentColor" opacity="0.8">Locality — programs reuse what they just used, and data near it — is why caching works: keep hot data high on the ladder.</text>
+  <text x="450" y="398" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" fill="currentColor" opacity="0.8">Locality (programs reuse what they just used, and data near it) is why caching works: keep hot data high on the ladder.</text>
   <text x="450" y="414" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.72">That is the whole idea behind backend caching: Redis in front of a database, indexes, in-memory data.</text>
 </svg>
 ```
@@ -186,7 +186,7 @@ library.
 ### Locality: why caching works at all
 
 Programs aren't random: they tend to reuse data they *just* used (**temporal locality**)
-and data *near* what they just used (**spatial locality**). Caches exploit this — keep the
+and data *near* what they just used (**spatial locality**). Caches exploit this: keep the
 hot, recently-used data on the fast upper rungs, and most reads never pay the slow price.
 **This is the entire idea behind backend caching** (Redis in front of a database, indexes,
 in-memory data): move the data your users hit most as high up the pyramid as you can.
@@ -210,10 +210,10 @@ class Cache:
         self.store, self.size, self.box = store, size, {}
         self.hits = self.misses = 0
     def get(self, k):
-        if k in self.box:               # cache HIT — fast
+        if k in self.box:               # cache HIT (fast)
             self.hits += 1
             return self.box[k]
-        self.misses += 1                # cache MISS — go to the slow store
+        self.misses += 1                # cache MISS: go to the slow store
         if len(self.box) >= self.size:
             self.box.pop(next(iter(self.box)))   # evict the oldest
         self.box[k] = self.store.get(k)
@@ -221,7 +221,7 @@ class Cache:
 ```
 
 Because the workload has locality, a tiny cache turns thousands of slow reads into a
-handful — the whole payoff of the hierarchy, in ~20 lines.
+handful, the whole payoff of the hierarchy, in ~20 lines.
 
 **Think about it:**
 
@@ -234,13 +234,13 @@ handful — the whole payoff of the hierarchy, in ~20 lines.
 
 - **RAM** is fast, volatile **working memory** holding the running program; the CPU reads
   from it when a value isn't in a register.
-- **DRAM** stores each bit as a leaky **charge in a capacitor** — so it needs constant
+- **DRAM** stores each bit as a leaky **charge in a capacitor**, so it needs constant
   **refresh** and loses everything on **power off** (volatile).
 - **RAM costs more per byte than disk** because it buys speed at the expense of capacity
-  and persistence — the universal trade of the **memory hierarchy** (registers → cache →
+  and persistence, the universal trade of the **memory hierarchy** (registers → cache →
   RAM → SSD → disk), each rung ~10–1000× slower but bigger/cheaper.
 - **Locality** makes **caching** work: keep hot data high on the pyramid. This is the core
   idea behind backend caching, indexes, and in-memory stores.
 
-Next: [The GPU](../07-the-gpu/) — a very different chip built to do thousands of small things
+Next: [The GPU](../07-the-gpu/), a very different chip built to do thousands of small things
 at once.

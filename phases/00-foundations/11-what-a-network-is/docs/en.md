@@ -20,7 +20,7 @@ close-ups.
 
 A **network** is two or more computers connected so they can exchange data. The
 simplest network is two computers joined by a cable. Add more and you get a **local
-network** — the devices in your home joined through a **router** (your Wi-Fi box).
+network**, the devices in your home joined through a **router** (your Wi-Fi box).
 
 The bytes you send are the same bytes from lesson 1. A network is simply plumbing that
 carries them from one machine to another.
@@ -34,11 +34,11 @@ Two computers talking, one asks and one answers:
 
 These are **roles, not special hardware**. Your laptop is a client when it loads a web
 page and can be a server when it shares a file. **A backend is simply a program playing
-the server role**: it starts up, waits, and answers requests. Hold onto that — it's the
+the server role**: it starts up, waits, and answers requests. Hold onto that; it's the
 one-sentence definition of everything you're going to build.
 
 ```svg
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 338" width="100%" style="max-width:720px" role="img" aria-label="One exchange between a client and a server, drawn as a sequence. Two actors stand at the top with dashed lifelines dropping from each: on the left, the Client, which asks; on the right, the Server, which answers. Before anything happens, a note over the server's lifeline says it is already running and waiting for a request — the server was started earlier and does nothing until it is asked. The first arrow is the request: it travels left to right, from the client to the server, because the client asks, unprompted. A note over the server then says it does the work and replies. The second arrow is the response: it travels right to left, from the server back to the client. A band underneath states that these are roles, not hardware — the same laptop is a client when it loads a web page, and a server when it shares a file. The takeaway is that a backend is simply a program playing the server role: it starts up, waits, and answers requests.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 338" width="100%" style="max-width:720px" role="img" aria-label="One exchange between a client and a server, drawn as a sequence. Two actors stand at the top with dashed lifelines dropping from each: on the left, the Client, which asks; on the right, the Server, which answers. Before anything happens, a note over the server's lifeline says it is already running and waiting for a request, because the server was started earlier and does nothing until it is asked. The first arrow is the request: it travels left to right, from the client to the server, because the client asks, unprompted. A note over the server then says it does the work and replies. The second arrow is the response: it travels right to left, from the server back to the client. A band underneath states that these are roles, not hardware: the same laptop is a client when it loads a web page, and a server when it shares a file. The takeaway is that a backend is simply a program playing the server role: it starts up, waits, and answers requests.">
   <defs>
     <marker id="p0l11a-arb" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#c94a12"/></marker>
     <marker id="p0l11a-arg" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0fa07f"/></marker>
@@ -82,7 +82,7 @@ one-sentence definition of everything you're going to build.
     <!-- roles, not hardware -->
     <rect x="60" y="262" width="640" height="38" rx="8" fill="#7f7f7f" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.22" stroke-width="1"/>
     <g text-anchor="middle" fill="currentColor" font-size="9.5" opacity="0.85">
-      <text x="380" y="279">Roles, not hardware — the same laptop is a client when it loads a web page,</text>
+      <text x="380" y="279">Roles, not hardware: the same laptop is a client when it loads a web page,</text>
       <text x="380" y="293">and a server when it shares a file.</text>
     </g>
     <!-- takeaway -->
@@ -94,14 +94,14 @@ one-sentence definition of everything you're going to build.
 ### The Internet is a network of networks
 
 Your home network is small. A company has its own. A data center has thousands of
-machines. The magic is that all these separate networks are **linked together** — and
+machines. The magic is that all these separate networks are **linked together**, and
 that's literally what the word means: **inter-net = a network** *of* **networks**.
 
 There is **no central computer** running the internet. It's a vast mesh of independent
 networks that agree to pass each other's traffic. When your phone in one country reaches
 a server in another, the bytes hop across many networks owned by many different
-organizations, cooperating only because they follow the same **rules** (protocols — more
-soon).
+organizations, cooperating only because they follow the same **rules** (protocols, more
+on those soon).
 
 ### Data travels in packets
 
@@ -114,12 +114,12 @@ Why bother chopping it up?
 
 - **Sharing.** Many conversations share the same wires. Small packets let everyone's
   traffic interleave instead of one big transfer hogging the line.
-- **Resilience.** If one packet is lost or one path fails, only that packet is resent —
+- **Resilience.** If one packet is lost or one path fails, only that packet is resent,
   not the whole message. Packets can route around problems.
 
-Each packet carries not just a slice of your data but also **addressing information** —
-where it's from and where it's going — so the network can steer it. (How that addressing
-works — IP addresses — comes in Phase 1.)
+Each packet carries not just a slice of your data but also **addressing information**,
+where it's from and where it's going, so the network can steer it. (How that addressing
+works, via IP addresses, comes in Phase 1.)
 
 ### Switches and routers move the packets
 
@@ -135,9 +135,9 @@ Two devices do the steering:
 
 People blur these together; they're different, and both matter:
 
-- **Bandwidth** — *how much* data per second the connection can carry. The **width** of
+- **Bandwidth**: *how much* data per second the connection can carry. The **width** of
   the pipe. (Measured in bits per second: Mbps, Gbps.)
-- **Latency** — *how long* one packet takes to travel there (or there and back). The
+- **Latency**: *how long* one packet takes to travel there (or there and back). The
   **length** of the pipe. (Measured in milliseconds.)
 
 A fat pipe with high latency (a satellite link) moves lots of data but each round trip
@@ -156,23 +156,23 @@ Here's the counterintuitive part, with real numbers. Round-trip time depends mos
 | Across a continent | ~60 ms |
 | Across the world | ~150 ms |
 
-Now suppose loading a page needs **5 sequential round trips** (a **DNS** — domain name
-system — lookup, then connect, encrypt, request, a follow-up). Across the world that's 5 × 150 ms = **0.75 seconds of pure
-waiting** — before a single useful byte of content, no matter how fat your pipe is.
+Now suppose loading a page needs **5 sequential round trips** (a **DNS**, or domain name
+system, lookup, then connect, encrypt, request, a follow-up). Across the world that's 5 × 150 ms = **0.75 seconds of pure
+waiting**, before a single useful byte of content, no matter how fat your pipe is.
 Bandwidth helps you move *big* payloads; latency taxes every *back-and-forth*. That's why
-backend design fights to **reduce round trips** — reusing connections, batching requests,
-and caching nearby — a theme you'll see again and again.
+backend design fights to **reduce round trips** by reusing connections, batching
+requests, and caching nearby, a theme you'll see again and again.
 
 ### It only works because everyone follows the same rules
 
 Millions of machines from thousands of vendors interoperate only because they agree on
-**protocols** — shared rulebooks for how to format and exchange bytes. There are a lot
+**protocols**, shared rulebooks for how to format and exchange bytes. There are a lot
 of rules (how to address a packet, how to ensure delivery, how to speak HTTP), so
 they're organized into **layers**, each handling one job and building on the one below. (One
-of those rules is how to speak **HTTP** — hypertext transfer protocol — the language of the
+of those rules is how to speak **HTTP**, hypertext transfer protocol, the language of the
 web.)
 
-That layered model is the single most useful mental model in all of networking — and
+That layered model is the single most useful mental model in all of networking, and
 it's the next lesson.
 
 ## Think about it
@@ -181,7 +181,7 @@ it's the next lesson.
 2. Why does the network chop your data into packets instead of sending one continuous
    stream? Give both reasons.
 3. Your video call has plenty of bandwidth but everyone talks over each other with a
-   delay. Which of the two numbers — bandwidth or latency — is the problem?
+   delay. Which of the two numbers, bandwidth or latency, is the problem?
 
 ## Key takeaways
 
@@ -195,6 +195,6 @@ it's the next lesson.
   and both matter.
 - It all works only because machines follow shared **protocols**, organized into **layers**.
 
-**That completes the Foundations.** Next comes **Phase 1 — Networking & Protocols**, where the
+**That completes the Foundations.** Next comes **Phase 1: Networking & Protocols**, where the
 network gets the full treatment: the layered model and every layer with working code, the
 protocols that ride on top, and how real servers actually talk to each other.

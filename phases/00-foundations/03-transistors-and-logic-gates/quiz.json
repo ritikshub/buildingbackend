@@ -25,13 +25,13 @@
     "question": "How does a CPU add two multi-bit numbers?",
     "options": ["It looks the answer up in a table", "It chains full-adders so each bit position adds its bits plus the carry from the position below", "It uses software only", "It cannot add without the internet"],
     "correct": 1,
-    "explanation": "A full-adder adds two bits plus a carry-in and produces a sum and carry-out. Chaining them across bit positions adds any-width numbers — the actual hardware behind integer addition."
+    "explanation": "A full-adder adds two bits plus a carry-in and produces a sum and carry-out. Chaining them across bit positions adds any-width numbers, the actual hardware behind integer addition."
   },
   {
     "stage": "post",
     "question": "In one sentence, what is a CPU made of, conceptually?",
     "options": ["Software instructions", "Transistors arranged into logic gates arranged into arithmetic and control circuits", "A very fast hard drive", "Millions of tiny batteries"],
     "correct": 1,
-    "explanation": "A CPU is transistors wired into gates, wired into adders/comparators/memory/control — layers of arrangement over the same on/off switch. Everything it does reduces to transistors switching."
+    "explanation": "A CPU is transistors wired into gates, wired into adders/comparators/memory/control: layers of arrangement over the same on/off switch. Everything it does reduces to transistors switching."
   }
 ]
