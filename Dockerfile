@@ -14,7 +14,7 @@ WORKDIR /workspace
 RUN apt-get update && apt-get install -y --no-install-recommends \
       bash-completion bsdextrautils curl dnsutils file iproute2 iputils-ping jq \
       less lsof nano netcat-openbsd openssh-client procps psmisc rsync shellcheck \
-      strace sysstat tcpdump traceroute tree \
+      strace sudo sysstat tcpdump traceroute tree libcap2-bin \
     && rm -rf /var/lib/apt/lists/*
 
 # Install deps first so this layer caches unless requirements.txt changes.
