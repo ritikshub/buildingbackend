@@ -165,7 +165,7 @@ still to come. Click any phase to expand its lesson list.
 | 05 | [Working with Files: Create, Read, Copy, Move, Delete, Archive](phases/01-linux-and-the-command-line/05-working-with-files/) | Build | Python |
 | 06 | [Users, Groups, Permissions & sudo](phases/01-linux-and-the-command-line/06-users-groups-permissions-and-sudo/) | Build | Python |
 | 07 | [Streams, Pipes & Redirection: Everything Is a File Descriptor](phases/01-linux-and-the-command-line/07-streams-pipes-and-redirection/) | Build | Python |
-| 08 | The Text Toolkit: grep, sed, awk, sort, uniq, cut, tr & jq | Build | Python |
+| 08 | [The Text Toolkit: grep, sed, awk, sort, uniq, cut, tr & jq](phases/01-linux-and-the-command-line/08-the-text-toolkit/) | Build | Python |
 | 09 | Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail | Build | Bash, Python |
 | 10 | Processes & Signals: ps, top, kill, jobs & /proc | Build | Python |
 | 11 | Boot, init & systemd: Keeping Your Backend Running | Build | Python |
