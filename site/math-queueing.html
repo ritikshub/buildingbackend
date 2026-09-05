@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queueing theory: why 80% busy is the cliff - Math Behind Tech - Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
+  <meta name="description" content="Connection pools, thread pools, autoscaling targets and p99 latency, worked out by hand: Little's Law sizes a pool, one random-arrival server shows that 80% busy means a fourfold wait, Kingman's formula prices bursts, one fast server beats two slow ones, and the exponential tail puts p99 at 6.6 times the median.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/math-queueing.html">
+  <meta property="og:title" content="Queueing theory: why 80% busy is the cliff · Math Behind Tech">
+  <meta property="og:description" content="Why a server at 80% makes every request wait four service times, at 90% nine, and why autoscalers stop at 60. All by hand.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <meta property="og:url" content="https://buildingbackend.vercel.app/math-queueing.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Queueing theory: why 80% busy is the cliff · Math Behind Tech">
+  <meta name="twitter:description" content="Connection pools, autoscaling targets and p99 latency, worked out by hand.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260813m">
+  <link rel="stylesheet" href="math.css?v=20260905e">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="math.html" aria-current="page">Math</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <article class="math-page">
+      <div class="math-eyebrow"><a href="math.html">Math Behind Tech</a> · Chapter 04</div>
+      <h1>Queueing theory: why 80% busy is the cliff</h1>
+
+      <p class="lede">A server that is 80% busy makes the average request wait four times as long as the work itself takes. Push it to 90% and the wait more than doubles again. Nothing broke. That is what randomness does to a queue, and it is why your connection pool, your thread pool and your autoscaler all contain a number that stops well short of 100.</p>
+
+      <div class="legend">
+        <span><i class="sw-theory"></i>Plain text is theory.</span>
+        <span><i class="sw-ex"></i>Boxed examples: problem, working, answer.</span>
+      </div>
+
+      <!-- ── Where you meet it ─────────────────────────────────────────── -->
+      <h2>Where you meet it</h2>
+      <p>Every time a request has to wait for something that is busy, this chapter is running. Four places you set the number yourself:</p>
+
+      <div class="grid2">
+        <div class="tile">
+          <div class="tile-k">Every connection pool</div>
+          <p>A database pool of 10 connections, an HTTP client capped at 100 sockets. Little's Law says how many you need from two numbers you already have. Example 1 sizes one and finds a pool that can never keep up.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every thread pool and worker count</div>
+          <p>Web server workers, a consumer group, a pool of CPU cores. Each is a set of servers in front of one queue. Example 5 settles whether one fast worker beats two slow ones, and by how much.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every autoscaling threshold</div>
+          <p>Cloud autoscalers add machines when a metric passes a target, and the targets people choose sit near 50 to 70% busy, never 95. Example 3 shows what the last 20% costs and why a target of 85% turns a surge into an outage.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every p99 that blows up while the mean looks fine</div>
+          <p>The dashboard says the average is 50 ms. The 99th percentile is 230 ms and climbing. Example 6 shows that ratio is built into the maths, and Example 4 shows what bursts do to it.</p>
+        </div>
+      </div>
+
+      <!-- ── The idea ──────────────────────────────────────────────────── -->
+      <h2>The idea in one breath</h2>
+      <p>A <strong>queue</strong> is anything that takes requests, works on them one or a few at a time, and makes the rest wait. The thing doing the work is the <strong>server</strong>: a thread, a database connection, a CPU core, a checkout till. Requests <strong>arrive</strong> at some rate, written <var>λ</var> (lambda, per second), and each takes some <strong>service time</strong> to finish, written <var>S</var>. The fraction of time the server is busy is its <strong>utilisation</strong>, <var>ρ</var> (rho): arrivals per second times seconds per arrival, <var>ρ = λ × S</var>.</p>
+      <p>If arrivals were perfectly regular and every job took exactly the same time, a server at 99% utilisation would never make anyone wait. Real arrivals cluster and real jobs vary, so now and then several requests land while one is being served, and they queue. The idle 20% of an 80%-busy server is not spread evenly through the day. It comes in gaps, and a gap does nothing for the three requests that arrived together just before it.</p>
+      <p>The result is the one curve in this chapter: the mean wait is <var>S × ρ/(1 − ρ)</var>. The denominator <var>1 − ρ</var> is the <strong>headroom</strong>, the fraction of time the server is free. Halve the headroom and the wait doubles. Going from 80% to 90% busy cuts the headroom from 0.2 to 0.1, so the wait more than doubles. Approach 100% and the wait heads for infinity. Everything else on this page is that fraction, applied.</p>
+
+      <!-- ── Tools ─────────────────────────────────────────────────────── -->
+      <h2>The four tools you need</h2>
+      <p>Arithmetic on averages, nothing more.</p>
+
+      <div class="tool">
+        <h3>1. Rates and averages</h3>
+        <p>An arrival rate <var>λ</var> is a count divided by a time. A service time <var>S</var> is an average, in seconds. Its reciprocal <var>μ = 1/S</var> (mu) is the <strong>service rate</strong>: how many the server could finish per second if it never sat idle. Keep the units honest and the rest follows.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">S = 10 ms</div><div class="eq-work">μ = 1 / 0.010</div><div class="eq-res">100 per second</div></div>
+          <div class="eq-row"><div class="eq-what">S = 200 ms</div><div class="eq-work">μ = 1 / 0.2</div><div class="eq-res">5 per second</div></div>
+          <div class="eq-row"><div class="eq-what">300 requests in a minute</div><div class="eq-work">λ = 300 / 60</div><div class="eq-res">5 per second</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>2. Utilisation</h3>
+        <p><var>ρ = λ × S</var> for one server, or <var>λ × S / c</var> for <var>c</var> servers sharing the work. It is the fraction of the time each server is busy. Above 1 the queue grows without limit, because work arrives faster than it can ever leave.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">80 per second, 10 ms each</div><div class="eq-work">80 × 0.010</div><div class="eq-res">0.8, so 80% busy</div></div>
+          <div class="eq-row"><div class="eq-what">100 per second, 0.2 s each, 25 servers</div><div class="eq-work">100 × 0.2 / 25 = 20 / 25</div><div class="eq-res">0.8</div></div>
+          <div class="eq-row"><div class="eq-what">Same load, 10 servers</div><div class="eq-work">100 × 0.2 / 10 = 20 / 10</div><div class="eq-res">2.0, impossible</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>3. Little's Law, L = λW</h3>
+        <p>The average number of things inside a system, <var>L</var>, equals the arrival rate times the average time each one spends inside, <var>W</var>. It holds for any system in a steady state, whatever the randomness, and it works for the whole service, for the queue alone, or for the servers alone. Know two of the three and you have the third.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">30 customers an hour, 20 minutes each</div><div class="eq-work">L = 30 × ⅓</div><div class="eq-res">10 in the shop</div></div>
+          <div class="eq-row"><div class="eq-what">40 in the queue, 100 leave per second</div><div class="eq-work">W = L / λ = 40 / 100</div><div class="eq-res">0.4 s each</div></div>
+          <div class="eq-row"><div class="eq-what">8 in flight, 50 ms each</div><div class="eq-work">λ = L / W = 8 / 0.05</div><div class="eq-res">160 per second</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>4. Variability as a coefficient of variation</h3>
+        <p>The <strong>coefficient of variation</strong> is the standard deviation divided by the mean, and the formulas use its square, <var>C²</var>. A job that always takes the same time has <var>C² = 0</var>. The <strong>exponential distribution</strong>, the pattern of gaps between arrivals when each arrival is independent of the last, has a standard deviation equal to its mean, so <var>C² = 1</var>. Anything burstier is above 1.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">Every job exactly 10 ms</div><div class="eq-work">standard deviation 0, so 0² / 10²</div><div class="eq-res">C² = 0</div></div>
+          <div class="eq-row"><div class="eq-what">Exponential, mean 10 ms</div><div class="eq-work">standard deviation 10, so 10² / 10²</div><div class="eq-res">C² = 1</div></div>
+          <div class="eq-row"><div class="eq-what">90% take 10 ms, 10% take 100 ms</div><div class="eq-work">mean 0.9 × 10 + 0.1 × 100 = 19; variance 0.9 × 10² + 0.1 × 100² − 19² = 1090 − 361 = 729 = 27²</div><div class="eq-res">C² = 729 / 361 = 2.02</div></div>
+        </div></div>
+      </div>
+
+      <!-- ── Little's Law ──────────────────────────────────────────────── -->
+      <h2>Sizing a pool with Little's Law</h2>
+      <p>Little's Law is the most useful line in this chapter because it assumes nothing about randomness. It was proved by John Little in 1961, the same year Kingman published the formula in Example 4, so two of the four tools here share a birthday. Point it at a connection pool: the "system" is the set of connections, a request "arrives" when it borrows one and "leaves" when it hands it back.</p>
+
+      <section class="ex" id="ex1">
+        <div class="ex-head"><span class="ex-num">Example 1</span><h3 class="ex-title">A pool of 10 is a queue by design</h3></div>
+        <p class="ex-problem">A service receives 100 requests per second. Each one holds a database connection for 200 ms. How many connections are in use on average? What happens with a pool of 10? What pool size keeps the connections 80% busy?</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Arrival rate λ</div><div class="eq-work">100 per second</div><div class="eq-res">100/s</div></div>
+          <div class="eq-row"><div class="eq-what">Time each request holds a connection, W</div><div class="eq-work">200 ms</div><div class="eq-res">0.2 s</div></div>
+          <div class="eq-row"><div class="eq-what">Connections in use on average (tool 3)</div><div class="eq-work">L = λW = 100 × 0.2</div><div class="eq-res">20 connections</div></div>
+          <div class="eq-gap">A pool of 10</div>
+          <div class="eq-row"><div class="eq-what">Utilisation (tool 2)</div><div class="eq-work">100 × 0.2 / 10 = 20 / 10</div><div class="eq-res">2.0, or 200%</div></div>
+          <div class="eq-row"><div class="eq-what">What 10 connections can finish</div><div class="eq-work">10 connections / 0.2 s each</div><div class="eq-res">50 per second</div></div>
+          <div class="eq-row"><div class="eq-what">Backlog after one minute</div><div class="eq-work">(100 − 50) × 60<small>Until timeouts start throwing requests away, which is the only way this pool ever catches up.</small></div><div class="eq-res">3,000 waiting</div></div>
+          <div class="eq-gap">A pool that runs at 80%</div>
+          <div class="eq-row"><div class="eq-what">Pool size for ρ = 0.8</div><div class="eq-work">20 / 0.8</div><div class="eq-res">25 connections</div></div>
+          <div class="eq-row"><div class="eq-what">Turn it round: pool of 20, 30 requests inside on average</div><div class="eq-work">W = L / λ = 30 / 100 = 0.3 s, of which 0.2 s is work</div><div class="eq-res">100 ms waiting</div></div>
+        </div>
+        <p class="ex-answer"><b>20 connections</b> are busy on average, so a pool of 10 cannot even keep up: it finishes 50 requests a second while 100 arrive, and the queue grows by 50 a second until something times out. A pool of <b>25</b> runs at 80%, which the next example shows is already the edge. Nothing here depended on how the arrivals were spread out. Little's Law is exact for any pattern.</p>
+      </section>
+
+      <!-- ── M/M/1 ─────────────────────────────────────────────────────── -->
+      <h2>One server, random arrivals</h2>
+      <p>Queueing theorists name a queue by its arrivals, its service times and its server count, a shorthand David Kendall introduced in 1953. <strong>M/M/1</strong> means arrivals are memoryless (M, for Markov: each arrival is independent of the last, so the gaps between them are exponential), service times are memoryless too, and there is one server. It is the simplest queue that has any randomness in it, and it has an exact answer. The mean time spent waiting in the queue, before service starts, is</p>
+      <p style="text-align:center"><var>W<sub>q</sub> = S × ρ / (1 − ρ)</var>, and the mean response time is <var>T = W<sub>q</sub> + S = S / (1 − ρ)</var>.</p>
+      <p>We will not derive it. We will use it, and then measure it in "Run it" to see that it is true.</p>
+
+      <section class="ex" id="ex2">
+        <div class="ex-head"><span class="ex-num">Example 2</span><h3 class="ex-title">The table every on-call engineer should know</h3></div>
+        <p class="ex-problem">One server with a mean service time <var>S = 10 ms</var>, so it can finish 100 requests a second flat out. Work out the average wait and the average response time at 50, 80, 90, 95 and 99% utilisation, then count how many requests are waiting.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">50% busy, λ = 50/s</div><div class="eq-work">ρ/(1 − ρ) = 0.5 / 0.5 = 1, wait 1 × 10 ms, response 10 + 10</div><div class="eq-res">10 ms, 20 ms</div></div>
+          <div class="eq-row"><div class="eq-what">80% busy, λ = 80/s</div><div class="eq-work">0.8 / 0.2 = 4, wait 4 × 10 ms, response 40 + 10</div><div class="eq-res">40 ms, 50 ms</div></div>
+          <div class="eq-row"><div class="eq-what">90% busy, λ = 90/s</div><div class="eq-work">0.9 / 0.1 = 9, wait 9 × 10 ms, response 90 + 10</div><div class="eq-res">90 ms, 100 ms</div></div>
+          <div class="eq-row"><div class="eq-what">95% busy, λ = 95/s</div><div class="eq-work">0.95 / 0.05 = 19, wait 19 × 10 ms</div><div class="eq-res">190 ms, 200 ms</div></div>
+          <div class="eq-row"><div class="eq-what">99% busy, λ = 99/s</div><div class="eq-work">0.99 / 0.01 = 99, wait 99 × 10 ms</div><div class="eq-res">990 ms, 1,000 ms</div></div>
+          <div class="eq-gap">How many are waiting (tool 3, applied to the queue alone)</div>
+          <div class="eq-row"><div class="eq-what">At 80%</div><div class="eq-work">L<sub>q</sub> = λ × W<sub>q</sub> = 80 × 0.040</div><div class="eq-res">3.2 waiting</div></div>
+          <div class="eq-row"><div class="eq-what">At 99%</div><div class="eq-work">99 × 0.990</div><div class="eq-res">98 waiting</div></div>
+        </div>
+        <p class="ex-answer">At 50% each request waits one service time. At 80% it waits <b>four</b>, at 90% <b>nine</b>, at 99% <b>ninety-nine</b>. Response time is <var>S/(1 − ρ)</var>: 2, 5, 10, 20 and 100 times the work itself. The server never did anything more slowly. It was only busy more often.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 300" role="img" aria-labelledby="cliff-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="cliff-fig-title">Mean wait as a multiple of the service time against utilisation. The curve is flat until about 70%, reaches 4 at 80%, 9 at 90%, 19 at 95%, and goes vertical at 100%.</title>
+          <text x="20" y="22" class="fig-label fig-mute">MEAN WAIT AS A MULTIPLE OF THE SERVICE TIME, ρ/(1 − ρ)</text>
+          <!-- axes -->
+          <line x1="60" y1="250" x2="700" y2="250" stroke="currentColor" stroke-width="1"/>
+          <line x1="60" y1="250" x2="60" y2="30" stroke="currentColor" stroke-width="1"/>
+          <text x="380" y="284" text-anchor="middle" class="fig-label fig-mute">UTILISATION, HOW BUSY THE SERVER IS</text>
+          <text x="60" y="266" text-anchor="middle" class="fig-label fig-mute">0%</text>
+          <text x="380" y="266" text-anchor="middle" class="fig-label fig-mute">50%</text>
+          <text x="572" y="266" text-anchor="middle" class="fig-label fig-ember">80%</text>
+          <text x="636" y="266" text-anchor="middle" class="fig-label fig-mute">90%</text>
+          <text x="700" y="266" text-anchor="middle" class="fig-label fig-mute">100%</text>
+          <text x="52" y="254" text-anchor="end" class="fig-label fig-mute">0×</text>
+          <text x="52" y="199" text-anchor="end" class="fig-label fig-mute">5×</text>
+          <text x="52" y="144" text-anchor="end" class="fig-label fig-mute">10×</text>
+          <text x="52" y="89" text-anchor="end" class="fig-label fig-mute">15×</text>
+          <text x="52" y="34" text-anchor="end" class="fig-label fig-mute">20×</text>
+          <!-- the wall at 100% -->
+          <line x1="700" y1="250" x2="700" y2="30" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+          <!-- guides for the 80% point -->
+          <line x1="60" y1="206" x2="572" y2="206" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+          <line x1="572" y1="206" x2="572" y2="250" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+          <!-- curve -->
+          <polyline fill="none" stroke="var(--ember)" stroke-width="2.2" stroke-linejoin="round"
+            points="60,250.0 92,249.4 124,248.8 156,248.1 188,247.2 220,246.3 252,245.3 284,244.1 316,242.7 348,241.0 380,239.0 412,236.6 444,233.5 476,229.6 508,224.3 540,217.0 553,213.2 566,208.6 572,206.0 578,203.1 585,199.9 591,196.3 598,192.2 604,187.7 610,182.4 617,176.4 623,169.3 630,161.0 636,151.0 642,138.8 649,123.5 655,103.9 662,77.7 668,41.0"/>
+          <!-- marked points -->
+          <circle cx="380" cy="239" r="4" fill="var(--ember)"/>
+          <text x="380" y="228" text-anchor="middle" class="fig-mono fig-ember">1×</text>
+          <circle cx="572" cy="206" r="5" fill="var(--ember)"/>
+          <text x="560" y="190" text-anchor="end" class="fig-mono fig-ember">80% busy: wait 4×</text>
+          <circle cx="636" cy="151" r="4" fill="var(--ember)"/>
+          <text x="626" y="146" text-anchor="end" class="fig-mono fig-ember">90%: 9×</text>
+          <circle cx="668" cy="41" r="4" fill="var(--ember)"/>
+          <text x="658" y="44" text-anchor="end" class="fig-mono fig-ember">95%: 19×</text>
+          <text x="80" y="70" class="fig-label fig-mute">THE CURVE IS FLAT FOR THE FIRST 70 POINTS</text>
+          <text x="80" y="88" class="fig-label fig-mute">AND VERTICAL FOR THE LAST 10. THE CLIFF IS IN BETWEEN.</text>
+        </svg>
+        <figcaption>The one curve in this chapter. Headroom 1 − ρ is in the denominator, so halving it doubles the wait.</figcaption>
+      </figure>
+
+      <!-- ── The cliff ─────────────────────────────────────────────────── -->
+      <h2>The cliff</h2>
+      <p>The curve's slope is <var>1/(1 − ρ)²</var>: the wait grows with the <em>square</em> of the shrinking headroom. That is why the same ten points of load cost almost nothing at the left of the chart and everything at the right, and it is the whole argument for autoscaling before a machine is busy.</p>
+
+      <section class="ex" id="ex3">
+        <div class="ex-head"><span class="ex-num">Example 3</span><h3 class="ex-title">80 to 90 costs more than 0 to 80</h3></div>
+        <p class="ex-problem">Using the same server, price each step up in load in service times. Then a newsletter goes out and traffic jumps 20% for the few minutes a new machine takes to launch and warm up. What happens to a service whose autoscaler holds it at 60%, 70% and 85%?</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">0 to 50%</div><div class="eq-work">0 → 1</div><div class="eq-res">+1 S</div></div>
+          <div class="eq-row"><div class="eq-what">50 to 80%</div><div class="eq-work">1 → 4</div><div class="eq-res">+3 S</div></div>
+          <div class="eq-row"><div class="eq-what">80 to 90%</div><div class="eq-work">4 → 9, more than the whole way from 0 to 80</div><div class="eq-res">+5 S, ×2.25</div></div>
+          <div class="eq-row"><div class="eq-what">90 to 95%</div><div class="eq-work">9 → 19</div><div class="eq-res">+10 S</div></div>
+          <div class="eq-row"><div class="eq-what">95 to 99%</div><div class="eq-work">19 → 99</div><div class="eq-res">+80 S</div></div>
+          <div class="eq-row"><div class="eq-what">One extra point of load</div><div class="eq-work">at 50%: 0.51/0.49 − 1 = 0.041 S. At 90%: 0.91/0.09 − 9 = 1.11 S</div><div class="eq-res">27× dearer at 90</div></div>
+          <div class="eq-gap">A 20% surge before new capacity arrives</div>
+          <div class="eq-row"><div class="eq-what">Held at 60%</div><div class="eq-work">60 × 1.2 = 72%, wait 1.5 → 0.72/0.28</div><div class="eq-res">2.6 S, fine</div></div>
+          <div class="eq-row"><div class="eq-what">Held at 70%</div><div class="eq-work">70 × 1.2 = 84%, wait 2.33 → 0.84/0.16</div><div class="eq-res">5.25 S, doubled</div></div>
+          <div class="eq-row"><div class="eq-what">Held at 85%</div><div class="eq-work">85 × 1.2 = 102%, work arrives faster than it leaves</div><div class="eq-res">unbounded</div></div>
+        </div>
+        <p class="ex-answer">The step from 80% to 90% adds <b>5 service times</b> of waiting, more than the entire climb from idle to 80%. A target of 60 to 70% absorbs a 20% surge with a wait that is still a few service times. A target of 85% turns the same surge into a queue that grows until the new machine is up, and the users who arrived during those minutes are the ones who write in. AWS's own worked example of a target-tracking policy holds a group at 50% CPU "to handle traffic spikes".</p>
+      </section>
+
+      <!-- ── Kingman ───────────────────────────────────────────────────── -->
+      <h2>Bursts and slow requests</h2>
+      <p>M/M/1 assumes both arrivals and service have <var>C² = 1</var>. Real traffic is usually burstier than that, and real service times often have a slow minority. John Kingman's 1961 approximation puts variability into the formula as a separate factor:</p>
+      <p style="text-align:center"><var>W<sub>q</sub> ≈ ρ/(1 − ρ) × (C<sub>a</sub>² + C<sub>s</sub>²)/2 × S</var></p>
+      <p>Three factors: the load, the variability (arrivals <var>C<sub>a</sub>²</var> and service <var>C<sub>s</sub>²</var>, averaged), and the service time. With <var>C<sub>a</sub>² = C<sub>s</sub>² = 1</var> the middle factor is 1 and you get M/M/1 back. It is exact whenever arrivals are memoryless, whatever the service times look like, and a close approximation otherwise, closest at high load, which is where you care.</p>
+
+      <section class="ex" id="ex4">
+        <div class="ex-head"><span class="ex-num">Example 4</span><h3 class="ex-title">Same 80% load, four kinds of traffic</h3></div>
+        <p class="ex-problem">The server from Example 2 at 80%, <var>S = 10 ms</var>. Compare the mean wait when (a) arrivals and service are both memoryless, (b) arrivals are bursty with <var>C<sub>a</sub>² = 4</var>, meaning the gaps between requests have a standard deviation twice their mean, clusters then lulls, (c) arrivals are memoryless but every request takes exactly 10 ms, and (d) bursty arrivals with fixed service. Then find the load at which bursty traffic hurts as much as (a).</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Load factor, all four</div><div class="eq-work">ρ/(1 − ρ) = 0.8 / 0.2</div><div class="eq-res">4</div></div>
+          <div class="eq-row"><div class="eq-what">(a) M/M/1</div><div class="eq-work">(1 + 1)/2 = 1, so 4 × 1 × 10 ms</div><div class="eq-res">40 ms</div></div>
+          <div class="eq-row"><div class="eq-what">(b) bursty arrivals</div><div class="eq-work">(4 + 1)/2 = 2.5, so 4 × 2.5 × 10 ms<small>Concretely: 89% of the gaps average 7 ms and 11% average 55 ms. Same mean gap of 12.5 ms as (a), standard deviation 25 ms.</small></div><div class="eq-res">100 ms</div></div>
+          <div class="eq-row"><div class="eq-what">(c) fixed service time</div><div class="eq-work">(1 + 0)/2 = 0.5, so 4 × 0.5 × 10 ms</div><div class="eq-res">20 ms</div></div>
+          <div class="eq-row"><div class="eq-what">(d) bursty, fixed service</div><div class="eq-work">(4 + 0)/2 = 2, so 4 × 2 × 10 ms</div><div class="eq-res">80 ms</div></div>
+          <div class="eq-gap">Where bursty traffic reaches the 40 ms of (a)</div>
+          <div class="eq-row"><div class="eq-what">Solve for the load factor</div><div class="eq-work">ρ/(1 − ρ) × 2.5 = 4, so ρ/(1 − ρ) = 1.6</div><div class="eq-res">ρ = 1.6 / 2.6</div></div>
+          <div class="eq-row"><div class="eq-what">As a utilisation</div><div class="eq-work">1.6 / 2.6 = 0.615</div><div class="eq-res">61.5%</div></div>
+          <div class="eq-gap">A slow minority (tool 4)</div>
+          <div class="eq-row"><div class="eq-what">10% of requests take 10× longer, arrivals memoryless</div><div class="eq-work">C<sub>s</sub>² = 2.02, so (1 + 2.02)/2 = 1.51, and 4 × 1.51</div><div class="eq-res">6.04 S, not 4 S</div></div>
+        </div>
+        <p class="ex-answer">At the same 80% load, bursty arrivals wait <b>2.5 times</b> longer than memoryless ones, and bursty traffic feels the 80% cliff at <b>61.5%</b>. Making every request take the same time halves the wait, which is the case for splitting big jobs into equal small ones. A slow tenth of requests adds 51% to everyone's wait, including the fast nine tenths, because they queue behind the slow ones. The simulation in "Run it" measures 96.5 ms for case (b) against Kingman's 100.</p>
+      </section>
+
+      <!-- ── One fast or two slow ──────────────────────────────────────── -->
+      <h2>One fast server or two slow ones</h2>
+      <p>Two servers can share one queue, written <strong>M/M/2</strong>: whoever is free next takes the next request. Its mean response time has a closed form too, <var>T = S / (1 − ρ²)</var>, where <var>S</var> is one server's service time and <var>ρ = λS/2</var> is each server's utilisation. Compare it with a single server twice as fast, and with the same two servers behind a load balancer that splits traffic at random so each keeps its own queue.</p>
+
+      <section class="ex" id="ex5">
+        <div class="ex-head"><span class="ex-num">Example 5</span><h3 class="ex-title">One server at 5 ms, or two at 10 ms?</h3></div>
+        <p class="ex-problem">160 requests a second. Option A: one server that takes 5 ms per request. Option B: two servers that take 10 ms each, sharing one queue. Option C: the same two servers, traffic split at random, separate queues. All three can finish 200 a second. Mean response time?</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Utilisation, all three (tool 2)</div><div class="eq-work">A: 160 × 0.005. B: 160 × 0.010 / 2. C: 80 × 0.010 each</div><div class="eq-res">80% everywhere</div></div>
+          <div class="eq-row"><div class="eq-what">A, one fast server</div><div class="eq-work">T = S/(1 − ρ) = 5 / 0.2</div><div class="eq-res">25 ms</div></div>
+          <div class="eq-row"><div class="eq-what">B, two servers, one queue</div><div class="eq-work">T = S/(1 − ρ²) = 10 / (1 − 0.64) = 10 / 0.36<small>A request waits only when both servers are busy, which happens 71% of the time at this load.</small></div><div class="eq-res">27.8 ms</div></div>
+          <div class="eq-row"><div class="eq-what">C, two separate queues</div><div class="eq-work">each is M/M/1 at 80% with S = 10: 10 / 0.2</div><div class="eq-res">50 ms</div></div>
+          <div class="eq-gap">The same three at 50% (100 per second)</div>
+          <div class="eq-row"><div class="eq-what">A, B, C</div><div class="eq-work">5/0.5, then 10/(1 − 0.25), then 10/0.5</div><div class="eq-res">10, 13.3, 20 ms</div></div>
+          <div class="eq-gap">And at 95% (190 per second)</div>
+          <div class="eq-row"><div class="eq-what">A, B, C</div><div class="eq-work">5/0.05, then 10/(1 − 0.9025), then 10/0.05</div><div class="eq-res">100, 102.6, 200 ms</div></div>
+          <div class="eq-row"><div class="eq-what">B compared with A, in general</div><div class="eq-work">[S/(1 − ρ²)] / [(S/2)/(1 − ρ)] = 2/(1 + ρ)</div><div class="eq-res">1.33× at 50%, 1.11× at 80%</div></div>
+        </div>
+        <p class="ex-answer">One fast server wins on mean response time at every load, by <b>2/(1 + ρ)</b>: a third slower for the pair at 50%, a tenth slower at 80%, and almost nothing at 95%, because near the cliff everyone is waiting anyway. Two separate queues are exactly <b>twice</b> as slow as one fast server at every load, and worse than the shared queue at every load: if you have two servers, share the queue. What the formula does not count is that when one of the two slow servers dies you still have half a service, and when the fast one dies you have none. Harchol-Balter's textbook opens with this exact question and works the three layouts through in its chapter on server farms.</p>
+      </section>
+
+      <!-- ── The tail ──────────────────────────────────────────────────── -->
+      <h2>Why p99 explodes while the mean looks fine</h2>
+      <p>In an M/M/1 queue the response time is not just <em>on average</em> <var>S/(1 − ρ)</var>. Its whole distribution is exponential with that mean, and the exponential has a long tail. The fraction of requests slower than <var>t</var> is <var>e<sup>−t/mean</sup></var>, so the <var>p</var>th percentile sits at <var>mean × ln(1/(1 − p))</var>. Those logarithms are fixed numbers: the median is 0.69 of the mean, the 99th percentile is 4.6 times the mean, at any load. What the load does is move the mean, and the mean is on the cliff.</p>
+
+      <section class="ex" id="ex6">
+        <div class="ex-head"><span class="ex-num">Example 6</span><h3 class="ex-title">Median 35 ms, p99 230 ms, same server</h3></div>
+        <p class="ex-problem">The server from Example 2 at 80% busy, mean response 50 ms. Find the median, the 90th and the 99th percentile. Then a page that fans out to 100 such servers and waits for all of them: how often does it wait for a p99 straggler?</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Mean response (Example 2)</div><div class="eq-work">10 / (1 − 0.8)</div><div class="eq-res">50 ms</div></div>
+          <div class="eq-row"><div class="eq-what">Median, p50</div><div class="eq-work">ln 2 × 50 = 0.693 × 50</div><div class="eq-res">34.7 ms</div></div>
+          <div class="eq-row"><div class="eq-what">p90</div><div class="eq-work">ln 10 × 50 = 2.303 × 50</div><div class="eq-res">115 ms</div></div>
+          <div class="eq-row"><div class="eq-what">p99</div><div class="eq-work">ln 100 × 50 = 4.605 × 50</div><div class="eq-res">230 ms</div></div>
+          <div class="eq-row"><div class="eq-what">p99 over p50</div><div class="eq-work">4.605 / 0.693, the same at every load</div><div class="eq-res">6.6×</div></div>
+          <div class="eq-row"><div class="eq-what">Same server at 90%, mean 100 ms</div><div class="eq-work">4.605 × 100</div><div class="eq-res">p99 461 ms</div></div>
+          <div class="eq-row"><div class="eq-what">Requests slower than the mean</div><div class="eq-work">e<sup>−1</sup></div><div class="eq-res">37%</div></div>
+          <div class="eq-gap">Fan out to 100 servers</div>
+          <div class="eq-row"><div class="eq-what">One server beats its own p99</div><div class="eq-work">by definition</div><div class="eq-res">99%</div></div>
+          <div class="eq-row"><div class="eq-what">All 100 do (none, then flip: chapter 03's tool 3)</div><div class="eq-work">0.99<sup>100</sup></div><div class="eq-res">36.6%</div></div>
+          <div class="eq-row"><div class="eq-what">So the page waits for a straggler</div><div class="eq-work">1 − 0.366</div><div class="eq-res">63.4% of pages</div></div>
+        </div>
+        <p class="ex-answer">The median user sees <b>35 ms</b> and the dashboard says 50, while one in a hundred waits <b>230 ms</b>. That 6.6-to-1 ratio never changes; only the mean it multiplies does, and the mean is on the cliff. Fan out to 100 backends and the p99 stops being rare: <b>63%</b> of pages wait for a straggler. That is the opening arithmetic of Dean and Barroso's "The Tail at Scale", and their fix is the maths run backwards: send a second copy of any request still unanswered after the p95 time, which costs about 5% extra load and, in their BigTable benchmark, cut the p99.9 from 1,800 ms to 74 ms.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 280" role="img" aria-labelledby="tail-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="tail-fig-title">The distribution of response times for the server at 80% busy: an exponential curve starting high at zero and decaying, with the median at 35 ms, the mean at 50 ms, the 90th percentile at 115 ms and the 99th at 230 ms.</title>
+          <text x="20" y="22" class="fig-label fig-mute">HOW LONG ONE REQUEST TAKES · S = 10 MS · 80% BUSY · MEAN 50 MS</text>
+          <line x1="60" y1="230" x2="700" y2="230" stroke="currentColor" stroke-width="1"/>
+          <text x="60" y="248" text-anchor="middle" class="fig-label fig-mute">0</text>
+          <text x="273" y="248" text-anchor="middle" class="fig-label fig-mute">100 MS</text>
+          <text x="487" y="248" text-anchor="middle" class="fig-label fig-mute">200 MS</text>
+          <text x="700" y="248" text-anchor="end" class="fig-label fig-mute">300 MS</text>
+          <text x="380" y="270" text-anchor="middle" class="fig-label fig-mute">RESPONSE TIME. THE AREA UNDER THE CURVE IS THE SHARE OF REQUESTS.</text>
+          <!-- density, relative -->
+          <polyline fill="none" stroke="var(--ember)" stroke-width="2.2" stroke-linejoin="round"
+            points="60,40.0 81,74.4 103,102.6 124,125.7 145,144.6 167,160.1 188,172.8 209,183.1 231,191.6 252,198.6 273,204.3 295,208.9 316,212.8 337,215.9 359,218.4 380,220.5 401,222.3 423,223.7 444,224.8 465,225.7 487,226.5 508,227.2 529,227.7 551,228.1 572,228.4 593,228.7 615,229.0 636,229.1 657,229.3 679,229.4 700,229.5"/>
+          <!-- markers -->
+          <line x1="134" y1="230" x2="134" y2="135" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/>
+          <text x="134" y="122" text-anchor="middle" class="fig-mono" fill="currentColor">p50</text>
+          <text x="134" y="108" text-anchor="middle" class="fig-label fig-mute">35 MS</text>
+          <line x1="167" y1="230" x2="167" y2="160" stroke="var(--ember)" stroke-width="1.4"/>
+          <text x="180" y="150" class="fig-mono fig-ember">mean 50 ms</text>
+          <line x1="306" y1="230" x2="306" y2="211" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/>
+          <text x="306" y="198" text-anchor="middle" class="fig-mono" fill="currentColor">p90</text>
+          <text x="306" y="184" text-anchor="middle" class="fig-label fig-mute">115 MS</text>
+          <line x1="551" y1="230" x2="551" y2="200" stroke="var(--ember)" stroke-width="1.4"/>
+          <circle cx="551" cy="228" r="4" fill="var(--ember)"/>
+          <text x="551" y="188" text-anchor="middle" class="fig-mono fig-ember">p99: 230 ms</text>
+          <text x="551" y="174" text-anchor="middle" class="fig-label fig-mute">4.6 × THE MEAN, 6.6 × THE MEDIAN</text>
+        </svg>
+        <figcaption>Exponential response times at 80% busy. Most requests finish fast, which is exactly why the mean hides the tail.</figcaption>
+      </figure>
+
+      <!-- ── Run it ────────────────────────────────────────────────────── -->
+      <h2>Run it</h2>
+      <h3>Build it: one server, half a million requests</h3>
+      <p>Standard library only. Draw a random gap, draw a random service time, and a request waits whenever the server is still busy from the last one. Then compare the measured wait with Example 2 and Example 4.</p>
+
+      <pre class="code" data-lang="python"><code># One server, random arrivals, random service: measure the wait, then compare
+# with the formula. Companion to math-queueing.html. Python 3 stdlib only.
+import random, statistics
+
+S = 10.0          # mean service time, ms
+N = 500_000       # arrivals per run
+
+def simulate(rho, bursty=False, seed=1):
+    """Return mean wait, median and 99th percentile of response time, in ms."""
+    rng = random.Random(seed)
+    lam = rho / S                                   # arrivals per ms
+    def gap():
+        if not bursty:
+            return rng.expovariate(lam)             # Poisson arrivals: Ca^2 = 1
+        # Bursty: 89% of gaps are short, 11% are long. Same mean, Ca^2 = 4.
+        if rng.random() &lt; 0.8873:
+            return rng.expovariate(1.7746 * lam)
+        return rng.expovariate(0.2254 * lam)
+    now = free_at = 0.0
+    waits, resp = [], []
+    for _ in range(N):
+        now += gap()                                # next request arrives
+        start = max(now, free_at)                   # wait if the server is busy
+        free_at = start + rng.expovariate(1 / S)    # exponential service, mean S
+        waits.append(start - now)
+        resp.append(free_at - now)
+    resp.sort()
+    return statistics.fmean(waits), resp[N // 2], resp[int(N * 0.99)]
+
+print(f"S = {S:.0f} ms, {N:,} requests per run, one server")
+print("rho   formula  measured   p50    p99   (ms)   Poisson arrivals")
+for rho in (0.5, 0.8, 0.9, 0.95):
+    w, p50, p99 = simulate(rho)
+    print(f"{rho:.2f}  {S * rho / (1 - rho):7.1f}  {w:8.1f}  {p50:5.1f}  {p99:6.1f}")
+
+print("rho   kingman  measured   p50    p99   (ms)   bursty arrivals, Ca^2 = 4")
+for rho in (0.5, 0.8, 0.9):
+    w, p50, p99 = simulate(rho, bursty=True)
+    print(f"{rho:.2f}  {S * rho / (1 - rho) * (4 + 1) / 2:7.1f}  {w:8.1f}  {p50:5.1f}  {p99:6.1f}")</code></pre>
+
+      <pre class="code" data-lang="console"><code>$ python3 queue_sim.py
+S = 10 ms, 500,000 requests per run, one server
+rho   formula  measured   p50    p99   (ms)   Poisson arrivals
+0.50     10.0      10.1   13.9    92.3
+0.80     40.0      39.6   34.5   228.1
+0.90     90.0      89.6   68.9   457.0
+0.95    190.0     206.3  139.1  1103.0
+rho   kingman  measured   p50    p99   (ms)   bursty arrivals, Ca^2 = 4
+0.50     25.0      21.6   21.9   146.7
+0.80    100.0      96.5   74.0   477.5
+0.90    225.0     211.4  157.3   952.8</code></pre>
+
+      <p>Read the p50 and p99 columns against Example 6: 34.5 and 228 measured, 34.7 and 230 predicted. At 95% the measured wait is 8% above the formula after half a million requests. That is not a bug. Near the cliff a queue has a long memory: one bad burst takes thousands of requests to drain, so the average converges slowly, and the same effect is why p99 dashboards jump around at high load. Kingman overshoots at 50% and lands at 80% and 90%, as promised: it is a heavy-traffic approximation.</p>
+
+      <h3>Use it: Little's Law inside a load test, and the queue you already have</h3>
+      <p><code>ab</code>, the Apache benchmark tool, ships with every Mac. Point it at Python's built-in web server, the same one that serves this page in development, and keep 1, 10 and then 50 requests in flight.</p>
+
+      <pre class="code" data-lang="bash"><code>python3 -m http.server 8765 --bind 127.0.0.1 &amp;      # one Python process: a single server
+for c in 1 10 50; do
+  ab -q -n 2000 -c $c http://127.0.0.1:8765/site/math.html | grep -E "^(Concurrency|Requests per|Time per request:.*\(mean\)$|  99%)"
+done
+sysctl kern.ipc.somaxconn                            # the OS queue in front of every listening socket
+python3 -c "import socket; print(socket.SOMAXCONN)"</code></pre>
+      <pre class="code" data-lang="console"><code>Concurrency Level:      1
+Requests per second:    2379.28 [#/sec] (mean)
+Time per request:       0.420 [ms] (mean)
+  99%      1
+Concurrency Level:      10
+Requests per second:    2274.63 [#/sec] (mean)
+Time per request:       4.396 [ms] (mean)
+  99%     35
+Concurrency Level:      50
+Requests per second:    2289.01 [#/sec] (mean)
+Time per request:       21.843 [ms] (mean)
+  99%     96
+kern.ipc.somaxconn: 128
+128</code></pre>
+
+      <p>Multiply each throughput by its time per request: 2,379 × 0.000420 = 1.0, then 2,275 × 0.004396 = 10.0, then 2,289 × 0.021843 = 50.0. That is Little's Law, <var>L = λW</var>, read straight off a load test: the tool holds exactly <var>c</var> requests in flight, so <var>c</var> equals throughput times latency, every time. The server's throughput did not move, because one Python process can only do so much, so the extra 49 clients bought nothing but a queue: 52 times the latency and a p99 of 96 ms against 1. The last two lines are the queue you never configured. When a connection has finished its TCP handshake but the process has not yet called <code>accept()</code>, the operating system holds it in the listen backlog, which on this machine is 128 deep. Beyond that, connections are refused. It is a bounded queue with load shedding built in, and every server you have ever run sat behind one.</p>
+
+      <!-- ── Toy vs production ─────────────────────────────────────────── -->
+      <h2>Toy vs production</h2>
+      <p>The formulas are exact for the model. Production differs from the model in specific, nameable ways, and each one has a standard response.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>This page</th><th>Real systems</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>arrivals</td><td>memoryless, steady rate</td><td>A daily cycle, so capacity is planned for the peak hour, not the mean. Bursts, so Kingman's <var>C<sub>a</sub>²</var> is above 1 and the cliff arrives early (Example 4). Retries, which are arrivals that grow as you slow down: the feedback loop behind most cascading failures, and why retry budgets and backoff exist.</td></tr>
+            <tr><td>service time</td><td>memoryless, one mean</td><td>Mixtures: cache hits at 1 ms and misses at 50 ms, a garbage-collection pause every few seconds. <var>C<sub>s</sub>²</var> above 1 makes the fast requests wait behind the slow ones, so services split big jobs, cap request sizes and move slow work to a separate queue.</td></tr>
+            <tr><td>servers</td><td>one, or two</td><td>Pools of eight to thousands. A shared queue (a load balancer picking the least-busy backend) beats a random split, as in Example 5. Pool sizes come from Little's Law: expected concurrency, plus headroom, and not more, because a pool larger than the database's own limit just moves the queue.</td></tr>
+            <tr><td>the queue</td><td>no limit</td><td>Bounded everywhere: the 128-deep listen backlog, a pool's checkout timeout, a thread pool's queue length. When full, fail fast rather than wait: a request that waits 5 s and then times out cost the server 5 s of a slot for nothing. Load shedding is the deliberate version.</td></tr>
+            <tr><td>utilisation target</td><td>a number you pick</td><td>Autoscaling targets of 40 to 70% on CPU or requests per target; AWS's worked example is 50%. New capacity takes minutes to launch and warm up, so the target is the load you can survive for those minutes, not the load you can serve today.</td></tr>
+            <tr><td>the tail</td><td>p99 = 4.6 × mean, one server</td><td>Fan-out multiplies the tail (Example 6). In Google's measurement a single random backend answered within 10 ms at its p99, but waiting for all of them made the p99 140 ms. Fixes: hedged requests to a second replica after the p95 time, per-request deadlines that are passed downstream, and treating the slowest 1% of a fleet as a signal rather than noise.</td></tr>
+            <tr><td>measuring</td><td>λ and S are given</td><td>You measure them: λ from the request log, S from server-side time with queueing excluded, ρ from CPU or busy time. Then Little's Law lets you get any one of concurrency, throughput and latency from the other two, which is how you catch a dashboard that disagrees with itself.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── Check yourself ────────────────────────────────────────────── -->
+      <h2>Check yourself</h2>
+      <p>Work each one before opening the answer.</p>
+
+      <details class="check">
+        <summary>A service takes 50 ms per request and runs at 75% utilisation. What are the mean wait and the mean response time?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Load factor</div><div class="eq-work">0.75 / 0.25</div><div class="eq-res">3</div></div>
+            <div class="eq-row"><div class="eq-what">Wait, then response</div><div class="eq-work">3 × 50 ms, then 150 + 50</div><div class="eq-res">150 ms, 200 ms</div></div>
+          </div></div>
+          <p>Three quarters busy means three service times of waiting. Response time is <var>S/(1 − ρ) = 50/0.25</var>, four times the work.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Traffic doubles and a server goes from 40% to 80% busy. By what factor does the mean wait grow?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">At 40%</div><div class="eq-work">0.4 / 0.6</div><div class="eq-res">0.67 S</div></div>
+            <div class="eq-row"><div class="eq-what">At 80%</div><div class="eq-work">0.8 / 0.2</div><div class="eq-res">4 S</div></div>
+            <div class="eq-row"><div class="eq-what">Factor</div><div class="eq-work">4 / 0.667</div><div class="eq-res">6×</div></div>
+          </div></div>
+          <p>Twice the traffic, six times the wait. Anyone who load-tested at half of peak and doubled the result was off by a factor of three.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>A message queue holds 30 messages on average and its consumer processes 6 a second. How long does a message sit in the queue?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Little's Law on the queue</div><div class="eq-work">W = L / λ = 30 / 6</div><div class="eq-res">5 seconds</div></div>
+          </div></div>
+          <p>In a steady state what goes in comes out, so the consumer's 6 a second is also the arrival rate. No distribution was needed. This is also how a queue's depth becomes a latency alert: depth divided by drain rate.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>A server at 90% busy has memoryless arrivals. You rewrite it so every request takes exactly the same time. What happens to the mean wait?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Before, C<sub>s</sub>² = 1</div><div class="eq-work">9 × (1 + 1)/2</div><div class="eq-res">9 S</div></div>
+            <div class="eq-row"><div class="eq-what">After, C<sub>s</sub>² = 0</div><div class="eq-work">9 × (1 + 0)/2</div><div class="eq-res">4.5 S</div></div>
+          </div></div>
+          <p>It halves, and Kingman is exact here because the arrivals are memoryless. You cannot do better than halving by fixing service alone: the other half of the variability is in the arrivals, which are not yours to fix.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Dean and Barroso say a fleet where one request in 10,000 is slow will, at 2,000 servers per user request, make "almost one in five" user requests slow. Check it.</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">One server is fast</div><div class="eq-work">1 − 1/10,000</div><div class="eq-res">0.9999</div></div>
+            <div class="eq-row"><div class="eq-what">All 2,000 are</div><div class="eq-work">0.9999<sup>2000</sup> = e<sup>2000 × ln 0.9999</sup> ≈ e<sup>−0.2</sup></div><div class="eq-res">0.819</div></div>
+            <div class="eq-row"><div class="eq-what">At least one is slow</div><div class="eq-work">1 − 0.819</div><div class="eq-res">18.1%</div></div>
+          </div></div>
+          <p>Almost one in five, as the paper says. The shortcut <var>1 − e<sup>−n/N</sup></var> is the same one chapter 03 used for birthdays: many small chances, at least one hit.</p>
+        </div>
+      </details>
+
+      <!-- ── Sources ───────────────────────────────────────────────────── -->
+      <h2>Sources</h2>
+      <ol class="sources">
+        <li>J. D. C. Little, <a href="https://doi.org/10.1287/opre.9.3.383" target="_blank" rel="noopener">"A Proof for the Queuing Formula: L = λW"</a>, Operations Research 9(3):383–387, 1961. Tool 3 and Example 1.</li>
+        <li>J. F. C. Kingman, <a href="https://doi.org/10.1017/S0305004100036094" target="_blank" rel="noopener">"The single server queue in heavy traffic"</a>, Mathematical Proceedings of the Cambridge Philosophical Society 57(4):902–904, 1961. The approximation in Example 4.</li>
+        <li>D. G. Kendall, <a href="https://doi.org/10.1214/aoms/1177728975" target="_blank" rel="noopener">"Stochastic Processes Occurring in the Theory of Queues and their Analysis by the Method of the Imbedded Markov Chain"</a>, Annals of Mathematical Statistics 24(3):338–354, 1953. The A/S/c naming, and queues with general arrivals and exponential service, which is the "bursty" case simulated above.</li>
+        <li>J. Dean and L. A. Barroso, <a href="https://doi.org/10.1145/2408776.2408794" target="_blank" rel="noopener">"The Tail at Scale"</a>, Communications of the ACM 56(2):74–80, 2013. The 63% and one-in-five figures, Table 1's 10 ms against 140 ms, and hedged requests with the BigTable measurement. <a href="https://www.barroso.org/publications/TheTailAtScale.pdf" target="_blank" rel="noopener">Author's copy</a>.</li>
+        <li>M. Harchol-Balter, <a href="https://doi.org/10.1017/CBO9781139226424" target="_blank" rel="noopener">Performance Modeling and Design of Computer Systems: Queueing Theory in Action</a>, Cambridge University Press, 2013. Chapter 1 poses the one-fast-or-many-slow question; chapter 14, on M/M/k server farms, compares the three layouts of Example 5.</li>
+        <li>AWS, <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html" target="_blank" rel="noopener">Target tracking scaling policies for Amazon EC2 Auto Scaling</a>: the 50% CPU example, and instance warmup time.</li>
+        <li>Apache HTTP Server, <a href="https://httpd.apache.org/docs/2.4/programs/ab.html" target="_blank" rel="noopener">ab, the benchmarking tool</a>, and Python, <a href="https://docs.python.org/3/library/socket.html#socket.socket.listen" target="_blank" rel="noopener"><code>socket.listen</code></a> and <code>SOMAXCONN</code>: the listen backlog measured in "Use it".</li>
+      </ol>
+
+      <nav class="chapter-nav" aria-label="Chapter navigation">
+        <a href="math-hashing.html">← Chapter 03 · Hashing and the birthday paradox</a>
+        <a href="math-bloom.html">Chapter 05 · Bloom filters and HyperLogLog →</a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "url": "https://buildingbackend.vercel.app/math-queueing.html",
+    "headline": "Queueing theory: why 80% busy is the cliff",
+    "description": "Connection pools, thread pools, autoscaling targets and p99 latency, worked out by hand with Little's Law, the M/M/1 queue, Kingman's formula and the exponential tail.",
+    "isPartOf": { "@type": "CollectionPage", "name": "Math Behind Tech", "url": "https://buildingbackend.vercel.app/math.html" },
+    "author": { "@type": "Person", "name": "@ritikshub", "url": "https://x.com/ritikshub" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        }
+      });
+    })();
+  </script>
+  <script src="data.js?v=20260813m"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>
