@@ -195,6 +195,9 @@ it's the next lesson.
   and both matter.
 - It all works only because machines follow shared **protocols**, organized into **layers**.
 
-**That completes the Foundations.** Next comes **Phase 2: Networking & Protocols**, where the
-network gets the full treatment: the layered model and every layer with working code, the
-protocols that ride on top, and how real servers actually talk to each other.
+**That completes the Foundations.** Next comes **Phase 1: Linux and the Command Line**, the
+machine your backend actually runs on: the kernel and the one door into it, the shell, files,
+permissions, pipes, processes, and the tools you drive a server with. After that, **Phase 2:
+Networking & Protocols** gives the network the full treatment: the layered model and every layer
+with working code, the protocols that ride on top, and how real servers actually talk to each
+other. Start here: [What an Operating System Does](../../01-linux-and-the-command-line/01-what-an-operating-system-does/).
