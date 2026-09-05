@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hashing and the birthday paradox - Math Behind Tech - Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
+  <meta name="description" content="Hash maps, git short IDs, UUIDs and password hashing, worked out by hand: a hash table with 8 buckets, the 23-people birthday paradox, the square-root rule for collisions, a Snowflake ID decoded, and a birthday attack run on your own laptop.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/math-hashing.html">
+  <meta property="og:title" content="Hashing and the birthday paradox · Math Behind Tech">
+  <meta property="og:description" content="Why 23 people share a birthday, why 7-character git IDs stopped being enough, and why your UUIDs will never collide. All by hand.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <meta property="og:url" content="https://buildingbackend.vercel.app/math-hashing.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hashing and the birthday paradox · Math Behind Tech">
+  <meta name="twitter:description" content="Hash maps, git IDs, UUIDs and password hashing, worked out by hand.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260813m">
+  <link rel="stylesheet" href="math.css?v=20260905b">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="math.html" aria-current="page">Math</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <article class="math-page">
+      <div class="math-eyebrow"><a href="math.html">Math Behind Tech</a> · Chapter 03</div>
+      <h1>Hashing and the birthday paradox</h1>
+
+      <p class="lede">One function turns anything into a fixed-size number that looks random. One party trick from probability tells you exactly when two of those numbers will clash. Together they are hash maps, git, UUIDs, password storage, and the reason seven-character commit IDs stopped being enough.</p>
+
+      <div class="legend">
+        <span><i class="sw-theory"></i>Plain text is theory.</span>
+        <span><i class="sw-ex"></i>Cream sheets are worked examples: problem, working, answer.</span>
+      </div>
+
+      <!-- ── Where you meet it ─────────────────────────────────────────── -->
+      <h2>Where you meet it</h2>
+      <p>You called a hash function before you finished reading this sentence. Probably several.</p>
+
+      <div class="grid2">
+        <div class="tile">
+          <div class="tile-k">Every dictionary and cache</div>
+          <p>A Python <code>dict</code>, a Java <code>HashMap</code>, a Redis key. Hash the key, jump to a bucket, compare once. Example 1 does it with 8 buckets and a pencil.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every git commit</div>
+          <p>A commit's name is the hash of its content, and <code>587b699</code>-style short IDs are the first 7 characters. Example 5 computes when those start colliding, and why the Linux kernel asks for 12.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every ID you mint</div>
+          <p>UUIDs are 122 random bits. Snowflake IDs are a timestamp, a machine number and a counter packed into 64 bits. Example 6 decodes one and puts a number on "will they collide".</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every password and every download</div>
+          <p>Passwords are stored as slow hashes on purpose. Docker layers, ETags and package downloads are named by their hash so nothing can change unnoticed. Examples 7 and 8.</p>
+        </div>
+      </div>
+
+      <!-- ── The idea ──────────────────────────────────────────────────── -->
+      <h2>The idea in one breath</h2>
+      <p>A <strong>hash function</strong> takes input of any size and returns a number of fixed size. Same input, same number, every time. Change one bit of the input and the whole number changes. A good one cannot be run backwards.</p>
+      <p>That buys two things. <strong>Placing:</strong> <var>hash mod buckets</var> says which drawer a key lives in, so finding it is one step whether the table holds ten keys or ten million. <strong>Naming:</strong> the hash <em>is</em> the name of the content, which is how git, Docker and your browser cache know two things are identical without comparing them byte by byte.</p>
+      <p>The one thing that can go wrong is a <strong>collision</strong>: two inputs, one number. The birthday paradox says collisions arrive after roughly the <em>square root</em> of the number of possible outputs, which is far sooner than intuition expects. Every number on this page is that square root, applied.</p>
+
+      <!-- ── Tools ─────────────────────────────────────────────────────── -->
+      <h2>The four tools you need</h2>
+      <p>Nothing below needs more than these four ideas.</p>
+
+      <div class="tool">
+        <h3>1. Mod as "which bucket"</h3>
+        <p><var>a mod n</var> is the remainder after dividing by <var>n</var>. With <var>n</var> buckets it turns any number into a bucket index from 0 to <var>n − 1</var>.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">24 mod 8</div><div class="eq-work">24 = 3 × 8 + 0</div><div class="eq-res">bucket 0</div></div>
+          <div class="eq-row"><div class="eq-what">26 mod 8</div><div class="eq-work">26 = 3 × 8 + 2</div><div class="eq-res">bucket 2</div></div>
+          <div class="eq-row"><div class="eq-what">41 mod 8</div><div class="eq-work">41 = 5 × 8 + 1</div><div class="eq-res">bucket 1</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>2. Powers of two and hex digits</h3>
+        <p><var>b</var> bits can hold <var>2<sup>b</sup></var> different values. One hex digit is 4 bits. A handy shortcut: <var>2<sup>10</sup></var> is about a thousand, so every 10 bits adds three zeros.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">7 hex digits</div><div class="eq-work">7 × 4 = 28 bits, 2²⁸</div><div class="eq-res">268,435,456</div></div>
+          <div class="eq-row"><div class="eq-what">32 bits</div><div class="eq-work">2³²</div><div class="eq-res">4.29 billion</div></div>
+          <div class="eq-row"><div class="eq-what">2⁴⁰, by the shortcut</div><div class="eq-work">four lots of ten bits, three zeros each</div><div class="eq-res">≈ 10¹²</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>3. Probability of "none", then flip it</h3>
+        <p>"At least one" is hard to count directly. Count the chance that <em>none</em> happen, by multiplying the chances of each one not happening, and subtract from 1.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">Two coin flips, no heads</div><div class="eq-work">½ × ½</div><div class="eq-res">¼</div></div>
+          <div class="eq-row"><div class="eq-what">So at least one head</div><div class="eq-work">1 − ¼</div><div class="eq-res">¾</div></div>
+          <div class="eq-row"><div class="eq-what">Two dice, at least one six</div><div class="eq-work">1 − (⅚ × ⅚) = 1 − 25/36</div><div class="eq-res">11/36 ≈ 31%</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>4. Counting pairs</h3>
+        <p><var>n</var> things make <var>n(n − 1)/2</var> pairs. Pairs grow with the square of <var>n</var>, and collisions happen between pairs, not between things. This one line is the whole paradox.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">5 people</div><div class="eq-work">5 × 4 / 2</div><div class="eq-res">10 pairs</div></div>
+          <div class="eq-row"><div class="eq-what">23 people</div><div class="eq-work">23 × 22 / 2</div><div class="eq-res">253 pairs</div></div>
+          <div class="eq-row"><div class="eq-what">100 people</div><div class="eq-work">100 × 99 / 2</div><div class="eq-res">4,950 pairs</div></div>
+        </div></div>
+      </div>
+
+      <!-- ── Hash maps ─────────────────────────────────────────────────── -->
+      <h2>Placing: a hash map by hand</h2>
+      <p>A hash map is an array of buckets plus a rule for choosing one. To store a key, hash it, take the result mod the number of buckets, and drop the key in that bucket. To find it, do the same computation and look in the same place. If two keys land in one bucket, keep both in a short list and compare against each. We will use a deliberately simple hash: add up the letter positions, A = 1 to Z = 26.</p>
+
+      <section class="ex" id="ex1">
+        <div class="ex-head"><span class="ex-num">Example 1</span><h3 class="ex-title">Eight buckets, five words, one collision</h3></div>
+        <p class="ex-problem">Store CAT, DOG, COW, HEN and ACT in an 8-bucket table using <var>h(word) = (sum of letter positions) mod 8</var>. Then look up DOG and ACT and count the comparisons.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">CAT</div><div class="eq-work">3 + 1 + 20 = 24, and 24 mod 8</div><div class="eq-res">bucket 0</div></div>
+          <div class="eq-row"><div class="eq-what">DOG</div><div class="eq-work">4 + 15 + 7 = 26, and 26 mod 8</div><div class="eq-res">bucket 2</div></div>
+          <div class="eq-row"><div class="eq-what">COW</div><div class="eq-work">3 + 15 + 23 = 41, and 41 mod 8</div><div class="eq-res">bucket 1</div></div>
+          <div class="eq-row"><div class="eq-what">HEN</div><div class="eq-work">8 + 5 + 14 = 27, and 27 mod 8</div><div class="eq-res">bucket 3</div></div>
+          <div class="eq-row"><div class="eq-what">ACT</div><div class="eq-work">1 + 3 + 20 = 24, and 24 mod 8<small>Same sum as CAT: adding ignores the order of letters, so every anagram collides.</small></div><div class="eq-res">bucket 0<small>collision with CAT</small></div></div>
+          <div class="eq-gap">Look things up</div>
+          <div class="eq-row"><div class="eq-what">Find DOG</div><div class="eq-work">26 mod 8 = 2, open bucket 2, compare with DOG</div><div class="eq-res">1 comparison</div></div>
+          <div class="eq-row"><div class="eq-what">Find ACT</div><div class="eq-work">24 mod 8 = 0, open bucket 0, compare with CAT, then ACT</div><div class="eq-res">2 comparisons</div></div>
+          <div class="eq-row"><div class="eq-what">Find PIG</div><div class="eq-work">16 + 9 + 7 = 32, 32 mod 8 = 0, compare with CAT and ACT, neither matches</div><div class="eq-res">not there</div></div>
+        </div>
+        <p class="ex-answer">Every lookup touched <b>one bucket</b>. The cost depends on how full the buckets are, not on how many words exist, which is why a table of ten million keys answers as fast as one of five: real tables add buckets as they fill so the lists stay short.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 210" role="img" aria-labelledby="bucket-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="bucket-fig-title">Eight buckets. CAT and ACT share bucket 0, COW is in 1, DOG in 2, HEN in 3, buckets 4 to 7 are empty.</title>
+          <text x="20" y="24" class="fig-label fig-mute">H(WORD) = LETTER POSITIONS ADDED UP, MOD 8</text>
+          <!-- bucket indexes -->
+          <text x="57" y="58" text-anchor="middle" class="fig-mono fig-ember">0</text>
+          <text x="143" y="58" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <text x="229" y="58" text-anchor="middle" class="fig-mono fig-ember">2</text>
+          <text x="315" y="58" text-anchor="middle" class="fig-mono fig-ember">3</text>
+          <text x="401" y="58" text-anchor="middle" class="fig-mono fig-mute">4</text>
+          <text x="487" y="58" text-anchor="middle" class="fig-mono fig-mute">5</text>
+          <text x="573" y="58" text-anchor="middle" class="fig-mono fig-mute">6</text>
+          <text x="659" y="58" text-anchor="middle" class="fig-mono fig-mute">7</text>
+          <!-- buckets -->
+          <rect x="20" y="70" width="74" height="42" class="fig-box-ember"/>
+          <text x="57" y="97" text-anchor="middle" class="fig-mono" fill="currentColor">CAT</text>
+          <line x1="57" y1="112" x2="57" y2="130" stroke="currentColor" stroke-width="1.2"/>
+          <rect x="20" y="130" width="74" height="42" class="fig-box-ember"/>
+          <text x="57" y="157" text-anchor="middle" class="fig-mono" fill="currentColor">ACT</text>
+          <text x="57" y="196" text-anchor="middle" class="fig-label fig-mute">24, 24</text>
+
+          <rect x="106" y="70" width="74" height="42" class="fig-box"/>
+          <text x="143" y="97" text-anchor="middle" class="fig-mono" fill="currentColor">COW</text>
+          <text x="143" y="196" text-anchor="middle" class="fig-label fig-mute">41</text>
+
+          <rect x="192" y="70" width="74" height="42" class="fig-box"/>
+          <text x="229" y="97" text-anchor="middle" class="fig-mono" fill="currentColor">DOG</text>
+          <text x="229" y="196" text-anchor="middle" class="fig-label fig-mute">26</text>
+
+          <rect x="278" y="70" width="74" height="42" class="fig-box"/>
+          <text x="315" y="97" text-anchor="middle" class="fig-mono" fill="currentColor">HEN</text>
+          <text x="315" y="196" text-anchor="middle" class="fig-label fig-mute">27</text>
+
+          <rect x="364" y="70" width="74" height="42" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+          <rect x="450" y="70" width="74" height="42" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+          <rect x="536" y="70" width="74" height="42" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+          <rect x="622" y="70" width="74" height="42" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+          <text x="530" y="150" text-anchor="middle" class="fig-label fig-mute">EMPTY BUCKETS COST NOTHING TO SKIP:</text>
+          <text x="530" y="168" text-anchor="middle" class="fig-label fig-mute">A LOOKUP NEVER VISITS THEM</text>
+        </svg>
+        <figcaption>The table from Example 1. Two anagrams share bucket 0, so it holds a short list.</figcaption>
+      </figure>
+
+      <section class="ex" id="ex2">
+        <div class="ex-head"><span class="ex-num">Example 2</span><h3 class="ex-title">A real string hash, still by hand</h3></div>
+        <p class="ex-problem">Java's <code>String.hashCode</code> fixes the anagram problem by multiplying as it goes: start at 0, and for each character compute <var>31 × h + code</var>. Run it on CAT and ACT, using their ASCII codes C = 67, A = 65, T = 84.</p>
+        <div class="eq">
+          <div class="eq-gap">CAT</div>
+          <div class="eq-row"><div class="eq-what">Start, then C</div><div class="eq-work">31 × 0 + 67</div><div class="eq-res">67</div></div>
+          <div class="eq-row"><div class="eq-what">Then A</div><div class="eq-work">31 × 67 + 65 = 2077 + 65</div><div class="eq-res">2,142</div></div>
+          <div class="eq-row"><div class="eq-what">Then T</div><div class="eq-work">31 × 2142 + 84 = 66,402 + 84</div><div class="eq-res">66,486</div></div>
+          <div class="eq-gap">ACT</div>
+          <div class="eq-row"><div class="eq-what">Start, then A</div><div class="eq-work">31 × 0 + 65</div><div class="eq-res">65</div></div>
+          <div class="eq-row"><div class="eq-what">Then C</div><div class="eq-work">31 × 65 + 67 = 2015 + 67</div><div class="eq-res">2,082</div></div>
+          <div class="eq-row"><div class="eq-what">Then T</div><div class="eq-work">31 × 2082 + 84 = 64,542 + 84</div><div class="eq-res">64,626</div></div>
+        </div>
+        <p class="ex-answer">CAT is <b>66,486</b> and ACT is <b>64,626</b>. Multiplying by 31 before each addition makes the position of every letter matter, so the anagrams separate. Real hash functions add more mixing on top, but this is the shape of all of them: fold each byte in, scramble, repeat.</p>
+      </section>
+
+      <!-- ── Birthday ─────────────────────────────────────────────────── -->
+      <h2>The birthday paradox</h2>
+      <p>How many people must be in a room before it is more likely than not that two share a birthday? Most people guess somewhere near 180. The answer is 23. Tool 3 does the counting: the chance that <em>nobody</em> shares is a chain of "avoids everyone before them" fractions, and flipping it gives the chance that someone does.</p>
+
+      <section class="ex" id="ex3">
+        <div class="ex-head"><span class="ex-num">Example 3</span><h3 class="ex-title">Twenty-three people, one room</h3></div>
+        <p class="ex-problem">People walk in one at a time. Each must avoid every birthday already in the room. Multiply the chances, then flip.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Person 2 avoids 1 taken day</div><div class="eq-work">364/365</div><div class="eq-res">0.9973</div></div>
+          <div class="eq-row"><div class="eq-what">Person 3 avoids 2</div><div class="eq-work">0.9973 × 363/365</div><div class="eq-res">0.9918</div></div>
+          <div class="eq-row"><div class="eq-what">Running total after person 5</div><div class="eq-work">× 362/365 × 361/365</div><div class="eq-res">0.9729</div></div>
+          <div class="eq-row"><div class="eq-what">After person 10</div><div class="eq-work">five more fractions</div><div class="eq-res">0.8831</div></div>
+          <div class="eq-row"><div class="eq-what">After person 15</div><div class="eq-work">five more</div><div class="eq-res">0.7471</div></div>
+          <div class="eq-row"><div class="eq-what">After person 20</div><div class="eq-work">five more</div><div class="eq-res">0.5886</div></div>
+          <div class="eq-row"><div class="eq-what">After person 23</div><div class="eq-work">× 345/365 × 344/365 × 343/365</div><div class="eq-res">0.4927</div></div>
+          <div class="eq-row"><div class="eq-what">Flip it (tool 3)</div><div class="eq-work">1 − 0.4927</div><div class="eq-res">50.7%</div></div>
+          <div class="eq-gap">Why it is so few: count pairs, not people</div>
+          <div class="eq-row"><div class="eq-what">Pairs among 23 people (tool 4)</div><div class="eq-work">23 × 22 / 2</div><div class="eq-res">253 pairs</div></div>
+          <div class="eq-row"><div class="eq-what">Each pair matches with chance 1/365</div><div class="eq-work">253 / 365 expected matches</div><div class="eq-res">0.69</div></div>
+          <div class="eq-row"><div class="eq-what">Chance of at least one match</div><div class="eq-work">1 − e<sup>−0.69</sup><small>The exponential is the standard shortcut for "at least one, out of many small chances".</small></div><div class="eq-res">≈ 50%</div></div>
+        </div>
+        <p class="ex-answer"><b>50.7%</b> with 23 people, <b>99%</b> with 57. Your intuition counted 23 people against 365 days. The maths counted 253 pairs against 365 days, and 253 is most of the way there.</p>
+      </section>
+
+      <!-- ── Square root rule ──────────────────────────────────────────── -->
+      <h2>The square-root rule</h2>
+      <p>Now swap birthdays for hash values. A hash with <var>N</var> possible outputs is a year with <var>N</var> days. Items are people. The pairs argument from Example 3 says <var>n</var> items make about <var>n²/2</var> pairs, each colliding with chance <var>1/N</var>, so the expected number of collisions is <var>n²/(2N)</var>, and the chance of at least one is <var>1 − e<sup>−n²/2N</sup></var>. Set that to 50% and solve: <var>n = √(2 ln 2 · N) ≈ 1.18 √N</var>.</p>
+
+      <section class="ex" id="ex4">
+        <div class="ex-head"><span class="ex-num">Example 4</span><h3 class="ex-title">When does a hash of b bits start colliding?</h3></div>
+        <p class="ex-problem">Apply <var>n ≈ 1.18 √N</var> with <var>N = 2<sup>b</sup></var>. Since the square root of <var>2<sup>b</sup></var> is <var>2<sup>b/2</sup></var>, halve the bits, then take that power of two.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">16 bits (4 hex digits)</div><div class="eq-work">√65,536 = 2⁸ = 256, × 1.18</div><div class="eq-res">301 items</div></div>
+          <div class="eq-row"><div class="eq-what">32 bits (a CRC-32, a 32-bit hash)</div><div class="eq-work">√(4.29 billion) = 2¹⁶ = 65,536, × 1.18</div><div class="eq-res">77,163 items</div></div>
+          <div class="eq-row"><div class="eq-what">64 bits</div><div class="eq-work">2³² = 4.29 billion, × 1.18</div><div class="eq-res">5.06 billion</div></div>
+          <div class="eq-row"><div class="eq-what">128 bits (MD5, a full UUID)</div><div class="eq-work">2⁶⁴ = 1.8 × 10¹⁹, × 1.18</div><div class="eq-res">2.2 × 10¹⁹</div></div>
+          <div class="eq-row"><div class="eq-what">256 bits (SHA-256)</div><div class="eq-work">2¹²⁸ = 3.4 × 10³⁸, × 1.18</div><div class="eq-res">4.0 × 10³⁸</div></div>
+        </div>
+        <p class="ex-answer">A hash of <var>b</var> bits is safe for about <b>2<sup>b/2</sup></b> items. Halve the bits in your head and that is your budget. A 32-bit hash is a fine checksum for catching accidental corruption and a terrible choice for naming 100,000 things.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 300" role="img" aria-labelledby="curve-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="curve-fig-title">Probability of at least one collision in a 32-bit hash as the number of items grows from 0 to 200,000; it crosses 50% at about 77,000 items and is near certain by 200,000.</title>
+          <!-- axes -->
+          <line x1="60" y1="250" x2="700" y2="250" stroke="currentColor" stroke-width="1"/>
+          <line x1="60" y1="250" x2="60" y2="30" stroke="currentColor" stroke-width="1"/>
+          <text x="380" y="284" text-anchor="middle" class="fig-label fig-mute">ITEMS HASHED, 32-BIT HASH, 4.3 BILLION POSSIBLE VALUES</text>
+          <text x="60" y="264" text-anchor="middle" class="fig-label fig-mute">0</text>
+          <text x="380" y="264" text-anchor="middle" class="fig-label fig-mute">100,000</text>
+          <text x="700" y="264" text-anchor="end" class="fig-label fig-mute">200,000</text>
+          <text x="50" y="254" text-anchor="end" class="fig-label fig-mute">0%</text>
+          <text x="50" y="144" text-anchor="end" class="fig-label fig-mute">50%</text>
+          <text x="50" y="36" text-anchor="end" class="fig-label fig-mute">100%</text>
+          <!-- guides -->
+          <line x1="60" y1="140" x2="307" y2="140" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+          <line x1="307" y1="140" x2="307" y2="250" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+          <!-- curve -->
+          <polyline fill="none" stroke="var(--ember)" stroke-width="2.2" stroke-linejoin="round"
+            points="60,250 92,247.4 124,240.1 156,228.2 188,212.6 220,194.3 252,174.8 284,154.3 316,134.5 348,115.6 380,98.6 412,83.7 444,71.1 476,60.8 508,52.4 540,46.1 572,41.2 604,37.7 636,35.1 668,33.3 700,32"/>
+          <circle cx="307" cy="140" r="5" fill="var(--ember)"/>
+          <text x="320" y="124" class="fig-mono fig-ember">77,163 items: 50%</text>
+          <text x="320" y="142" class="fig-label fig-mute">1.18 × √(2³²)</text>
+          <text x="440" y="222" class="fig-label fig-mute">NOT 4.3 BILLION. NOT 2 BILLION.</text>
+          <text x="440" y="240" class="fig-label fig-mute">ABOUT ITS SQUARE ROOT.</text>
+        </svg>
+        <figcaption>Collision probability for a 32-bit hash. The curve is 1 − e<sup>−n²/2N</sup> from the square-root rule.</figcaption>
+      </figure>
+
+      <!-- ── git ───────────────────────────────────────────────────────── -->
+      <h2>Naming: git's seven characters</h2>
+      <p>git names every commit, file and tree by the SHA-1 of its content, 40 hex characters. Nobody types 40 characters, so git shows a prefix, historically 7. Seven hex characters is 28 bits, and Example 4 tells you what happens next.</p>
+
+      <section class="ex" id="ex5">
+        <div class="ex-head"><span class="ex-num">Example 5</span><h3 class="ex-title">How many objects before short IDs collide?</h3></div>
+        <p class="ex-problem">Work out the collision budget for 7-character IDs, then for the 12 characters the Linux kernel asks for, then the odds in this very repository, which had 4,046 objects when this page was written.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">7 hex characters (tool 2)</div><div class="eq-work">28 bits, 2²⁸ names</div><div class="eq-res">268 million</div></div>
+          <div class="eq-row"><div class="eq-what">Square-root rule</div><div class="eq-work">2¹⁴ = 16,384, × 1.18</div><div class="eq-res">19,291 objects</div></div>
+          <div class="eq-row"><div class="eq-what">The Linux kernel</div><div class="eq-work">millions of objects, so a 7-character collision is not a risk, it is a certainty<small>Its guide says: use at least 12 characters, because "the kernel repository holds a lot of objects, making collisions with shorter IDs a real possibility."</small></div><div class="eq-res">12 characters</div></div>
+          <div class="eq-row"><div class="eq-what">12 hex characters</div><div class="eq-work">48 bits, √(2⁴⁸) = 2²⁴ = 16.8 million, × 1.18</div><div class="eq-res">19.8 million objects</div></div>
+          <div class="eq-gap">This repository, 4,046 objects</div>
+          <div class="eq-row"><div class="eq-what">Expected collisions among 7-character IDs</div><div class="eq-work">n²/2N = 4046² / (2 × 2²⁸) = 16,370,116 / 536,870,912</div><div class="eq-res">0.0305</div></div>
+          <div class="eq-row"><div class="eq-what">Chance of at least one (tool 3)</div><div class="eq-work">1 − e<sup>−0.0305</sup></div><div class="eq-res">3.0%</div></div>
+        </div>
+        <p class="ex-answer">Seven characters last for about <b>19,000</b> objects, twelve for about <b>20 million</b>. Modern git sidesteps the problem: since version 2.11 it picks the abbreviation length from the size of the repository, so a small project shows 7 and the kernel shows 12 or more. The 3% in this repository is the chance that a 7-character ID written down today stops being unique as commits are added.</p>
+      </section>
+
+      <!-- ── IDs ───────────────────────────────────────────────────────── -->
+      <h2>Naming: the IDs you mint</h2>
+      <p>There are two ways to hand out IDs without a central counter. Make them <strong>random and huge</strong>, so collisions are possible but absurdly unlikely: that is a UUID. Or make them <strong>structured</strong>, packing a timestamp, a machine number and a counter into the bits, so collisions are impossible by construction: that is a Snowflake ID, the scheme Twitter published in 2010 and half the industry copied.</p>
+
+      <section class="ex" id="ex6">
+        <div class="ex-head"><span class="ex-num">Example 6</span><h3 class="ex-title">A UUID's odds, and a Snowflake taken apart</h3></div>
+        <p class="ex-problem">A version-4 UUID is 128 bits with 6 fixed by the format, leaving 122 random. Find its collision budget. Then decode the 64-bit Snowflake ID <var>1212092628029698048</var>, whose layout is 1 unused bit, 41 bits of milliseconds since Twitter's epoch (1,288,834,974,657), 10 bits of machine, 12 bits of sequence.</p>
+        <div class="eq">
+          <div class="eq-gap">UUID version 4</div>
+          <div class="eq-row"><div class="eq-what">Square-root rule on 122 bits</div><div class="eq-work">2⁶¹ = 2.3 × 10¹⁸, × 1.18</div><div class="eq-res">2.7 × 10¹⁸</div></div>
+          <div class="eq-row"><div class="eq-what">Minting a billion per second</div><div class="eq-work">2.7 × 10¹⁸ / 10⁹ = 2.7 × 10⁹ seconds</div><div class="eq-res">86 years to 50%</div></div>
+          <div class="eq-gap">Snowflake 1212092628029698048</div>
+          <div class="eq-row"><div class="eq-what">Milliseconds: drop the low 22 bits</div><div class="eq-work">1212092628029698048 ÷ 2²²</div><div class="eq-res">288,985,402,114</div></div>
+          <div class="eq-row"><div class="eq-what">Add Twitter's epoch</div><div class="eq-work">+ 1,288,834,974,657 = 1,577,820,376,771 ms</div><div class="eq-res">2019-12-31 19:26:16 UTC</div></div>
+          <div class="eq-row"><div class="eq-what">Machine: bits 12 to 21</div><div class="eq-work">(id ÷ 2¹²) mod 1024</div><div class="eq-res">machine 327</div></div>
+          <div class="eq-row"><div class="eq-what">Sequence: the low 12 bits</div><div class="eq-work">id mod 4096</div><div class="eq-res">0, first ID that millisecond</div></div>
+          <div class="eq-gap">What the layout buys</div>
+          <div class="eq-row"><div class="eq-what">41 bits of milliseconds</div><div class="eq-work">2⁴¹ ms ÷ 1000 ÷ 86,400 ÷ 365.25</div><div class="eq-res">69.7 years</div></div>
+          <div class="eq-row"><div class="eq-what">Capacity</div><div class="eq-work">2¹⁰ machines × 2¹² per millisecond × 1000</div><div class="eq-res">4.2 billion IDs per second</div></div>
+        </div>
+        <p class="ex-answer">A UUID needs <b>2.7 quintillion</b> siblings before a collision is a coin flip, so "what if two UUIDs collide" has an answer: they will not. A Snowflake cannot collide at all, sorts by time for free, and tells you when and where it was made. UUID version 7, standardised in 2024, borrows the timestamp idea so you can have both.</p>
+      </section>
+
+      <!-- ── Attack ────────────────────────────────────────────────────── -->
+      <h2>Break a hash on your laptop</h2>
+      <p>The square-root rule is also the attacker's rule. Finding two inputs with the same hash is called a birthday attack, and it needs about <var>2<sup>b/2</sup></var> tries. Watch it succeed on a hash shortened to 16 bits, then compute why the same attack on a full SHA-256 outlives the universe.</p>
+
+      <section class="ex" id="ex7">
+        <div class="ex-head"><span class="ex-num">Example 7</span><h3 class="ex-title">A birthday attack on 4 hex digits of SHA-256</h3></div>
+        <p class="ex-problem">Hash the strings msg-0, msg-1, msg-2, … and keep only the first 4 hex digits. Stop when two agree. Then scale the same attack up to all 64 digits.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Possible 4-digit prefixes</div><div class="eq-work">16⁴ = 2¹⁶</div><div class="eq-res">65,536</div></div>
+          <div class="eq-row"><div class="eq-what">Expected tries for 50%</div><div class="eq-work">1.18 × √65,536 = 1.18 × 256</div><div class="eq-res">about 301</div></div>
+          <div class="eq-row"><div class="eq-what">What actually happened on this machine</div><div class="eq-work">msg-17 and msg-171 both begin 99d2<small>sha256("msg-17") = 99d26929…, sha256("msg-171") = 99d24e70…</small></div><div class="eq-res">172 tries</div></div>
+          <div class="eq-gap">The same attack on all 256 bits</div>
+          <div class="eq-row"><div class="eq-what">Tries needed</div><div class="eq-work">1.18 × 2¹²⁸</div><div class="eq-res">4 × 10³⁸</div></div>
+          <div class="eq-row"><div class="eq-what">At a trillion hashes per second</div><div class="eq-work">4 × 10³⁸ / 10¹² = 4 × 10²⁶ seconds</div><div class="eq-res">1.3 × 10¹⁹ years</div></div>
+          <div class="eq-row"><div class="eq-what">Age of the universe</div><div class="eq-work">1.4 × 10¹⁰ years</div><div class="eq-res">a billion times shorter</div></div>
+        </div>
+        <p class="ex-answer">Sixteen bits fell in <b>172 tries</b>, right where the square-root rule said. The full 256 bits would take a billion times the age of the universe. That gap is the entire difference between a checksum and a cryptographic hash. SHA-1's budget was 2⁸⁰ on paper; researchers found a shortcut to 2⁶³ and produced a real collision in 2017, which is why git is moving to SHA-256.</p>
+      </section>
+
+      <!-- ── Passwords ─────────────────────────────────────────────────── -->
+      <h2>Passwords: a hash that is slow on purpose</h2>
+      <p>A server never stores your password, only a hash of it, so a stolen database does not give the passwords away. But an attacker with the database can guess: hash "password123", compare, repeat. Fast hashes make guessing fast. Password hashes such as PBKDF2, bcrypt and Argon2 are built to be slow, and to be mixed with a random <strong>salt</strong> per user so identical passwords hash differently and precomputed tables are useless.</p>
+
+      <section class="ex" id="ex8">
+        <div class="ex-head"><span class="ex-num">Example 8</span><h3 class="ex-title">The cost of 10 million guesses</h3></div>
+        <p class="ex-problem">Measured on this laptop in Python: one plain SHA-256 takes 0.3 microseconds. One PBKDF2-HMAC-SHA256 with 600,000 rounds, the count OWASP recommends, takes 0.29 seconds. Compare an attacker's bill for 10 million guesses against one user's login.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Plain SHA-256, 10 million guesses</div><div class="eq-work">10⁷ × 0.3 μs</div><div class="eq-res">3 seconds</div></div>
+          <div class="eq-row"><div class="eq-what">PBKDF2, 10 million guesses</div><div class="eq-work">10⁷ × 0.29 s = 2.9 million seconds</div><div class="eq-res">34 days</div></div>
+          <div class="eq-row"><div class="eq-what">Per user, thanks to the salt</div><div class="eq-work">a different salt means every user's 10 million guesses must be redone</div><div class="eq-res">34 days each</div></div>
+          <div class="eq-row"><div class="eq-what">The honest user's cost</div><div class="eq-work">one hash per login</div><div class="eq-res">0.29 seconds</div></div>
+        </div>
+        <p class="ex-answer">The same hash function, made <b>a million times</b> more expensive, turns a 3-second attack into a month per user while costing the real user a blink. Whatever hardware the attacker brings, the ratio holds. Never store passwords with a fast hash, and never without a salt.</p>
+      </section>
+
+      <!-- ── Run it ────────────────────────────────────────────────────── -->
+      <h2>Run it</h2>
+      <h3>Build it: every example in forty lines</h3>
+      <p>Standard library only. The birthday attack in the middle finds its collision in well under a second.</p>
+
+      <pre class="code" data-lang="python"><code># Hashing and the birthday paradox, with numbers small enough to check on paper.
+# Companion to math-hashing.html. Python 3 standard library only.
+import hashlib, math, os, time
+
+def toy_hash(word):
+    """Sum of letter positions, A=1 ... Z=26. Deliberately weak: anagrams collide."""
+    return sum(ord(c) - 64 for c in word)
+
+buckets = [[] for _ in range(8)]
+for word in ["CAT", "DOG", "COW", "HEN", "ACT"]:
+    buckets[toy_hash(word) % 8].append(word)
+print("buckets", buckets)
+
+def java_hash(s):
+    """Java's String.hashCode: h = 31*h + c, kept to 32 bits."""
+    h = 0
+    for c in s:
+        h = (31 * h + ord(c)) &amp; 0xFFFFFFFF
+    return h
+print("java CAT", java_hash("CAT"), "ACT", java_hash("ACT"))
+
+p_none = 1.0
+for person in range(1, 24):
+    p_none *= (365 - (person - 1)) / 365
+print(f"23 people: P(shared birthday) = {1 - p_none:.4f}")
+
+def n_for_50_percent(bits):
+    return math.sqrt(2 * math.log(2) * 2 ** bits)
+for bits in (16, 28, 32, 64, 122, 256):
+    print(f"{bits:3d}-bit hash: 50% collision after {n_for_50_percent(bits):.3g} items")
+
+seen = {}
+for i in range(1_000_000):
+    s = f"msg-{i}"
+    prefix = hashlib.sha256(s.encode()).hexdigest()[:4]
+    if prefix in seen:
+        print(f"collision after {i + 1} strings: {seen[prefix]} and {s} both hash to {prefix}...")
+        break
+    seen[prefix] = s
+
+salt = os.urandom(16)
+t0 = time.perf_counter()
+hashlib.pbkdf2_hmac("sha256", b"correct horse", salt, 600_000)
+slow = time.perf_counter() - t0
+t0 = time.perf_counter()
+for i in range(100_000):
+    hashlib.sha256(b"correct horse").digest()
+fast = (time.perf_counter() - t0) / 100_000
+print(f"one guess: plain sha256 {fast * 1e6:.1f} us, pbkdf2 600k rounds {slow:.2f} s, ratio {slow / fast:,.0f}x")
+print(f"10 million guesses: {1e7 * fast:.0f} s plain, {1e7 * slow / 86400:.0f} days with pbkdf2")</code></pre>
+
+      <pre class="code" data-lang="console"><code>$ python3 hash_by_hand.py
+buckets [['CAT', 'ACT'], ['COW'], ['DOG'], ['HEN'], [], [], [], []]
+java CAT 66486 ACT 64626
+23 people: P(shared birthday) = 0.5073
+ 16-bit hash: 50% collision after 301 items
+ 28-bit hash: 50% collision after 1.93e+04 items
+ 32-bit hash: 50% collision after 7.72e+04 items
+ 64-bit hash: 50% collision after 5.06e+09 items
+122-bit hash: 50% collision after 2.71e+18 items
+256-bit hash: 50% collision after 4.01e+38 items
+collision after 172 strings: msg-17 and msg-171 both hash to 99d2...
+one guess: plain sha256 0.3 us, pbkdf2 600k rounds 0.29 s, ratio 935,670x
+10 million guesses: 3 s plain, 34 days with pbkdf2</code></pre>
+
+      <h3>Use it: the same ideas in the tools you already run</h3>
+      <p>Run these in the repository of this very site. The short ID is what Example 5 is about, and the two different numbers for <code>hash('abc')</code> are Python defending itself.</p>
+
+      <pre class="code" data-lang="bash"><code>git count-objects -v | grep count       # how many things git has named
+git rev-parse --short HEAD              # git picks the prefix length for you
+python3 -c "print(hash('abc'))"         # run it twice
+python3 -c "print(hash('abc'))"
+uuidgen</code></pre>
+      <pre class="code" data-lang="console"><code>count: 4046
+587b699
+-4804077957807492771
+1901802284316969746
+6F55B2A6-85AB-4228-845C-3FABF03DFD33</code></pre>
+
+      <p>Python randomises its string hash with a fresh secret key every time the interpreter starts. In 2011 researchers showed that a web server could be stalled by sending it a few thousand form fields crafted to land in the same bucket, turning every lookup into a walk down one enormous list. A secret per process means an attacker cannot know which keys collide. Note the third digit of the UUID's third group: it is always 4, one of the six fixed bits from Example 6.</p>
+
+      <!-- ── Toy vs production ─────────────────────────────────────────── -->
+      <h2>Toy vs production</h2>
+      <p>Every operation on this page is the real one. What changes is which hash function does which job, and how tables and IDs are engineered around collisions.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>This page</th><th>Real systems</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>the function</td><td>letters added up; Java's ×31</td><td>One function per job. SipHash for hash tables (fast, keyed, hard to flood). MurmurHash and xxHash for speed. SHA-256 when an adversary is involved. PBKDF2, bcrypt or Argon2 for passwords.</td></tr>
+            <tr><td>collisions in a table</td><td>a short list per bucket</td><td>Python's dict probes the next slot instead (open addressing); Java's HashMap chains and turns a long chain into a tree. Both grow the table when it is about two-thirds full so lookups stay one or two steps.</td></tr>
+            <tr><td>attackers</td><td>none</td><td>Hash flooding, 2011: crafted keys all in one bucket, quadratic slowdowns, stalled servers. Fixed with a per-process secret key, which is why Python's <code>hash('abc')</code> changes every run.</td></tr>
+            <tr><td>naming content</td><td>git's 7 characters</td><td>git is moving from SHA-1 to SHA-256. Docker layers are <code>sha256:…</code> digests. Browsers cache by ETag, package managers verify downloads by hash. Same bytes, same name, no central registry.</td></tr>
+            <tr><td>IDs</td><td>one UUID, one Snowflake</td><td>UUID v4 for randomness, Snowflake-style for time-sortable IDs, UUID v7 (RFC 9562, 2024) for both. Databases prefer time-ordered IDs because random ones scatter inserts across the whole index.</td></tr>
+            <tr><td>"broken"</td><td>4 hex digits in 172 tries</td><td>MD5 collides in seconds, SHA-1 in 2⁶³ work (2017). Both remain fine as checksums against accidents. Neither may be used where someone might want a collision.</td></tr>
+            <tr><td>the square-root rule</td><td>77,163 for 32 bits</td><td>Applies to everything: session tokens, request IDs, S3 key prefixes, cache keys. If you truncate a hash to save space, halve the bits and check that budget against the number of things you will ever have.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── Check yourself ────────────────────────────────────────────── -->
+      <h2>Check yourself</h2>
+      <p>Work each one before opening the answer.</p>
+
+      <details class="check">
+        <summary>How many people for a 99% chance that two share a birthday?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Keep multiplying past 23</div><div class="eq-work">P(none) after 30: 0.294, after 40: 0.109, after 50: 0.030</div><div class="eq-res">97% at 50</div></div>
+            <div class="eq-row"><div class="eq-what">After 57</div><div class="eq-work">P(none) = 0.0099</div><div class="eq-res">99.0%</div></div>
+          </div></div>
+          <p>57 people. Roughly two and a half times the people for the last 49 percentage points, because the curve flattens at the top just as it steepens in the middle.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>A protocol checks each message with a 16-bit checksum. After how many messages is it more likely than not that two share a checksum?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Square-root rule</div><div class="eq-work">1.18 × √(2¹⁶) = 1.18 × 256</div><div class="eq-res">301 messages</div></div>
+          </div></div>
+          <p>Which is fine: a checksum's job is to catch a message that was corrupted in transit, and for that only the odds of one specific corruption slipping through matter, 1 in 65,536. It would be a disaster as an identifier.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Your team writes 10-character git IDs in tickets. How many objects can the repository reach before two share a prefix at even odds?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">10 hex digits</div><div class="eq-work">40 bits, √(2⁴⁰) = 2²⁰ = 1,048,576, × 1.18</div><div class="eq-res">1.23 million objects</div></div>
+          </div></div>
+          <p>Comfortable for most projects, not for the kernel. Twelve characters buy you 16 times more.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Decode the Snowflake ID 1234567890123456789. When was it made?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Drop the low 22 bits</div><div class="eq-work">1234567890123456789 ÷ 2²²</div><div class="eq-res">294,343,922,167</div></div>
+            <div class="eq-row"><div class="eq-what">Add the epoch</div><div class="eq-work">+ 1,288,834,974,657 = 1,583,178,896,824 ms</div><div class="eq-res">2020-03-02 19:54:56 UTC</div></div>
+            <div class="eq-row"><div class="eq-what">Machine and sequence</div><div class="eq-work">(id ÷ 4096) mod 1024, and id mod 4096</div><div class="eq-res">664, 277</div></div>
+          </div></div>
+          <p>The 278th ID that machine 664 minted in that millisecond. Any larger Snowflake ID was made later; that is what sorting by ID gives you.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Two users choose the password "hunter2". Do they end up with the same hash in the database?</summary>
+        <div class="answer">
+          <p>Only if the system is broken. Each user gets a random salt, and the salt is mixed into the hash, so the stored values differ. Without salts, identical passwords would be visible as identical hashes (the same way H was always 17 in the RSA chapter), and an attacker could hash a list of common passwords once and compare it against every account at the same time.</p>
+        </div>
+      </details>
+
+      <!-- ── Sources ───────────────────────────────────────────────────── -->
+      <h2>Sources</h2>
+      <ol class="sources">
+        <li>Java SE API, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html#hashCode()" target="_blank" rel="noopener"><code>String.hashCode()</code></a>: the <var>31 × h + c</var> formula used in Example 2.</li>
+        <li>Python documentation, <a href="https://docs.python.org/3/using/cmdline.html#envvar-PYTHONHASHSEED" target="_blank" rel="noopener">PYTHONHASHSEED</a> and <a href="https://docs.python.org/3/reference/datamodel.html#object.__hash__" target="_blank" rel="noopener"><code>object.__hash__</code></a>: hash randomisation and why it exists.</li>
+        <li>J.-P. Aumasson and D. J. Bernstein, <a href="https://cr.yp.to/siphash/siphash-20120918.pdf" target="_blank" rel="noopener">"SipHash: a fast short-input PRF"</a>, 2012, and <a href="https://ocert.org/advisories/ocert-2011-003.html" target="_blank" rel="noopener">oCERT advisory 2011-003</a> on hash-flooding denial of service.</li>
+        <li>Linux kernel, <a href="https://www.kernel.org/doc/html/latest/process/submitting-patches.html" target="_blank" rel="noopener">Submitting patches</a>: "use at least the first twelve characters of the SHA-1 ID". git, <a href="https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreabbrev" target="_blank" rel="noopener"><code>core.abbrev</code></a>, and <a href="https://git-scm.com/docs/hash-function-transition" target="_blank" rel="noopener">the SHA-256 transition plan</a>.</li>
+        <li>M. Stevens et al., <a href="https://shattered.io/static/shattered.pdf" target="_blank" rel="noopener">"The first collision for full SHA-1"</a>, CRYPTO 2017.</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9562" target="_blank" rel="noopener">RFC 9562</a>, Universally Unique IDentifiers: version 4's 122 random bits and version 7's timestamp. Twitter, <a href="https://github.com/twitter-archive/snowflake/tree/snowflake-2010" target="_blank" rel="noopener">Snowflake</a>, the 2010 ID layout decoded in Example 6.</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8018" target="_blank" rel="noopener">RFC 8018</a>, PKCS #5: PBKDF2, and OWASP, <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" target="_blank" rel="noopener">Password Storage Cheat Sheet</a>, source of the 600,000-round figure.</li>
+        <li>NIST, <a href="https://csrc.nist.gov/pubs/fips/180-4/upd1/final" target="_blank" rel="noopener">FIPS 180-4, Secure Hash Standard</a>: SHA-1 and SHA-256.</li>
+      </ol>
+
+      <nav class="chapter-nav" aria-label="Chapter navigation">
+        <a href="math-zip.html">← Chapter 02 · How zip works</a>
+        <span class="muted">Chapter 04 · not yet written</span>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "url": "https://buildingbackend.vercel.app/math-hashing.html",
+    "headline": "Hashing and the birthday paradox",
+    "description": "Hash maps, git short IDs, UUIDs, Snowflake IDs and password hashing, worked out by hand with the birthday paradox and the square-root rule.",
+    "isPartOf": { "@type": "CollectionPage", "name": "Math Behind Tech", "url": "https://buildingbackend.vercel.app/math.html" },
+    "author": { "@type": "Person", "name": "@ritikshub", "url": "https://x.com/ritikshub" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        }
+      });
+    })();
+  </script>
+  <script src="data.js?v=20260813m"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>
