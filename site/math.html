@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Math Behind Tech - Building Backend</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
-  <meta name="description" content="The mathematics under the software you use every day, worked out by hand with numbers small enough to check on paper. RSA with 3 × 11, zip on ABRACADABRA, the birthday paradox behind every UUID. Try each one live.">
+  <meta name="description" content="The mathematics under the software you use every day, worked out by hand with numbers small enough to check on paper. RSA with 3 × 11, zip on ABRACADABRA, the birthday paradox behind every UUID, the queue behind every p99, the filter that says never. Try each one live.">
   <link rel="canonical" href="https://buildingbackend.vercel.app/math.html">
   <meta property="og:title" content="Math Behind Tech · Building Backend">
   <meta property="og:description" content="The mathematics under everyday software, worked out by hand with numbers small enough to check on paper.">
@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=20260813m">
-  <link rel="stylesheet" href="math.css?v=20260905b">
+  <link rel="stylesheet" href="math.css?v=20260905e">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -54,18 +54,17 @@
       <div class="grid3">
         <div class="hook">
           <div class="tile-k">HTTPS · Chapter 01</div>
-          <p>You opened this page over HTTPS. The padlock is two prime numbers multiplied together. With <var>p = 3</var> and <var>q = 11</var> you can build the key, lock a message, unlock it, and then break it, all with a pencil.</p>
+          <p>The padlock on this page is two primes multiplied together. With 3 and 11 you can build it, and break it, with a pencil.</p>
           <a class="hook-link" href="math-rsa.html">RSA and public-key cryptography →</a>
         </div>
         <div class="hook">
           <div class="tile-k">GZIP · Chapter 02</div>
-          <p id="wire">This page reached you compressed. Most pages are three to five times smaller on the wire than on your screen.</p>
-          <p>Two tricks do it: spend fewer bits on common letters, and point backwards at text you already sent. The chapter ends by reading a real gzip file bit by bit.</p>
+          <p id="wire">This page arrived compressed, three to five times smaller on the wire than on your screen.</p>
           <a class="hook-link" href="math-zip.html">How zip works →</a>
         </div>
         <div class="hook">
           <div class="tile-k">HASHING · Chapter 03</div>
-          <p>Something you ran today minted a UUID and looked up a key in a hash map. Both rest on one party trick: put 23 people in a room and the odds that two share a birthday are better than even.</p>
+          <p>Something you ran today minted a UUID and hashed a key. Both rest on one trick: 23 people in a room, and two probably share a birthday.</p>
           <a class="hook-link" href="math-hashing.html">Hashing and the birthday paradox →</a>
         </div>
       </div>
@@ -111,6 +110,31 @@
         </div>
       </section>
 
+      <section class="try" aria-labelledby="try-queue">
+        <div class="try-head">
+          <h3 class="try-title" id="try-queue">How long the queue makes you wait</h3>
+          <div class="try-ch">One server, 10 ms of work per request · <a href="math-queueing.html">Chapter 04</a></div>
+        </div>
+        <label for="queueIn">Utilisation, how busy the server is: <strong id="queueRho">80</strong>%</label>
+        <input type="range" id="queueIn" min="10" max="99" value="80">
+        <div class="try-rows" id="queueOut"></div>
+        <div class="bars">
+          <span>Working</span><div class="bar"><i id="barWork"></i></div>
+          <span>Waiting</span><div class="bar"><i id="barWait"></i></div>
+        </div>
+      </section>
+
+      <section class="try" aria-labelledby="try-bloom">
+        <div class="try-head">
+          <h3 class="try-title" id="try-bloom">Ask a 16-bit Bloom filter</h3>
+          <div class="try-ch">It holds CAT, DOG, COW and HEN · <a href="math-bloom.html">Chapter 05</a></div>
+        </div>
+        <label for="bloomIn">A word, letters only</label>
+        <input type="text" id="bloomIn" value="ACT" maxlength="12" autocomplete="off" spellcheck="false">
+        <div class="try-rows" id="bloomOut"></div>
+        <div class="try-bits" id="bloomBits" aria-label="The sixteen bits of the filter"></div>
+      </section>
+
       <!-- ── Chapters ──────────────────────────────────────────────────── -->
       <h2>Chapters</h2>
       <ol class="chapters">
@@ -118,7 +142,7 @@
           <div class="chapter-num">01</div>
           <div>
             <h3 class="chapter-title"><a href="math-rsa.html">RSA and public-key cryptography</a></h3>
-            <p class="chapter-hook">Two small primes, one multiplication, and the padlock the whole internet uses. Build the keys, encrypt HI, decrypt it, sign a message, break the key, then match every number to real openssl output.</p>
+            <p class="chapter-hook">Build a key pair from 3 and 11, lock HI, unlock it, then break it.</p>
             <div class="chapter-tags">HTTPS · SSH keys · JWT · Signed commits</div>
           </div>
           <div class="chapter-teaser">(33, 3)<small>the public key</small></div>
@@ -127,7 +151,7 @@
           <div class="chapter-num">02</div>
           <div>
             <h3 class="chapter-title"><a href="math-zip.html">How zip works</a></h3>
-            <p class="chapter-hook">Count the letters, build a tree, point backwards at what you already said. Squeeze ABRACADABRA from 88 bits to 23, turn a JSON array into copy tokens, then open a real gzip file and read it bit by bit.</p>
+            <p class="chapter-hook">ABRACADABRA in 23 bits, then a real gzip file read bit by bit.</p>
             <div class="chapter-tags">HTTP gzip · Docker layers · PNG · docx</div>
           </div>
           <div class="chapter-teaser">88 → 23<small>bits</small></div>
@@ -136,10 +160,28 @@
           <div class="chapter-num">03</div>
           <div>
             <h3 class="chapter-title"><a href="math-hashing.html">Hashing and the birthday paradox</a></h3>
-            <p class="chapter-hook">A hash map with 8 buckets, the 23-people trick, the square-root rule for collisions, why git's 7 characters ran out, a Snowflake ID taken apart, and a birthday attack run on your own laptop.</p>
+            <p class="chapter-hook">Why 23 people share a birthday and git's 7 characters ran out.</p>
             <div class="chapter-tags">Hash maps · git · UUIDs · Passwords</div>
           </div>
           <div class="chapter-teaser">23 → 50.7%<small>people, odds</small></div>
+        </li>
+        <li class="chapter-row">
+          <div class="chapter-num">04</div>
+          <div>
+            <h3 class="chapter-title"><a href="math-queueing.html">Queueing theory: why 80% busy is the cliff</a></h3>
+            <p class="chapter-hook">Why 80% busy means a fourfold wait, and p99 is 6.6× the median.</p>
+            <div class="chapter-tags">Connection pools · Thread pools · Autoscaling · p99</div>
+          </div>
+          <div class="chapter-teaser">80% → 4×<small>busy, wait</small></div>
+        </li>
+        <li class="chapter-row">
+          <div class="chapter-num">05</div>
+          <div>
+            <h3 class="chapter-title"><a href="math-bloom.html">Bloom filters and HyperLogLog</a></h3>
+            <p class="chapter-hook">Ten bits per item to say never; 12 KB to count a billion.</p>
+            <div class="chapter-tags">Databases · git · Redis · Caches</div>
+          </div>
+          <div class="chapter-teaser">12 KB<small>counts a billion</small></div>
         </li>
       </ol>
 
@@ -169,7 +211,9 @@
     "hasPart": [
       { "@type": "TechArticle", "name": "RSA and public-key cryptography", "url": "https://buildingbackend.vercel.app/math-rsa.html" },
       { "@type": "TechArticle", "name": "How zip works", "url": "https://buildingbackend.vercel.app/math-zip.html" },
-      { "@type": "TechArticle", "name": "Hashing and the birthday paradox", "url": "https://buildingbackend.vercel.app/math-hashing.html" }
+      { "@type": "TechArticle", "name": "Hashing and the birthday paradox", "url": "https://buildingbackend.vercel.app/math-hashing.html" },
+      { "@type": "TechArticle", "name": "Queueing theory: why 80% busy is the cliff", "url": "https://buildingbackend.vercel.app/math-queueing.html" },
+      { "@type": "TechArticle", "name": "Bloom filters and HyperLogLog: a billion things in 12 KB", "url": "https://buildingbackend.vercel.app/math-bloom.html" }
     ]
   }
   </script>
@@ -200,7 +244,7 @@
   <script src="progress.js?v=20260813d"></script>
   <script src="header.js?v=20260813d" defer></script>
   <script src="cmdpalette.js?v=20260813d" defer></script>
-  <script src="math.js?v=20260905a" defer></script>
+  <script src="math.js?v=20260905d" defer></script>
   <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 </body>
 </html>

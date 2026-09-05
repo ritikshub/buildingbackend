@@ -17,8 +17,8 @@
     if (!nav || !nav.encodedBodySize || !nav.decodedBodySize) return;
     if (nav.encodedBodySize >= nav.decodedBodySize) return; // served uncompressed (local dev)
     var pct = Math.round(100 - 100 * nav.encodedBodySize / nav.decodedBodySize);
-    el.innerHTML = 'This page was <span class="live">' + fmt(nav.encodedBodySize) + ' bytes</span> on the wire and <span class="live">' +
-      fmt(nav.decodedBodySize) + ' bytes</span> once unpacked, so it travelled <span class="live">' + pct + '% smaller</span>.';
+    el.innerHTML = 'This page arrived <span class="live">' + pct + '% smaller</span>: <span class="live">' + fmt(nav.encodedBodySize) +
+      ' bytes</span> on the wire for ' + fmt(nav.decodedBodySize) + ' on your screen.';
   })();
 
   /* ── Chapter 01: RSA with public key (33, 3) and private key (33, 7) ─── */
@@ -103,6 +103,54 @@
         row('Chance that no pair shares a birthday', (100 * pNone).toFixed(1) + '%') +
         row('Chance that at least one pair does', '<b>' + (100 * p).toFixed(1) + '%</b>');
       bar.style.width = (100 * p) + '%';
+    }
+    input.addEventListener('input', render);
+    render();
+  })();
+
+  /* ── Chapter 04: one server, how long the queue makes you wait ─────── */
+  (function queue() {
+    var input = $('queueIn'), out = $('queueOut'), label = $('queueRho'), barW = $('barWork'), barQ = $('barWait');
+    if (!input || !out) return;
+    var S = 10;                                                     // ms of work per request
+    function ms(v) { return v >= 100 ? fmt(Math.round(v)) : v.toFixed(1); }
+    function render() {
+      var pct = parseInt(input.value, 10) || 10, rho = pct / 100;
+      var mult = rho / (1 - rho);                                   // mean wait in service times, ρ/(1−ρ)
+      var wait = S * mult, resp = S / (1 - rho);                    // response = wait + work = S/(1−ρ)
+      label.textContent = pct;
+      out.innerHTML =
+        row('Headroom, 1 − ρ', (1 - rho).toFixed(2)) +
+        row('Mean wait as a multiple of the work itself, ρ/(1 − ρ)', '<b>' + mult.toFixed(1) + '×</b>') +
+        row('With 10 ms of work per request: wait, then response', '<b>' + ms(wait) + ' ms</b>, ' + ms(resp) + ' ms');
+      barW.style.width = (100 * (1 - rho)) + '%';                   // share of the response spent working
+      barQ.style.width = (100 * rho) + '%';                         // and waiting: it equals ρ
+    }
+    input.addEventListener('input', render);
+    render();
+  })();
+
+  /* ── Chapter 05: a 16-bit Bloom filter holding CAT, DOG, COW and HEN ── */
+  (function bloom() {
+    var input = $('bloomIn'), out = $('bloomOut'), strip = $('bloomBits');
+    if (!input || !out) return;
+    var members = ['CAT', 'DOG', 'COW', 'HEN'], bits = [];
+    for (var i = 0; i < 16; i++) bits.push(0);
+    function sum(w) { var s = 0; for (var i = 0; i < w.length; i++) s += w.charCodeAt(i) - 64; return s; }   // A = 1 … Z = 26
+    function h1(w) { return sum(w) % 16; }
+    function h2(w) { return (3 * sum(w) + w.length) % 16; }
+    members.forEach(function (w) { bits[h1(w)] = bits[h2(w)] = 1; });        // 0100 1000 1111 0010
+    function render() {
+      var word = (input.value || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 12);
+      if (!word) { out.innerHTML = row('Type a word', '<span class="try-muted">letters A to Z only</span>'); strip.innerHTML = bits.join(''); return; }
+      var a = h1(word), b = h2(word), hit = bits[a] && bits[b];
+      var verdict = !hit ? 'definitely not in the filter'
+        : members.indexOf(word) >= 0 ? 'maybe, and it is' : 'maybe, but it is not: a false positive';
+      strip.innerHTML = bits.map(function (v, i) { return (i === a || i === b) ? '<b>' + v + '</b>' : v; }).join('');
+      out.innerHTML =
+        row('Letters added up, A = 1 … Z = 26', sum(word)) +
+        row('Bit one: sum mod 16. Bit two: (3 × sum + length) mod 16', a + ', ' + b) +
+        row('Both bits set?', '<b>' + verdict + '</b>');
     }
     input.addEventListener('input', render);
     render();
