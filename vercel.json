@@ -4,33 +4,200 @@
   "framework": null,
   "installCommand": "echo skip",
   "rewrites": [
-    { "source": "/path", "destination": "/prereqs.html" },
-    { "source": "/roadmap", "destination": "/prereqs.html" },
-    { "source": "/about", "destination": "/about.html" }
+    {
+      "source": "/path",
+      "destination": "/prereqs.html"
+    },
+    {
+      "source": "/roadmap",
+      "destination": "/prereqs.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/01-networking-and-protocols/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/02-networking-and-protocols/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/02-api-design/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/03-api-design/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/03-relational-databases/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/04-relational-databases/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/04-nosql-and-data-modeling/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/05-nosql-and-data-modeling/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/05-caching/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/06-caching/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/06-messaging-and-pub-sub/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/07-messaging-and-pub-sub/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/07-auth-and-security/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/08-auth-and-security/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/08-concurrency-and-performance/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/09-concurrency-and-performance/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/09-logging-monitoring-and-observability/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/10-logging-monitoring-and-observability/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/10-infrastructure-and-deployment/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/11-infrastructure-and-deployment/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/11-scalability-and-reliability/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/12-scalability-and-reliability/:rest",
+      "permanent": true
+    },
+    {
+      "source": "/lesson.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "path",
+          "value": "phases/12-testing-and-quality/(?<rest>.*)"
+        }
+      ],
+      "destination": "/lesson.html?path=phases/13-testing-and-quality/:rest",
+      "permanent": true
+    }
   ],
   "headers": [
     {
       "source": "/(.*)\\.(css|js|png|jpg|jpeg|svg|webp|woff2|woff|ttf|ico)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000"
+        }
       ]
     },
     {
       "source": "/(.*)\\.html",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800"
+        }
       ]
     },
     {
       "source": "/",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800"
+        }
       ]
     },
     {
       "source": "/(path|roadmap|about)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800"
+        }
       ]
     }
   ]

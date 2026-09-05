@@ -15,7 +15,7 @@ asyncpg>=0.31
 strawberry-graphql[fastapi]>=0.321
 pytest>=9.0
 
-# Phase 9 (Logging, Monitoring and Observability). Every `code/` file in the
+# Phase 10 (Logging, Monitoring and Observability). Every `code/` file in the
 # phase is stdlib-only and runs without these — they exist so the "Use It" half
 # of each lesson (the production tool) is runnable in the sandbox too.
 prometheus-client>=0.25
@@ -24,7 +24,7 @@ opentelemetry-sdk>=1.44
 opentelemetry-exporter-otlp>=1.44
 opentelemetry-instrumentation-fastapi>=0.65b0
 
-# Phase 7 (Auth and Security). Every `code/` file in the phase is stdlib-only
+# Phase 8 (Auth and Security). Every `code/` file in the phase is stdlib-only
 # and runs without these — they exist so the "Use It" half of each lesson (the
 # production tool) is runnable in the sandbox too.
 cryptography>=49.0

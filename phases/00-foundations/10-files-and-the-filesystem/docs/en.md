@@ -201,7 +201,7 @@ The `.txt` / `.png` / `.json` on the end of a name is a **file extension**, a
 *convention* rather than a rule. It hints to the OS and to programs how to open the file. But
 the bytes decide what a file really is: rename `photo.png` to `photo.txt` and it's
 still a PNG image; you've only changed the hint. Trusting extensions blindly is, in
-fact, a security hole we revisit in Phase 7.
+fact, a security hole we revisit in Phase 8.
 
 ### Metadata: the file's label
 
@@ -233,7 +233,7 @@ Two things suddenly make sense:
   "hard link"). The bytes live in the blocks; names are just labels pointing at the inode.
 
 This is the shape everything durable builds on: bytes live in blocks, and an index points
-at them, foreshadowing the B-tree and write-ahead-log lessons in Phase 3.
+at them, foreshadowing the B-tree and write-ahead-log lessons in Phase 4.
 
 ### Reading and writing
 
@@ -251,9 +251,9 @@ Most languages wrap this so you can't forget to close (Python's `with` block, be
 "Where does the data live?" is *the* backend question, and it always ends at files:
 
 - **Config** and **secrets** are files the server reads at startup.
-- **Logs** are files the server appends to (Phase 9).
+- **Logs** are files the server appends to (Phase 10).
 - **Uploads** are user files you store and serve.
-- A **database** (Phase 3) is, underneath all its cleverness, a set of carefully managed
+- A **database** (Phase 4) is, underneath all its cleverness, a set of carefully managed
   files on disk, which is exactly why the write-ahead log and B-tree lessons later make
   sense.
 

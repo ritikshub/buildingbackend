@@ -179,7 +179,7 @@ Two details you'll meet again later:
   top bit as a sign, so a signed byte spans −128 to 127 instead of 0 to 255.
 - **Byte order (endianness).** When a number spans several bytes, machines must agree
   which byte comes first. Network protocols standardize on "big-endian" (most significant
-  byte first); you'll see it called *network byte order* in Phase 1.
+  byte first); you'll see it called *network byte order* in Phase 2.
 
 You don't need to master these today. Just hold onto the rule that **width (how
 many bytes) sets the range**, and it's all still only bits.

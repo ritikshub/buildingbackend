@@ -22,7 +22,47 @@ their shape.
 | 10 | Files & the Filesystem | ✅ | ~40 min |
 | 11 | What a Network Is | ✅ | ~45 min |
 
-## Phase 1: Networking and Protocols — ✅ (~16 hours)
+## Phase 1: Linux and the Command Line — 🚧 (~23 hours)
+
+The phase the curriculum was missing: the machine a backend actually runs on.
+Foundations ends with "a process" and "a file" as ideas; this phase makes them
+things you can drive from a prompt. The spine is the same as everywhere else,
+turned on the operating system itself: **build the command from the system
+calls in stdlib Python, then use the real one.** A mini shell, a `ls` from
+`os.stat`, a `ps` from `/proc`, a pipeline from `os.pipe` and `dup2`, a
+supervisor that restarts a crashed child, a `curl` from `http.client`, a
+plaintext remote shell that shows exactly what SSH protects.
+
+Five groups: the machine's manager (kernel, user space, syscalls) → the shell
+and the filesystem (navigation, files, permissions, pipes, the text toolkit,
+scripting) → processes, services and resources (signals, systemd, reading
+CPU/memory/disk, packages) → the network from the shell (ip/ss/dig/tcpdump,
+two lessons on curl, SSH) → a capstone that takes a blank box to a running,
+supervised, firewalled backend. Threads, epoll, namespaces and the protocols
+themselves stay in the phases that own them; this phase links forward.
+
+| # | Lesson | Status | Est. |
+|---|--------|--------|------|
+| 01 | What an Operating System Does: Kernel, User Space & the System Call | ⬚ | ~60 min |
+| 02 | A Map of the Linux Kernel: Scheduler, Memory, VFS, Network Stack & Drivers | ⬚ | ~60 min |
+| 03 | The Shell: Terminal, Prompt, PATH & How a Command Actually Runs | ⬚ | ~75 min |
+| 04 | The Filesystem Hierarchy: Where Everything Lives | ⬚ | ~70 min |
+| 05 | Working with Files: Create, Read, Copy, Move, Delete, Archive | ⬚ | ~70 min |
+| 06 | Users, Groups, Permissions & sudo | ⬚ | ~70 min |
+| 07 | Streams, Pipes & Redirection: Everything Is a File Descriptor | ⬚ | ~80 min |
+| 08 | The Text Toolkit: grep, sed, awk, sort, uniq, cut, tr & jq | ⬚ | ~80 min |
+| 09 | Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail | ⬚ | ~75 min |
+| 10 | Processes & Signals: ps, top, kill, jobs & /proc | ⬚ | ~80 min |
+| 11 | Boot, init & systemd: Keeping Your Backend Running | ⬚ | ~85 min |
+| 12 | Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer | ⬚ | ~75 min |
+| 13 | Installing Software: Packages, Repositories & Where Files Land | ⬚ | ~50 min |
+| 14 | Networking from the Shell: ip, ss, ping, dig, nc & tcpdump | ⬚ | ~80 min |
+| 15 | curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies | ⬚ | ~80 min |
+| 16 | curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries | ⬚ | ~75 min |
+| 17 | SSH: Keys, Agents, Tunnels, scp & rsync | ⬚ | ~80 min |
+| 18 | Capstone: From a Blank Linux Box to a Running Backend | ⬚ | ~120 min |
+
+## Phase 2: Networking and Protocols — ✅ (~16 hours)
 
 Rebuilt bottom-up: climb the stack from the physical layer to the application
 layer, then the modern protocols that ride on top. Every lesson is in Python.
@@ -44,7 +84,7 @@ layer, then the modern protocols that ride on top. Every lesson is in Python.
 | 13 | gRPC & Protocol Buffers | ✅ | ~90 min |
 | 14 | Keep-Alive, Connection Pooling & Timeouts | ✅ | ~60 min |
 
-## Phase 2: API Design — ✅ (~13 hours)
+## Phase 3: API Design — ✅ (~13 hours)
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -59,7 +99,7 @@ layer, then the modern protocols that ride on top. Every lesson is in Python.
 | 09 | Rate Limiting & Quotas | ✅ | ~60 min |
 | 10 | API Gateways & the BFF Pattern | ✅ | ~45 min |
 
-## Phase 3: Relational Databases — ✅ (~18 hours)
+## Phase 4: Relational Databases — ✅ (~18 hours)
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -80,7 +120,7 @@ layer, then the modern protocols that ride on top. Every lesson is in Python.
 | 15 | Migrations & Schema Evolution | ✅ | ~60 min |
 | 16 | Capstone: A Mini Relational Engine on a B-Tree | ✅ | ~120 min |
 
-## Phase 4: NoSQL and Data Modeling — ✅ (~9 hours)
+## Phase 5: NoSQL and Data Modeling — ✅ (~9 hours)
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -93,7 +133,7 @@ layer, then the modern protocols that ride on top. Every lesson is in Python.
 | 07 | Data Modeling by Access Pattern | ✅ | ~75 min |
 | 08 | Polyglot Persistence | ✅ | ~50 min |
 
-## Phase 5: Caching — ✅ (~9 hours)
+## Phase 6: Caching — ✅ (~9 hours)
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -106,7 +146,7 @@ layer, then the modern protocols that ride on top. Every lesson is in Python.
 | 07 | CDNs & Edge Caching | ✅ | ~45 min |
 | 08 | HTTP Caching & ETags | ✅ | ~60 min |
 
-## Phase 6: Messaging and Pub/Sub — ✅ (~16 hours)
+## Phase 7: Messaging and Pub/Sub — ✅ (~16 hours)
 
 Rebuilt bottom-up as a **tool-agnostic** arc. The phase teaches the *ideas* —
 the message, the queue, the topic, the log, the delivery guarantee, the
@@ -137,7 +177,7 @@ runs the whole pipeline end to end.
 | 12 | Schema Evolution & Event Contracts | ✅ | ~70 min |
 | 13 | Capstone: An Event-Driven Order Pipeline, End to End | ✅ | ~90 min |
 
-## Phase 7: Auth and Security — ✅ (~15 hours)
+## Phase 8: Auth and Security — ✅ (~15 hours)
 
 Rebuilt bottom-up as a defense-in-depth arc: the security mindset and threat
 model first, then the cryptographic primitives every mechanism is made of, then
@@ -161,7 +201,7 @@ prevention and secrets. Every Build lesson is stdlib-first Python.
 | 12 | Abuse Prevention: Bots, Credential Stuffing & Account Takeover | ✅ | ~65 min |
 | 13 | Secrets Management & Rotation | ✅ | ~65 min |
 
-## Phase 8: Concurrency and Performance — ✅ (~20 hours)
+## Phase 9: Concurrency and Performance — ✅ (~20 hours)
 
 Rebuilt bottom-up from 8 planned chapters into a 15-lesson arc, in Python. The
 spine: why waiting dominates (the queueing math) → what the machine actually
@@ -196,7 +236,7 @@ Python and every claim in the prose is a number the lesson's code prints.
 | 14 | Benchmarking & Load Testing: Numbers You Can Trust | ✅ | ~85 min |
 | 15 | Capstone: Make a Slow Service Fast | ✅ | ~100 min |
 
-## Phase 9: Logging, Monitoring and Observability — ✅ (~14 hours)
+## Phase 10: Logging, Monitoring and Observability — ✅ (~14 hours)
 
 Rebuilt as a bottom-up arc: what went dark and why, then each pillar built from
 scratch in Python (the event, the correlation, the pipeline and its bill; the
@@ -220,7 +260,7 @@ telemetry alone.
 | 11 | Dashboards: RED, USE & Grafana | ✅ | ~65 min |
 | 12 | Capstone: Debugging a Real Incident | ✅ | ~120 min |
 
-## Phase 10: Infrastructure and Deployment — ✅ (~20 hours)
+## Phase 11: Infrastructure and Deployment — ✅ (~20 hours)
 
 Rebuilt bottom-up from 8 planned chapters into a 15-lesson arc, in Python. This
 phase answers one question end to end: **your code works on your laptop — what
@@ -237,7 +277,7 @@ dropping traffic → how the database and the API contract change underneath a
 running fleet → how you undo any of it → a capstone that ships one service
 through every stage.
 
-**Tool-agnostic, like Phase 6.** The lessons teach the *ideas* — the image, the
+**Tool-agnostic, like Phase 7.** The lessons teach the *ideas* — the image, the
 control loop, the desired state, the rollout, the expand/contract migration —
 and treat Docker, Kubernetes, Terraform, GitHub Actions and Argo CD as
 **examples** in `Use It`, mapped back to the primitive you just built by hand.
@@ -266,11 +306,11 @@ in `Use It` where they belong.
 | 14 | Rollback, Backups & Disaster Recovery | ✅ | ~75 min |
 | 15 | Capstone: Ship a Service End to End | ✅ | ~110 min |
 
-## Phase 11: Scalability and Reliability — ✅ (~18.5 hours)
+## Phase 12: Scalability and Reliability — ✅ (~18.5 hours)
 
 Rebuilt from the planned 8 chapters into a 14-lesson arc. Three of the original
 chapters — circuit breakers & bulkheads, retries/timeouts/jitter, graceful
-degradation — are already taught in depth by Phase 8's backpressure lesson, so
+degradation — are already taught in depth by Phase 9's backpressure lesson, so
 this phase links to that work and takes the **fleet** view instead: what changes
 when there are 300 instances rather than one. It also carries the practical half
 of replication, consistency and partitioning.
@@ -302,7 +342,7 @@ of it on purpose and ablates each defence to see what it was actually worth.
 | 13 | Autoscaling: Control Loops That Don't Oscillate | ✅ | ~75 min |
 | 14 | Capstone: Survive the Region Loss | ✅ | ~120 min |
 
-## Phase 12: Testing and Quality — ✅ (~19.2 hours)
+## Phase 13: Testing and Quality — ✅ (~19.2 hours)
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
@@ -322,7 +362,7 @@ of it on purpose and ablates each defence to see what it was actually worth.
 | 14 | Chaos Engineering & Testing in Production | ✅ | ~80 min |
 | 15 | Capstone: A Suite That Catches Real Bugs | ✅ | ~120 min |
 
-## Phase 13: Capstone Projects — ⬚ (~40 hours)
+## Phase 14: Capstone Projects — ⬚ (~40 hours)
 
 | # | Project | Status | Est. |
 |---|--------|--------|------|

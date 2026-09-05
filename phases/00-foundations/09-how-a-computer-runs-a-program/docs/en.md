@@ -303,7 +303,7 @@ A **process** is one running program with its own memory (above). A process can 
 its work into multiple **threads** that run inside it and **share its memory**. Threads are
 how one program does several things at once, e.g. a server handling many users. Sharing
 memory is powerful and dangerous (two threads touching the same data is a whole class of
-bugs), which is why **Phase 8** is devoted to concurrency. For now: **process = a running
+bugs), which is why **Phase 9** is devoted to concurrency. For now: **process = a running
 program; thread = a worker inside it.**
 
 ### Why this matters for backend
@@ -353,7 +353,7 @@ print("The CPU stepped through a loop and computed:", total)  # 15
 - The **OS** loads programs, **shares the CPU** (concurrency), **isolates** memory, and
   mediates hardware through **system calls**.
 - A **process** is a running program; **threads** are workers inside it that share its
-  memory (the root of concurrency, Phase 8).
+  memory (the root of concurrency, Phase 9).
 - A backend is a long-running process bounded by **CPU and RAM**; scaling is about those
   plus processes/threads across cores.
 

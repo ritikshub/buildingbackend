@@ -8,7 +8,7 @@ The repo is a **curriculum, not a SaaS app**. The lessons are the product. Every
 
 ## Philosophy
 
-164 lessons across 13 phases, all written. Every backend primitive built by hand before a single framework gets imported — the TCP server, the router, the B-tree, the write-ahead log, the message queue, the cache, the container, the orchestrator — in **Python, standard library only**. Then you run the same thing through the production tool (Postgres, Redis, Kafka, a web framework) so it stops being a black box. The **"Build It / Use It"** split is the spine. Each lesson ships a reusable artifact — a runbook, checklist, or prompt — you can keep.
+164 lessons across 14 phases — thirteen written, Phase 1 (Linux and the Command Line) in progress. Every backend primitive built by hand before a single framework gets imported — the TCP server, the router, the B-tree, the write-ahead log, the message queue, the cache, the container, the orchestrator — in **Python, standard library only**. Then you run the same thing through the production tool (Postgres, Redis, Kafka, a web framework) so it stops being a black box. The **"Build It / Use It"** split is the spine. Each lesson ships a reusable artifact — a runbook, checklist, or prompt — you can keep.
 
 ---
 
@@ -60,7 +60,7 @@ Dockerfile, docker-compose.yml, requirements.txt, Makefile   # the experiment sa
 ## Languages & dependencies
 
 Curriculum language: **Python, standard library only** — no third-party imports in `code/`.
-Go, TypeScript and Rust appear only in the Phase 13 capstone plan, which is not written yet. A lesson's `**Languages:**` field must match the files present in `code/`.
+Go, TypeScript and Rust appear only in the Phase 14 capstone plan, which is not written yet. A lesson's `**Languages:**` field must match the files present in `code/`.
 
 | Language   | Build It (from scratch)                     | Use It (the tool the lesson teaches)                    |
 |------------|---------------------------------------------|--------------------------------------------------------|

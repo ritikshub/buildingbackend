@@ -119,7 +119,7 @@ Why bother chopping it up?
 
 Each packet carries not just a slice of your data but also **addressing information**,
 where it's from and where it's going, so the network can steer it. (How that addressing
-works, via IP addresses, comes in Phase 1.)
+works, via IP addresses, comes in Phase 2.)
 
 ### Switches and routers move the packets
 
@@ -195,6 +195,6 @@ it's the next lesson.
   and both matter.
 - It all works only because machines follow shared **protocols**, organized into **layers**.
 
-**That completes the Foundations.** Next comes **Phase 1: Networking & Protocols**, where the
+**That completes the Foundations.** Next comes **Phase 2: Networking & Protocols**, where the
 network gets the full treatment: the layered model and every layer with working code, the
 protocols that ride on top, and how real servers actually talk to each other.
