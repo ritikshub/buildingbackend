@@ -1,24 +1,26 @@
 /* ── Math Behind Tech ─────────────────────────────────────────────────────
  * Styles shared by the hub (math.html) and every chapter (math-*.html).
  *
- * A chapter has two visual registers, and the whole design is the contrast
- * between them:
+ * A chapter has two registers, separated by structure rather than colour:
  *   - THEORY is plain serif prose on the paper, set exactly like About.
- *   - WORKED EXAMPLES are cream sheets (.ex) lifted off the paper with a
- *     hard shadow and an ember spine. Inside, the arithmetic is a list of
- *     rows: what we do / the working / the result, in larger type than the
- *     prose, with the result in bold ember. A reader who only reads the
- *     sheets should still be able to follow the chapter.
+ *   - WORKED EXAMPLES (.ex) are boxed the way a textbook boxes an example:
+ *     a hairline frame on the same paper, the example number hanging in the
+ *     margin, and the arithmetic as aligned rows of what we do / the
+ *     working / the result, with the result in bold ember. Nothing is
+ *     filled, lifted or striped. A reader who only reads the boxes should
+ *     still be able to follow the chapter.
  * Cache-bust: bump ?v= on every page that loads this file when it changes.
  */
 
 :root {
-  --sheet: #f6f2e8;
-  --sheet-rule: rgba(30, 24, 23, 0.14);
+  --sheet: #f6f2e8;                          /* fill for boxes inside SVG figures */
+  --sheet-rule: rgba(30, 24, 23, 0.14);      /* hairline between rows of working */
+  --frame: rgba(30, 24, 23, 0.5);            /* the box around an example */
 }
 [data-theme="dark"] {
   --sheet: #2a241e;
   --sheet-rule: rgba(236, 231, 218, 0.16);
+  --frame: rgba(236, 231, 218, 0.42);
 }
 
 .math-page {
@@ -67,6 +69,12 @@
   color: var(--ink);
   margin: 26px 0 8px;
 }
+
+/* Titles inside boxes and rows carry no heading margin. Stated with the
+   page scope so they beat the generic .math-page h3 rule above. */
+.math-page .ex-title,
+.math-page .try-title { margin: 0; }
+.math-page .chapter-title { margin: 0 0 6px; }
 
 .math-page p,
 .math-page li {
@@ -120,7 +128,7 @@
   flex-shrink: 0;
 }
 .legend .sw-theory { background: var(--bg); border-color: var(--rule-soft); }
-.legend .sw-ex { background: var(--sheet); border-left: 3px solid var(--ember); box-shadow: 2px 2px 0 var(--ink); }
+.legend .sw-ex { background: transparent; border-color: var(--frame); }
 
 /* ── Tiles: a 2-up grid of small labelled cards ─────────────────────────
    Used for "where you meet it" on a chapter and "how a chapter is built" on
@@ -151,35 +159,39 @@
   margin: 0;
 }
 
-/* ── Worked example sheet ──────────────────────────────────────────────── */
+/* ── Worked example: a boxed example, as a textbook sets one ────────────── */
 .ex {
-  background: var(--sheet);
-  border: 1px solid var(--ink);
-  border-left: 5px solid var(--ember);
-  box-shadow: var(--shadow-hard);
-  margin: 26px 0 32px;
+  position: relative;
+  border: 1px solid var(--frame);
+  margin: 28px 0 36px;
 }
 .ex-head {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px 14px;
-  padding: 14px 22px 12px;
+  gap: 6px 14px;
+  padding: 18px 22px 12px;
   border-bottom: 1px solid var(--sheet-rule);
 }
+/* The example number. Run in before the title by default; on a wide screen
+   it hangs in the margin outside the frame, where a textbook would put it. */
 .ex-num {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--bg);
-  background: var(--ember);
-  padding: 3px 8px;
-  position: relative;
-  top: -2px;
+  color: var(--ember);
+  white-space: nowrap;
 }
-[data-theme="dark"] .ex-num { color: var(--bg); }
+@media (min-width: 1000px) {
+  .ex-num {
+    position: absolute;
+    right: calc(100% + 20px);
+    top: 23px;             /* level with the title's cap height */
+    text-align: right;
+  }
+}
 .ex-title {
   font-family: var(--font-display);
   font-weight: 500;
@@ -209,7 +221,7 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: var(--ink-soft);
   margin-right: 12px;
 }
 .ex-problem::before { content: 'Problem'; }
@@ -232,7 +244,7 @@
   column-gap: 20px;
   align-items: baseline;
   padding: 10px 0;
-  border-bottom: 1px dashed var(--sheet-rule);
+  border-bottom: 1px solid var(--sheet-rule);
 }
 .eq-row:last-child { border-bottom: none; }
 .eq-what {
@@ -257,10 +269,11 @@
 }
 .eq-res {
   font-family: var(--font-mono);
-  font-size: 1.15rem;
+  font-size: 1.08rem;
   font-weight: 700;
   color: var(--ember);
   text-align: right;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
   font-variant-ligatures: none;
 }
@@ -278,15 +291,16 @@
   font-size: 0.68rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ember);
+  color: var(--ink-soft);
   padding: 14px 0 4px;
   border-bottom: none;
 }
 .eq-gap + .eq-row { border-top: 1px solid var(--sheet-rule); }
 
-/* Compact sheet for the tools section and exercise answers: rows only. */
-.ex-mini { margin: 12px 0 8px; }
-.ex-mini .eq { padding: 2px 18px; }
+/* Compact form for the tools section and exercise answers: rows only, no
+   frame, so a box never sits inside a box. */
+.ex-mini { border: none; margin: 10px 0 6px; }
+.ex-mini .eq { padding: 0; }
 .ex-mini .eq-row { padding: 8px 0; }
 .ex-mini .eq-work { font-size: 0.98rem; }
 .ex-mini .eq-res { font-size: 1.05rem; }
@@ -308,6 +322,9 @@
   line-height: 1.6;
   overflow-x: auto;
   border: none;
+  /* The inline-code rule above says nowrap so flags never break; a block
+     must keep its newlines or the whole listing collapses onto one line. */
+  white-space: pre;
   /* No ligatures: teaching code must show the literal characters. */
   font-variant-ligatures: none;
 }
@@ -329,8 +346,8 @@
 
 /* ── Tools: the maths primitives a chapter needs ────────────────────────── */
 .tool {
-  border-left: 2px solid var(--rule-soft);
-  padding: 2px 0 2px 20px;
+  border-top: 1px solid var(--sheet-rule);
+  padding: 16px 0 2px;
   margin: 22px 0;
 }
 .tool h3 { margin: 0 0 6px; font-size: 1.2rem; }
@@ -366,7 +383,6 @@
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 500;
-  box-shadow: 2px 2px 0 var(--ink);
 }
 .step h3 { margin: 0 0 6px; padding-top: 6px; font-size: 1.2rem; }
 .step p { margin-bottom: 8px; font-size: 1rem; }
@@ -380,10 +396,8 @@
   margin: 20px 0 24px;
 }
 .key {
-  border: 1px solid var(--ink);
-  background: var(--sheet);
+  border: 1px solid var(--frame);
   padding: 14px 18px 12px;
-  box-shadow: var(--shadow-hard);
 }
 .key-k {
   font-family: var(--font-mono);
@@ -404,10 +418,10 @@
 
 /* ── Callout ────────────────────────────────────────────────────────────── */
 .note {
-  border-left: 2px solid var(--ember);
-  background: var(--ember-tint);
-  padding: 14px 20px;
-  margin: 20px 0;
+  border-top: 1px solid var(--frame);
+  border-bottom: 1px solid var(--frame);
+  padding: 14px 0;
+  margin: 24px 0;
 }
 .note-k {
   font-family: var(--font-mono);
@@ -573,10 +587,8 @@ details.check .ex-mini { margin: 4px 0 12px; }
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border: 1px solid var(--ink);
-  background: var(--sheet);
+  border: 1px solid var(--frame);
   padding: 16px 16px 14px;
-  box-shadow: var(--shadow-hard);
 }
 .hook p { font-size: 0.97rem; line-height: 1.55; margin: 0; }
 .hook .live { color: var(--ember); font-weight: 600; }
@@ -594,10 +606,7 @@ details.check .ex-mini { margin: 4px 0 12px; }
 
 /* ── Hub: live teasers ─────────────────────────────────────────────────── */
 .try {
-  border: 1px solid var(--ink);
-  border-left: 5px solid var(--ember);
-  background: var(--sheet);
-  box-shadow: var(--shadow-hard);
+  border: 1px solid var(--frame);
   margin: 20px 0 26px;
   padding: 16px 22px 16px;
 }
@@ -645,7 +654,7 @@ details.check .ex-mini { margin: 4px 0 12px; }
   border-radius: 0;
   text-transform: uppercase;
 }
-.try input[type="text"]:focus { border-color: var(--ember); box-shadow: 2px 2px 0 var(--ember); }
+.try input[type="text"]:focus { border-color: var(--ember); outline: 1px solid var(--ember); outline-offset: -2px; }
 .try input[type="range"] { width: 100%; max-width: 380px; accent-color: var(--ember); display: block; }
 .try-rows { margin-top: 8px; }
 .try-row {
@@ -686,6 +695,16 @@ details.check .ex-mini { margin: 4px 0 12px; }
   border: 1px solid var(--rule-soft);
 }
 .bar > i { display: block; height: 100%; background: var(--ember); width: 0; transition: width 0.25s ease; }
+/* The sixteen bits of the chapter 05 widget; the two probed bits in ember. */
+.try-bits {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  letter-spacing: 0.36em;
+  color: var(--ink-soft);
+  margin-top: 12px;
+  font-variant-ligatures: none;
+}
+.try-bits b { color: var(--ember); font-weight: 700; }
 
 /* Chapter list: a big teaser number on the right of each row. */
 .chapter-teaser {
