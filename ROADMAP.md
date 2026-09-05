@@ -46,7 +46,7 @@ themselves stay in the phases that own them; this phase links forward.
 | 01 | What an Operating System Does: Kernel, User Space & the System Call | ✅ | ~60 min |
 | 02 | A Map of the Linux Kernel: Scheduler, Memory, VFS, Network Stack & Drivers | ✅ | ~60 min |
 | 03 | The Shell: Terminal, Prompt, PATH & How a Command Actually Runs | ✅ | ~75 min |
-| 04 | The Filesystem Hierarchy: Where Everything Lives | ⬚ | ~70 min |
+| 04 | The Filesystem Hierarchy: Where Everything Lives | ✅ | ~70 min |
 | 05 | Working with Files: Create, Read, Copy, Move, Delete, Archive | ⬚ | ~70 min |
 | 06 | Users, Groups, Permissions & sudo | ⬚ | ~70 min |
 | 07 | Streams, Pipes & Redirection: Everything Is a File Descriptor | ⬚ | ~80 min |
