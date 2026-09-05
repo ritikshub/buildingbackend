@@ -56,7 +56,7 @@ themselves stay in the phases that own them; this phase links forward.
 | 11 | Boot, init & systemd: Keeping Your Backend Running | ✅ | ~85 min |
 | 12 | Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer | ✅ | ~75 min |
 | 13 | Installing Software: Packages, Repositories & Where Files Land | ✅ | ~50 min |
-| 14 | Networking from the Shell: ip, ss, ping, dig, nc & tcpdump | ⬚ | ~80 min |
+| 14 | Networking from the Shell: ip, ss, ping, dig, nc & tcpdump | ✅ | ~80 min |
 | 15 | curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies | ⬚ | ~80 min |
 | 16 | curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries | ⬚ | ~75 min |
 | 17 | SSH: Keys, Agents, Tunnels, scp & rsync | ⬚ | ~80 min |
