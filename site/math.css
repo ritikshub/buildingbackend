@@ -1,0 +1,579 @@
+/* ── Math Behind Tech ─────────────────────────────────────────────────────
+ * Styles shared by the hub (math.html) and every chapter (math-*.html).
+ *
+ * A chapter has two visual registers, and the whole design is the contrast
+ * between them:
+ *   - THEORY is plain serif prose on the paper, set exactly like About.
+ *   - WORKED EXAMPLES are cream sheets (.ex) lifted off the paper with a
+ *     hard shadow and an ember spine. Inside, the arithmetic is a list of
+ *     rows: what we do / the working / the result, in larger type than the
+ *     prose, with the result in bold ember. A reader who only reads the
+ *     sheets should still be able to follow the chapter.
+ * Cache-bust: bump ?v= on every page that loads this file when it changes.
+ */
+
+:root {
+  --sheet: #f6f2e8;
+  --sheet-rule: rgba(30, 24, 23, 0.14);
+}
+[data-theme="dark"] {
+  --sheet: #2a241e;
+  --sheet-rule: rgba(236, 231, 218, 0.16);
+}
+
+.math-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 100px 0 80px;
+}
+
+.math-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 12px;
+}
+.math-eyebrow a { color: inherit; border-bottom: none; }
+.math-eyebrow a:hover { border-bottom: 1px solid currentColor; }
+
+.math-page h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--ember);
+  margin: 0 0 24px;
+}
+
+.math-page h2 {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin: 52px 0 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.math-page h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 26px 0 8px;
+}
+
+.math-page p,
+.math-page li {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.math-page p { margin: 0 0 16px; }
+.math-page ul, .math-page ol { padding-left: 1.2em; margin: 0 0 16px; }
+.math-page li { margin-bottom: 6px; }
+.math-page a { color: var(--ember); }
+.math-page .lede { font-size: 1.18rem; color: var(--ink); }
+.math-page strong { font-weight: 600; }
+
+.math-page code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--code-bg);
+  padding: 1px 6px;
+  border: 1px solid var(--rule-soft);
+  color: var(--ember);
+  white-space: nowrap;   /* never break a flag like -n across lines */
+}
+
+/* Inline maths: a variable or a small expression set in the mono face so it
+   reads as a symbol, not a word. Unlike code it carries no box. */
+.math-page var {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.92em;
+  color: var(--ink);
+}
+
+/* ── Reading guide: the one-line legend under the lede ───────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin: 4px 0 8px;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+}
+.legend span { display: inline-flex; align-items: center; gap: 10px; }
+.legend i {
+  display: inline-block;
+  width: 26px;
+  height: 16px;
+  border: 1px solid var(--ink);
+  flex-shrink: 0;
+}
+.legend .sw-theory { background: var(--bg); border-color: var(--rule-soft); }
+.legend .sw-ex { background: var(--sheet); border-left: 3px solid var(--ember); box-shadow: 2px 2px 0 var(--ink); }
+
+/* ── Tiles: a 2-up grid of small labelled cards ─────────────────────────
+   Used for "where you meet it" on a chapter and "how a chapter is built" on
+   the hub. */
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 8px;
+}
+.tile {
+  border: 1px solid var(--rule-soft);
+  background: var(--bg-surface);
+  padding: 14px 16px 12px;
+}
+.tile-k {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 6px;
+}
+.tile p {
+  font-size: 0.97rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── Worked example sheet ──────────────────────────────────────────────── */
+.ex {
+  background: var(--sheet);
+  border: 1px solid var(--ink);
+  border-left: 5px solid var(--ember);
+  box-shadow: var(--shadow-hard);
+  margin: 26px 0 32px;
+}
+.ex-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  padding: 14px 22px 12px;
+  border-bottom: 1px solid var(--sheet-rule);
+}
+.ex-num {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--ember);
+  padding: 3px 8px;
+  position: relative;
+  top: -2px;
+}
+[data-theme="dark"] .ex-num { color: var(--bg); }
+.ex-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.3rem;
+  line-height: 1.2;
+  color: var(--ink);
+  margin: 0;
+}
+.ex-problem, .ex-answer {
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  margin: 0;
+  padding: 12px 22px;
+}
+.ex-problem {
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--sheet-rule);
+}
+.ex-answer {
+  color: var(--ink);
+  border-top: 1px solid var(--sheet-rule);
+}
+.ex-problem::before, .ex-answer::before {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-right: 12px;
+}
+.ex-problem::before { content: 'Problem'; }
+.ex-answer::before { content: 'Answer'; }
+.ex-answer b {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.08em;
+  color: var(--ember);
+}
+.ex-answer var { font-size: 1em; }
+
+/* The rows of working. */
+.eq { padding: 6px 22px; }
+.eq-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 11.5rem) minmax(0, 1fr) auto;
+  column-gap: 20px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--sheet-rule);
+}
+.eq-row:last-child { border-bottom: none; }
+.eq-what {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.eq-work {
+  font-family: var(--font-mono);
+  font-size: 1.02rem;
+  line-height: 1.5;
+  color: var(--ink);
+  font-variant-ligatures: none;
+  overflow-wrap: anywhere;
+}
+.eq-work small {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  margin-top: 3px;
+}
+.eq-res {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ember);
+  text-align: right;
+  white-space: nowrap;
+  font-variant-ligatures: none;
+}
+.eq-res small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-soft);
+  margin-top: 1px;
+}
+/* A divider row between two sub-problems in one sheet. */
+.eq-gap {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+  padding: 14px 0 4px;
+  border-bottom: none;
+}
+.eq-gap + .eq-row { border-top: 1px solid var(--sheet-rule); }
+
+/* Compact sheet for the tools section and exercise answers: rows only. */
+.ex-mini { margin: 12px 0 8px; }
+.ex-mini .eq { padding: 2px 18px; }
+.ex-mini .eq-row { padding: 8px 0; }
+.ex-mini .eq-work { font-size: 0.98rem; }
+.ex-mini .eq-res { font-size: 1.05rem; }
+
+/* Code blocks in a chapter reuse the lesson look: label top-left, ink text. */
+.math-page pre.code {
+  position: relative;
+  margin: 14px 0 20px;
+  border: 1px solid var(--rule-soft);
+  background: var(--code-bg);
+  overflow: hidden;
+}
+.math-page pre.code code {
+  display: block;
+  background: var(--code-bg);
+  color: var(--ink);
+  padding: 30px 24px 22px;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  border: none;
+  /* No ligatures: teaching code must show the literal characters. */
+  font-variant-ligatures: none;
+}
+.math-page pre.code::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding: 4px 10px;
+  background: var(--ember);
+  color: var(--bg);
+  z-index: 2;
+}
+
+/* ── Tools: the maths primitives a chapter needs ────────────────────────── */
+.tool {
+  border-left: 2px solid var(--rule-soft);
+  padding: 2px 0 2px 20px;
+  margin: 22px 0;
+}
+.tool h3 { margin: 0 0 6px; font-size: 1.2rem; }
+.tool p { margin-bottom: 10px; }
+
+/* ── Steps: the theory of the by-hand computation ───────────────────────── */
+.steps {
+  counter-reset: step;
+  margin: 24px 0 8px 18px;
+  padding: 0;
+  list-style: none;
+}
+.step {
+  position: relative;
+  padding: 0 0 22px 44px;
+  border-left: 1px solid var(--rule-soft);
+  margin: 0;
+}
+.step:last-child { padding-bottom: 4px; border-left-color: transparent; }
+.step::before {
+  counter-increment: step;
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: -19px;
+  top: -2px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--ink);
+  background: var(--bg);
+  color: var(--ember);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.step h3 { margin: 0 0 6px; padding-top: 6px; font-size: 1.2rem; }
+.step p { margin-bottom: 8px; font-size: 1rem; }
+.step > p:last-child { margin-bottom: 0; }
+
+/* ── Key cards: the result of key generation ────────────────────────────── */
+.keys {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 20px 0 24px;
+}
+.key {
+  border: 1px solid var(--ink);
+  background: var(--sheet);
+  padding: 14px 18px 12px;
+  box-shadow: var(--shadow-hard);
+}
+.key-k {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+.key-v {
+  font-family: var(--font-mono);
+  font-size: 1.55rem;
+  line-height: 1.2;
+  color: var(--ink);
+  margin: 8px 0 6px;
+}
+.key p { font-size: 0.92rem; line-height: 1.5; color: var(--ink-soft); margin: 0; }
+
+/* ── Callout ────────────────────────────────────────────────────────────── */
+.note {
+  border-left: 2px solid var(--ember);
+  background: var(--ember-tint);
+  padding: 14px 20px;
+  margin: 20px 0;
+}
+.note-k {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 4px;
+}
+.note p { margin: 0; font-size: 1rem; }
+.note p + p { margin-top: 8px; }
+
+/* ── Figure: an inline SVG diagram ──────────────────────────────────────── */
+.figure {
+  margin: 22px 0 26px;
+  border: 1px solid var(--rule-soft);
+  background: var(--bg-surface);
+  padding: 18px 18px 12px;
+  color: var(--ink);
+}
+.figure svg { width: 100%; height: auto; display: block; }
+.figure figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 12px;
+}
+.figure .fig-mono { font-family: var(--font-mono); font-size: 14px; }
+.figure .fig-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; }
+.figure .fig-ember { fill: var(--ember); }
+.figure .fig-mute { fill: var(--ink-mute); }
+.figure .fig-box { fill: var(--sheet); stroke: currentColor; stroke-width: 1.2; }
+.figure .fig-box-ember { fill: var(--ember-tint); stroke: var(--ember); stroke-width: 1.2; }
+
+/* ── Table ─────────────────────────────────────────────────────────────── */
+.math-page .table-wrap {
+  overflow-x: auto;
+  margin: 18px 0 24px;
+  border: 1px solid var(--rule-soft);
+}
+.math-page table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+}
+.math-page thead th {
+  background: var(--bg-surface);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--ink);
+}
+.math-page tbody td {
+  padding: 11px 16px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule-soft);
+  line-height: 1.5;
+}
+.math-page tbody tr:last-child td { border-bottom: none; }
+.math-page td:first-child { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); white-space: nowrap; }
+
+/* ── Check yourself ─────────────────────────────────────────────────────── */
+details.check {
+  border: 1px solid var(--rule-soft);
+  background: var(--bg-surface);
+  margin: 12px 0;
+}
+details.check summary {
+  cursor: pointer;
+  padding: 13px 16px;
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--ink);
+  list-style: none;
+}
+details.check summary::-webkit-details-marker { display: none; }
+details.check summary::before {
+  content: '+';
+  display: inline-block;
+  width: 1.3em;
+  font-family: var(--font-mono);
+  color: var(--ember);
+}
+details.check[open] summary::before { content: '−'; }
+details.check .answer { padding: 0 16px 14px; }
+details.check .answer p { font-size: 1rem; }
+details.check .answer p:last-child { margin-bottom: 0; }
+details.check .ex-mini { margin: 4px 0 12px; }
+
+/* ── Chapter footer navigation ─────────────────────────────────────────── */
+.chapter-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule-soft);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.chapter-nav a { color: var(--ink-soft); border-bottom: none; }
+.chapter-nav a:hover { color: var(--ember); }
+.chapter-nav .muted { color: var(--ink-mute); }
+
+/* ── Sources ───────────────────────────────────────────────────────────── */
+.sources li { font-size: 0.95rem; line-height: 1.6; }
+
+/* ── Hub: chapter list ─────────────────────────────────────────────────── */
+.chapters { list-style: none; padding: 0; margin: 20px 0 8px; }
+.chapter-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  column-gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule-soft);
+  margin: 0;
+}
+.chapter-row:last-child { border-bottom: 1px solid var(--rule-soft); }
+.chapter-num {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ember);
+  padding-top: 6px;
+}
+.chapter-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.4rem;
+  line-height: 1.25;
+  margin: 0 0 6px;
+}
+.chapter-title a { color: var(--ink); border-bottom: none; }
+.chapter-title a:hover { color: var(--ember); }
+.chapter-hook { font-size: 1rem; color: var(--ink-soft); margin: 0 0 8px; }
+.chapter-tags {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+@media (max-width: 768px) {
+  .math-page { padding: 80px 0 48px; }
+  .grid2, .keys { grid-template-columns: 1fr; }
+  .steps { margin-left: 14px; }
+  .step { padding-left: 34px; }
+  .step::before { width: 30px; height: 30px; left: -16px; font-size: 0.72rem; }
+  .ex-head, .ex-problem, .ex-answer { padding-left: 16px; padding-right: 16px; }
+  .eq { padding-left: 16px; padding-right: 16px; }
+  /* Stack: the "what" line on top, then working and result side by side. */
+  .eq-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 4px; }
+  .eq-what { grid-column: 1 / -1; }
+  .eq-work { font-size: 0.95rem; }
+  .eq-res { font-size: 1.05rem; }
+  .math-page pre.code code { font-size: 0.78rem; padding: 28px 14px 16px; }
+  .chapter-row { grid-template-columns: 40px minmax(0, 1fr); }
+  .chapter-title { font-size: 1.2rem; }
+}

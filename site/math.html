@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Behind Tech - Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
+  <meta name="description" content="The mathematics under the software you use every day, worked out by hand with numbers small enough to check on paper. RSA with p = 3 and q = 11 before RSA with 617-digit primes.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/math.html">
+  <meta property="og:title" content="Math Behind Tech · Building Backend">
+  <meta property="og:description" content="The mathematics under everyday software, worked out by hand with numbers small enough to check on paper.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <meta property="og:url" content="https://buildingbackend.vercel.app/math.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Math Behind Tech · Building Backend">
+  <meta name="twitter:description" content="The mathematics under everyday software, worked out by hand.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260813m">
+  <link rel="stylesheet" href="math.css?v=20260905a">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="math.html" aria-current="page">Math</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <article class="math-page">
+      <div class="math-eyebrow">Reference</div>
+      <h1>Math Behind Tech</h1>
+
+      <p class="lede">The mathematics under the software you use every day, worked out with numbers small enough to check on paper. RSA with <var>p&nbsp;=&nbsp;3</var> and <var>q&nbsp;=&nbsp;11</var> before RSA with 617-digit primes.</p>
+
+      <p>Most explanations of the maths in technology stop at the idea. "RSA relies on the difficulty of factoring large numbers." True, and useless: you close the tab knowing exactly as much as before. These chapters go the other way. The theory is kept to a screen, and then every single number is computed in front of you, by hand, small enough that you can redo it with a pencil and catch us if we slip.</p>
+
+      <h2>How every chapter is built</h2>
+      <p>Each chapter follows the same shape, so once you have read one you know where to look in the next.</p>
+
+      <div class="grid2">
+        <div class="tile">
+          <div class="tile-k">01 · Where you meet it</div>
+          <p>The four or five places in real systems where this maths is doing the work right now: a padlock in a browser, a file in your home directory, a header on an API call.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">02 · The idea in one breath</div>
+          <p>The theory in plain words, one screen long. Every term defined the first time it appears. No prerequisites assumed beyond arithmetic.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">03 · The tools</div>
+          <p>Every mathematical operation the chapter needs, introduced one at a time with its own one-line example. If you can follow the tools you can follow the chapter.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">04 · Worked examples</div>
+          <p>Every example sits on its own cream sheet, visually apart from the theory: a one-line problem, the working as rows you can check one at a time, and the answer.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">05 · Run it</div>
+          <p>The same computation in standard-library Python, then through the production tool, so the toy and the real thing line up field by field.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">06 · Toy vs production</div>
+          <p>A table of what changes at real scale and why, followed by a few exercises with hidden answers, and the primary sources the chapter rests on.</p>
+        </div>
+      </div>
+
+      <h2>Chapters</h2>
+      <ol class="chapters">
+        <li class="chapter-row">
+          <div class="chapter-num">01</div>
+          <div>
+            <h3 class="chapter-title"><a href="math-rsa.html">RSA and public-key cryptography</a></h3>
+            <p class="chapter-hook">Two small primes, one multiplication, and the padlock the whole internet uses. Encrypt and decrypt a message with <var>n&nbsp;=&nbsp;33</var>, then sign one.</p>
+            <div class="chapter-tags">HTTPS · SSH keys · JWT · Signed commits</div>
+          </div>
+        </li>
+      </ol>
+
+      <p>More chapters are being written. If there is a piece of maths you keep running into and want worked out this way, <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">open an issue</a>.</p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "url": "https://buildingbackend.vercel.app/math.html",
+    "name": "Math Behind Tech",
+    "description": "The mathematics under everyday software, worked out by hand with numbers small enough to check on paper.",
+    "isPartOf": { "@type": "WebSite", "name": "Building Backend", "url": "https://buildingbackend.vercel.app" },
+    "hasPart": [
+      { "@type": "TechArticle", "name": "RSA and public-key cryptography", "url": "https://buildingbackend.vercel.app/math-rsa.html" }
+    ]
+  }
+  </script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        }
+      });
+    })();
+  </script>
+  <script src="data.js?v=20260813m"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>

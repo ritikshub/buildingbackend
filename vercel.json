@@ -15,6 +15,10 @@
     {
       "source": "/about",
       "destination": "/about.html"
+    },
+    {
+      "source": "/math",
+      "destination": "/math.html"
     }
   ],
   "redirects": [
@@ -192,7 +196,7 @@
       ]
     },
     {
-      "source": "/(path|roadmap|about)",
+      "source": "/(path|roadmap|about|math)",
       "headers": [
         {
           "key": "Cache-Control",

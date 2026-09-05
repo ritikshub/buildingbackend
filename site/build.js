@@ -521,6 +521,10 @@ function writeSitemap(phases) {
     { loc: '/', priority: '1.0', freq: 'weekly' },
     { loc: '/prereqs.html', priority: '0.7', freq: 'monthly' },
   ];
+  urls.push({ loc: '/math.html', priority: '0.6', freq: 'monthly' });
+  for (const chapter of mathChapters()) {
+    urls.push({ loc: '/' + chapter, priority: '0.6', freq: 'monthly' });
+  }
   urls.push({ loc: '/about.html', priority: '0.5', freq: 'monthly' });
   for (const phase of phases) {
     for (const l of phase.lessons) {
@@ -565,6 +569,7 @@ function writeLlms(phases, artifactCount) {
   }
   out += `## Optional\n`;
   out += `- [Roadmap](${SITE_ORIGIN}/prereqs.html): prerequisite ordering across phases\n`;
+  out += `- [Math Behind Tech](${SITE_ORIGIN}/math.html): the mathematics under everyday systems, worked out by hand with small numbers\n`;
   fs.writeFileSync(path.join(__dirname, 'llms.txt'), out, 'utf8');
   console.log(`   wrote llms.txt`);
 }
@@ -623,22 +628,33 @@ function syncReadme(lessons) {
 const NAV_LINKS = [
   { key: 'contents', href: 'index.html#contents', label: 'Contents' },
   { key: 'roadmap',  href: 'prereqs.html',        label: 'Roadmap'  },
+  { key: 'math',     href: 'math.html',           label: 'Math'     },
   { key: 'about',    href: 'about.html',          label: 'About'    },
 ];
 
 // Which nav item is "current" per page. lesson.html maps to nothing on
-// purpose: an individual lesson is not one of the four nav destinations.
+// purpose: an individual lesson is not one of the nav destinations. Math
+// chapters (math-*.html) are discovered from disk below and light up "Math",
+// so adding a chapter never needs an entry here.
 const PAGE_ACTIVE = {
   'index.html': 'contents',
   'prereqs.html': 'roadmap',
+  'math.html': 'math',
   'about.html': 'about',
   'lesson.html': null,
 };
 
+// Every chapter under the Math shelf, in filename order. Shared by the
+// header sync (active nav item) and the sitemap.
+function mathChapters() {
+  return fs.readdirSync(__dirname)
+    .filter(f => /^math-[a-z0-9-]+\.html$/.test(f))
+    .sort();
+}
+
 const THEME_ICON = '<span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>';
 
-function headerHtml(page) {
-  const active = PAGE_ACTIVE[page];
+function headerHtml(page, active = PAGE_ACTIVE[page]) {
   const links = NAV_LINKS.map(l => {
     // On the homepage, "Contents" is a same-page anchor, not a round trip.
     const href = (page === 'index.html' && l.key === 'contents') ? '#contents' : l.href;
@@ -663,7 +679,9 @@ ${links}
 
 function syncHeaders() {
   const headerRe = /[ \t]*<header class="site-header">[\s\S]*?<\/header>/;
-  for (const page of Object.keys(PAGE_ACTIVE)) {
+  const active = { ...PAGE_ACTIVE };
+  for (const chapter of mathChapters()) active[chapter] = 'math';
+  for (const page of Object.keys(active)) {
     const p = path.join(__dirname, page);
     if (!fs.existsSync(p)) continue;
     const before = fs.readFileSync(p, 'utf8');
@@ -671,7 +689,7 @@ function syncHeaders() {
       console.warn(`   ⚠️  no <header> block found in ${page} — skipped`);
       continue;
     }
-    const after = before.replace(headerRe, headerHtml(page));
+    const after = before.replace(headerRe, headerHtml(page, active[page]));
     if (after !== before) {
       fs.writeFileSync(p, after, 'utf8');
       console.log(`   synced header in ${page}`);

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSA and public-key cryptography - Math Behind Tech - Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
+  <meta name="description" content="RSA worked out by hand with p = 3 and q = 11: build the keys, encrypt HI, decrypt it, sign a message, see why it works and why 33 is breakable but a 617-digit modulus is not. Then the same numbers in openssl.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/math-rsa.html">
+  <meta property="og:title" content="RSA and public-key cryptography · Math Behind Tech">
+  <meta property="og:description" content="Build an RSA key pair with p = 3 and q = 11, encrypt and decrypt by hand, then match every number to openssl output.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <meta property="og:url" content="https://buildingbackend.vercel.app/math-rsa.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RSA and public-key cryptography · Math Behind Tech">
+  <meta name="twitter:description" content="RSA worked out by hand with numbers small enough to check on paper.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260813m">
+  <link rel="stylesheet" href="math.css?v=20260905a">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="math.html" aria-current="page">Math</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <article class="math-page">
+      <div class="math-eyebrow"><a href="math.html">Math Behind Tech</a> · Chapter 01</div>
+      <h1>RSA and public-key cryptography</h1>
+
+      <p class="lede">Two small primes, one multiplication, and the padlock the whole internet uses. Every number on this page is small enough to check with a pencil, and every one of them has been.</p>
+
+      <div class="legend">
+        <span><i class="sw-theory"></i>Plain text is theory.</span>
+        <span><i class="sw-ex"></i>Cream sheets are worked examples: problem, working, answer.</span>
+      </div>
+
+      <!-- ── Where you meet it ─────────────────────────────────────────── -->
+      <h2>Where you meet it</h2>
+      <p>RSA is named after Rivest, Shamir and Adleman, who published it in 1978. You touch it several times a day without noticing.</p>
+
+      <div class="grid2">
+        <div class="tile">
+          <div class="tile-k">HTTPS</div>
+          <p>The padlock in your browser. The site's certificate carries an RSA signature, and your browser checks it with the operation in Example 4 before trusting the site.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">SSH keys</div>
+          <p><code>ssh-keygen -t rsa</code> writes two files into your home directory. They hold exactly the numbers in Example 1, just 2048 bits long instead of 6.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">JWT · RS256</div>
+          <p>An auth server signs a token with its private key. Every service verifies it with the public key and never has to call the auth server back.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Signed commits and packages</div>
+          <p>The "Verified" badge on a git commit, and the signature your package manager checks before installing anything, are RSA signatures most of the time.</p>
+        </div>
+      </div>
+
+      <!-- ── The idea ──────────────────────────────────────────────────── -->
+      <h2>The idea in one breath</h2>
+      <p>A normal lock has one key: whoever can lock can unlock. That is symmetric encryption, such as AES, and its weak point is obvious. Two computers that have never met must agree on a key over a wire anyone can listen to. Send the key, and the listener has it too.</p>
+      <p>RSA is a lock with <strong>two keys</strong>. The <strong>public key</strong> only locks, so you hand it to everyone. The <strong>private key</strong> only unlocks, so you keep it. Anyone can lock a message for you. Only you can open it.</p>
+      <p>In numbers: pick two primes <var>p</var> and <var>q</var> and multiply them to get <var>n</var>. Publish <var>n</var> with a second number <var>e</var>. Keep a third number <var>d</var> secret. Encrypt with <var>c = m<sup>e</sup> mod n</var>, decrypt with <var>m = c<sup>d</sup> mod n</var>. It holds because multiplying <var>p × q</var> is instant, while recovering <var>p</var> and <var>q</var> from <var>n</var> is, at real sizes, beyond every computer on Earth.</p>
+
+      <!-- ── Tools ─────────────────────────────────────────────────────── -->
+      <h2>The four tools you need</h2>
+      <p>Nothing below needs more than these four ideas.</p>
+
+      <div class="tool">
+        <h3>1. Prime numbers</h3>
+        <p>A prime is a whole number above 1 that only 1 and itself divide evenly: 2, 3, 5, 7, 11, 13, and so on.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">Is 11 prime?</div><div class="eq-work">only 1 and 11 divide it</div><div class="eq-res">yes</div></div>
+          <div class="eq-row"><div class="eq-what">Is 12 prime?</div><div class="eq-work">12 = 2 × 6 = 3 × 4</div><div class="eq-res">no</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>2. Modular arithmetic, or clock maths</h3>
+        <p><var>a mod n</var> is the remainder after dividing <var>a</var> by <var>n</var>. A clock does this with <var>n = 12</var>. The useful property: you may reduce after every multiplication instead of only at the end, so the numbers never grow.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">17 mod 5</div><div class="eq-work">17 = 3 × 5 + 2</div><div class="eq-res">2</div></div>
+          <div class="eq-row"><div class="eq-what">512 mod 33</div><div class="eq-work">512 = 15 × 33 + 17</div><div class="eq-res">17</div></div>
+          <div class="eq-row"><div class="eq-what">5 hours after 10 o'clock</div><div class="eq-work">15 mod 12: 15 = 1 × 12 + 3</div><div class="eq-res">3 o'clock</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>3. Coprime numbers</h3>
+        <p>The greatest common divisor, <var>gcd</var>, is the largest number dividing both. Two numbers are <strong>coprime</strong> when it is 1.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">gcd(3, 20)</div><div class="eq-work">3 and 20 share no factor</div><div class="eq-res">1<small>coprime</small></div></div>
+          <div class="eq-row"><div class="eq-what">gcd(2, 20)</div><div class="eq-work">both are even</div><div class="eq-res">2<small>not coprime</small></div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>4. The modular inverse</h3>
+        <p>In ordinary arithmetic the inverse of 3 is ⅓, because 3 × ⅓ = 1. In clock maths with <var>n = 20</var>, the inverse of 3 is the whole number <var>d</var> with <var>3 × d mod 20 = 1</var>. It exists only when the two numbers are coprime. Python has it built in as <code>pow(3, -1, 20)</code>.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">Inverse of 3, mod 20</div><div class="eq-work">3 × 7 = 21 = 1 × 20 + 1</div><div class="eq-res">7</div></div>
+        </div></div>
+      </div>
+
+      <!-- ── Keys ──────────────────────────────────────────────────────── -->
+      <h2>Build the keys</h2>
+      <p>Five steps. Real RSA runs the same five with primes about 300 digits long.</p>
+
+      <ol class="steps">
+        <li class="step">
+          <h3>Pick two primes, p and q</h3>
+          <p>In production they come from a random number generator and a primality test, and are never reused.</p>
+        </li>
+        <li class="step">
+          <h3>Multiply them: n = p × q</h3>
+          <p><var>n</var> is public, and from now on every message and ciphertext is a number between 0 and <var>n − 1</var>.</p>
+        </li>
+        <li class="step">
+          <h3>Compute the totient: φ(n) = (p − 1)(q − 1)</h3>
+          <p>Euler's totient counts the numbers from 1 to <var>n</var> that are coprime with <var>n</var>. This is the secret ingredient: the formula needs <var>p</var> and <var>q</var>, so anyone who has only <var>n</var> must factor it first.</p>
+        </li>
+        <li class="step">
+          <h3>Choose the public exponent e</h3>
+          <p>Any number above 1, below <var>φ(n)</var>, and coprime with it (tool 3). Production almost always uses 65537.</p>
+        </li>
+        <li class="step">
+          <h3>Find the private exponent d</h3>
+          <p>The modular inverse of <var>e</var> (tool 4): the number with <var>e × d mod φ(n) = 1</var>.</p>
+        </li>
+      </ol>
+
+      <section class="ex" id="ex1">
+        <div class="ex-head"><span class="ex-num">Example 1</span><h3 class="ex-title">Build a key pair from p = 3 and q = 11</h3></div>
+        <p class="ex-problem">Run the five steps with the two smallest primes that give a modulus big enough to hold every letter of the alphabet.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Pick two primes (tool 1)</div><div class="eq-work">3 and 11 are both prime</div><div class="eq-res">p = 3, q = 11</div></div>
+          <div class="eq-row"><div class="eq-what">Multiply them: the modulus</div><div class="eq-work">3 × 11</div><div class="eq-res">n = 33</div></div>
+          <div class="eq-row"><div class="eq-what">Totient: (p − 1)(q − 1)</div><div class="eq-work">(3 − 1) × (11 − 1) = 2 × 10<small>Check by counting: of the 32 numbers below 33, drop the 10 multiples of 3 and the 2 multiples of 11. 32 − 10 − 2 = 20.</small></div><div class="eq-res">φ = 20</div></div>
+          <div class="eq-row"><div class="eq-what">Choose e, coprime with 20 (tool 3)</div><div class="eq-work">gcd(3, 20) = 1, so 3 is allowed<small>2 is not: gcd(2, 20) = 2. Also allowed: 7, 9, 11, 13, 17, 19.</small></div><div class="eq-res">e = 3</div></div>
+          <div class="eq-row"><div class="eq-what">Find d: try 3 × d for d = 1 to 6</div><div class="eq-work">3, 6, 9, 12, 15, 18<small>All below 20, so mod 20 leaves them unchanged. None is 1.</small></div><div class="eq-res">no</div></div>
+          <div class="eq-row"><div class="eq-what">Try d = 7 (tool 4)</div><div class="eq-work">3 × 7 = 21 = 1 × 20 + 1</div><div class="eq-res">d = 7</div></div>
+        </div>
+        <p class="ex-answer">Public key <b>(n, e) = (33, 3)</b>. Private key <b>(n, d) = (33, 7)</b>. <var>p</var>, <var>q</var> and <var>φ</var> are as secret as <var>d</var>: anyone who learns them can redo the last row in seconds.</p>
+      </section>
+
+      <div class="keys">
+        <div class="key">
+          <div class="key-k">Public key · give to everyone</div>
+          <div class="key-v">(n, e) = (33, 3)</div>
+          <p>Locks a message. Verifies a signature.</p>
+        </div>
+        <div class="key">
+          <div class="key-k">Private key · never leaves you</div>
+          <div class="key-v">(n, d) = (33, 7)</div>
+          <p>Unlocks a message. Produces a signature.</p>
+        </div>
+      </div>
+
+      <!-- ── Encrypt ───────────────────────────────────────────────────── -->
+      <h2>Encrypt a message</h2>
+      <p>RSA works on numbers, so letters become their alphabet position: A = 1, B = 2, up to Z = 26. Every letter is below 33, which matters. A message must be smaller than <var>n</var>, or <var>mod n</var> throws part of it away for good. Encryption is <var>c = m<sup>e</sup> mod n</var>, and it needs only the public key.</p>
+
+      <section class="ex" id="ex2">
+        <div class="ex-head"><span class="ex-num">Example 2</span><h3 class="ex-title">Encrypt HI with the public key</h3></div>
+        <p class="ex-problem">Turn H and I into ciphertext using only <var>(n, e) = (33, 3)</var>. H is 8 and I is 9, so compute <var>8³ mod 33</var> and <var>9³ mod 33</var>.</p>
+        <div class="eq">
+          <div class="eq-gap">Letter H, m = 8</div>
+          <div class="eq-row"><div class="eq-what">Cube it: m³</div><div class="eq-work">8 × 8 × 8</div><div class="eq-res">512</div></div>
+          <div class="eq-row"><div class="eq-what">Reduce mod 33</div><div class="eq-work">512 = 15 × 33 + 17<small>15 × 33 = 495, and 512 − 495 = 17</small></div><div class="eq-res">c = 17</div></div>
+          <div class="eq-gap">Letter I, m = 9</div>
+          <div class="eq-row"><div class="eq-what">Cube it: m³</div><div class="eq-work">9 × 9 × 9</div><div class="eq-res">729</div></div>
+          <div class="eq-row"><div class="eq-what">Reduce mod 33</div><div class="eq-work">729 = 22 × 33 + 3<small>22 × 33 = 726, and 729 − 726 = 3</small></div><div class="eq-res">c = 3</div></div>
+        </div>
+        <p class="ex-answer">The ciphertext is <b>17, 3</b>. Send it over any wire. Anyone can read those two numbers, and anyone could have produced them, because this step uses only the public key.</p>
+      </section>
+
+      <!-- ── Decrypt ───────────────────────────────────────────────────── -->
+      <h2>Decrypt it</h2>
+      <p>Decryption is <var>m = c<sup>d</sup> mod n</var>, so we need <var>17<sup>7</sup> mod 33</var>. Raw, <var>17<sup>7</sup></var> is 410,338,673. Nobody divides that by hand. Tool 2 lets us square, reduce, and repeat, so the numbers stay small. This square-and-reduce loop is exactly what Python's <code>pow(c, d, n)</code> does.</p>
+
+      <section class="ex" id="ex3">
+        <div class="ex-head"><span class="ex-num">Example 3</span><h3 class="ex-title">Decrypt 17 and 3 with the private key</h3></div>
+        <p class="ex-problem">Recover the letters using <var>(n, d) = (33, 7)</var>. Compute <var>17⁷ mod 33</var> and <var>3⁷ mod 33</var> without ever writing down a large number.</p>
+        <div class="eq">
+          <div class="eq-gap">Ciphertext 17</div>
+          <div class="eq-row"><div class="eq-what">Square: 17²</div><div class="eq-work">17 × 17 = 289<small>289 = 8 × 33 + 25</small></div><div class="eq-res">25</div></div>
+          <div class="eq-row"><div class="eq-what">Square again: 17⁴ = (17²)²</div><div class="eq-work">25 × 25 = 625<small>625 = 18 × 33 + 31</small></div><div class="eq-res">31</div></div>
+          <div class="eq-row"><div class="eq-what">Combine: 17⁷ = 17⁴ × 17² × 17</div><div class="eq-work">31 × 25 = 775<small>775 = 23 × 33 + 16</small></div><div class="eq-res">16</div></div>
+          <div class="eq-row"><div class="eq-what">Then the last factor, 17</div><div class="eq-work">16 × 17 = 272<small>272 = 8 × 33 + 8</small></div><div class="eq-res">m = 8</div></div>
+          <div class="eq-gap">Ciphertext 3</div>
+          <div class="eq-row"><div class="eq-what">3⁷ is small enough to do directly</div><div class="eq-work">3⁷ = 2187<small>2187 = 66 × 33 + 9</small></div><div class="eq-res">m = 9</div></div>
+        </div>
+        <p class="ex-answer">8 is <b>H</b> and 9 is <b>I</b>. The message is back. The largest number we handled was 775, and that trick is why 2048-bit RSA is fast enough to run on every HTTPS connection.</p>
+      </section>
+
+      <!-- ── Sign ──────────────────────────────────────────────────────── -->
+      <h2>Turn it around: signatures</h2>
+      <p>Encryption used the public key first and the private key second. Do the same two operations in the opposite order and you get a <strong>digital signature</strong>: only the holder of <var>d</var> can produce it, and anyone with <var>(n, e)</var> can check it. This is what JWTs, SSH logins and TLS certificates actually use RSA for. In practice you sign a fixed-size hash of the document, so the thing signed is always smaller than <var>n</var>.</p>
+
+      <section class="ex" id="ex4">
+        <div class="ex-head"><span class="ex-num">Example 4</span><h3 class="ex-title">Sign the message 8, then verify it</h3></div>
+        <p class="ex-problem">The key holder computes <var>s = 8⁷ mod 33</var> with the private key and sends 8 and <var>s</var> together. Anyone then checks with the public key: does <var>s³ mod 33</var> give 8 back?</p>
+        <div class="eq">
+          <div class="eq-gap">Sign with the private key, d = 7</div>
+          <div class="eq-row"><div class="eq-what">Square: 8²</div><div class="eq-work">8 × 8 = 64<small>64 = 1 × 33 + 31</small></div><div class="eq-res">31</div></div>
+          <div class="eq-row"><div class="eq-what">Square again: 8⁴</div><div class="eq-work">31 × 31 = 961<small>961 = 29 × 33 + 4</small></div><div class="eq-res">4</div></div>
+          <div class="eq-row"><div class="eq-what">Combine: 8⁷ = 8⁴ × 8² × 8</div><div class="eq-work">4 × 31 = 124<small>124 = 3 × 33 + 25</small></div><div class="eq-res">25</div></div>
+          <div class="eq-row"><div class="eq-what">Then the last factor, 8</div><div class="eq-work">25 × 8 = 200<small>200 = 6 × 33 + 2</small></div><div class="eq-res">s = 2</div></div>
+          <div class="eq-gap">Verify with the public key, e = 3</div>
+          <div class="eq-row"><div class="eq-what">Cube the signature: s³</div><div class="eq-work">2 × 2 × 2 = 8<small>8 is already below 33</small></div><div class="eq-res">8 ✓</div></div>
+        </div>
+        <p class="ex-answer"><var>s³ mod 33</var> gives back <b>8</b>, the message. Nobody without <var>d</var> could have found a number whose cube mod 33 is 8, short of trying every value, which is easy at 33 and impossible at 617 digits.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 250" role="img" aria-labelledby="rsa-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="rsa-fig-title">Encryption uses the public key then the private key; signing uses the private key then the public key</title>
+          <defs>
+            <marker id="rsa-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+
+          <text x="20" y="22" class="fig-label fig-ember">ENCRYPT</text>
+          <text x="92" y="22" class="fig-label fig-mute">ANYONE CAN LOCK · ONLY THE KEY HOLDER OPENS</text>
+
+          <rect x="20" y="36" width="130" height="50" class="fig-box"/>
+          <text x="85" y="66" text-anchor="middle" class="fig-mono" fill="currentColor">m = 8</text>
+          <text x="85" y="104" text-anchor="middle" class="fig-label fig-mute">PLAINTEXT</text>
+
+          <line x1="152" y1="61" x2="286" y2="61" stroke="currentColor" stroke-width="1.2" marker-end="url(#rsa-arrow)"/>
+          <text x="220" y="52" text-anchor="middle" class="fig-mono" fill="currentColor">^e mod n</text>
+          <text x="220" y="78" text-anchor="middle" class="fig-label fig-ember">PUBLIC (33, 3)</text>
+
+          <rect x="290" y="36" width="130" height="50" class="fig-box-ember"/>
+          <text x="355" y="66" text-anchor="middle" class="fig-mono" fill="currentColor">c = 17</text>
+          <text x="355" y="104" text-anchor="middle" class="fig-label fig-mute">CIPHERTEXT · SENT IN THE OPEN</text>
+
+          <line x1="422" y1="61" x2="556" y2="61" stroke="currentColor" stroke-width="1.2" marker-end="url(#rsa-arrow)"/>
+          <text x="490" y="52" text-anchor="middle" class="fig-mono" fill="currentColor">^d mod n</text>
+          <text x="490" y="78" text-anchor="middle" class="fig-label" fill="currentColor">PRIVATE (33, 7)</text>
+
+          <rect x="560" y="36" width="130" height="50" class="fig-box"/>
+          <text x="625" y="66" text-anchor="middle" class="fig-mono" fill="currentColor">m = 8</text>
+          <text x="625" y="104" text-anchor="middle" class="fig-label fig-mute">RECOVERED</text>
+
+          <text x="20" y="142" class="fig-label fig-ember">SIGN</text>
+          <text x="60" y="142" class="fig-label fig-mute">ONLY THE KEY HOLDER CAN PRODUCE · ANYONE CAN CHECK</text>
+
+          <rect x="20" y="156" width="130" height="50" class="fig-box"/>
+          <text x="85" y="186" text-anchor="middle" class="fig-mono" fill="currentColor">m = 8</text>
+          <text x="85" y="224" text-anchor="middle" class="fig-label fig-mute">MESSAGE (OR ITS HASH)</text>
+
+          <line x1="152" y1="181" x2="286" y2="181" stroke="currentColor" stroke-width="1.2" marker-end="url(#rsa-arrow)"/>
+          <text x="220" y="172" text-anchor="middle" class="fig-mono" fill="currentColor">^d mod n</text>
+          <text x="220" y="198" text-anchor="middle" class="fig-label" fill="currentColor">PRIVATE (33, 7)</text>
+
+          <rect x="290" y="156" width="130" height="50" class="fig-box-ember"/>
+          <text x="355" y="186" text-anchor="middle" class="fig-mono" fill="currentColor">s = 2</text>
+          <text x="355" y="224" text-anchor="middle" class="fig-label fig-mute">SIGNATURE · SENT WITH m</text>
+
+          <line x1="422" y1="181" x2="556" y2="181" stroke="currentColor" stroke-width="1.2" marker-end="url(#rsa-arrow)"/>
+          <text x="490" y="172" text-anchor="middle" class="fig-mono" fill="currentColor">^e mod n</text>
+          <text x="490" y="198" text-anchor="middle" class="fig-label fig-ember">PUBLIC (33, 3)</text>
+
+          <rect x="560" y="156" width="130" height="50" class="fig-box"/>
+          <text x="625" y="186" text-anchor="middle" class="fig-mono" fill="currentColor">8 = m ✓</text>
+          <text x="625" y="224" text-anchor="middle" class="fig-label fig-mute">VERIFIED</text>
+        </svg>
+        <figcaption>The same two operations, in opposite orders</figcaption>
+      </figure>
+
+      <!-- ── Why it works ──────────────────────────────────────────────── -->
+      <h2>Why it works</h2>
+      <p>Euler proved in 1763 that if <var>m</var> and <var>n</var> are coprime, then <var>m<sup>φ(n)</sup> mod n = 1</var>: raising anything to the totient brings you back to 1. We chose <var>d</var> so that <var>e × d</var> is 1 more than a multiple of <var>φ(n)</var>. Put the two together and the exponents cancel.</p>
+
+      <section class="ex" id="ex5">
+        <div class="ex-head"><span class="ex-num">Example 5</span><h3 class="ex-title">Check Euler with m = 8, then watch d undo e</h3></div>
+        <p class="ex-problem">Show that <var>8²⁰ mod 33 = 1</var>, then show why that makes <var>(8³)⁷ mod 33</var> come back to 8.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">8⁴ mod 33, from Example 4</div><div class="eq-work">already computed</div><div class="eq-res">4</div></div>
+          <div class="eq-row"><div class="eq-what">8²⁰ = (8⁴)⁵</div><div class="eq-work">4⁵ = 1024<small>1024 = 31 × 33 + 1</small></div><div class="eq-res">1 ✓</div></div>
+          <div class="eq-gap">Why d undoes e</div>
+          <div class="eq-row"><div class="eq-what">How we chose d</div><div class="eq-work">e × d = 3 × 7 = 21 = 1 + 1 × 20</div><div class="eq-res">1 + φ</div></div>
+          <div class="eq-row"><div class="eq-what">Decrypting an encrypted m</div><div class="eq-work">(m³)⁷ = m²¹ = m × m²⁰ = m × 1</div><div class="eq-res">m</div></div>
+        </div>
+        <p class="ex-answer">20 is exactly the exponent that Euler says turns any coprime <var>m</var> into 1, so <var>m²¹</var> is <b>m</b> again. That is the entire reason <var>d</var> undoes <var>e</var>, and why <var>φ(n)</var> rather than <var>n</var> is what you need to build the private key.</p>
+      </section>
+
+      <div class="note">
+        <div class="note-k">One honest footnote</div>
+        <p>Euler's theorem needs <var>m</var> coprime with <var>n</var>. The letter I is 9, which shares the factor 3 with 33, and it still decrypted correctly in Example 3. RSA works for those values too, by a separate argument through the Chinese remainder theorem. With real primes the chance of a message sharing a factor with <var>n</var> is negligible.</p>
+      </div>
+
+      <!-- ── Security ──────────────────────────────────────────────────── -->
+      <h2>Why it is secure, and why 33 is not</h2>
+      <p>Breaking RSA is the key generation steps run backwards, starting from a factorisation of <var>n</var>. Sit in the attacker's chair.</p>
+
+      <section class="ex" id="ex6">
+        <div class="ex-head"><span class="ex-num">Example 6</span><h3 class="ex-title">Break the key (33, 3)</h3></div>
+        <p class="ex-problem">You know only the public key <var>(33, 3)</var> and have intercepted <var>c = 17</var>. Recover the letter.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Factor the modulus</div><div class="eq-work">33 = 3 × 11</div><div class="eq-res">p = 3, q = 11</div></div>
+          <div class="eq-row"><div class="eq-what">Recompute the totient</div><div class="eq-work">(3 − 1) × (11 − 1) = 2 × 10</div><div class="eq-res">φ = 20</div></div>
+          <div class="eq-row"><div class="eq-what">Recompute the private exponent</div><div class="eq-work">3 × 7 = 21 = 1 × 20 + 1</div><div class="eq-res">d = 7</div></div>
+          <div class="eq-row"><div class="eq-what">Decrypt, as in Example 3</div><div class="eq-work">17⁷ mod 33</div><div class="eq-res">8 = H</div></div>
+        </div>
+        <p class="ex-answer">Broken in four lines. Every line was easy except the first, and the first was easy only because <b>33</b> is small.</p>
+      </section>
+
+      <p>A real modulus has 2048 bits, which is 617 decimal digits, with two 309-digit primes hidden inside. The largest RSA modulus factored publicly so far is 829 bits, RSA-250, and that took a research team thousands of core-years in 2020. With the best known algorithms each added bit multiplies the work, so 2048 bits is not "a bit more than twice as hard" as 829. It is beyond every computer on Earth for longer than anyone plans to keep a key.</p>
+      <p>Two caveats. The difficulty is an observation, not a proof: nobody has shown factoring must be slow, only that decades of trying have not made it fast. And Shor's algorithm from 1994 would factor <var>n</var> quickly on a large enough quantum computer, which is why NIST standardised post-quantum replacements in 2024 and long-lived systems are already migrating.</p>
+
+      <!-- ── Run it ────────────────────────────────────────────────────── -->
+      <h2>Run it</h2>
+      <h3>Build it: the same numbers in twenty lines</h3>
+      <p>Standard library only, Python 3.8 or newer. Every printed value matches Examples 1 to 4.</p>
+
+      <pre class="code" data-lang="python"><code># RSA with numbers small enough to check on paper.
+# Companion to math-rsa.html. Spec: RFC 8017 (PKCS #1 v2.2).
+from math import gcd
+
+p, q = 3, 11
+n = p * q                    # 33 -> the public modulus
+phi = (p - 1) * (q - 1)      # 20 -> Euler's totient, keep secret
+e = 3                        # public exponent, must be coprime with phi
+assert gcd(e, phi) == 1
+d = pow(e, -1, phi)          # 7  -> private exponent: (e * d) % phi == 1
+
+print(f"public key  (n, e) = ({n}, {e})")
+print(f"private key (n, d) = ({n}, {d})")
+
+msg = "HI"
+m = [ord(ch) - 64 for ch in msg]          # A=1 ... Z=26, every letter below n
+c = [pow(x, e, n) for x in m]             # encrypt: m^e mod n
+back = [pow(y, d, n) for y in c]          # decrypt: c^d mod n
+print("plaintext ", m)
+print("ciphertext", c)
+print("decrypted ", "".join(chr(x + 64) for x in back))
+
+s = pow(8, d, n)                          # sign 8 with the private key
+print("signature ", s, "-> verifies:", pow(s, e, n) == 8)</code></pre>
+
+      <pre class="code" data-lang="console"><code>$ python3 rsa_by_hand.py
+public key  (n, e) = (33, 3)
+private key (n, d) = (33, 7)
+plaintext  [8, 9]
+ciphertext [17, 3]
+decrypted  HI
+signature  2 -> verifies: True</code></pre>
+
+      <h3>Use it: the same numbers in a real key</h3>
+      <p>Generate a 2048-bit key with the tool every server uses, then print its components. The field names come from the RSA standard, RFC 8017, and each is a number from Example 1.</p>
+
+      <pre class="code" data-lang="bash"><code>openssl genrsa -out demo.pem 2048
+openssl rsa -in demo.pem -text -noout</code></pre>
+
+      <pre class="code" data-lang="console"><code>RSA Private-Key: (2048 bit)
+modulus:
+    00:e0:57:d8:b5:bd:5b:a9:26:2f:5b:83:84:6f:da:
+    42:86:94:a2:c7:fd:07:f4:f3:82:8d:bc:68:c3:7f:
+    ...                                  (256 bytes in all)
+publicExponent: 65537 (0x10001)
+privateExponent:
+    ...
+prime1:
+    ...
+prime2:
+    ...
+exponent1:
+exponent2:
+coefficient:</code></pre>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>openssl field</th><th>In Example 1</th><th>Ours</th><th>Real</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>modulus</td><td><var>n = p × q</var></td><td>33</td><td>2048 bits, 617 digits</td></tr>
+            <tr><td>publicExponent</td><td><var>e</var></td><td>3</td><td>65537</td></tr>
+            <tr><td>privateExponent</td><td><var>d</var></td><td>7</td><td>about 2048 bits</td></tr>
+            <tr><td>prime1</td><td><var>p</var></td><td>3</td><td>1024 bits, about 309 digits</td></tr>
+            <tr><td>prime2</td><td><var>q</var></td><td>11</td><td>1024 bits, about 309 digits</td></tr>
+            <tr><td>exponent1, exponent2, coefficient</td><td colspan="3">Precomputed shortcuts (<var>d mod (p−1)</var>, <var>d mod (q−1)</var>, and the inverse of <var>q</var> mod <var>p</var>) that make the private-key step about four times faster. RFC 8017 §3.2. Not needed for correctness.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Run <code>ssh-keygen -t rsa -b 2048</code> and you get the same numbers in a different file format. The <code>ssh-rsa</code> line in your <code>authorized_keys</code> is <var>e</var> and <var>n</var>, base64-encoded, nothing more.</p>
+
+      <!-- ── Toy vs production ─────────────────────────────────────────── -->
+      <h2>Toy vs production</h2>
+      <p>Every operation on this page is the real one. What changes at scale is the size of the numbers, plus a layer of rules that stop clever attacks.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>This page</th><th>Real RSA</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>p, q</td><td>3 and 11</td><td>Two random primes of about 1024 bits each, tested with Miller–Rabin, never reused.</td></tr>
+            <tr><td>n</td><td>33</td><td>2048 bits at minimum; 3072 or 4096 for keys that must last years.</td></tr>
+            <tr><td>e</td><td>3</td><td>65537. A small <var>e</var> with unpadded messages is a known weakness.</td></tr>
+            <tr><td>message</td><td>One letter, raw</td><td>Never raw. Padded with OAEP for encryption or PSS for signatures (RFC 8017), which adds random bytes so the same input encrypts differently every time.</td></tr>
+            <tr><td>repeats</td><td>H is always 17</td><td>An eavesdropper could count how often 17 appears and guess the letter. Padding removes the pattern.</td></tr>
+            <tr><td>what is encrypted</td><td>The message itself</td><td>A random AES key. The data is encrypted with AES, which is thousands of times faster; RSA only protects the key.</td></tr>
+            <tr><td>in TLS 1.3</td><td>Everything</td><td>Signatures only. The session key comes from Diffie–Hellman (RFC 8446), so a stolen RSA key cannot decrypt recorded traffic.</td></tr>
+            <tr><td>timing</td><td>Irrelevant</td><td>The private-key step must take the same time regardless of the bits in <var>d</var>, or an attacker measuring response times can recover it.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── Check yourself ────────────────────────────────────────────── -->
+      <h2>Check yourself</h2>
+      <p>Same key pair as the examples, <var>(33, 3)</var> public and <var>(33, 7)</var> private, unless stated. Work each one before opening the answer.</p>
+
+      <details class="check">
+        <summary>Encrypt the letter M with the public key.</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">M = 13. Cube it</div><div class="eq-work">13 × 13 × 13 = 2197<small>2197 = 66 × 33 + 19</small></div><div class="eq-res">c = 19</div></div>
+            <div class="eq-row"><div class="eq-what">Check by decrypting</div><div class="eq-work">19⁷ mod 33, square-and-reduce as in Example 3</div><div class="eq-res">13 = M</div></div>
+          </div></div>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Build a key pair from p = 5 and q = 7, with e = 5. Anything odd about it?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Modulus</div><div class="eq-work">5 × 7</div><div class="eq-res">n = 35</div></div>
+            <div class="eq-row"><div class="eq-what">Totient</div><div class="eq-work">4 × 6</div><div class="eq-res">φ = 24</div></div>
+            <div class="eq-row"><div class="eq-what">Is e = 5 allowed?</div><div class="eq-work">gcd(5, 24) = 1</div><div class="eq-res">yes</div></div>
+            <div class="eq-row"><div class="eq-what">Private exponent</div><div class="eq-work">5 × 5 = 25 = 1 × 24 + 1</div><div class="eq-res">d = 5</div></div>
+          </div></div>
+          <p>The private exponent equals the public one, so anyone holding the public key can decrypt. This only happens with toy-sized numbers; with real primes the odds are negligible and key generators check anyway. A good reminder that "the maths works" and "the key is safe" are different questions.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Why is e = 2 not allowed with φ(n) = 20?</summary>
+        <div class="answer">
+          <p><var>gcd(2, 20) = 2</var>, so no inverse exists. Concretely, <var>2 × d</var> is even for every <var>d</var>, and an even number mod 20 stays even, so it can never equal 1. The search for <var>d</var> would run forever.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Break this one: the public key is (55, 3) and you intercept c = 15. What was the letter?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Factor the modulus</div><div class="eq-work">55 = 5 × 11</div><div class="eq-res">p = 5, q = 11</div></div>
+            <div class="eq-row"><div class="eq-what">Totient</div><div class="eq-work">4 × 10</div><div class="eq-res">φ = 40</div></div>
+            <div class="eq-row"><div class="eq-what">Private exponent</div><div class="eq-work">3 × 27 = 81 = 2 × 40 + 1</div><div class="eq-res">d = 27</div></div>
+            <div class="eq-row"><div class="eq-what">Decrypt</div><div class="eq-work">15²⁷ mod 55<small>Long by hand, one line in Python: pow(15, 27, 55)</small></div><div class="eq-res">5 = E</div></div>
+          </div></div>
+          <p>The point of the exercise is the first row. Everything after it is bookkeeping.</p>
+        </div>
+      </details>
+
+      <!-- ── Sources ───────────────────────────────────────────────────── -->
+      <h2>Sources</h2>
+      <ol class="sources">
+        <li>R. L. Rivest, A. Shamir, L. Adleman, <a href="https://people.csail.mit.edu/rivest/Rsapaper.pdf" target="_blank" rel="noopener">"A Method for Obtaining Digital Signatures and Public-Key Cryptosystems"</a>, Communications of the ACM 21(2), 1978. The original paper; its worked example is the ancestor of this page.</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8017" target="_blank" rel="noopener">RFC 8017</a>, PKCS #1: RSA Cryptography Specifications Version 2.2. Key format (§3), OAEP and PSS padding (§7, §8), and the CRT shortcut fields.</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446" target="_blank" rel="noopener">RFC 8446</a>, The Transport Layer Security (TLS) Protocol Version 1.3. RSA appears only among the signature algorithms (§4.2.3).</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7518" target="_blank" rel="noopener">RFC 7518</a>, JSON Web Algorithms. Defines RS256 as RSA with SHA-256 (§3.3).</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc4253#section-6.6" target="_blank" rel="noopener">RFC 4253 §6.6</a>, the <code>ssh-rsa</code> public key format: <var>e</var> then <var>n</var>.</li>
+        <li><a href="https://docs.python.org/3/library/functions.html#pow" target="_blank" rel="noopener">Python built-in <code>pow()</code></a>: the three-argument form for modular exponentiation and, since 3.8, a negative exponent for the modular inverse.</li>
+        <li>F. Boudot et al., <a href="https://eprint.iacr.org/2020/697" target="_blank" rel="noopener">"Comparing the Difficulty of Factorization and Discrete Logarithm: a 240-digit Experiment"</a>, CRYPTO 2020. The state of the art in factoring; the same team announced RSA-250 the same year.</li>
+      </ol>
+
+      <nav class="chapter-nav" aria-label="Chapter navigation">
+        <a href="math.html">← Math Behind Tech</a>
+        <span class="muted">Chapter 02 · not yet written</span>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "url": "https://buildingbackend.vercel.app/math-rsa.html",
+    "headline": "RSA and public-key cryptography",
+    "description": "RSA worked out by hand with p = 3 and q = 11: build the keys, encrypt and decrypt, sign a message, see why it works, then match every number to openssl output.",
+    "isPartOf": { "@type": "CollectionPage", "name": "Math Behind Tech", "url": "https://buildingbackend.vercel.app/math.html" },
+    "author": { "@type": "Person", "name": "@ritikshub", "url": "https://x.com/ritikshub" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        }
+      });
+    })();
+  </script>
+  <script src="data.js?v=20260813m"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>
