@@ -167,7 +167,7 @@ still to come. Click any phase to expand its lesson list.
 | 07 | [Streams, Pipes & Redirection: Everything Is a File Descriptor](phases/01-linux-and-the-command-line/07-streams-pipes-and-redirection/) | Build | Python |
 | 08 | [The Text Toolkit: grep, sed, awk, sort, uniq, cut, tr & jq](phases/01-linux-and-the-command-line/08-the-text-toolkit/) | Build | Python |
 | 09 | [Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail](phases/01-linux-and-the-command-line/09-shell-scripting-for-operations/) | Build | Bash, Python |
-| 10 | Processes & Signals: ps, top, kill, jobs & /proc | Build | Python |
+| 10 | [Processes & Signals: ps, top, kill, jobs & /proc](phases/01-linux-and-the-command-line/10-processes-and-signals/) | Build | Python |
 | 11 | Boot, init & systemd: Keeping Your Backend Running | Build | Python |
 | 12 | Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer | Build | Python |
 | 13 | Installing Software: Packages, Repositories & Where Files Land | Learn | — |
