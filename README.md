@@ -10,7 +10,7 @@
 **_"When fishermen cannot go to sea, they repair nets."_**
 
 Learn how backends actually work, starting from zero.<br>
-**164 lessons · 14 phases · Python, standard library only.**
+**182 lessons · 14 phases · Python, standard library only.**
 
 Free. Open source. MIT. No paywall, no signup, no gated content.
 
@@ -58,7 +58,7 @@ phases/<NN>-<phase-name>/<NN>-<lesson-name>/
 └── outputs/   a checklist, runbook, or prompt you keep
 ```
 
-That last folder matters. **134 artifacts** so far: 88 checklists, 31 runbooks,
+That last folder matters. **152 artifacts** so far: 95 checklists, 42 runbooks,
 15 prompts. Things you can take to real work.
 
 ## A glimpse
@@ -129,8 +129,8 @@ so the sandbox never collides with anything you already run. `make help` lists t
 
 ## Contents
 
-Fourteen phases, thirteen written and one in progress, plus five capstone projects
-still to come. Click any phase to expand its lesson list.
+Fourteen phases, all written, plus five capstone projects still to come. Click any
+phase to expand its lesson list.
 
 <a id="phase-0"></a>
 ### Phase 0: Foundations `11 lessons`
@@ -153,8 +153,6 @@ still to come. Click any phase to expand its lesson list.
 <details id="phase-1">
 <summary><b>Phase 1 — Linux and the Command Line</b> &nbsp;<code>18 lessons</code>&nbsp; <em>The machine your backend actually runs on: the kernel, the shell, files, permissions, pipes, processes, services, and the tools (curl, ss, ssh) you drive it with. Build each command from the system calls first, then use the real one.</em></summary>
 <br/>
-
-> **In progress.** Lessons are added one at a time; unlinked rows are planned.
 
 | # | Lesson | Type | Lang |
 |:---:|--------|:----:|------|
