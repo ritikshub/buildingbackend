@@ -169,7 +169,7 @@ still to come. Click any phase to expand its lesson list.
 | 09 | [Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail](phases/01-linux-and-the-command-line/09-shell-scripting-for-operations/) | Build | Bash, Python |
 | 10 | [Processes & Signals: ps, top, kill, jobs & /proc](phases/01-linux-and-the-command-line/10-processes-and-signals/) | Build | Python |
 | 11 | [Boot, init & systemd: Keeping Your Backend Running](phases/01-linux-and-the-command-line/11-boot-init-and-systemd/) | Build | Python |
-| 12 | Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer | Build | Python |
+| 12 | [Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer](phases/01-linux-and-the-command-line/12-reading-the-machine/) | Build | Python |
 | 13 | Installing Software: Packages, Repositories & Where Files Land | Learn | — |
 | 14 | Networking from the Shell: ip, ss, ping, dig, nc & tcpdump | Build | Python |
 | 15 | curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies | Build | Python |

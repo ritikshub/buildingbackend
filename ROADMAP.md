@@ -54,7 +54,7 @@ themselves stay in the phases that own them; this phase links forward.
 | 09 | Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail | ✅ | ~75 min |
 | 10 | Processes & Signals: ps, top, kill, jobs & /proc | ✅ | ~80 min |
 | 11 | Boot, init & systemd: Keeping Your Backend Running | ✅ | ~85 min |
-| 12 | Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer | ⬚ | ~75 min |
+| 12 | Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer | ✅ | ~75 min |
 | 13 | Installing Software: Packages, Repositories & Where Files Land | ⬚ | ~50 min |
 | 14 | Networking from the Shell: ip, ss, ping, dig, nc & tcpdump | ⬚ | ~80 min |
 | 15 | curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies | ⬚ | ~80 min |
