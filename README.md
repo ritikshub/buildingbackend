@@ -170,7 +170,7 @@ still to come. Click any phase to expand its lesson list.
 | 10 | [Processes & Signals: ps, top, kill, jobs & /proc](phases/01-linux-and-the-command-line/10-processes-and-signals/) | Build | Python |
 | 11 | [Boot, init & systemd: Keeping Your Backend Running](phases/01-linux-and-the-command-line/11-boot-init-and-systemd/) | Build | Python |
 | 12 | [Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer](phases/01-linux-and-the-command-line/12-reading-the-machine/) | Build | Python |
-| 13 | Installing Software: Packages, Repositories & Where Files Land | Learn | — |
+| 13 | [Installing Software: Packages, Repositories & Where Files Land](phases/01-linux-and-the-command-line/13-installing-software/) | Learn | Python |
 | 14 | Networking from the Shell: ip, ss, ping, dig, nc & tcpdump | Build | Python |
 | 15 | curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies | Build | Python |
 | 16 | curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries | Build | Python |
