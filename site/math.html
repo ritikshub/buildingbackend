@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Math Behind Tech - Building Backend</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
-  <meta name="description" content="The mathematics under the software you use every day, worked out by hand with numbers small enough to check on paper. RSA with p = 3 and q = 11 before RSA with 617-digit primes.">
+  <meta name="description" content="The mathematics under the software you use every day, worked out by hand with numbers small enough to check on paper. RSA with 3 × 11, zip on ABRACADABRA, the birthday paradox behind every UUID. Try each one live.">
   <link rel="canonical" href="https://buildingbackend.vercel.app/math.html">
   <meta property="og:title" content="Math Behind Tech · Building Backend">
   <meta property="og:description" content="The mathematics under everyday software, worked out by hand with numbers small enough to check on paper.">
@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=20260813m">
-  <link rel="stylesheet" href="math.css?v=20260905a">
+  <link rel="stylesheet" href="math.css?v=20260905b">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -47,57 +47,99 @@
       <div class="math-eyebrow">Reference</div>
       <h1>Math Behind Tech</h1>
 
-      <p class="lede">The mathematics under the software you use every day, worked out with numbers small enough to check on paper. RSA with <var>p&nbsp;=&nbsp;3</var> and <var>q&nbsp;=&nbsp;11</var> before RSA with 617-digit primes. Zip on ABRACADABRA before zip on a Docker image.</p>
+      <p class="lede">The maths under the software you use every day, worked out with numbers small enough to check on paper. Not proofs to admire. Things you can redo with a pencil, then run for real.</p>
 
-      <p>Most explanations of the maths in technology stop at the idea. "RSA relies on the difficulty of factoring large numbers." True, and useless: you close the tab knowing exactly as much as before. These chapters go the other way. The theory is kept to a screen, and then every single number is computed in front of you, by hand, small enough that you can redo it with a pencil and catch us if we slip.</p>
-
-      <h2>How every chapter is built</h2>
-      <p>Each chapter follows the same shape, so once you have read one you know where to look in the next.</p>
-
-      <div class="grid2">
-        <div class="tile">
-          <div class="tile-k">01 · Where you meet it</div>
-          <p>The four or five places in real systems where this maths is doing the work right now: a padlock in a browser, a file in your home directory, a header on an API call.</p>
+      <!-- ── Hooks ─────────────────────────────────────────────────────── -->
+      <h2>You used all of this today</h2>
+      <div class="grid3">
+        <div class="hook">
+          <div class="tile-k">HTTPS · Chapter 01</div>
+          <p>You opened this page over HTTPS. The padlock is two prime numbers multiplied together. With <var>p = 3</var> and <var>q = 11</var> you can build the key, lock a message, unlock it, and then break it, all with a pencil.</p>
+          <a class="hook-link" href="math-rsa.html">RSA and public-key cryptography →</a>
         </div>
-        <div class="tile">
-          <div class="tile-k">02 · The idea in one breath</div>
-          <p>The theory in plain words, one screen long. Every term defined the first time it appears. No prerequisites assumed beyond arithmetic.</p>
+        <div class="hook">
+          <div class="tile-k">GZIP · Chapter 02</div>
+          <p id="wire">This page reached you compressed. Most pages are three to five times smaller on the wire than on your screen.</p>
+          <p>Two tricks do it: spend fewer bits on common letters, and point backwards at text you already sent. The chapter ends by reading a real gzip file bit by bit.</p>
+          <a class="hook-link" href="math-zip.html">How zip works →</a>
         </div>
-        <div class="tile">
-          <div class="tile-k">03 · The tools</div>
-          <p>Every mathematical operation the chapter needs, introduced one at a time with its own one-line example. If you can follow the tools you can follow the chapter.</p>
-        </div>
-        <div class="tile">
-          <div class="tile-k">04 · Worked examples</div>
-          <p>Every example sits on its own cream sheet, visually apart from the theory: a one-line problem, the working as rows you can check one at a time, and the answer.</p>
-        </div>
-        <div class="tile">
-          <div class="tile-k">05 · Run it</div>
-          <p>The same computation in standard-library Python, then through the production tool, so the toy and the real thing line up field by field.</p>
-        </div>
-        <div class="tile">
-          <div class="tile-k">06 · Toy vs production</div>
-          <p>A table of what changes at real scale and why, followed by a few exercises with hidden answers, and the primary sources the chapter rests on.</p>
+        <div class="hook">
+          <div class="tile-k">HASHING · Chapter 03</div>
+          <p>Something you ran today minted a UUID and looked up a key in a hash map. Both rest on one party trick: put 23 people in a room and the odds that two share a birthday are better than even.</p>
+          <a class="hook-link" href="math-hashing.html">Hashing and the birthday paradox →</a>
         </div>
       </div>
 
+      <!-- ── Live teasers ──────────────────────────────────────────────── -->
+      <h2>Try one now</h2>
+      <p>Each box below is the central computation of a chapter, running live. What you type here is exactly what the chapter works through by hand.</p>
+
+      <section class="try" aria-labelledby="try-rsa">
+        <div class="try-head">
+          <h3 class="try-title" id="try-rsa">Lock a word with RSA</h3>
+          <div class="try-ch">Public key (33, 3) · private key (33, 7) · <a href="math-rsa.html">Chapter 01</a></div>
+        </div>
+        <label for="rsaIn">A word, letters only</label>
+        <input type="text" id="rsaIn" value="HI" maxlength="10" autocomplete="off" spellcheck="false">
+        <div class="try-rows" id="rsaOut"></div>
+      </section>
+
+      <section class="try" aria-labelledby="try-huff">
+        <div class="try-head">
+          <h3 class="try-title" id="try-huff">Squeeze a word with Huffman coding</h3>
+          <div class="try-ch">Trick one of zip · <a href="math-zip.html">Chapter 02</a></div>
+        </div>
+        <label for="huffIn">A word, letters only</label>
+        <input type="text" id="huffIn" value="ABRACADABRA" maxlength="24" autocomplete="off" spellcheck="false">
+        <div class="try-rows" id="huffOut"></div>
+        <div class="bars">
+          <span>ASCII</span><div class="bar"><i id="barAscii"></i></div>
+          <span>Huffman</span><div class="bar"><i id="barHuff"></i></div>
+        </div>
+      </section>
+
+      <section class="try" aria-labelledby="try-bday">
+        <div class="try-head">
+          <h3 class="try-title" id="try-bday">The birthday paradox</h3>
+          <div class="try-ch">Why your IDs do or do not collide · <a href="math-hashing.html">Chapter 03</a></div>
+        </div>
+        <label for="bdayIn">People in the room: <strong id="bdayN">23</strong></label>
+        <input type="range" id="bdayIn" min="2" max="70" value="23">
+        <div class="try-rows" id="bdayOut"></div>
+        <div class="bars">
+          <span>Shared</span><div class="bar"><i id="barBday"></i></div>
+        </div>
+      </section>
+
+      <!-- ── Chapters ──────────────────────────────────────────────────── -->
       <h2>Chapters</h2>
       <ol class="chapters">
         <li class="chapter-row">
           <div class="chapter-num">01</div>
           <div>
             <h3 class="chapter-title"><a href="math-rsa.html">RSA and public-key cryptography</a></h3>
-            <p class="chapter-hook">Two small primes, one multiplication, and the padlock the whole internet uses. Encrypt and decrypt a message with <var>n&nbsp;=&nbsp;33</var>, then sign one.</p>
+            <p class="chapter-hook">Two small primes, one multiplication, and the padlock the whole internet uses. Build the keys, encrypt HI, decrypt it, sign a message, break the key, then match every number to real openssl output.</p>
             <div class="chapter-tags">HTTPS · SSH keys · JWT · Signed commits</div>
           </div>
+          <div class="chapter-teaser">(33, 3)<small>the public key</small></div>
         </li>
         <li class="chapter-row">
           <div class="chapter-num">02</div>
           <div>
             <h3 class="chapter-title"><a href="math-zip.html">How zip works</a></h3>
-            <p class="chapter-hook">Count the letters, build a tree, point backwards at what you already said. Squeeze ABRACADABRA from 88 bits to 23, then open a real gzip file and read it bit by bit.</p>
+            <p class="chapter-hook">Count the letters, build a tree, point backwards at what you already said. Squeeze ABRACADABRA from 88 bits to 23, turn a JSON array into copy tokens, then open a real gzip file and read it bit by bit.</p>
             <div class="chapter-tags">HTTP gzip · Docker layers · PNG · docx</div>
           </div>
+          <div class="chapter-teaser">88 → 23<small>bits</small></div>
+        </li>
+        <li class="chapter-row">
+          <div class="chapter-num">03</div>
+          <div>
+            <h3 class="chapter-title"><a href="math-hashing.html">Hashing and the birthday paradox</a></h3>
+            <p class="chapter-hook">A hash map with 8 buckets, the 23-people trick, the square-root rule for collisions, why git's 7 characters ran out, a Snowflake ID taken apart, and a birthday attack run on your own laptop.</p>
+            <div class="chapter-tags">Hash maps · git · UUIDs · Passwords</div>
+          </div>
+          <div class="chapter-teaser">23 → 50.7%<small>people, odds</small></div>
         </li>
       </ol>
 
@@ -126,7 +168,8 @@
     "isPartOf": { "@type": "WebSite", "name": "Building Backend", "url": "https://buildingbackend.vercel.app" },
     "hasPart": [
       { "@type": "TechArticle", "name": "RSA and public-key cryptography", "url": "https://buildingbackend.vercel.app/math-rsa.html" },
-      { "@type": "TechArticle", "name": "How zip works", "url": "https://buildingbackend.vercel.app/math-zip.html" }
+      { "@type": "TechArticle", "name": "How zip works", "url": "https://buildingbackend.vercel.app/math-zip.html" },
+      { "@type": "TechArticle", "name": "Hashing and the birthday paradox", "url": "https://buildingbackend.vercel.app/math-hashing.html" }
     ]
   }
   </script>
@@ -157,6 +200,7 @@
   <script src="progress.js?v=20260813d"></script>
   <script src="header.js?v=20260813d" defer></script>
   <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script src="math.js?v=20260905a" defer></script>
   <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 </body>
 </html>
