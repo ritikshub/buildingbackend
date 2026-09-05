@@ -76,7 +76,7 @@ Nothing in user space exists until the kernel creates one process and points it 
     <text x="46" y="280">cat /proc/1/comm → systemd        systemctl get-default → graphical.target        systemd-analyze → Startup finished in 253ms (userspace)</text>
     <text x="46" y="298">ps --forest: systemd (1) → systemd-journald (26), cron (70), app.service's python3 (147) ...        systemd-analyze blame → the slowest units first</text>
     <text x="46" y="316">systemctl list-dependencies multi-user.target → the tree of what "up" means: basic.target, cron.service, your app.service ...</text>
-    <text x="46" y="340" opacity="0.8">a container skips stages 1 to 3: it is a process whose PID 1 is whatever CMD names. That is why `make shell` cannot run systemd, and why this lesson boots one that can.</text>
+    <text x="46" y="340" opacity="0.8">a container skips stages 1 to 3: its PID 1 is whatever CMD names. That is why `make shell` cannot run systemd, and why this lesson boots one that can.</text>
   </g>
   <text x="450" y="392" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.9">Firmware finds the loader, the loader loads the kernel, the kernel starts PID 1, PID 1 starts everything else.</text>
   <text x="450" y="412" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.72">"The server rebooted" means this whole chain ran again and your service came back only if a unit told PID 1 to start it.</text>
@@ -132,7 +132,7 @@ Strip `systemd` down to what it does for one service and you get a loop that any
     <text x="735" y="240">≥ StartLimitBurst → failed (start-limit-hit)</text>
     <text x="735" y="254">else: sleep RestartSec, NRestarts += 1,</text>
     <text x="735" y="268">and START again</text>
-    <text x="735" y="286" opacity="0.75">a crash loop hits the limit; a dependency outage does not spin</text>
+    <text x="735" y="286" opacity="0.75">a crash loop stops here; an outage waits</text>
   </g>
   <path d="M735 154 L735 182" fill="none" stroke="#d64545" stroke-width="1.6" marker-end="url(#p1l11b-ard)"/>
   <path d="M598 240 L170 240 L170 156" fill="none" stroke="#0fa07f" stroke-width="1.8" marker-end="url(#p1l11b-arg)"/>

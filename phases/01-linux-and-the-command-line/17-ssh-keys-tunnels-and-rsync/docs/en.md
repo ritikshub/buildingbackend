@@ -154,7 +154,7 @@ A database listens on `127.0.0.1:5432` on the server, unreachable from anywhere 
     <text x="616" y="262" opacity="0.8">ProxyJump in ~/.ssh/config</text>
     <text x="616" y="284" opacity="0.7">-A (agent forwarding) is the risky alternative</text>
   </g>
-  <text x="450" y="336" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.9">Every tunnel is a channel in the connection layer. The far port stays bound to loopback; the firewall stays closed; only key-holders get through.</text>
+  <text x="450" y="336" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.9">A tunnel is a channel: the far port stays on loopback, the firewall stays shut, only key-holders get through.</text>
   <text x="450" y="358" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.72">A tunnel to a database is how you run psql against production without the database ever having a public port (lesson 14's ss -tlnp shows 127.0.0.1:5432).</text>
   <text x="450" y="380" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.72">ssh -D 1080 makes a SOCKS proxy through the same channel: a whole browser, or curl -x socks5h://, through the bastion.</text>
 </svg>

@@ -77,7 +77,7 @@ Every reading command is one loop: `read` into a buffer until `read` returns 0, 
       <text x="436" y="236" font-weight="700">tail -f</text> <text x="500" y="236">on zero: sleep 50 ms and read again, forever</text>
       <text x="436" y="266" opacity="0.8">Linux shortcut for cp: copy_file_range(src_fd, dst_fd, n) asks the</text>
       <text x="436" y="280" opacity="0.8">kernel to move the bytes itself; nothing visits user space. shutil.copyfile,</text>
-      <text x="436" y="294" opacity="0.8">GNU cp and rsync use it when they can. Same result, fewer crossings (lesson 01).</text>
+      <text x="436" y="294" opacity="0.8">cp and rsync use it when they can: same result, fewer crossings (lesson 01)</text>
       <text x="436" y="314" opacity="0.7">every HTTP download, every database dump, every log shipper is this loop too</text>
     </g>
   </g>
@@ -155,7 +155,7 @@ For anything a service will read, use `cp -a`, or `install -m 640 -o root -g app
     <path d="M632 106 L686 106" fill="none" stroke="#d64545" stroke-width="2" marker-end="url(#p1l05b-ard)"/>
     <text x="659" y="99" text-anchor="middle" font-size="7.5" fill="#d64545">copy</text>
     <rect x="550" y="146" width="220" height="30" rx="7" fill="#d64545" fill-opacity="0.10" stroke="#d64545" stroke-width="1.3"/>
-    <text x="660" y="165" text-anchor="middle" font-size="9" fill="currentColor">the read/write loop over all 64 MiB, then unlink</text>
+    <text x="660" y="165" text-anchor="middle" font-size="9" fill="currentColor">read/write loop over 64 MiB, then unlink</text>
     <g text-anchor="middle" font-size="8.5" fill="currentColor">
       <text x="660" y="200">every byte through the kernel twice · 39 ms measured</text>
       <text x="660" y="214" font-weight="700" fill="#d64545">not atomic: both files exist during the copy; a crash leaves both</text>

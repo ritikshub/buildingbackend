@@ -75,7 +75,7 @@ Installing it is unpacking that tar over `/` (so `./usr/bin/jq` lands at `/usr/b
     <text x="350" y="218">extract data.tar over /</text>
     <text x="350" y="232">./usr/bin/jq → /usr/bin/jq</text>
     <text x="350" y="246">run preinst, postinst scripts</text>
-    <text x="350" y="260" opacity="0.75">conffiles under /etc: ask before replacing</text>
+    <text x="350" y="260" opacity="0.75">conffiles in /etc: ask first</text>
     <text x="570" y="200" font-size="10" font-weight="700" fill="#7c5cff">7 · RECORD</text>
     <text x="570" y="218">stanza → /var/lib/dpkg/status</text>
     <text x="570" y="232">file list → /var/lib/dpkg/info/jq.list</text>

@@ -45,18 +45,18 @@ Linux has one directory tree, starting at `/`, and it does not care how many dis
     </g>
     <text x="52" y="124" font-size="10.5" font-weight="700" fill="#7c5cff">/usr</text>
     <text x="100" y="124" font-size="9" fill="currentColor">installed software: the bulk of the system</text>
-    <text x="52" y="140" font-size="8.5" fill="currentColor">bin · sbin: the commands (390 in the sandbox) · lib: shared libraries · share: docs, locales, data</text>
-    <text x="52" y="156" font-size="8.5" fill="currentColor">local: the same layout for things YOU installed by hand: /usr/local/bin is first on PATH</text>
+    <text x="52" y="140" font-size="8.5" fill="currentColor">bin · sbin: the commands (390 here) · lib: libraries · share: docs, locales</text>
+    <text x="52" y="156" font-size="8.5" fill="currentColor">local: same layout for what YOU installed by hand; first on PATH</text>
     <text x="52" y="190" font-size="10.5" font-weight="700" fill="#7c5cff">/etc</text>
-    <text x="100" y="190" font-size="9" fill="currentColor">system-wide configuration, all of it plain text (89 entries in the sandbox)</text>
-    <text x="52" y="206" font-size="8.5" fill="currentColor">passwd, group, hosts, fstab, ssh/, systemd/, nginx/, app/ · /etc/default and *.d/ directories for drop-ins</text>
+    <text x="100" y="190" font-size="9" fill="currentColor">system-wide configuration, all plain text (89 entries here)</text>
+    <text x="52" y="206" font-size="8.5" fill="currentColor">passwd, group, hosts, fstab, ssh/, systemd/, app/ · *.d/ dirs for drop-ins</text>
     <text x="52" y="246" font-size="10.5" font-weight="700" fill="#7c5cff">/opt</text>
-    <text x="100" y="246" font-size="9" fill="currentColor">self-contained third-party trees: /opt/app/bin, /opt/app/lib, one directory per product</text>
+    <text x="100" y="246" font-size="9" fill="currentColor">vendor trees: /opt/app/{bin,lib}, one directory per product</text>
     <text x="52" y="286" font-size="10.5" font-weight="700" fill="#7c5cff">/boot</text>
-    <text x="100" y="286" font-size="9" fill="currentColor">the kernel image and the bootloader (empty in a container: no kernel of its own)</text>
+    <text x="100" y="286" font-size="9" fill="currentColor">the kernel and the bootloader (empty in a container)</text>
     <text x="52" y="322" font-size="10.5" font-weight="700" fill="#7c5cff">/bin /sbin /lib</text>
     <text x="180" y="322" font-size="9" fill="currentColor">symlinks: bin → usr/bin, lib → usr/lib</text>
-    <text x="52" y="340" font-size="8.5" fill="currentColor" opacity="0.8">the "merged /usr": the historical split is gone, the names survive so old scripts keep working</text>
+    <text x="52" y="340" font-size="8.5" fill="currentColor" opacity="0.8">the "merged /usr": the old split is gone; the names survive for old scripts</text>
 
     <!-- amber column -->
     <g fill="none" stroke-linejoin="round" stroke-width="1.5">
@@ -67,23 +67,23 @@ Linux has one directory tree, starting at `/`, and it does not care how many dis
     </g>
     <text x="472" y="124" font-size="10.5" font-weight="700" fill="#e0930f">/var</text>
     <text x="520" y="124" font-size="9" fill="currentColor">variable data: everything that grows while the machine runs</text>
-    <text x="472" y="140" font-size="8.5" fill="currentColor">lib: persistent data (postgresql, docker, app) · log: logs · cache: regenerable</text>
-    <text x="472" y="154" font-size="8.5" fill="currentColor">spool: queued work (mail, cron) · tmp: scratch that survives reboot · run → /run</text>
+    <text x="472" y="140" font-size="8.5" fill="currentColor">lib: persistent data (postgres, docker, app) · log · cache: regenerable</text>
+    <text x="472" y="154" font-size="8.5" fill="currentColor">spool: queued work · tmp: scratch that survives reboot · run → /run</text>
     <text x="472" y="170" font-size="8.5" fill="currentColor" opacity="0.8">/var/lib is the one directory that must be on a backed-up volume</text>
     <text x="472" y="208" font-size="10.5" font-weight="700" fill="#e0930f">/run</text>
-    <text x="520" y="208" font-size="9" fill="currentColor">runtime state since boot: PID files, Unix sockets · a tmpfs, empty at every boot</text>
+    <text x="520" y="208" font-size="9" fill="currentColor">PID files and sockets · a tmpfs, empty at every boot</text>
     <text x="472" y="248" font-size="10.5" font-weight="700" fill="#e0930f">/tmp</text>
-    <text x="520" y="248" font-size="9" fill="currentColor">scratch, cleared at boot, often small and in RAM · world-writable, the sticky bit (lesson 06)</text>
+    <text x="520" y="248" font-size="9" fill="currentColor">scratch, cleared at boot, often in RAM · sticky bit (lesson 06)</text>
     <text x="472" y="288" font-size="10.5" font-weight="700" fill="#e0930f">/home /root</text>
-    <text x="580" y="288" font-size="9" fill="currentColor">users' directories; root's is separate so it works when /home is missing</text>
+    <text x="580" y="288" font-size="9" fill="currentColor">users' homes; root's separate, works without /home</text>
 
     <!-- green column -->
     <g fill="none" stroke-linejoin="round" stroke-width="1.5">
       <rect x="460" y="310" width="400" height="40" rx="8" fill="#0fa07f" fill-opacity="0.09" stroke="#0fa07f"/>
     </g>
     <text x="472" y="328" font-size="10.5" font-weight="700" fill="#0fa07f">/proc /sys /dev</text>
-    <text x="600" y="328" font-size="9" fill="currentColor">the kernel's windows and the drivers' doors (lesson 02)</text>
-    <text x="472" y="343" font-size="8.5" fill="currentColor" opacity="0.8">not on any disk; a backup of them is meaningless, and du across them is misleading</text>
+    <text x="600" y="328" font-size="9" fill="currentColor">the kernel's windows, the drivers' doors</text>
+    <text x="472" y="343" font-size="8.5" fill="currentColor" opacity="0.8">not on any disk: a backup is meaningless and du across them misleads</text>
 
     <!-- the rest -->
     <rect x="40" y="366" width="820" height="46" rx="8" fill="#7f7f7f" fill-opacity="0.10" stroke="#7f7f7f" stroke-width="1.4" stroke-linejoin="round"/>
@@ -168,7 +168,7 @@ Foundations said a directory is a table mapping names to inode numbers. Take tha
       <text x="60" y="170">config.symlink</text>    <text x="240" y="170">186402335</text>
       <text x="60" y="194">dangling</text>          <text x="240" y="194">186402336</text>
       <text x="60" y="218">logs</text>              <text x="240" y="218">186402337</text>
-      <text x="60" y="242" opacity="0.6">. and ..</text> <text x="240" y="242" opacity="0.6">186402329, 186402328</text>
+      <text x="60" y="242" opacity="0.6">. and ..</text> <text x="228" y="242" opacity="0.6" font-size="8.5">186402329, 186402328</text>
     </g>
 
     <!-- inodes -->
@@ -180,13 +180,13 @@ Foundations said a directory is a table mapping names to inode numbers. Take tha
     </g>
     <text x="432" y="114" font-size="10" font-weight="700" fill="#0fa07f">inode 186402333 · regular file · links: 2 · mode 640 · size 11</text>
     <text x="432" y="130" font-size="9" fill="currentColor">data blocks: "port: 8080\n"</text>
-    <text x="432" y="146" font-size="8.5" fill="currentColor" opacity="0.8">a HARD LINK: two names, one inode, one copy of the bytes; rm either name and the count drops to 1</text>
+    <text x="432" y="146" font-size="8.5" fill="currentColor" opacity="0.8">a HARD LINK: two names, one inode; rm either name and the count drops to 1</text>
     <text x="432" y="194" font-size="10" font-weight="700" fill="#e0930f">inode 186402335 · symbolic link · links: 1 · size 11</text>
-    <text x="432" y="210" font-size="9" fill="currentColor">content: "config.yaml"  ← a path, followed by the kernel at open(); resolved relative to etc/app</text>
+    <text x="432" y="210" font-size="9" fill="currentColor">content: "config.yaml" ← a path followed at open(), relative to etc/app</text>
     <text x="432" y="254" font-size="10" font-weight="700" fill="#d64545">inode 186402336 · symbolic link · size 20</text>
-    <text x="432" y="270" font-size="9" fill="currentColor">content: "/definitely/not/here"  ← lstat succeeds, open() fails: ENOENT. A DANGLING link</text>
+    <text x="432" y="270" font-size="9" fill="currentColor">content: "/definitely/not/here" ← lstat works, open() gives ENOENT: dangling</text>
     <text x="432" y="314" font-size="10" font-weight="700" fill="#e0930f">inode 186402337 · symbolic link · size 17</text>
-    <text x="432" y="330" font-size="9" fill="currentColor">content: "../../var/log/app"  ← relative to the link's directory, not to your cwd; readlink -f resolves it</text>
+    <text x="432" y="330" font-size="9" fill="currentColor">content: "../../var/log/app" ← relative to the link's directory, not your cwd</text>
 
     <!-- arrows from names to inodes -->
     <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-opacity="0.7">
@@ -268,7 +268,7 @@ In the sandbox, `find /etc -name '*.conf'` finds 26 files; `find / -xdev -type f
   <g font-family="'JetBrains Mono', ui-monospace, monospace">
     <rect x="300" y="46" width="300" height="40" rx="9" fill="#c94a12" fill-opacity="0.12" stroke="#c94a12" stroke-width="1.8" stroke-linejoin="round"/>
     <text x="450" y="64" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">start: df -h /the/path  and  df -i /the/path</text>
-    <text x="450" y="79" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.8">bytes used, and inodes used, on the filesystem that holds the path</text>
+    <text x="450" y="79" text-anchor="middle" font-size="8.5" fill="currentColor" opacity="0.8">bytes and inodes used on the filesystem holding the path</text>
     <g fill="none" stroke="currentColor" stroke-width="1.6">
       <path d="M380 88 L170 130" marker-end="url(#p1l04c-ar)"/>
       <path d="M450 88 L450 130" marker-end="url(#p1l04c-ar)"/>

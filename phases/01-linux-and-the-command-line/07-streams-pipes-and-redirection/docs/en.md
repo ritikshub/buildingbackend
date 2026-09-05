@@ -184,8 +184,8 @@ $ strace -f -e trace=pipe2,dup3,clone,execve -o /tmp/p.txt bash -c 'ls / | wc -l
     <!-- the pipe -->
     <rect x="330" y="200" width="240" height="60" rx="10" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="2.2" stroke-linejoin="round"/>
     <text x="450" y="222" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0fa07f">THE PIPE · kernel buffer, 64 KiB</text>
-    <text x="450" y="238" text-anchor="middle" font-size="8.5" fill="currentColor">bytes in at the write end, out at the read end, in order</text>
-    <text x="450" y="251" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.7">full → writers sleep · empty → readers sleep · no writers left → EOF</text>
+    <text x="450" y="238" text-anchor="middle" font-size="8.5" fill="currentColor">in one end, out the other, in order</text>
+    <text x="450" y="251" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.7">full → writers sleep · empty → readers sleep</text>
     <!-- ls -->
     <rect x="40" y="170" width="230" height="120" rx="10" fill="#7c5cff" fill-opacity="0.10" stroke="#7c5cff" stroke-width="1.8" stroke-linejoin="round"/>
     <text x="155" y="192" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7c5cff">child 34 → ls /</text>

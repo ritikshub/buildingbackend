@@ -336,7 +336,7 @@ Between "a normal user" and "root" Linux has a finer scale: **capabilities**, ab
     </g>
   </g>
   <text x="450" y="380" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Services in the second column, one capability at most. Humans in the first, with sudo. Root is a place you visit, not a place you run.</text>
-  <text x="450" y="400" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.72">A container (Phase 11) is a process holding a reduced capability set: the sandbox's root has 14 of the 41, which is why some things in earlier lessons were refused.</text>
+  <text x="450" y="400" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9.5" fill="currentColor" opacity="0.72">A container (Phase 11) is a process with a trimmed capability set: the sandbox's root holds 14 of 41, so some earlier commands were refused.</text>
 </svg>
 ```
 

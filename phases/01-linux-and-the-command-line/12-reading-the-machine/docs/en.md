@@ -23,13 +23,13 @@ The kernel keeps **counters**: CPU ticks spent in user code, in the kernel, idle
   <rect x="40" y="52" width="300" height="150" rx="10" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f" stroke-width="1.8" stroke-linejoin="round"/>
   <text x="190" y="74" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0fa07f">THE KERNEL'S COUNTERS (only ever go up)</text>
   <g font-size="8.5" fill="currentColor">
-    <text x="56" y="96">/proc/stat        cpu: user nice system idle iowait irq softirq steal</text>
-    <text x="56" y="110">                  ctxt (context switches) · procs_running · procs_blocked</text>
-    <text x="56" y="124">/proc/diskstats   per device: reads, writes, sectors, ms spent in I/O</text>
-    <text x="56" y="138">/proc/vmstat      pswpin pswpout pgpgin pgpgout (pages)</text>
-    <text x="56" y="152">/proc/net/dev     bytes and packets per interface, errors, drops</text>
+    <text x="56" y="96">/proc/stat     user system idle iowait steal ticks</text>
+    <text x="56" y="110">               ctxt · procs_running · procs_blocked</text>
+    <text x="56" y="124">/proc/diskstats  reads, writes, sectors, ms in I/O</text>
+    <text x="56" y="138">/proc/vmstat     pswpin pswpout pgpgin pgpgout</text>
+    <text x="56" y="152">/proc/net/dev    bytes, packets, errors, drops per NIC</text>
     <text x="56" y="166">/proc/PID/stat    utime stime per process</text>
-    <text x="56" y="188" opacity="0.75">a snapshot says nothing about "now"; only a difference does</text>
+    <text x="56" y="188" opacity="0.75">a snapshot says nothing about now; a difference does</text>
   </g>
   <rect x="380" y="52" width="180" height="150" rx="10" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.8" stroke-linejoin="round"/>
   <text x="470" y="74" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c94a12">THE TOOL</text>
@@ -115,7 +115,7 @@ Lesson 02 gave you the rule and this lesson depends on it: **`MemAvailable`** (t
   </g>
   <path d="M238 148 L420 148" fill="none" stroke="#0fa07f" stroke-width="2.2"/>
   <path d="M238 142 L238 154 M420 142 L420 154" fill="none" stroke="#0fa07f" stroke-width="2.2"/>
-  <text x="329" y="168" text-anchor="middle" font-size="9" font-weight="700" fill="#0fa07f">available 4,338 = free + reclaimable cache</text>
+  <text x="329" y="168" text-anchor="middle" font-size="9" font-weight="700" fill="#0fa07f">available 4,338 = free + reclaimable</text>
   <g font-size="8.5" fill="currentColor">
     <text x="56" y="196">read available. free is nearly zero on any healthy box after an hour</text>
     <text x="56" y="212">a process needing RAM makes the kernel drop cache first; that costs a</text>

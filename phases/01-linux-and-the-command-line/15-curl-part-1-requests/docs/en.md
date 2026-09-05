@@ -51,19 +51,19 @@ Four lines went out: a **request line** (method, path, version) and three header
     <text x="56" y="316">&gt;</text>
     <text x="56" y="338">{"user": "ada"}</text>
   </g>
-  <g font-size="8.5" fill="#7c5cff">
-    <text x="300" y="96">-X · implied by -d/-F/--json · -I · -G</text>
-    <text x="300" y="118">the URL · --resolve (lesson 16)</text>
-    <text x="300" y="140">-A</text>
-    <text x="300" y="162">-H 'Accept: ...' · --json sets it</text>
-    <text x="300" y="184">-u user:pass · -H 'Authorization: Bearer ..'</text>
-    <text x="300" y="206">-b jar-or-string</text>
-    <text x="300" y="228">-e</text>
-    <text x="300" y="250">-H 'Name: value' (any header)</text>
-    <text x="300" y="272">-d / --json / -F set it</text>
-    <text x="300" y="294">computed from the body</text>
-    <text x="300" y="316">the blank line: headers end here</text>
-    <text x="300" y="338">-d · --json · -F · -T · @file · @-</text>
+  <g font-size="7.5" fill="#7c5cff">
+    <text x="286" y="96">-X · implied by -d/-F/--json · -I</text>
+    <text x="286" y="118">the URL · --resolve (lesson 16)</text>
+    <text x="286" y="140">-A</text>
+    <text x="286" y="162">-H 'Accept: ...' · --json sets it</text>
+    <text x="286" y="184">-u · -H 'Authorization: Bearer ..'</text>
+    <text x="286" y="206">-b jar-or-string</text>
+    <text x="286" y="228">-e</text>
+    <text x="286" y="250">-H 'Name: value' (any header)</text>
+    <text x="286" y="272">-d / --json / -F set it</text>
+    <text x="286" y="294">computed from the body</text>
+    <text x="286" y="316">the blank line: headers end here</text>
+    <text x="286" y="338">-d · --json · -F · -T · @file · @-</text>
   </g>
   <rect x="460" y="48" width="400" height="330" rx="10" fill="#0fa07f" fill-opacity="0.08" stroke="#0fa07f" stroke-width="1.7" stroke-linejoin="round"/>
   <text x="660" y="70" text-anchor="middle" font-size="10" font-weight="700" fill="#0fa07f">WHAT COMES BACK (&lt; lines), AND WHERE IT GOES</text>

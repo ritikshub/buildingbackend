@@ -68,7 +68,7 @@ When you open a terminal on your laptop or `ssh` into a server, three separate t
     <g text-anchor="middle" font-size="8.5" fill="currentColor">
       <text x="720" y="316">a child of the shell; inherits fd 0, 1, 2</text>
       <text x="720" y="330">all three point at the same /dev/pts/3</text>
-      <text x="720" y="344" opacity="0.7">so its output reaches the screen without the shell's help</text>
+      <text x="720" y="344" opacity="0.7">its output reaches the screen without the shell</text>
     </g>
 
     <!-- arrows: keystrokes right, bytes left -->
@@ -81,8 +81,8 @@ When you open a terminal on your laptop or `ssh` into a server, three separate t
     <text x="554" y="194" text-anchor="middle" font-size="7.5" fill="#0fa07f">output</text>
     <text x="274" y="194" text-anchor="middle" font-size="7.5" fill="#0fa07f">bytes</text>
     <!-- child output goes to pty too -->
-    <path d="M578 314 L415 314 L415 224" fill="none" stroke="#0fa07f" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#p1l03a-arg)"/>
-    <text x="500" y="308" text-anchor="middle" font-size="7.5" fill="#0fa07f">ls writes to fd 1 → the pty</text>
+    <path d="M578 300 L560 300 L560 236 L470 236 L470 222" fill="none" stroke="#0fa07f" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#p1l03a-arg)"/>
+    <text x="552" y="250" text-anchor="end" font-size="7.5" fill="#0fa07f">ls writes to fd 1 → the pty</text>
 
     <!-- no pty note -->
     <rect x="40" y="276" width="490" height="76" rx="10" fill="#e0930f" fill-opacity="0.08" stroke="#e0930f" stroke-width="1.6" stroke-linejoin="round"/>
@@ -327,7 +327,7 @@ Here is the mechanism underneath steps 5 and 6, and it is the same four syscalls
 
     <!-- 5 exit -->
     <text x="480" y="346" text-anchor="middle" font-size="9.5" font-weight="700" fill="#7c5cff">exit_group(0)</text>
-    <text x="480" y="362" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.8">pid 23 is now a zombie: a PID and one number</text>
+    <text x="480" y="380" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.8">pid 23 is now a zombie: a PID and one number</text>
 
     <!-- parent waiting -->
     <rect x="70" y="162" width="180" height="42" rx="6" fill="#c94a12" fill-opacity="0.10" stroke="#c94a12" stroke-width="1.3"/>
@@ -347,7 +347,7 @@ Here is the mechanism underneath steps 5 and 6, and it is the same four syscalls
     <text x="755" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="#e0930f">WHAT $? MEANS</text>
     <g font-size="8.5" fill="currentColor">
       <text x="654" y="140" font-weight="700">0</text><text x="690" y="140">success, by convention</text>
-      <text x="654" y="162" font-weight="700">1, 2 ...</text><text x="690" y="162">an error the program chose</text>
+      <text x="654" y="162" font-weight="700">1, 2 ...</text><text x="700" y="162">an error the program chose</text>
       <text x="690" y="175" opacity="0.75">(ls uses 2 for a bad path)</text>
       <text x="654" y="198" font-weight="700">126</text><text x="690" y="198">found, but not executable</text>
       <text x="690" y="211" opacity="0.75">(no x bit, or a bad #!)</text>

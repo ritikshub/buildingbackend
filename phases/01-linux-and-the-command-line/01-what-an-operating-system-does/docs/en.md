@@ -63,8 +63,8 @@ Everything you have ever written runs in user mode. That includes Python, the sh
 
     <!-- the return up -->
     <path d="M600 292 L600 164" fill="none" stroke="#0fa07f" stroke-width="2.4" marker-end="url(#p1l01a-arg)"/>
-    <text x="608" y="236" font-size="8.5" font-weight="700" fill="#0fa07f">= 5</text>
-    <text x="608" y="248" font-size="8" fill="currentColor" opacity="0.8">or -errno</text>
+    <text x="594" y="236" text-anchor="end" font-size="8.5" font-weight="700" fill="#0fa07f">= 5</text>
+    <text x="594" y="248" text-anchor="end" font-size="8" fill="currentColor" opacity="0.8">or -errno</text>
 
     <!-- BOUNDARY -->
     <path d="M40 270 L640 270" fill="none" stroke="#c94a12" stroke-width="3" stroke-dasharray="10 6"/>
@@ -82,7 +82,7 @@ Everything you have ever written runs in user mode. That includes Python, the sh
     </g>
     <g text-anchor="middle" fill="currentColor">
       <text x="545" y="361" font-size="10.5" font-weight="700" fill="#0fa07f">syscall entry</text>
-      <text x="545" y="377" font-size="9">number 1? fd 1 open? buf readable?</text>
+      <text x="545" y="377" font-size="9">fd 1 open? buf readable?</text>
       <text x="545" y="391" font-size="7.8" opacity="0.7">every argument checked before trusted</text>
       <text x="345" y="361" font-size="10.5" font-weight="700">virtual filesystem</text>
       <text x="345" y="377" font-size="9">fd 1 → this is a terminal</text>
@@ -105,7 +105,7 @@ Everything you have ever written runs in user mode. That includes Python, the sh
     <rect x="40" y="524" width="600" height="46" rx="12" fill="#7f7f7f" fill-opacity="0.10" stroke="#7f7f7f" stroke-width="2" stroke-linejoin="round"/>
     <text x="56" y="544" font-size="11.5" font-weight="700" fill="currentColor">HARDWARE</text>
     <text x="56" y="559" font-size="8.5" fill="currentColor" opacity="0.8">the terminal shows: hello</text>
-    <text x="345" y="551" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">disk, network card, screen, keyboard: reachable from supervisor mode only</text>
+    <text x="430" y="551" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.85">disk, network card, screen, keyboard: reachable from supervisor mode only</text>
 
     <!-- callouts -->
     <g fill="none" stroke-linejoin="round" stroke-width="1.6">
@@ -292,7 +292,7 @@ A **distribution** is the kernel plus a chosen set of all of that, packaged, con
     <text x="56" y="222" font-size="8" fill="currentColor" opacity="0.7">this is what you type into; none of it is "Linux"</text>
 
     <text x="56" y="266" font-size="11" font-weight="700" fill="currentColor">LIBC</text>
-    <text x="56" y="282" font-size="9" fill="currentColor">glibc (most distributions) or musl (Alpine): write(), open(), malloc(), printf()</text>
+    <text x="56" y="282" font-size="9" fill="currentColor">glibc (most distros) or musl (Alpine): write(), open(), malloc(), printf()</text>
     <text x="56" y="294" font-size="8" fill="currentColor" opacity="0.7">the wrappers around the door; every program above is built on it</text>
 
     <path d="M40 311 L460 311" fill="none" stroke="#c94a12" stroke-width="2.4" stroke-dasharray="8 5"/>
@@ -335,7 +335,7 @@ A **distribution** is the kernel plus a chosen set of all of that, packaged, con
     <text x="516" y="414" font-size="8.5" fill="currentColor" opacity="0.8">small because it replaced glibc and the GNU tools, not the kernel</text>
     <text x="516" y="430" font-size="8" fill="currentColor" opacity="0.7">musl is why some pre-built binaries and Python wheels</text>
     <text x="516" y="442" font-size="8" fill="currentColor" opacity="0.7">do not run on it: they were linked against glibc</text>
-    <text x="516" y="462" font-size="8" fill="currentColor" opacity="0.7">(macOS: XNU kernel, BSD userland; the shell skills transfer, the syscall numbers do not)</text>
+    <text x="516" y="462" font-size="8" fill="currentColor" opacity="0.7">(macOS: XNU + BSD userland; shell skills transfer, syscall numbers do not)</text>
   </g>
   <text x="450" y="506" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Same kernel, same door. What differs between distributions is the packaging above it.</text>
   <text x="450" y="524" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10.5" fill="currentColor" opacity="0.9">Learn the commands once; only the package manager changes when you move between families.</text>

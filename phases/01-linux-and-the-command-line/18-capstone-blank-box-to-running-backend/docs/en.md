@@ -28,7 +28,7 @@ Everything the phase taught converges on one picture, and it is worth having it 
   <!-- firewall -->
   <rect x="290" y="50" width="570" height="60" rx="9" fill="#d64545" fill-opacity="0.08" stroke="#d64545" stroke-width="1.7" stroke-linejoin="round"/>
   <text x="575" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#d64545">THE FIREWALL · nftables, policy drop</text>
-  <text x="575" y="88" text-anchor="middle" font-size="8.5" fill="currentColor">in: established · lo · icmp · tcp 22 · tcp 80, 443 · nothing else. 8080 is not a hole because 8080 is not on the network</text>
+  <text x="575" y="88" text-anchor="middle" font-size="8.5" fill="currentColor">in: established · lo · icmp · tcp 22, 80, 443 · nothing else; 8080 is never on the network</text>
   <text x="575" y="102" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">lesson 14 · (Phase 11 puts a reverse proxy on 443 in front of 8080)</text>
   <path d="M242 80 L286 80" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#p1l18a-ar)"/>
   <!-- the box -->
@@ -179,7 +179,7 @@ The second half of the capstone breaks the box on purpose. Each fault is one tha
     <text x="687" y="180" font-weight="700">it says</text>
     <text x="687" y="194">Start request repeated too quickly</text>
     <text x="687" y="208">NRestarts=4 · Result=exit-code</text>
-    <text x="687" y="222">ValueError: invalid literal ... 'eighty'</text>
+    <text x="687" y="222">ValueError: invalid literal 'eighty'</text>
     <text x="687" y="244" font-weight="700">fix</text>
     <text x="687" y="258">the config; reset-failed; start</text>
     <text x="687" y="272">the brake protected the box</text>
@@ -187,7 +187,7 @@ The second half of the capstone breaks the box on purpose. Each fault is one tha
   </g>
   <rect x="30" y="330" width="840" height="46" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f" stroke-width="1.5" stroke-linejoin="round"/>
   <text x="450" y="350" text-anchor="middle" font-size="9.5" font-weight="700" fill="#0fa07f">5 · up but slow: strace -f -p MAINPID -e trace=accept4,openat,write,sendto during one request</text>
-  <text x="450" y="366" text-anchor="middle" font-size="8.5" fill="currentColor">accept4 → openat("/var/lib/app/notes.jsonl", O_WRONLY|O_CREAT|O_APPEND) → write(5, ..., 49) → write(1, "request ...") : one request, four syscalls, in order (lessons 01, 07)</text>
+  <text x="450" y="366" text-anchor="middle" font-size="8.5" fill="currentColor">accept4 → openat(notes.jsonl, O_APPEND) → write(5, 49 bytes) → write(1, the log line): one request, four syscalls, in order (lessons 01, 07)</text>
   <text x="450" y="392" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.72">Nothing in these five columns is new. The capstone is the phase's tools, pointed at the phase's own deployment.</text>
 </svg>
 ```

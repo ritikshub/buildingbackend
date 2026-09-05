@@ -60,7 +60,7 @@ The kernel is organised around what it manages. Above everything sits the **syst
     <text x="115" y="284" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.75">and for how long</text>
     <rect x="52" y="316" width="126" height="32" rx="6" fill="#7c5cff" fill-opacity="0.14" stroke="#7c5cff" stroke-width="1.2"/>
     <text x="115" y="330" text-anchor="middle" font-size="8" font-weight="700" fill="#7c5cff">window</text>
-    <text x="115" y="342" text-anchor="middle" font-size="8.5" fill="currentColor">/proc/&lt;pid&gt;/ · /proc/loadavg</text>
+    <text x="115" y="342" text-anchor="middle" font-size="8.5" fill="currentColor">/proc/&lt;pid&gt;/ · loadavg</text>
 
     <!-- 2 memory -->
     <text x="287" y="132" text-anchor="middle" font-size="10" font-weight="700" fill="#0fa07f">MEMORY MGMT</text>
@@ -77,7 +77,7 @@ The kernel is organised around what it manages. Above everything sits the **syst
     <text x="287" y="284" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.75">and what "free" means</text>
     <rect x="224" y="316" width="126" height="32" rx="6" fill="#0fa07f" fill-opacity="0.14" stroke="#0fa07f" stroke-width="1.2"/>
     <text x="287" y="330" text-anchor="middle" font-size="8" font-weight="700" fill="#0fa07f">window</text>
-    <text x="287" y="342" text-anchor="middle" font-size="8.5" fill="currentColor">/proc/meminfo · /proc/&lt;pid&gt;/maps</text>
+    <text x="287" y="342" text-anchor="middle" font-size="8.5" fill="currentColor">meminfo · &lt;pid&gt;/maps</text>
 
     <!-- 3 vfs -->
     <text x="459" y="132" text-anchor="middle" font-size="10" font-weight="700" fill="#e0930f">VFS + FILESYSTEMS</text>
@@ -94,7 +94,7 @@ The kernel is organised around what it manages. Above everything sits the **syst
     <text x="459" y="284" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.75">idea that everything is a file</text>
     <rect x="396" y="316" width="126" height="32" rx="6" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="1.2"/>
     <text x="459" y="330" text-anchor="middle" font-size="8" font-weight="700" fill="#e0930f">window</text>
-    <text x="459" y="342" text-anchor="middle" font-size="8.5" fill="currentColor">/proc/mounts · /proc/&lt;pid&gt;/fd</text>
+    <text x="459" y="342" text-anchor="middle" font-size="8.5" fill="currentColor">/proc/mounts · &lt;pid&gt;/fd</text>
 
     <!-- 4 network -->
     <text x="631" y="132" text-anchor="middle" font-size="10" font-weight="700" fill="#c94a12">NETWORK STACK</text>
@@ -111,7 +111,7 @@ The kernel is organised around what it manages. Above everything sits the **syst
     <text x="631" y="284" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.75">and out (Phase 2 in code)</text>
     <rect x="568" y="316" width="126" height="32" rx="6" fill="#c94a12" fill-opacity="0.14" stroke="#c94a12" stroke-width="1.2"/>
     <text x="631" y="330" text-anchor="middle" font-size="8" font-weight="700" fill="#c94a12">window</text>
-    <text x="631" y="342" text-anchor="middle" font-size="8.5" fill="currentColor">/proc/net/ · /sys/class/net/</text>
+    <text x="631" y="342" text-anchor="middle" font-size="8.5" fill="currentColor">/proc/net · /sys/class</text>
 
     <!-- 5 drivers -->
     <text x="794" y="132" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">DEVICE DRIVERS</text>

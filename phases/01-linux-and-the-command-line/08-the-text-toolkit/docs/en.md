@@ -26,40 +26,40 @@ A **filter** reads lines from descriptor 0, does something to each, and writes l
     <text x="75" y="104" text-anchor="middle" font-size="8" fill="currentColor">20,000 lines</text>
     <text x="75" y="118" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.7">or 20 GB</text>
     <g stroke-linejoin="round" stroke-width="1.7">
-      <rect x="150" y="50" width="120" height="90" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
-      <rect x="300" y="50" width="120" height="90" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
-      <rect x="450" y="50" width="120" height="90" rx="9" fill="#d64545" fill-opacity="0.08" stroke="#d64545"/>
-      <rect x="600" y="50" width="120" height="90" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
-      <rect x="750" y="50" width="120" height="90" rx="9" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
+      <rect x="140" y="50" width="134" height="90" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
+      <rect x="290" y="50" width="134" height="90" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
+      <rect x="440" y="50" width="134" height="90" rx="9" fill="#d64545" fill-opacity="0.08" stroke="#d64545"/>
+      <rect x="590" y="50" width="134" height="90" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f"/>
+      <rect x="740" y="50" width="134" height="90" rx="9" fill="#e0930f" fill-opacity="0.10" stroke="#e0930f"/>
     </g>
     <g text-anchor="middle" fill="currentColor">
       <text x="210" y="72" font-size="9.5" font-weight="700" fill="#0fa07f">grep 'POST /login'</text>
       <text x="210" y="90" font-size="8">a regex test per line</text>
       <text x="210" y="104" font-size="8">out: the lines that match</text>
       <text x="210" y="124" font-size="8" opacity="0.7">holds: one line</text>
-      <text x="360" y="72" font-size="9.5" font-weight="700" fill="#0fa07f">awk '$9==401 {print $1}'</text>
-      <text x="360" y="90" font-size="8">split into fields, test, print</text>
-      <text x="360" y="104" font-size="8">out: an IP per failed login</text>
-      <text x="360" y="124" font-size="8" opacity="0.7">holds: one line + its fields</text>
+      <text x="357" y="72" font-size="9" font-weight="700" fill="#0fa07f">awk '$9==401 {print $1}'</text>
+      <text x="360" y="90" font-size="8">split, test, print field 1</text>
+      <text x="360" y="104" font-size="8">out: the IP of each 401</text>
+      <text x="360" y="124" font-size="8" opacity="0.7">holds: one line + fields</text>
       <text x="510" y="72" font-size="9.5" font-weight="700" fill="#d64545">sort</text>
       <text x="510" y="90" font-size="8">equal lines become adjacent</text>
       <text x="510" y="104" font-size="8">out: nothing until EOF</text>
-      <text x="510" y="124" font-size="8" opacity="0.7">holds: EVERYTHING (202 lines)</text>
+      <text x="510" y="124" font-size="8" opacity="0.7">holds: ALL 202 lines</text>
       <text x="660" y="72" font-size="9.5" font-weight="700" fill="#0fa07f">uniq -c</text>
-      <text x="660" y="90" font-size="8">count each run of equal lines</text>
+      <text x="660" y="90" font-size="8">count each run of equals</text>
       <text x="660" y="104" font-size="8">out: "202 203.0.113.9"</text>
       <text x="660" y="124" font-size="8" opacity="0.7">holds: two lines</text>
       <text x="810" y="72" font-size="9.5" font-weight="700" fill="#e0930f">sort -rn | head</text>
       <text x="810" y="90" font-size="8">rank by count, keep 10</text>
-      <text x="810" y="104" font-size="8">head closes: SIGPIPE upstream</text>
+      <text x="810" y="104" font-size="8">then head: SIGPIPE upstream</text>
       <text x="810" y="124" font-size="8" opacity="0.7">holds: the counted rows</text>
     </g>
     <g fill="none" stroke="currentColor" stroke-width="1.5">
-      <path d="M122 95 L146 95" marker-end="url(#p1l08a-ar)"/>
-      <path d="M272 95 L296 95" marker-end="url(#p1l08a-ar)"/>
-      <path d="M422 95 L446 95" marker-end="url(#p1l08a-ar)"/>
-      <path d="M572 95 L596 95" marker-end="url(#p1l08a-ar)"/>
-      <path d="M722 95 L746 95" marker-end="url(#p1l08a-ar)"/>
+      <path d="M122 95 L136 95" marker-end="url(#p1l08a-ar)"/>
+      <path d="M276 95 L286 95" marker-end="url(#p1l08a-ar)"/>
+      <path d="M426 95 L436 95" marker-end="url(#p1l08a-ar)"/>
+      <path d="M576 95 L586 95" marker-end="url(#p1l08a-ar)"/>
+      <path d="M726 95 L736 95" marker-end="url(#p1l08a-ar)"/>
     </g>
     <!-- sample data flowing -->
     <rect x="30" y="166" width="840" height="150" rx="10" fill="#7c5cff" fill-opacity="0.06" stroke="#7c5cff" stroke-width="1.5" stroke-linejoin="round"/>

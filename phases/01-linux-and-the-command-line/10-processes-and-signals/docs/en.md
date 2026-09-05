@@ -33,13 +33,13 @@ To the kernel, a process is an entry in a table: a **PID**, its parent's PID (**
   <!-- S -->
   <rect x="200" y="50" width="140" height="64" rx="9" fill="#7f7f7f" fill-opacity="0.14" stroke="#7f7f7f" stroke-width="1.7" stroke-linejoin="round"/>
   <text x="270" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">S · sleeping</text>
-  <text x="270" y="88" text-anchor="middle" font-size="8.5" fill="currentColor">waiting: a socket, a timer, a lock</text>
+  <text x="270" y="88" text-anchor="middle" font-size="8.5" fill="currentColor">waits on a socket or timer</text>
   <text x="270" y="102" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.75">a signal wakes it</text>
   <!-- D -->
   <rect x="200" y="270" width="140" height="64" rx="9" fill="#e0930f" fill-opacity="0.14" stroke="#e0930f" stroke-width="1.7" stroke-linejoin="round"/>
   <text x="270" y="292" text-anchor="middle" font-size="11" font-weight="700" fill="#e0930f">D · uninterruptible</text>
   <text x="270" y="308" text-anchor="middle" font-size="8.5" fill="currentColor">waiting on a disk or NFS</text>
-  <text x="270" y="322" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.75">signals wait; kill -9 waits too</text>
+  <text x="270" y="322" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.75">even kill -9 waits</text>
   <!-- T -->
   <rect x="400" y="50" width="140" height="64" rx="9" fill="#7f7f7f" fill-opacity="0.14" stroke="#7f7f7f" stroke-width="1.7" stroke-linejoin="round"/>
   <text x="470" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">T · stopped</text>
@@ -80,7 +80,7 @@ To the kernel, a process is an entry in a table: a **PID**, its parent's PID (**
   <text x="625" y="290" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">WHO CALLS wait()</text>
   <g text-anchor="middle" font-size="8.5" fill="currentColor">
     <text x="625" y="310">the parent, normally: that is lesson 03's wait4, and it turns the zombie into $?</text>
-    <text x="625" y="326">if the parent exits first, the child is re-parented to PID 1 (or a subreaper), which waits for it</text>
+    <text x="625" y="326">if the parent exits first, the child is re-parented to PID 1 (or a subreaper), which waits</text>
     <text x="625" y="342" opacity="0.8">a parent that is alive and never waits leaves zombies: one PID each, until fork fails</text>
   </g>
   <text x="450" y="400" text-anchor="middle" font-size="10.5" fill="currentColor" opacity="0.9">ps STAT: R S D T Z, plus s (session leader), l (multi-threaded), + (foreground), N (niced), &lt; (high priority)</text>
@@ -140,7 +140,7 @@ A **signal** is a number the kernel delivers to a process outside its normal flo
   <g text-anchor="middle" font-size="8.5" fill="currentColor">
     <text x="160" y="90">kill -TERM 1234 · Ctrl+C at the terminal</text>
     <text x="160" y="104">the OOM killer · a timer (alarm) · a crash</text>
-    <text x="160" y="118">systemctl stop · docker stop · the process itself</text>
+    <text x="160" y="118">systemctl stop · docker stop · itself</text>
     <text x="160" y="132" opacity="0.75">all end in kill(pid, signum)</text>
   </g>
   <rect x="330" y="50" width="240" height="90" rx="9" fill="#0fa07f" fill-opacity="0.10" stroke="#0fa07f" stroke-width="1.7" stroke-linejoin="round"/>
