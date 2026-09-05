@@ -195,7 +195,7 @@ it's the next lesson.
   and both matter.
 - It all works only because machines follow shared **protocols**, organized into **layers**.
 
-**That completes the Foundations.** Next comes **Phase 1: Linux and the Command Line**, the
+**That completes the Foundations.** Next comes **Phase 1: Linux**, the
 machine your backend actually runs on: the kernel and the one door into it, the shell, files,
 permissions, pipes, processes, and the tools you drive a server with. After that, **Phase 2:
 Networking & Protocols** gives the network the full treatment: the layered model and every layer

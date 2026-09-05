@@ -1,4 +1,4 @@
-# The Filesystem Hierarchy: Where Everything Lives
+# The Filesystem Hierarchy
 
 > `ls -l` is one system call per file. Every column it prints, the type, the nine permission characters, the link count, the owner, the size, the timestamp, comes out of `stat(2)`, and this lesson rebuilds `ls`, `find`, `du` and `df` from it. Then it walks the standard layout of a Linux box so that `/etc`, `/var/lib`, `/usr/local` and `/run` stop being names and become decisions: a 100 MiB file that occupies **4,096 bytes** of disk, a "full" disk with space left, and a deleted log that keeps filling it.
 
@@ -493,4 +493,4 @@ The artifact for this lesson is a checklist: [`outputs/checklist-where-things-li
 - `df` and `du` disagree for three reasons: **deleted-but-open** files (`lsof +L1`), **inodes** (`df -i`), and **sparse** files (`st_size` versus `st_blocks`). The disagreement is the diagnosis.
 - `file` reads bytes, not names. `readlink -f` resolves the whole chain. `ls -lt` and `ls -lS` answer "what changed" and "what is big" faster than anything else.
 
-Next: [Working with Files: Create, Read, Copy, Move, Delete, Archive](../05-working-with-files/). You can find anything on the box. Now change it: `cp`, `mv`, `rm` and `tar` rebuilt from their syscalls, including why `mv` is instant across a directory and slow across a disk, and why `rm` is not undo-able.
+Next: [Working with Files](../05-working-with-files/). You can find anything on the box. Now change it: `cp`, `mv`, `rm` and `tar` rebuilt from their syscalls, including why `mv` is instant across a directory and slow across a disk, and why `rm` is not undo-able.

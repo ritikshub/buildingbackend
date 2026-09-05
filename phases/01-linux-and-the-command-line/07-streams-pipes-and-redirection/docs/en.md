@@ -1,4 +1,4 @@
-# Streams, Pipes & Redirection: Everything Is a File Descriptor
+# Pipes & Redirection
 
 > `ls / | wc -l` is one `pipe2`, two `clone`s, a `dup3(4, 1)` in one child and a `dup3(3, 0)` in the other, then two `execve`s. That is the whole of the pipe operator, and this lesson builds it, along with `>`, `>>`, `<`, `2>&1` and `tee`, from those syscalls. Along the way: why `2>&1 > log` loses your errors, why a pipe holds exactly **64 KiB**, how `head` kills `yes` with signal 13 and an exit status of **141**, and why a service prints nothing for minutes and then everything at once.
 
@@ -514,4 +514,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-where-did-my-output
 - Between `print()` and the kernel sits a **user-space buffer** that flushes per line on a terminal and per 8 KiB in a pipe. That is why services log in bursts and lose their last lines on a crash. `-u`, `PYTHONUNBUFFERED`, `flush=True`, stderr, or `stdbuf -oL`.
 - `tee` copies, `xargs` turns lines into arguments, `mkfifo` names a pipe, `<(cmd)` gives a command a filename. Small programs plus text plus pipes is the design; lesson 08 is the vocabulary.
 
-Next: [The Text Toolkit: grep, sed, awk, sort, uniq, cut, tr & jq](../08-the-text-toolkit/). You can wire streams together. Now the tools you put in them, a streaming `grep` and a field-splitting `awk` built in Python, and the one-liners that turn a 2 GB log into an answer.
+Next: [The Text Toolkit](../08-the-text-toolkit/). You can wire streams together. Now the tools you put in them, a streaming `grep` and a field-splitting `awk` built in Python, and the one-liners that turn a 2 GB log into an answer.

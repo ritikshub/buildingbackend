@@ -1,4 +1,4 @@
-# Installing Software: Packages, Repositories & Where Files Land
+# Installing Software
 
 > `apt install curl` is a download, a signature check, a dependency solve, and the unpacking of a tar archive into `/usr`, all recorded in a plain-text database you can read with `cat`. This lesson opens that database on the sandbox: **169** packages, **3,903** lines of text, `libc6` needed by **147** of them, **22** marked essential, and **32** binaries in `/usr/local/bin` that no package owns because `pip` put them there. Then the same job on Alpine and Fedora, which differ from Debian by exactly one lesson's worth: the package manager, and nothing above the kernel that you type.
 
@@ -420,4 +420,4 @@ The artifact for this lesson is a checklist: [`outputs/checklist-installing-soft
 - Debian, Red Hat and Alpine differ in the manager (`apt`/`dpkg`, `dnf`/`rpm`, `apk`) and Alpine in libc (`musl`); every other command in this phase is identical.
 - `curl | bash`, source builds on production, and never-rebuilt images all leave files with no owner and no updates. Prefer the package, the tarball under `/opt`, or a rebuilt image.
 
-Next: [Networking from the Shell: ip, ss, ping, dig, nc & tcpdump](../14-networking-from-the-shell/). The software is on the box. Now the questions you ask when it cannot reach anything, or nothing can reach it: which address, which route, which port, who is listening, and what is actually on the wire.
+Next: [Networking from the Shell](../14-networking-from-the-shell/). The software is on the box. Now the questions you ask when it cannot reach anything, or nothing can reach it: which address, which route, which port, who is listening, and what is actually on the wire.

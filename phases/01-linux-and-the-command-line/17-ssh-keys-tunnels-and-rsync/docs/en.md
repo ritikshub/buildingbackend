@@ -1,4 +1,4 @@
-# SSH: Keys, Agents, Tunnels, scp & rsync
+# SSH, Tunnels & rsync
 
 > Before SSH there was `rsh`: a remote shell over a plain TCP socket. This lesson builds one in sixty lines, logs in, runs three commands, and then reads the whole session off the wire: the password `hunter2`, every command, every result, in the clear. Each of the four things wrong with that program is one part of SSH. Then the real thing on a booted box: an ed25519 key generated and installed, `Accepted publickey` in the server's log, an agent, a config file that turns `ssh -i key -p 22 user@host` into `ssh box`, a tunnel that reaches a port bound to the server's loopback, `scp`, an `rsync` second run that moves **1** file instead of 2, and `sshd` hardened until a password login answers `Permission denied (publickey)`.
 
@@ -346,4 +346,4 @@ The artifact for this lesson is a checklist: [`outputs/checklist-ssh-setup-and-h
 - **`scp`** for a file, **`rsync -a`** for a tree (only differences, second run moved one file), `-n` before `--delete`, mind the trailing slash.
 - **Harden sshd** in a drop-in: keys only, no root, `AllowUsers`, `MaxAuthTries`; `sshd -t` before `reload`; read `journalctl -u ssh`. **`tmux`** or a unit for anything that must outlive the connection.
 
-Next: [Capstone: From a Blank Linux Box to a Running Backend](../18-capstone-blank-box-to-running-backend/). Every tool in this phase, once, in order, on a box that starts empty: users, packages, the code, the unit, the firewall, `sshd`, log rotation, a health check, and then four things broken on purpose and found with `journalctl`, `ss`, `strace` and `curl`.
+Next: [Capstone: Blank Box to Backend](../18-capstone-blank-box-to-running-backend/). Every tool in this phase, once, in order, on a box that starts empty: users, packages, the code, the unit, the firewall, `sshd`, log rotation, a health check, and then four things broken on purpose and found with `journalctl`, `ss`, `strace` and `curl`.

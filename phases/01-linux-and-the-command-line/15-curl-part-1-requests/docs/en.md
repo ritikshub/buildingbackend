@@ -1,4 +1,4 @@
-# curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies
+# curl: Requests
 
 > `curl --help all` lists **269** options. Every one of them changes a header, a body, a connection setting, or what curl prints; nothing else exists. This lesson builds a mini `curl` on `http.client` that prints the request it sends with `>` and the response it gets with `<`, exactly as `curl -v` does, and runs it against a local echo server that shows what arrived. Then it teaches the thirty real options that cover most of what a backend engineer types: `-v -i -I -H -d --json -F -u -b -c -L -o -O -f -s -A -e`, what each puts on the wire, and the mistake beside each one.
 
@@ -446,4 +446,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-curl-by-task.md`](.
 - **Cookies**: `-c` saves `Set-Cookie` into a jar, `-b` sends it; both together is a session.
 - **Redirects and errors**: `-L` follows `Location` (a `POST` becomes a `GET` on `301`/`302`/`303`); **`-f`** makes `4xx`/`5xx` exit 22 instead of saving the error page. Exit 6 is DNS, 7 is connect, 22 is HTTP with `-f`, 28 is timeout.
 
-Next: [curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries](../16-curl-part-2-debugging/). You can send anything. Now measure it: where the time goes between DNS, connect, TLS and first byte, how to hit a server before DNS knows it, what the certificate errors mean, and how to make curl retry without lying to you.
+Next: [curl: Debugging & Timing](../16-curl-part-2-debugging/). You can send anything. Now measure it: where the time goes between DNS, connect, TLS and first byte, how to hit a server before DNS knows it, what the certificate errors mean, and how to make curl retry without lying to you.

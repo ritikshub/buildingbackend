@@ -1,4 +1,4 @@
-# Networking from the Shell: ip, ss, ping, dig, nc & tcpdump
+# Networking from the Shell
 
 > "It cannot connect" has five layers and each one has a command. This lesson rebuilds the tools that read them, `ip addr` and `ip route` from `/sys` and `/proc/net/route`, `ss` from `/proc/net/tcp` with the owning PID found through `/proc/*/fd`, a port check that tells **refused** from **timed out** from **unreachable**, a resolver lookup, and a three-packet `tcpdump` decoded from a raw socket, then runs the real ones on the sandbox: a `SYN` answered by `SYN-ACK` in **17 µs** on loopback, `EADDRINUSE` with the holder named, a `DROP` rule that turns refused into a timeout, and the counters that say whether the accept queue ever overflowed.
 
@@ -403,4 +403,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-cannot-connect.md`]
 - **`nc`** talks any TCP protocol by hand; **`tcpdump -i any -nn 'port N'`** shows the packets, and a `SYN` with no answer, a `SYN` met by `RST`, or a handshake followed by silence each settle a different argument.
 - The firewall (**`nft`**, `ufw`, cloud security groups) impersonates layers 3 and 4 depending on `drop` or `reject`; test from inside the box, then the subnet, then outside, and check `nstat` for retransmits and listen drops.
 
-Next: [curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies](../15-curl-part-1-requests/). The connection works. Now the tool you will use every day to talk HTTP by hand, a mini `curl` built on `http.client` that prints what really goes on the wire, and the thirty options that cover most of what you need.
+Next: [curl: Requests](../15-curl-part-1-requests/). The connection works. Now the tool you will use every day to talk HTTP by hand, a mini `curl` built on `http.client` that prints what really goes on the wire, and the thirty options that cover most of what you need.

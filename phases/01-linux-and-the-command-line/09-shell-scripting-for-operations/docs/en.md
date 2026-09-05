@@ -1,4 +1,4 @@
-# Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail
+# Shell Scripting
 
 > A shell script is a command you will run without watching. This lesson takes one real one, a deploy script that fetches a release, verifies it, installs it atomically, switches the live symlink, checks health and rolls back, and shows the six habits that make it safe to run on a server: strict mode, quoting everything, guards on the variables that feed `rm -rf`, a `trap` for cleanup, exit codes that mean something, and logs on stderr. Then the same script in Python, line for line, so you can see where bash stops being the right tool. Both run in the sandbox; the broken release rolls back and the script exits **1**, because a failed deploy is a failed script.
 
@@ -511,4 +511,4 @@ The artifact for this lesson is a checklist: [`outputs/checklist-production-shel
 - The script will run with **no `HOME`, no terminal, a default `PATH` and an empty stdin**. Absolute paths, `sudo -n`, no prompts, and one test run from that context.
 - **`shellcheck`** finds the bugs this lesson describes; `bash -n` checks syntax; `bash -x` shows expansion. When the script needs JSON, a dictionary, HTTP or tests, it is Python now, and every habit has a Python equivalent.
 
-Next: [Processes & Signals: ps, top, kill, jobs & /proc](../10-processes-and-signals/). The deploy script "restarted the service" with an `echo`. Now the real thing: what a process is to the kernel, how `kill -TERM` differs from `kill -KILL`, what a zombie and an orphan are, and a `ps` built from `/proc`.
+Next: [Processes & Signals](../10-processes-and-signals/). The deploy script "restarted the service" with an `echo`. Now the real thing: what a process is to the kernel, how `kill -TERM` differs from `kill -KILL`, what a zombie and an orphan are, and a `ps` built from `/proc`.

@@ -1,4 +1,4 @@
-# Processes & Signals: ps, top, kill, jobs & /proc
+# Processes & Signals
 
 > `kill` does not kill. It delivers one small integer, and what happens next is the receiving process's decision, except for signal 9, which the kernel handles without asking. This lesson builds `ps` and `pstree` from `/proc`, then forks children and sends them everything: a `SIGTERM` handler that finishes its request and exits **0**, a process that ignores `SIGTERM` and dies only to `SIGKILL` with status **137**, `SIGSTOP` and `SIGCONT`, a zombie you can watch in `/proc`, an orphan adopted by PID 1, and a child that outlives its parent with `setsid`. Then the tools: `ps`, `top`, `pgrep`, `kill`, `jobs`, `nohup`, `nice`, `timeout`.
 
@@ -475,4 +475,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-stopping-a-process.
 - **Sessions and process groups** explain the terminal: `Ctrl+C` goes to the foreground group, a closed terminal sends `SIGHUP` to the session, and `setsid`, `nohup`, `disown`, `tmux` or a unit file are how a process survives you. `kill -- -PGID` stops a group at once.
 - `nice`/`renice` hint the scheduler; threads share a PID and are listed with `ps -L`; `pgrep` before `pkill`; `systemctl stop` before `kill` for anything a manager owns.
 
-Next: [Boot, init & systemd: Keeping Your Backend Running](../11-boot-init-and-systemd/). You can stop a process. Now the program that starts them all at boot and restarts yours when it dies: a supervisor built in Python, then `systemd` units, `journalctl`, timers and log rotation.
+Next: [Boot, init & systemd](../11-boot-init-and-systemd/). You can stop a process. Now the program that starts them all at boot and restarts yours when it dies: a supervisor built in Python, then `systemd` units, `journalctl`, timers and log rotation.

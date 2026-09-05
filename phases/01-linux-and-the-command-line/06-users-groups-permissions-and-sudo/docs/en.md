@@ -1,4 +1,4 @@
-# Users, Groups, Permissions & sudo
+# Users, Permissions & sudo
 
 > In lesson 01, `chmod 000` did nothing to stop you, because you were root. This lesson is the eleven-line function inside the kernel that made that decision, rebuilt in Python and checked row by row against the real one, and then the practice that follows from it: a service gets a user of its own, reads config it cannot write, writes only where it owns, and the humans who operate it get `sudo` for exactly the commands their job needs. Measured on the sandbox: one file, three identities, three different answers; and a process with uid 1000 binding port 80 because it was handed one slice of root instead of all of it.
 
@@ -524,4 +524,4 @@ The artifact for this lesson is a checklist: [`outputs/checklist-service-user-an
 - **Services run as their own nologin user**: config `root:app 640`, data and logs `app:app 750`. **Humans use `sudo`** with a specific command list in `/etc/sudoers.d/`, checked with `visudo -c`, and `sudo -u app` to inspect without becoming root.
 - **Capabilities** are slices of root. A service that "needs root for port 443" needs `CAP_NET_BIND_SERVICE`. A container's root is a process with a trimmed capability set.
 
-Next: [Streams, Pipes & Redirection: Everything Is a File Descriptor](../07-streams-pipes-and-redirection/). You have seen file descriptors 0, 1 and 2 in every `strace` and every `/proc/<pid>/fd`. Now what they are, how `>`, `2>&1` and `|` rewire them between `fork` and `exec`, and a real pipeline built from `os.pipe` and `dup2`.
+Next: [Pipes & Redirection](../07-streams-pipes-and-redirection/). You have seen file descriptors 0, 1 and 2 in every `strace` and every `/proc/<pid>/fd`. Now what they are, how `>`, `2>&1` and `|` rewire them between `fork` and `exec`, and a real pipeline built from `os.pipe` and `dup2`.

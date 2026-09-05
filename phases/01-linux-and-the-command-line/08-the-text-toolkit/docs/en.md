@@ -1,4 +1,4 @@
-# The Text Toolkit: grep, sed, awk, sort, uniq, cut, tr & jq
+# The Text Toolkit
 
 > A 20,000-line access log and one question: who is hammering the login endpoint and failing? `grep 'POST /login' | awk '$9 == 401 {print $1}' | sort | uniq -c | sort -rn | head` answers it in a few milliseconds, names one IP with **202** failed logins, and never holds more than one line in memory until the `sort`. This lesson builds each of those tools as a streaming filter in Python, then runs the real ones on the same log and gets the same numbers, including `grep` finding a 5xx count of **354** where `awk` finds **350**, and the reason the difference is a bug.
 
@@ -427,4 +427,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-log-triage-one-line
 - **`jq`** does the same for JSON lines: `.a.b`, `select()`, `-r`, `@tsv`, `-s`. Named fields survive schema changes; `$9` does not.
 - `grep` is five times faster than a Python one-liner and streams 22 MB in 39 ms. Learn the idioms; write a script when the `awk` no longer fits on a line.
 
-Next: [Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail](../09-shell-scripting-for-operations/). A one-liner that runs every day is a script. Now the six habits that make a script safe to run on a server, the same deploy script in bash and in Python side by side, and `shellcheck`.
+Next: [Shell Scripting](../09-shell-scripting-for-operations/). A one-liner that runs every day is a script. Now the six habits that make a script safe to run on a server, the same deploy script in bash and in Python side by side, and `shellcheck`.

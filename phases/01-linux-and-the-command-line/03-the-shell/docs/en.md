@@ -1,4 +1,4 @@
-# The Shell: Terminal, Prompt, PATH & How a Command Actually Runs
+# The Shell
 
 > `ls` is not a feature of your terminal. It is a file at `/usr/bin/ls` that the shell found by searching seven directories, started with `fork` and `execve`, and waited for with `wait4`. This lesson builds that shell in about 120 lines of Python, then puts `strace` on bash to show it doing exactly the same thing, and settles the three questions every "command not found", "Permission denied" and "works in my terminal but not in cron" comes down to.
 
@@ -612,4 +612,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-command-not-found.m
 - The current directory is not on `PATH` on purpose; run local programs as `./name`. A script runs through its `#!` interpreter and needs the execute bit.
 - `type -a`, `which -a`, `hash -r`, `bash -x` and `echo $?` answer nearly every "why did that not run" in under a minute; the runbook orders the rest.
 
-Next: [The Filesystem Hierarchy: Where Everything Lives](../04-the-filesystem-hierarchy/). You can run commands. Now learn where things are on a Linux box, why `/etc`, `/var` and `/usr/local` exist, and build `ls` from `stat`.
+Next: [The Filesystem Hierarchy](../04-the-filesystem-hierarchy/). You can run commands. Now learn where things are on a Linux box, why `/etc`, `/var` and `/usr/local` exist, and build `ls` from `stat`.

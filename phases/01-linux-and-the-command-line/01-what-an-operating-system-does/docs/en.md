@@ -1,4 +1,4 @@
-# What an Operating System Does: Kernel, User Space & the System Call
+# Kernel, User Space & Syscalls
 
 > Your program has never touched the disk, the network card or the screen. Not once. Every byte it ever read or wrote went through one door, the system call, and the kernel did the real work on the other side. This lesson opens that door and times it: a crossing costs about **450 ns** in this repo's sandbox, five times a Python function call, and a plain `python3 -c pass` makes **280** of them before it exits.
 

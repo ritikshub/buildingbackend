@@ -1,4 +1,4 @@
-# A Map of the Linux Kernel: Scheduler, Memory, VFS, Network Stack & Drivers
+# A Map of the Kernel
 
 > The kernel is not a black box. It is five subsystems and a window. This lesson draws the map, traces one `read()` and one packet through it, and then opens the window: `/proc`, where every file is the kernel answering a question about itself. In the sandbox, writing a 64 MiB file made `Cached` rise by exactly **64 MiB**, reading it back ran at **3,488 MiB/s** without touching the disk, and 300 ms of pure CPU got the process pulled off the core **10 times** by a scheduler you never called.
 
@@ -558,4 +558,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-proc-and-sys-window
 - **Drivers** are the only code that touches hardware, woken by interrupts, exposed as `/dev` files and `/sys` attributes. A container has no drivers of its own because it has no kernel of its own.
 - **`/proc` and `/sys` are the window.** Every monitoring tool is `cat` plus formatting plus subtraction. `/proc/<pid>/` for a process, `/proc/meminfo` for RAM, `/proc/net/` for sockets, `/proc/sys/` for the knobs.
 
-Next: [The Shell: Terminal, Prompt, PATH & How a Command Actually Runs](../03-the-shell/). You have the map of the kernel. Now the program you will use to drive it, and a mini shell of your own so it is never magic.
+Next: [The Shell](../03-the-shell/). You have the map of the kernel. Now the program you will use to drive it, and a mini shell of your own so it is never magic.

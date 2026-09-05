@@ -1,5 +1,5 @@
 """
-Users, Groups, Permissions & sudo — the kernel's access check, rebuilt.
+Users, Permissions & sudo — the kernel's access check, rebuilt.
 
 Every open(2), every execve(2), every unlink(2) ends in one function inside
 the kernel that compares who is asking with the file's owner, group and nine

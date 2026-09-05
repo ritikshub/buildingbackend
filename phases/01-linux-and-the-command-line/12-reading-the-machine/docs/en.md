@@ -1,4 +1,4 @@
-# Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer
+# Reading the Machine
 
 > `top`, `vmstat`, `free` and `iostat` are the same program: read a counter from `/proc`, wait one second, read it again, divide. This lesson rebuilds all four that way, then generates each kind of load on purpose so every number moves: ten CPU burners push `us` to **89.8%** and the run queue to **11**, an `fsync` loop pushes the disk to **71% util** at **3,536 writes/s**, a 300 MiB hog drops `MemAvailable` by **303 MiB**, an open-file loop dies at exactly the soft limit with `EMFILE`, and a 200 MiB process inside a 64 MiB cgroup is killed by the kernel with `Memory cgroup out of memory: Killed process` in the log and `Result: oom-kill` in `systemctl status`.
 
@@ -333,4 +333,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-the-box-is-slow.md`
 - Descriptors: soft limit via `ulimit -n`, raised in a unit with `LimitNOFILE=`; `EMFILE` shows as "stopped accepting" and sometimes as 100% CPU; count and categorise `/proc/PID/fd` to find the leak.
 - `/proc/pressure/*` is the one-number saturation signal when the kernel has it.
 
-Next: [Installing Software: Packages, Repositories & Where Files Land](../13-installing-software/). The box can be read. Now how the software on it got there, what `apt install` actually does, why `/usr/local` and `pip` do not fight, and how the same job looks on Alpine and Red Hat.
+Next: [Installing Software](../13-installing-software/). The box can be read. Now how the software on it got there, what `apt install` actually does, why `/usr/local` and `pip` do not fight, and how the same job looks on Alpine and Red Hat.

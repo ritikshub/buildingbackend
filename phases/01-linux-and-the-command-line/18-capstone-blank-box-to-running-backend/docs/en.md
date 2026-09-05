@@ -1,4 +1,4 @@
-# Capstone: From a Blank Linux Box to a Running Backend
+# Capstone: Blank Box to Backend
 
 > A fresh Debian box with nothing on it but `systemd` and `apt`. Nine seconds and one script later it has a service user, the code under `/opt`, config under `/etc` that the service can read and not write, a unit that restarts it and limits it, a firewall that drops everything but `22`, `80` and `443`, `sshd` that accepts one operator's key and nothing else, and an API answering `{"status": "ok"}` as uid **995**. Then the box is broken four ways on purpose, `kill -9`, an unwritable data file, a stolen port, a bad config value, and each one is found with `journalctl`, `stat`, `ss` and `strace`, the way this phase taught, in under a minute each.
 

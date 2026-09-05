@@ -151,29 +151,29 @@ phase to expand its lesson list.
 | 11 | [What a Network Is](phases/00-foundations/11-what-a-network-is/) | Learn | — |
 
 <details id="phase-1">
-<summary><b>Phase 1 — Linux and the Command Line</b> &nbsp;<code>18 lessons</code>&nbsp; <em>The machine your backend actually runs on: the kernel, the shell, files, permissions, pipes, processes, services, and the tools (curl, ss, ssh) you drive it with. Build each command from the system calls first, then use the real one.</em></summary>
+<summary><b>Phase 1 — Linux</b> &nbsp;<code>18 lessons</code>&nbsp; <em>The machine your backend actually runs on: the kernel, the shell, files, permissions, pipes, processes, services, and the tools (curl, ss, ssh) you drive it with. Build each command from the system calls first, then use the real one.</em></summary>
 <br/>
 
 | # | Lesson | Type | Lang |
 |:---:|--------|:----:|------|
-| 01 | [What an Operating System Does: Kernel, User Space & the System Call](phases/01-linux-and-the-command-line/01-what-an-operating-system-does/) | Build | Python |
-| 02 | [A Map of the Linux Kernel: Scheduler, Memory, VFS, Network Stack & Drivers](phases/01-linux-and-the-command-line/02-a-map-of-the-linux-kernel/) | Learn | Python |
-| 03 | [The Shell: Terminal, Prompt, PATH & How a Command Actually Runs](phases/01-linux-and-the-command-line/03-the-shell/) | Build | Python |
-| 04 | [The Filesystem Hierarchy: Where Everything Lives](phases/01-linux-and-the-command-line/04-the-filesystem-hierarchy/) | Build | Python |
-| 05 | [Working with Files: Create, Read, Copy, Move, Delete, Archive](phases/01-linux-and-the-command-line/05-working-with-files/) | Build | Python |
-| 06 | [Users, Groups, Permissions & sudo](phases/01-linux-and-the-command-line/06-users-groups-permissions-and-sudo/) | Build | Python |
-| 07 | [Streams, Pipes & Redirection: Everything Is a File Descriptor](phases/01-linux-and-the-command-line/07-streams-pipes-and-redirection/) | Build | Python |
-| 08 | [The Text Toolkit: grep, sed, awk, sort, uniq, cut, tr & jq](phases/01-linux-and-the-command-line/08-the-text-toolkit/) | Build | Python |
-| 09 | [Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail](phases/01-linux-and-the-command-line/09-shell-scripting-for-operations/) | Build | Bash, Python |
-| 10 | [Processes & Signals: ps, top, kill, jobs & /proc](phases/01-linux-and-the-command-line/10-processes-and-signals/) | Build | Python |
-| 11 | [Boot, init & systemd: Keeping Your Backend Running](phases/01-linux-and-the-command-line/11-boot-init-and-systemd/) | Build | Python |
-| 12 | [Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer](phases/01-linux-and-the-command-line/12-reading-the-machine/) | Build | Python |
-| 13 | [Installing Software: Packages, Repositories & Where Files Land](phases/01-linux-and-the-command-line/13-installing-software/) | Learn | Python |
-| 14 | [Networking from the Shell: ip, ss, ping, dig, nc & tcpdump](phases/01-linux-and-the-command-line/14-networking-from-the-shell/) | Build | Python |
-| 15 | [curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies](phases/01-linux-and-the-command-line/15-curl-part-1-requests/) | Build | Python |
-| 16 | [curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries](phases/01-linux-and-the-command-line/16-curl-part-2-debugging/) | Build | Python |
-| 17 | [SSH: Keys, Agents, Tunnels, scp & rsync](phases/01-linux-and-the-command-line/17-ssh-keys-tunnels-and-rsync/) | Build | Python |
-| 18 | [Capstone: From a Blank Linux Box to a Running Backend](phases/01-linux-and-the-command-line/18-capstone-blank-box-to-running-backend/) | Build | Bash, Python |
+| 01 | [Kernel, User Space & Syscalls](phases/01-linux-and-the-command-line/01-what-an-operating-system-does/) | Build | Python |
+| 02 | [A Map of the Kernel](phases/01-linux-and-the-command-line/02-a-map-of-the-linux-kernel/) | Learn | Python |
+| 03 | [The Shell](phases/01-linux-and-the-command-line/03-the-shell/) | Build | Python |
+| 04 | [The Filesystem Hierarchy](phases/01-linux-and-the-command-line/04-the-filesystem-hierarchy/) | Build | Python |
+| 05 | [Working with Files](phases/01-linux-and-the-command-line/05-working-with-files/) | Build | Python |
+| 06 | [Users, Permissions & sudo](phases/01-linux-and-the-command-line/06-users-groups-permissions-and-sudo/) | Build | Python |
+| 07 | [Pipes & Redirection](phases/01-linux-and-the-command-line/07-streams-pipes-and-redirection/) | Build | Python |
+| 08 | [The Text Toolkit](phases/01-linux-and-the-command-line/08-the-text-toolkit/) | Build | Python |
+| 09 | [Shell Scripting](phases/01-linux-and-the-command-line/09-shell-scripting-for-operations/) | Build | Bash, Python |
+| 10 | [Processes & Signals](phases/01-linux-and-the-command-line/10-processes-and-signals/) | Build | Python |
+| 11 | [Boot, init & systemd](phases/01-linux-and-the-command-line/11-boot-init-and-systemd/) | Build | Python |
+| 12 | [Reading the Machine](phases/01-linux-and-the-command-line/12-reading-the-machine/) | Build | Python |
+| 13 | [Installing Software](phases/01-linux-and-the-command-line/13-installing-software/) | Learn | Python |
+| 14 | [Networking from the Shell](phases/01-linux-and-the-command-line/14-networking-from-the-shell/) | Build | Python |
+| 15 | [curl: Requests](phases/01-linux-and-the-command-line/15-curl-part-1-requests/) | Build | Python |
+| 16 | [curl: Debugging & Timing](phases/01-linux-and-the-command-line/16-curl-part-2-debugging/) | Build | Python |
+| 17 | [SSH, Tunnels & rsync](phases/01-linux-and-the-command-line/17-ssh-keys-tunnels-and-rsync/) | Build | Python |
+| 18 | [Capstone: Blank Box to Backend](phases/01-linux-and-the-command-line/18-capstone-blank-box-to-running-backend/) | Build | Bash, Python |
 
 </details>
 

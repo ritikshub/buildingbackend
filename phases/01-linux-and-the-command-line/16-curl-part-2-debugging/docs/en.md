@@ -1,4 +1,4 @@
-# curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries
+# curl: Debugging & Timing
 
 > One HTTP request is five waits in a row: resolve the name, shake hands with TCP, shake hands with TLS, wait for the server's first byte, receive the rest. `curl -w` reads a stopwatch at each boundary, and this lesson rebuilds that stopwatch with a raw socket so the numbers stop being magic: against a real site, DNS **1.3 ms**, TCP **44 ms**, TLS **51 ms**, the server **90 ms**, the transfer **0.1 ms**. Then the tools for when a request is slow or wrong: `--trace-ascii` for the bytes, `--resolve` to reach a server DNS does not know, the meaning of exit **60**, **51**, **35** and **28**, `--compressed`, and the timeout and retry flags without which a script can hang forever and report success.
 
@@ -388,4 +388,4 @@ The artifact for this lesson is a runbook: [`outputs/runbook-slow-or-failing-req
 - A script needs **`--connect-timeout`, `--max-time`, `--retry` with `--retry-delay`, and `-f`**; `--retry-all-errors` is unsafe for non-idempotent requests; `%{num_retries}` and the `-w` line belong in the log.
 - `%{http_version}` and `--http1.1`/`--http2` pick the protocol; `--compressed` shrinks the transfer by asking for gzip; proxy environment variables change requests silently and `--noproxy '*'` proves it.
 
-Next: [SSH: Keys, Agents, Tunnels, scp & rsync](../17-ssh-keys-tunnels-and-rsync/). You can debug a request from any box. Now the way you reach the box at all: what SSH protects, shown by building the plaintext remote shell it replaced, then keys, agents, the config file, tunnels to a database, and moving files with `scp` and `rsync`.
+Next: [SSH, Tunnels & rsync](../17-ssh-keys-tunnels-and-rsync/). You can debug a request from any box. Now the way you reach the box at all: what SSH protects, shown by building the plaintext remote shell it replaced, then keys, agents, the config file, tunnels to a database, and moving files with `scp` and `rsync`.

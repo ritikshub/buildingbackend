@@ -1,4 +1,4 @@
-# Working with Files: Create, Read, Copy, Move, Delete, Archive
+# Working with Files
 
 > `mv` took **87 µs** to move a 64 MiB file within one filesystem and **39 ms** to move it to another. Same command, same file, four hundred times slower, because one was a `rename` and the other was a copy followed by a delete. This lesson rebuilds `touch`, `cp`, `mv`, `rm`, `tail -f` and `tar` from the syscalls underneath so you know which operations are instant, which are atomic, which a running process will notice, and why none of them can be undone.
 
@@ -520,4 +520,4 @@ The artifact for this lesson is a checklist: [`outputs/checklist-safe-file-opera
 - **`tar`** is 512-byte headers with octal fields plus padded data plus two zero blocks; **gzip** is a separate wrapper, hence `.tar.gz` and `-z`. List before you extract; extract with `-C`; never as root from a stranger.
 - `nano` to edit safely, `vim` to escape (`Esc`, `:q!`), `less` to read anything big, `hexdump -C` when the bytes are lying to you, and `strace` when you want to see which of these syscalls a command really made.
 
-Next: [Users, Groups, Permissions & sudo](../06-users-groups-permissions-and-sudo/). You have been running everything as root in the sandbox, which is why `chmod 000` did nothing in lesson 01. Now the nine bits that `ls -l` has been showing you, who they apply to, and why a service gets a user of its own.
+Next: [Users, Permissions & sudo](../06-users-groups-permissions-and-sudo/). You have been running everything as root in the sandbox, which is why `chmod 000` did nothing in lesson 01. Now the nine bits that `ls -l` has been showing you, who they apply to, and why a service gets a user of its own.

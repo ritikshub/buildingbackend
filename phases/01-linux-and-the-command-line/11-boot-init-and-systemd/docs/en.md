@@ -1,4 +1,4 @@
-# Boot, init & systemd: Keeping Your Backend Running
+# Boot, init & systemd
 
 > Between the power button and your service there is one program the kernel starts, PID 1, and everything else on the box is its descendant. This lesson builds that program's core in Python, a supervisor that starts a unit, keeps its output, restarts it with backoff, gives up on a crash loop, and stops it with `TERM`, a grace period and `KILL`, then puts a real service under `systemd` on a box that boots: `enable --now`, `status`, `journalctl`, a `kill -9` that `Restart=on-failure` survives with `NRestarts=1`, a `reload` that is a `SIGHUP`, a stop that drains and exits 0, a broken unit reporting `203/EXEC`, a crash loop hitting `Start request repeated too quickly`, a timer, cron, and log rotation.
 
@@ -435,4 +435,4 @@ The artifact for this lesson is a checklist: [`outputs/checklist-systemd-unit-fo
 - **Timers** replace cron with a journal and `Persistent=`; `cron` remains fine for a one-liner with absolute paths and a redirect. **`logrotate`** must make the service reopen its log (`HUP` or `copytruncate`) or the disk fills invisibly.
 - `203/EXEC` is a bad path, `217/USER` a missing user, `signal=KILL` on stop is an ignored `TERM`, `start-limit-hit` is a crash loop; the checklist has the rest.
 
-Next: [Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer](../12-reading-the-machine/). The service is supervised. Now the questions you ask when it is slow anyway: what the load average means, why `free` says the RAM is gone, how a disk is the bottleneck when the CPU is idle, and who killed the process with signal 9.
+Next: [Reading the Machine](../12-reading-the-machine/). The service is supervised. Now the questions you ask when it is slow anyway: what the load average means, why `free` says the RAM is gone, how a disk is the bottleneck when the CPU is idle, and who killed the process with signal 9.

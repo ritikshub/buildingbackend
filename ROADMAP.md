@@ -22,7 +22,7 @@ their shape.
 | 10 | Files & the Filesystem | ✅ | ~40 min |
 | 11 | What a Network Is | ✅ | ~45 min |
 
-## Phase 1: Linux and the Command Line — ✅ (~22.5 hours)
+## Phase 1: Linux — ✅ (~22.5 hours)
 
 The phase the curriculum was missing: the machine a backend actually runs on.
 Foundations ends with "a process" and "a file" as ideas; this phase makes them
@@ -43,24 +43,24 @@ themselves stay in the phases that own them; this phase links forward.
 
 | # | Lesson | Status | Est. |
 |---|--------|--------|------|
-| 01 | What an Operating System Does: Kernel, User Space & the System Call | ✅ | ~60 min |
-| 02 | A Map of the Linux Kernel: Scheduler, Memory, VFS, Network Stack & Drivers | ✅ | ~60 min |
-| 03 | The Shell: Terminal, Prompt, PATH & How a Command Actually Runs | ✅ | ~75 min |
-| 04 | The Filesystem Hierarchy: Where Everything Lives | ✅ | ~70 min |
-| 05 | Working with Files: Create, Read, Copy, Move, Delete, Archive | ✅ | ~70 min |
-| 06 | Users, Groups, Permissions & sudo | ✅ | ~70 min |
-| 07 | Streams, Pipes & Redirection: Everything Is a File Descriptor | ✅ | ~80 min |
-| 08 | The Text Toolkit: grep, sed, awk, sort, uniq, cut, tr & jq | ✅ | ~80 min |
-| 09 | Shell Scripting for Operations: Variables, Quoting, Loops, Exit Codes & set -euo pipefail | ✅ | ~75 min |
-| 10 | Processes & Signals: ps, top, kill, jobs & /proc | ✅ | ~80 min |
-| 11 | Boot, init & systemd: Keeping Your Backend Running | ✅ | ~85 min |
-| 12 | Reading the Machine: CPU, Memory, Disk, File Descriptors & the OOM Killer | ✅ | ~75 min |
-| 13 | Installing Software: Packages, Repositories & Where Files Land | ✅ | ~50 min |
-| 14 | Networking from the Shell: ip, ss, ping, dig, nc & tcpdump | ✅ | ~80 min |
-| 15 | curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies | ✅ | ~80 min |
-| 16 | curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries | ✅ | ~75 min |
-| 17 | SSH: Keys, Agents, Tunnels, scp & rsync | ✅ | ~80 min |
-| 18 | Capstone: From a Blank Linux Box to a Running Backend | ✅ | ~120 min |
+| 01 | Kernel, User Space & Syscalls | ✅ | ~60 min |
+| 02 | A Map of the Kernel | ✅ | ~60 min |
+| 03 | The Shell | ✅ | ~75 min |
+| 04 | The Filesystem Hierarchy | ✅ | ~70 min |
+| 05 | Working with Files | ✅ | ~70 min |
+| 06 | Users, Permissions & sudo | ✅ | ~70 min |
+| 07 | Pipes & Redirection | ✅ | ~80 min |
+| 08 | The Text Toolkit | ✅ | ~80 min |
+| 09 | Shell Scripting | ✅ | ~75 min |
+| 10 | Processes & Signals | ✅ | ~80 min |
+| 11 | Boot, init & systemd | ✅ | ~85 min |
+| 12 | Reading the Machine | ✅ | ~75 min |
+| 13 | Installing Software | ✅ | ~50 min |
+| 14 | Networking from the Shell | ✅ | ~80 min |
+| 15 | curl: Requests | ✅ | ~80 min |
+| 16 | curl: Debugging & Timing | ✅ | ~75 min |
+| 17 | SSH, Tunnels & rsync | ✅ | ~80 min |
+| 18 | Capstone: Blank Box to Backend | ✅ | ~120 min |
 
 ## Phase 2: Networking and Protocols — ✅ (~16 hours)
 
