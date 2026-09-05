@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How zip works - Math Behind Tech - Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
+  <meta name="description" content="How zip, gzip and every compressed web page work, by hand: Huffman-code ABRACADABRA from 88 bits to 23, replace repeated JSON with back-references, then read a real 29-byte gzip file bit by bit.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/math-zip.html">
+  <meta property="og:title" content="How zip works · Math Behind Tech">
+  <meta property="og:description" content="Huffman coding, LZ77 and DEFLATE worked out by hand, then a real gzip file read bit by bit.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <meta property="og:url" content="https://buildingbackend.vercel.app/math-zip.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How zip works · Math Behind Tech">
+  <meta name="twitter:description" content="Huffman coding, LZ77 and DEFLATE worked out by hand, then a real gzip file read bit by bit.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260813m">
+  <link rel="stylesheet" href="math.css?v=20260905a">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="math.html" aria-current="page">Math</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <article class="math-page">
+      <div class="math-eyebrow"><a href="math.html">Math Behind Tech</a> · Chapter 02</div>
+      <h1>How zip works</h1>
+
+      <p class="lede">Count the letters, build a tree, and point backwards at things you already said. That is the whole of zip, gzip, PNG and every compressed web page, and you can do all of it with a pencil. At the end we open a real gzip file and read it bit by bit.</p>
+
+      <div class="legend">
+        <span><i class="sw-theory"></i>Plain text is theory.</span>
+        <span><i class="sw-ex"></i>Cream sheets are worked examples: problem, working, answer.</span>
+      </div>
+
+      <!-- ── Where you meet it ─────────────────────────────────────────── -->
+      <h2>Where you meet it</h2>
+      <p>One algorithm, DEFLATE, sits inside all of these. Only the wrapper around it changes.</p>
+
+      <div class="grid2">
+        <div class="tile">
+          <div class="tile-k">Every API response</div>
+          <p><code>Content-Encoding: gzip</code>. A JSON array of 1,000 small objects is 20,891 bytes on the server and 2,362 bytes on the wire. Example 5 shows why JSON shrinks so well.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Docker images and npm</div>
+          <p>Every image layer you pull is a tar.gz. Every npm package is a .tgz. Example 10 shows why they are tar.gz and not zip, with a 4× difference on the same files.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Files that are secretly zips</div>
+          <p>.docx, .xlsx, .jar and .apk are zip archives with a different extension. Rename one and open it. PNG images carry the same DEFLATE stream inside.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Your git repository</div>
+          <p>Every object in <code>.git/objects</code> is DEFLATE-compressed with a two-byte zlib header. The bytes in Example 8 are what git writes to disk.</p>
+        </div>
+      </div>
+
+      <!-- ── The idea ──────────────────────────────────────────────────── -->
+      <h2>The idea in one breath</h2>
+      <p>A file is a row of bytes, 8 bits each, and the 8 is fixed no matter what. An <var>e</var> costs the same as a <var>Z</var>. The fiftieth copy of <code>"ok":true</code> costs the same as the first. Compression is the observation that both of those are wasteful, and it fixes them with two tricks.</p>
+      <p><strong>Trick one, Huffman coding (1952):</strong> give frequent symbols short codes and rare symbols long ones, arranged so that no code is the beginning of another. <strong>Trick two, LZ77 (1977):</strong> when text repeats, do not write it again. Write "go back 19 characters and copy 11".</p>
+      <p><strong>DEFLATE (1996)</strong> does trick two first, then trick one on the result. zip, gzip, zlib and PNG are DEFLATE with different headers stapled on. That is why one chapter covers all of them.</p>
+
+      <!-- ── Tools ─────────────────────────────────────────────────────── -->
+      <h2>The four tools you need</h2>
+      <p>Nothing below needs more than these four ideas.</p>
+
+      <div class="tool">
+        <h3>1. Bits and bytes</h3>
+        <p>A bit is a 0 or a 1. A byte is 8 bits, so it has 256 possible values. Text is stored one byte per character using the ASCII table, where <var>A</var> is 65.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">A in ASCII</div><div class="eq-work">65 = 64 + 1 = 01000001</div><div class="eq-res">8 bits</div></div>
+          <div class="eq-row"><div class="eq-what">The word ABRACADABRA</div><div class="eq-work">11 letters × 8 bits</div><div class="eq-res">88 bits</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>2. How many bits to tell N things apart</h3>
+        <p>With <var>b</var> bits you can name <var>2<sup>b</sup></var> different things. Turned around, naming <var>N</var> things takes <var>log<sub>2</sub> N</var> bits, rounded up if you insist on whole bits.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">2 things</div><div class="eq-work">0 or 1</div><div class="eq-res">1 bit</div></div>
+          <div class="eq-row"><div class="eq-what">8 things</div><div class="eq-work">2³ = 8</div><div class="eq-res">3 bits</div></div>
+          <div class="eq-row"><div class="eq-what">5 things</div><div class="eq-work">2² = 4 is too few, 2³ = 8 is enough</div><div class="eq-res">3 bits</div></div>
+          <div class="eq-row"><div class="eq-what">11 things, fractional</div><div class="eq-work">log₂ 11, because 2^3.46 ≈ 11</div><div class="eq-res">3.46 bits</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>3. Prefix-free codes</h3>
+        <p>If no codeword is the beginning of another, you can read a stream of bits with no separators and never be confused. That property is what lets codes have different lengths.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">Codes 0, 10, 11</div><div class="eq-work">read 0110: 0 · 11 · 0</div><div class="eq-res">unambiguous</div></div>
+          <div class="eq-row"><div class="eq-what">Codes 0, 01</div><div class="eq-work">read 01: is it 0 then something, or 01?</div><div class="eq-res">ambiguous</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>4. Binary trees</h3>
+        <p>A tree where every branch is a bit, 0 for left and 1 for right, and every symbol sits on a leaf. The path from the root to a leaf is that symbol's code. Because a leaf has no children, no path can be the start of another: a tree is automatically prefix-free.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">Path: right, right, left</div><div class="eq-work">1, 1, 0</div><div class="eq-res">code 110</div></div>
+        </div></div>
+      </div>
+
+      <!-- ── Trick one ─────────────────────────────────────────────────── -->
+      <h2>Trick one: spend fewer bits on common letters</h2>
+      <p>Huffman's algorithm builds the tree from the bottom. Count each symbol. Take the two lightest nodes, join them under a new node whose weight is their sum, and put it back. Repeat until one node is left. Rare symbols get merged early and end up deep in the tree with long codes. Common symbols get merged last and stay near the root.</p>
+
+      <section class="ex" id="ex1">
+        <div class="ex-head"><span class="ex-num">Example 1</span><h3 class="ex-title">What ABRACADABRA costs, and the first easy saving</h3></div>
+        <p class="ex-problem">The word has 11 letters but only 5 different ones. How many bits does it cost as plain ASCII, and how many with the simplest possible shorter code?</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">As ASCII (tool 1)</div><div class="eq-work">11 × 8</div><div class="eq-res">88 bits</div></div>
+          <div class="eq-row"><div class="eq-what">Count the letters</div><div class="eq-work">A×5, B×2, R×2, C×1, D×1</div><div class="eq-res">5 symbols</div></div>
+          <div class="eq-row"><div class="eq-what">Fixed code for 5 symbols (tool 2)</div><div class="eq-work">3 bits each, 11 × 3</div><div class="eq-res">33 bits</div></div>
+          <div class="eq-row"><div class="eq-what">But A is nearly half the word</div><div class="eq-work">5 of 11 letters, and it pays 3 bits like everyone else</div><div class="eq-res">wasteful</div></div>
+        </div>
+        <p class="ex-answer"><b>88</b> bits as ASCII, <b>33</b> with a fixed 3-bit code. A code that charges A less than C should do better still.</p>
+      </section>
+
+      <section class="ex" id="ex2">
+        <div class="ex-head"><span class="ex-num">Example 2</span><h3 class="ex-title">Build the Huffman tree</h3></div>
+        <p class="ex-problem">Weights: A 5, B 2, R 2, C 1, D 1. Repeatedly join the two lightest nodes.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Two lightest: C and D</div><div class="eq-work">1 + 1</div><div class="eq-res">node CD = 2</div></div>
+          <div class="eq-row"><div class="eq-what">Two lightest now: B and R</div><div class="eq-work">2 + 2<small>CD also weighs 2. Ties can go either way; the total bit count comes out the same.</small></div><div class="eq-res">node BR = 4</div></div>
+          <div class="eq-row"><div class="eq-what">Two lightest: CD and BR</div><div class="eq-work">2 + 4</div><div class="eq-res">node 6</div></div>
+          <div class="eq-row"><div class="eq-what">Last two: A and node 6</div><div class="eq-work">5 + 6</div><div class="eq-res">root 11</div></div>
+          <div class="eq-row"><div class="eq-what">Read the codes off the tree, 0 left and 1 right</div><div class="eq-work">A is one step left. C, D, B, R are three steps down on the right.</div><div class="eq-res">see below</div></div>
+        </div>
+        <p class="ex-answer">A = <b>0</b>, C = <b>100</b>, D = <b>101</b>, B = <b>110</b>, R = <b>111</b>. The most common letter got the shortest code, and no code is the start of another.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 330" role="img" aria-labelledby="huff-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="huff-fig-title">The Huffman tree for ABRACADABRA: root 11 splits into leaf A (5) and node 6; node 6 splits into node 2 (C, D) and node 4 (B, R)</title>
+          <!-- edges -->
+          <line x1="360" y1="58" x2="200" y2="112" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="360" y1="58" x2="520" y2="112" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="520" y1="148" x2="440" y2="202" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="520" y1="148" x2="600" y2="202" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="440" y1="238" x2="400" y2="272" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="440" y1="238" x2="480" y2="272" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="600" y1="238" x2="560" y2="272" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="600" y1="238" x2="640" y2="272" stroke="currentColor" stroke-width="1.2"/>
+          <!-- edge labels -->
+          <text x="268" y="80" text-anchor="middle" class="fig-mono fig-ember">0</text>
+          <text x="452" y="80" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <text x="468" y="172" text-anchor="middle" class="fig-mono fig-ember">0</text>
+          <text x="572" y="172" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <text x="410" y="252" text-anchor="middle" class="fig-mono fig-ember">0</text>
+          <text x="472" y="252" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <text x="570" y="252" text-anchor="middle" class="fig-mono fig-ember">0</text>
+          <text x="632" y="252" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <!-- internal nodes -->
+          <circle cx="360" cy="40" r="18" class="fig-box"/>
+          <text x="360" y="45" text-anchor="middle" class="fig-mono" fill="currentColor">11</text>
+          <circle cx="520" cy="130" r="18" class="fig-box"/>
+          <text x="520" y="135" text-anchor="middle" class="fig-mono" fill="currentColor">6</text>
+          <circle cx="440" cy="220" r="18" class="fig-box"/>
+          <text x="440" y="225" text-anchor="middle" class="fig-mono" fill="currentColor">2</text>
+          <circle cx="600" cy="220" r="18" class="fig-box"/>
+          <text x="600" y="225" text-anchor="middle" class="fig-mono" fill="currentColor">4</text>
+          <!-- leaves -->
+          <rect x="168" y="112" width="64" height="36" class="fig-box-ember"/>
+          <text x="200" y="135" text-anchor="middle" class="fig-mono" fill="currentColor">A · 5</text>
+          <text x="200" y="170" text-anchor="middle" class="fig-mono fig-ember">0</text>
+
+          <rect x="368" y="272" width="64" height="36" class="fig-box-ember"/>
+          <text x="400" y="295" text-anchor="middle" class="fig-mono" fill="currentColor">C · 1</text>
+          <text x="400" y="326" text-anchor="middle" class="fig-mono fig-ember">100</text>
+          <rect x="448" y="272" width="64" height="36" class="fig-box-ember"/>
+          <text x="480" y="295" text-anchor="middle" class="fig-mono" fill="currentColor">D · 1</text>
+          <text x="480" y="326" text-anchor="middle" class="fig-mono fig-ember">101</text>
+          <rect x="528" y="272" width="64" height="36" class="fig-box-ember"/>
+          <text x="560" y="295" text-anchor="middle" class="fig-mono" fill="currentColor">B · 2</text>
+          <text x="560" y="326" text-anchor="middle" class="fig-mono fig-ember">110</text>
+          <rect x="608" y="272" width="64" height="36" class="fig-box-ember"/>
+          <text x="640" y="295" text-anchor="middle" class="fig-mono" fill="currentColor">R · 2</text>
+          <text x="640" y="326" text-anchor="middle" class="fig-mono fig-ember">111</text>
+          <!-- legend -->
+          <text x="20" y="300" class="fig-label fig-mute">LEFT = 0, RIGHT = 1</text>
+          <text x="20" y="318" class="fig-label fig-mute">LEAF = LETTER · COUNT</text>
+        </svg>
+        <figcaption>The tree from Example 2. Every path from the root to a leaf is a code.</figcaption>
+      </figure>
+
+      <section class="ex" id="ex3">
+        <div class="ex-head"><span class="ex-num">Example 3</span><h3 class="ex-title">Encode ABRACADABRA, then decode it with no separators</h3></div>
+        <p class="ex-problem">Use the codes from Example 2. Count the bits, then read the bit string back by walking the tree.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Cost per letter</div><div class="eq-work">A 5×1, B 2×3, R 2×3, C 1×3, D 1×3<small>5 + 6 + 6 + 3 + 3</small></div><div class="eq-res">23 bits</div></div>
+          <div class="eq-row"><div class="eq-what">The whole word, spaces added for you</div><div class="eq-work">0 110 111 0 100 0 101 0 110 111 0</div><div class="eq-res">23 bits</div></div>
+          <div class="eq-gap">Decode 0110111010… by walking the tree</div>
+          <div class="eq-row"><div class="eq-what">Read 0</div><div class="eq-work">left from the root: a leaf</div><div class="eq-res">A</div></div>
+          <div class="eq-row"><div class="eq-what">Read 1, 1, 0</div><div class="eq-work">right, right, left: a leaf</div><div class="eq-res">B</div></div>
+          <div class="eq-row"><div class="eq-what">Read 1, 1, 1</div><div class="eq-work">right, right, right: a leaf</div><div class="eq-res">R</div></div>
+          <div class="eq-row"><div class="eq-what">Read 0</div><div class="eq-work">a leaf again</div><div class="eq-res">A</div></div>
+          <div class="eq-row"><div class="eq-what">Read 1, 0, 0</div><div class="eq-work">right, left, left</div><div class="eq-res">C</div></div>
+        </div>
+        <p class="ex-answer"><b>88</b> bits became <b>23</b>, a 74% saving, and the reader never needed a separator: every time it lands on a leaf it starts again at the root.</p>
+      </section>
+
+      <section class="ex" id="ex4">
+        <div class="ex-head"><span class="ex-num">Example 4</span><h3 class="ex-title">Shannon's floor: how low can any code go?</h3></div>
+        <p class="ex-problem">Shannon proved in 1948 that the average bits per symbol can never drop below the entropy, <var>Σ p · log<sub>2</sub>(1/p)</var>, where <var>p</var> is each symbol's share of the text. Compute it for ABRACADABRA and compare with Example 3.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">A, share 5/11</div><div class="eq-work">log₂(11/5) = 1.1375, times 5/11</div><div class="eq-res">0.517</div></div>
+          <div class="eq-row"><div class="eq-what">B and R, share 2/11 each</div><div class="eq-work">log₂(11/2) = 2.4594, times 2/11, twice</div><div class="eq-res">0.894</div></div>
+          <div class="eq-row"><div class="eq-what">C and D, share 1/11 each</div><div class="eq-work">log₂ 11 = 3.4594, times 1/11, twice</div><div class="eq-res">0.629</div></div>
+          <div class="eq-row"><div class="eq-what">Entropy, bits per letter</div><div class="eq-work">0.517 + 0.894 + 0.629</div><div class="eq-res">2.04</div></div>
+          <div class="eq-row"><div class="eq-what">Floor for 11 letters</div><div class="eq-work">11 × 2.04</div><div class="eq-res">22.4 bits</div></div>
+        </div>
+        <p class="ex-answer">No code with one codeword per letter can beat <b>22.4</b> bits. Huffman's <b>23</b> is within one bit of perfect. The same formula explains why a JPEG or a random file will not compress: their entropy is already close to 8 bits per byte, so there is nothing to save.</p>
+      </section>
+
+      <!-- ── Trick two ─────────────────────────────────────────────────── -->
+      <h2>Trick two: point backwards</h2>
+      <p>Huffman looks at one symbol at a time. It cannot see that <code>"ok":true</code> appeared twenty characters ago. LZ77 can. It slides a window over the text, 32 KB wide in DEFLATE, and at every position asks: does the text that comes next already appear somewhere in the window? If it finds a match of at least 3 characters, it writes a <strong>copy token</strong>, ⟨length, distance⟩, instead of the characters. The decoder just copies. Decompressing is far faster than compressing for exactly this reason: copying is cheap, searching is not.</p>
+
+      <section class="ex" id="ex5">
+        <div class="ex-head"><span class="ex-num">Example 5</span><h3 class="ex-title">Compress a JSON array with copy tokens</h3></div>
+        <p class="ex-problem">The text is <code>[{"id":1,"ok":true},{"id":2,"ok":true}]</code>, 39 characters, positions 0 to 38. Walk through it and replace any repeat of 3 or more characters with ⟨length, distance⟩.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Positions 0 to 19</div><div class="eq-work">[{"id":1,"ok":true},<small>Nothing earlier to copy from yet. Write the characters.</small></div><div class="eq-res">20 literals</div></div>
+          <div class="eq-row"><div class="eq-what">Position 20: has {"id": appeared before?</div><div class="eq-work">yes, at position 1, which is 19 back. It matches for 6 characters, until 1 ≠ 2.</div><div class="eq-res">⟨6, 19⟩</div></div>
+          <div class="eq-row"><div class="eq-what">Position 26: the digit 2</div><div class="eq-work">never seen before</div><div class="eq-res">literal 2</div></div>
+          <div class="eq-row"><div class="eq-what">Position 27: has ,"ok":true} appeared before?</div><div class="eq-work">yes, 19 back again. It matches for 11 characters, until ] ≠ ,</div><div class="eq-res">⟨11, 19⟩</div></div>
+          <div class="eq-row"><div class="eq-what">Position 38: the closing ]</div><div class="eq-work">never seen before</div><div class="eq-res">literal ]</div></div>
+        </div>
+        <p class="ex-answer">39 characters became <b>22 literals and 2 copies</b>. The second object is almost entirely two pointers at the first. Add 998 more objects and the same thing happens 998 more times, which is how 20,891 bytes of JSON becomes <b>2,362</b> on the wire.</p>
+      </section>
+
+      <!-- ── DEFLATE ───────────────────────────────────────────────────── -->
+      <h2>Putting it together: DEFLATE</h2>
+      <p>DEFLATE runs LZ77 and then Huffman-codes what comes out. The output of LZ77 is a mix of literals and copy tokens, so DEFLATE uses one alphabet for "literal or length" with 286 symbols: 0 to 255 are the byte values, 256 means end of block, and 257 to 285 mean "a copy of length 3 to 258 follows". A second, smaller Huffman tree codes the distances, 1 to 32,768, in 30 buckets.</p>
+      <p>The stream is cut into blocks. Every block starts with three bits: one that says whether this is the last block, and two that say which trees to use: <var>00</var> for none (stored as is), <var>01</var> for a fixed pair of trees written into the spec, <var>10</var> for trees custom-built for this block and sent at its start. Custom trees are the interesting case: how do you send a tree cheaply?</p>
+
+      <section class="ex" id="ex6">
+        <div class="ex-head"><span class="ex-num">Example 6</span><h3 class="ex-title">Ship the whole tree as five small numbers</h3></div>
+        <p class="ex-problem">The decoder needs our tree. Sending every code would be expensive. DEFLATE's trick: send only each symbol's <em>code length</em> (A 1, B 3, C 3, D 3, R 3) and let both sides rebuild the codes by one fixed rule: shorter codes first, alphabetical within a length, counting upwards.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Count the codes of each length</div><div class="eq-work">length 1: one (A). length 2: none. length 3: four (B, C, D, R)</div><div class="eq-res">1, 0, 4</div></div>
+          <div class="eq-row"><div class="eq-what">First code of length 1</div><div class="eq-work">start counting at 0</div><div class="eq-res">A = 0</div></div>
+          <div class="eq-row"><div class="eq-what">First code of length 2</div><div class="eq-work">(0 + 1) × 2 = 2 = 10, but nothing has length 2</div><div class="eq-res">skip</div></div>
+          <div class="eq-row"><div class="eq-what">First code of length 3</div><div class="eq-work">(2 + 0) × 2 = 4 = 100</div><div class="eq-res">B = 100</div></div>
+          <div class="eq-row"><div class="eq-what">Count up for the rest, alphabetically</div><div class="eq-work">101, 110, 111</div><div class="eq-res">C, D, R</div></div>
+        </div>
+        <p class="ex-answer">Five small numbers rebuild a prefix-free code that costs exactly the same <b>23</b> bits. The codes differ from Example 2 (C was 100 there, B is 100 here), and that is fine: only the lengths affect the size. This is called a canonical Huffman code, and it is precisely how DEFLATE ships its trees. Then it goes one step further and Huffman-codes the list of lengths too. DEFLATE compresses the Huffman tree with another Huffman tree.</p>
+      </section>
+
+      <section class="ex" id="ex7">
+        <div class="ex-head"><span class="ex-num">Example 7</span><h3 class="ex-title">Write ⟨11, 19⟩ the DEFLATE way</h3></div>
+        <p class="ex-problem">A copy token becomes two Huffman symbols plus a few raw bits. Lengths 3 to 10 get one symbol each (257 to 264); after that the symbols cover ranges and raw "extra bits" pick the exact value. Distances work the same way with 30 codes. Encode the two copies from Example 5.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Length 11: find the bucket</div><div class="eq-work">symbol 265 covers lengths 11 and 12 with 1 extra bit<small>11 − 11 = 0</small></div><div class="eq-res">265, extra 0</div></div>
+          <div class="eq-row"><div class="eq-what">Distance 19: find the bucket</div><div class="eq-work">distance code 8 covers 17 to 24 with 3 extra bits<small>19 − 17 = 2 = 010</small></div><div class="eq-res">8, extra 010</div></div>
+          <div class="eq-row"><div class="eq-what">Length 6</div><div class="eq-work">symbol 260, no extra bits</div><div class="eq-res">260</div></div>
+          <div class="eq-row"><div class="eq-what">Distance 19 again</div><div class="eq-work">same bucket as above</div><div class="eq-res">8, extra 010</div></div>
+        </div>
+        <p class="ex-answer">⟨11, 19⟩ is <b>265 + 0</b> then <b>8 + 010</b>; ⟨6, 19⟩ is <b>260</b> then <b>8 + 010</b>. The buckets grow like powers of two, which is how 30 distance codes reach all the way to 32,768. Then the symbols get their Huffman codes like everything else.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 230" role="img" aria-labelledby="pipe-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="pipe-fig-title">DEFLATE pipeline: bytes go through LZ77 to tokens, then Huffman to bits; gzip and zip wrap the same bits with different headers</title>
+          <defs>
+            <marker id="pipe-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <rect x="20" y="30" width="170" height="50" class="fig-box"/>
+          <text x="105" y="60" text-anchor="middle" class="fig-mono" fill="currentColor">39 bytes of JSON</text>
+          <text x="105" y="98" text-anchor="middle" class="fig-label fig-mute">INPUT</text>
+
+          <line x1="192" y1="55" x2="272" y2="55" stroke="currentColor" stroke-width="1.2" marker-end="url(#pipe-arrow)"/>
+          <text x="232" y="46" text-anchor="middle" class="fig-label fig-ember">TRICK TWO</text>
+          <text x="232" y="72" text-anchor="middle" class="fig-label fig-mute">LZ77</text>
+
+          <rect x="275" y="30" width="170" height="50" class="fig-box"/>
+          <text x="360" y="60" text-anchor="middle" class="fig-mono" fill="currentColor">literals + copies</text>
+          <text x="360" y="98" text-anchor="middle" class="fig-label fig-mute">TOKENS · 22 LITERALS, 2 COPIES</text>
+
+          <line x1="447" y1="55" x2="527" y2="55" stroke="currentColor" stroke-width="1.2" marker-end="url(#pipe-arrow)"/>
+          <text x="487" y="46" text-anchor="middle" class="fig-label fig-ember">TRICK ONE</text>
+          <text x="487" y="72" text-anchor="middle" class="fig-label fig-mute">HUFFMAN</text>
+
+          <rect x="530" y="30" width="170" height="50" class="fig-box-ember"/>
+          <text x="615" y="60" text-anchor="middle" class="fig-mono" fill="currentColor">28 bytes of bits</text>
+          <text x="615" y="98" text-anchor="middle" class="fig-label fig-mute">DEFLATE STREAM</text>
+
+          <text x="20" y="145" class="fig-label fig-ember">GZIP</text>
+          <rect x="80" y="128" width="120" height="30" class="fig-box"/>
+          <text x="140" y="148" text-anchor="middle" class="fig-label" fill="currentColor">10-BYTE HEADER</text>
+          <rect x="200" y="128" width="300" height="30" class="fig-box-ember"/>
+          <text x="350" y="148" text-anchor="middle" class="fig-label" fill="currentColor">DEFLATE STREAM</text>
+          <rect x="500" y="128" width="100" height="30" class="fig-box"/>
+          <text x="550" y="148" text-anchor="middle" class="fig-label" fill="currentColor">CRC-32</text>
+          <rect x="600" y="128" width="100" height="30" class="fig-box"/>
+          <text x="650" y="148" text-anchor="middle" class="fig-label" fill="currentColor">SIZE</text>
+
+          <text x="20" y="200" class="fig-label fig-ember">ZIP</text>
+          <rect x="80" y="183" width="130" height="30" class="fig-box"/>
+          <text x="145" y="203" text-anchor="middle" class="fig-label" fill="currentColor">PK LOCAL HEADER</text>
+          <rect x="210" y="183" width="220" height="30" class="fig-box-ember"/>
+          <text x="320" y="203" text-anchor="middle" class="fig-label" fill="currentColor">DEFLATE STREAM</text>
+          <rect x="430" y="183" width="170" height="30" class="fig-box"/>
+          <text x="515" y="203" text-anchor="middle" class="fig-label" fill="currentColor">PK CENTRAL DIRECTORY</text>
+          <rect x="600" y="183" width="100" height="30" class="fig-box"/>
+          <text x="650" y="203" text-anchor="middle" class="fig-label" fill="currentColor">PK END</text>
+        </svg>
+        <figcaption>Same stream, different wrappers. zip repeats its header for every file inside.</figcaption>
+      </figure>
+
+      <!-- ── Read a real gzip ──────────────────────────────────────────── -->
+      <h2>Open a real gzip file</h2>
+      <p>gzip is a 10-byte header, the DEFLATE stream, and an 8-byte trailer. Make one and look at it. The <code>-n</code> flag leaves out the filename and timestamp so your bytes match these exactly, apart from one byte that names your operating system.</p>
+
+      <pre class="code" data-lang="bash"><code>printf 'ABRACADABRA' | gzip -n -9 | xxd</code></pre>
+      <pre class="code" data-lang="console"><code>00000000: 1f8b 0800 0000 0000 0203 7374 0a72 7476  ..........st.rtv
+00000010: 7471 0452 005f 6be9 9a0b 0000 00         tq.R._k......</code></pre>
+
+      <section class="ex" id="ex8">
+        <div class="ex-head"><span class="ex-num">Example 8</span><h3 class="ex-title">Read the 29 bytes of gzip("ABRACADABRA")</h3></div>
+        <p class="ex-problem">Split the 29 bytes above into the fields RFC 1952 defines, and check the two numbers in the trailer against the original text.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Bytes 0 to 1: magic number</div><div class="eq-work">1f 8b</div><div class="eq-res">this is gzip</div></div>
+          <div class="eq-row"><div class="eq-what">Byte 2: compression method</div><div class="eq-work">08</div><div class="eq-res">DEFLATE</div></div>
+          <div class="eq-row"><div class="eq-what">Bytes 3 to 9: flags, time, level, OS</div><div class="eq-work">00 · 00 00 00 00 · 02 · 03<small>no name or comment, no timestamp, maximum compression, Unix</small></div><div class="eq-res">header done</div></div>
+          <div class="eq-row"><div class="eq-what">Bytes 10 to 20: the DEFLATE stream</div><div class="eq-work">73 74 0a 72 74 76 74 71 04 52 00</div><div class="eq-res">11 bytes</div></div>
+          <div class="eq-row"><div class="eq-what">Bytes 21 to 24: CRC-32 of the original</div><div class="eq-work">5f 6b e9 9a, least significant byte first<small>Read backwards: 0x9ae96b5f, which is crc32("ABRACADABRA")</small></div><div class="eq-res">checksum ✓</div></div>
+          <div class="eq-row"><div class="eq-what">Bytes 25 to 28: original size</div><div class="eq-work">0b 00 00 00, least significant byte first<small>0x0b = 11</small></div><div class="eq-res">11 bytes ✓</div></div>
+        </div>
+        <p class="ex-answer">11 bytes in, <b>29</b> bytes out. Compression made it bigger, because 18 bytes of wrapper is more than the 11 bytes being compressed. This is why web servers have a minimum size below which they do not gzip a response.</p>
+      </section>
+
+      <p>Now the interesting 11 bytes. DEFLATE packs bits from the least significant end of each byte, so the first byte <var>73</var> = 0111<strong>0011</strong> is read right to left: the header bits are 1, 1, 0. With so little input, gzip decided custom trees would cost more than they save and used the fixed trees from the spec, where every byte value below 144 is an 8-bit code and the end-of-block symbol is 7 bits.</p>
+
+      <section class="ex" id="ex9">
+        <div class="ex-head"><span class="ex-num">Example 9</span><h3 class="ex-title">Read the DEFLATE stream bit by bit</h3></div>
+        <p class="ex-problem">Decode the 88 bits of <var>73 74 0a 72 74 76 74 71 04 52 00</var> into literals and copy tokens using the fixed trees of RFC 1951, and check the result.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Bits 0 to 2: block header</div><div class="eq-work">1, then 01<small>last block, fixed trees</small></div><div class="eq-res">BFINAL 1, BTYPE 01</div></div>
+          <div class="eq-row"><div class="eq-what">Bits 3 to 10</div><div class="eq-work">01110001, the fixed 8-bit code for byte 65</div><div class="eq-res">literal A</div></div>
+          <div class="eq-row"><div class="eq-what">Bits 11 to 66: seven more literals</div><div class="eq-work">B R A C A D A, 8 bits each</div><div class="eq-res">56 bits</div></div>
+          <div class="eq-row"><div class="eq-what">Bits 67 to 73</div><div class="eq-work">0000001, the 7-bit code for symbol 257</div><div class="eq-res">length 3</div></div>
+          <div class="eq-row"><div class="eq-what">Bits 74 to 79</div><div class="eq-work">00101 is distance code 5, covering 7 to 8; extra bit 0 picks 7</div><div class="eq-res">distance 7</div></div>
+          <div class="eq-row"><div class="eq-what">So: copy 3 characters from 7 back</div><div class="eq-work">the text so far is ABRACADA; 7 back lands on B</div><div class="eq-res">BRA</div></div>
+          <div class="eq-row"><div class="eq-what">Bits 80 to 86</div><div class="eq-work">0000000, symbol 256</div><div class="eq-res">end of block</div></div>
+          <div class="eq-row"><div class="eq-what">Bit 87</div><div class="eq-work">padding to fill the last byte</div><div class="eq-res">88 bits</div></div>
+        </div>
+        <p class="ex-answer">ABRACADA + BRA = <b>ABRACADABRA</b>, exactly. With the fixed trees every letter still cost 8 bits, so trick one saved nothing here; the only saving was trick two, BRA as a 13-bit copy instead of 24 bits of letters. That is the right call for 11 bytes. On a real file the block would carry custom trees and the letters would shrink too.</p>
+      </section>
+
+      <!-- ── zip ───────────────────────────────────────────────────────── -->
+      <h2>Inside a .zip file</h2>
+      <p>A zip archive is a list of files, each compressed <em>separately</em> with DEFLATE and preceded by a local header that starts with the bytes <var>50 4b 03 04</var>, which is "PK" followed by 3 and 4. PK is Phil Katz, who wrote PKZIP in 1989, so every zip file on Earth begins with its author's initials. At the end sits a central directory, one entry per file, also starting with PK, and a final end record, also PK. The central directory is why you can list a zip and extract one file without reading the rest. Compressing each file on its own is the price of that feature, and the price is steep.</p>
+
+      <section class="ex" id="ex10">
+        <div class="ex-head"><span class="ex-num">Example 10</span><h3 class="ex-title">zip versus tar.gz on 200 small JSON files</h3></div>
+        <p class="ex-problem">200 files of about 127 bytes each, all shaped like <code>{"id": 7, "name": "user7", "ok": true, …}</code>, 25,470 bytes in total. Archive them both ways and explain the difference.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">A zip holding one 11-byte file</div><div class="eq-work">30-byte local header + 5-byte name + 11 bytes of data + 51-byte directory entry + 22-byte end record</div><div class="eq-res">119 bytes</div></div>
+          <div class="eq-row"><div class="eq-what">The 200 files as a zip</div><div class="eq-work">each file compressed alone shrinks 26%, but 200 sets of headers add about 33,000 bytes</div><div class="eq-res">52,203 bytes</div></div>
+          <div class="eq-row"><div class="eq-what">The 200 files as tar.gz</div><div class="eq-work">tar glues them into one stream first; file 2 is then mostly copy tokens pointing into file 1</div><div class="eq-res">12,857 bytes</div></div>
+          <div class="eq-row"><div class="eq-what">Compare</div><div class="eq-work">52,203 ÷ 12,857</div><div class="eq-res">4× larger</div></div>
+        </div>
+        <p class="ex-answer">Same DEFLATE, <b>4×</b> difference, from the wrapper alone. The zip is even bigger than the uncompressed files. That is why Docker layers, npm packages and backups are tar.gz, and why zip is still the right choice when you need to pull one file out of a big archive without reading the whole thing.</p>
+      </section>
+
+      <!-- ── Run it ────────────────────────────────────────────────────── -->
+      <h2>Run it</h2>
+      <h3>Build it: both tricks in forty lines</h3>
+      <p>Standard library only. The Huffman function returns code lengths and the canonical function turns them into codes, exactly as in Example 6. The LZ77 function is the brute-force version of Example 5.</p>
+
+      <pre class="code" data-lang="python"><code># The two tricks behind zip, with numbers small enough to check on paper.
+# Companion to math-zip.html. Specs: RFC 1951 (DEFLATE), RFC 1952 (gzip).
+import heapq, zlib
+from collections import Counter
+
+def huffman_lengths(text):
+    """Trick one. Merge the two lightest nodes until one is left.
+    Returns how many bits each symbol gets (the shape of the tree)."""
+    counts = Counter(text)
+    heap = [(w, i, [[ch, 0]]) for i, (ch, w) in enumerate(sorted(counts.items()))]
+    heapq.heapify(heap)
+    order = len(heap)
+    while len(heap) &gt; 1:
+        w1, _, a = heapq.heappop(heap)
+        w2, _, b = heapq.heappop(heap)
+        for leaf in a + b:
+            leaf[1] += 1                      # one more bit for every symbol underneath
+        heapq.heappush(heap, (w1 + w2, order, a + b))
+        order += 1
+    return dict(heap[0][2])
+
+def canonical(lengths):
+    """DEFLATE's rule for turning lengths into codes: shortest first,
+    alphabetical within a length, counting upwards."""
+    codes, code, prev = {}, 0, 0
+    for sym, n in sorted(lengths.items(), key=lambda kv: (kv[1], kv[0])):
+        code &lt;&lt;= n - prev
+        codes[sym] = format(code, f"0{n}b")
+        code, prev = code + 1, n
+    return codes
+
+def lz77(text, min_match=3):
+    """Trick two. At each position, find the longest earlier copy of what
+    comes next. Emit ('copy', length, distance) or ('lit', char)."""
+    i, out = 0, []
+    while i &lt; len(text):
+        best = (0, 0)
+        for j in range(i):
+            n = 0
+            while i + n &lt; len(text) and text[j + n] == text[i + n]:
+                n += 1
+            if n &gt; best[0]:
+                best = (n, i - j)
+        if best[0] &gt;= min_match:
+            out.append(("copy", best[0], best[1])); i += best[0]
+        else:
+            out.append(("lit", text[i])); i += 1
+    return out
+
+word = "ABRACADABRA"
+lengths = huffman_lengths(word)
+codes = canonical(lengths)
+bits = sum(len(codes[ch]) for ch in word)
+print("code lengths", lengths)
+print("codes       ", codes)
+print("encoded     ", " ".join(codes[ch] for ch in word))
+print(f"{len(word) * 8} bits in ASCII -&gt; {bits} bits with Huffman")
+
+js = '[{"id":1,"ok":true},{"id":2,"ok":true}]'
+print("\nLZ77 on", js)
+for tok in lz77(js):
+    if tok[0] == "copy":
+        print(f"  copy {tok[1]} chars from {tok[2]} back")
+print(f"{len(js)} bytes -&gt; zlib level 9: {len(zlib.compress(js.encode(), 9))} bytes (header and checksum included)")</code></pre>
+
+      <pre class="code" data-lang="console"><code>$ python3 zip_by_hand.py
+code lengths {'A': 1, 'C': 3, 'D': 3, 'B': 3, 'R': 3}
+codes        {'A': '0', 'B': '100', 'C': '101', 'D': '110', 'R': '111'}
+encoded      0 100 111 0 101 0 110 0 100 111 0
+88 bits in ASCII -&gt; 23 bits with Huffman
+
+LZ77 on [{"id":1,"ok":true},{"id":2,"ok":true}]
+  copy 6 chars from 19 back
+  copy 11 chars from 19 back
+39 bytes -&gt; zlib level 9: 34 bytes (header and checksum included)</code></pre>
+
+      <h3>Use it: the real tools on the same data</h3>
+      <p>The 200 files from Example 10, listed by <code>unzip</code>. Every file was compressed on its own, and the method column says which trees DEFLATE chose.</p>
+
+      <pre class="code" data-lang="bash"><code>zip -q -r files.zip files/
+tar czf files.tar.gz files/
+unzip -v files.zip | head -5
+ls -l files.zip files.tar.gz</code></pre>
+      <pre class="code" data-lang="console"><code>Archive:  files.zip
+ Length   Method    Size  Cmpr    Date    Time   CRC-32   Name
+--------  ------  ------- ---- ---------- ----- --------  ----
+       0  Stored        0   0% 09-05-2026 18:52 00000000  files/
+     129  Defl:N       95  26% 09-05-2026 18:52 a991fb2d  files/user-159.json
+...
+   25470            18841  26%                            201 files
+
+52203 files.zip
+12857 files.tar.gz</code></pre>
+
+      <p>In Python, <code>zlib.compress</code> is DEFLATE with a 2-byte header and 4-byte checksum, and <code>gzip.compress</code> is the same stream with the 10-byte header and 8-byte trailer from Example 8. Both are the C library zlib underneath, which is also what nginx, curl, Postgres and your browser link against.</p>
+
+      <!-- ── Toy vs production ─────────────────────────────────────────── -->
+      <h2>Toy vs production</h2>
+      <p>Every operation on this page is the real one. What changes at scale is how far the window reaches, how hard the compressor searches, and how the trees are chosen.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>This page</th><th>Real DEFLATE, and after</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>window</td><td>a few characters</td><td>32 KB in DEFLATE. Brotli reaches 16 MB and ships a built-in dictionary of common web text; zstd can use windows of hundreds of megabytes.</td></tr>
+            <tr><td>finding matches</td><td>compare against every earlier position</td><td>Hash tables and chains. Levels 1 to 9 control how long the search is allowed to take, not how big the window is; level 9 rarely beats level 6 by more than a percent.</td></tr>
+            <tr><td>trees</td><td>one tree, or the fixed ones</td><td>Custom trees per block, sent as canonical code lengths (Example 6), those lengths themselves Huffman-coded. A new block whenever the statistics change.</td></tr>
+            <tr><td>limits</td><td>none</td><td>Copy length 3 to 258, distance 1 to 32,768. Bigger lengths become several copies.</td></tr>
+            <tr><td>speed</td><td>irrelevant</td><td>Decompression is several times faster than compression: copying is cheap, searching is not. That asymmetry is why it is fine to compress once and serve a million times.</td></tr>
+            <tr><td>what will not shrink</td><td>ABRACADABRA shrinks a lot</td><td>Already-compressed data: JPEG, MP4, another zip. Their entropy is near 8 bits per byte (Example 4). 10,000 random bytes gzip to 10,023.</td></tr>
+            <tr><td>tiny inputs</td><td>11 bytes became 29</td><td>Wrappers have fixed cost. Servers set a minimum response size for gzip, and protocols like HTTP/2 compress headers with a different scheme built for small strings.</td></tr>
+            <tr><td>successors</td><td>DEFLATE</td><td>Brotli (RFC 7932) and zstd (RFC 8878) use the same two tricks with bigger windows, smarter entropy coding and dictionaries. Browsers accept all three: <code>Accept-Encoding: gzip, br, zstd</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── Check yourself ────────────────────────────────────────────── -->
+      <h2>Check yourself</h2>
+      <p>Work each one before opening the answer.</p>
+
+      <details class="check">
+        <summary>Huffman-code MISSISSIPPI. How many bits, and how close to Shannon's floor?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Count</div><div class="eq-work">S×4, I×4, P×2, M×1</div><div class="eq-res">11 letters</div></div>
+            <div class="eq-row"><div class="eq-what">Merge M and P, then MP and I, then S and the rest</div><div class="eq-work">1 + 2 = 3, 3 + 4 = 7, 4 + 7 = 11</div><div class="eq-res">tree built</div></div>
+            <div class="eq-row"><div class="eq-what">Code lengths</div><div class="eq-work">S 1, I 2, P 3, M 3</div><div class="eq-res">S=0, I=11, M=100, P=101</div></div>
+            <div class="eq-row"><div class="eq-what">Bits</div><div class="eq-work">4×1 + 4×2 + 2×3 + 1×3</div><div class="eq-res">21 bits</div></div>
+            <div class="eq-row"><div class="eq-what">Shannon's floor</div><div class="eq-work">11 × 1.823</div><div class="eq-res">20.05 bits</div></div>
+          </div></div>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>With the MISSISSIPPI codes, decode 100110011.</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Read 1, 0, 0</div><div class="eq-work">100</div><div class="eq-res">M</div></div>
+            <div class="eq-row"><div class="eq-what">Read 1, 1</div><div class="eq-work">11</div><div class="eq-res">I</div></div>
+            <div class="eq-row"><div class="eq-what">Read 0, then 0</div><div class="eq-work">0 · 0</div><div class="eq-res">S S</div></div>
+            <div class="eq-row"><div class="eq-what">Read 1, 1</div><div class="eq-work">11</div><div class="eq-res">I</div></div>
+          </div></div>
+          <p>MISSI. No separators needed, because no code is the start of another.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Run LZ77 by hand on TO BE OR NOT TO BE.</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Positions 0 to 12</div><div class="eq-work">TO BE OR NOT , nothing repeats for 3 or more characters yet</div><div class="eq-res">13 literals</div></div>
+            <div class="eq-row"><div class="eq-what">Position 13: TO BE</div><div class="eq-work">appeared at position 0, which is 13 back; matches 5 characters to the end</div><div class="eq-res">⟨5, 13⟩</div></div>
+          </div></div>
+          <p>18 characters became 13 literals and one copy. Then, in DEFLATE, length 5 is symbol 259 and distance 13 is distance code 7 with two extra bits, 00.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>gzip turned the 39-byte JSON from Example 5 into 46 bytes. Where did the extra 7 come from?</summary>
+        <div class="answer">
+          <p>The DEFLATE stream itself is 28 bytes, an 11-byte saving. Then gzip adds its 10-byte header and 8-byte trailer, 18 bytes in total, and 28 + 18 = 46. The same stream inside zlib's smaller 6-byte wrapper is 34 bytes. Below a few dozen bytes, the wrapper is the whole story.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Why does zipping a folder of JPEGs barely change its size?</summary>
+        <div class="answer">
+          <p>JPEG has already spent its own compression step removing the patterns. What is left has entropy close to 8 bits per byte, so by Example 4 there is nothing for Huffman to save, and there are no long repeats for LZ77 to point at. You get the zip headers added and little else. The same goes for MP4, PNG, and another zip.</p>
+        </div>
+      </details>
+
+      <!-- ── Sources ───────────────────────────────────────────────────── -->
+      <h2>Sources</h2>
+      <ol class="sources">
+        <li>D. A. Huffman, <a href="https://ieeexplore.ieee.org/document/4051119" target="_blank" rel="noopener">"A Method for the Construction of Minimum-Redundancy Codes"</a>, Proceedings of the IRE 40(9), 1952. Trick one, written as a term paper.</li>
+        <li>J. Ziv and A. Lempel, <a href="https://ieeexplore.ieee.org/document/1055714" target="_blank" rel="noopener">"A Universal Algorithm for Sequential Data Compression"</a>, IEEE Transactions on Information Theory 23(3), 1977. Trick two.</li>
+        <li>C. E. Shannon, <a href="https://ieeexplore.ieee.org/document/6773024" target="_blank" rel="noopener">"A Mathematical Theory of Communication"</a>, Bell System Technical Journal, 1948. The entropy floor in Example 4.</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc1951" target="_blank" rel="noopener">RFC 1951</a>, DEFLATE Compressed Data Format Specification. Block types (§3.2.3), canonical codes (§3.2.2), the length and distance tables (§3.2.5), the fixed trees (§3.2.6).</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc1952" target="_blank" rel="noopener">RFC 1952</a>, GZIP file format (§2.3 for the header and trailer read in Example 8), and <a href="https://www.rfc-editor.org/rfc/rfc1950" target="_blank" rel="noopener">RFC 1950</a>, the zlib wrapper.</li>
+        <li>PKWARE, <a href="https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT" target="_blank" rel="noopener">APPNOTE.TXT, .ZIP File Format Specification</a>. Local header, central directory and end record signatures.</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110#section-8.4.1" target="_blank" rel="noopener">RFC 9110 §8.4.1</a>, HTTP content codings; <a href="https://www.rfc-editor.org/rfc/rfc7932" target="_blank" rel="noopener">RFC 7932</a>, Brotli; <a href="https://www.rfc-editor.org/rfc/rfc8878" target="_blank" rel="noopener">RFC 8878</a>, Zstandard.</li>
+        <li><a href="https://www.w3.org/TR/png/" target="_blank" rel="noopener">W3C, Portable Network Graphics specification</a>, which uses DEFLATE for image data; <a href="https://github.com/opencontainers/image-spec/blob/main/media-types.md" target="_blank" rel="noopener">OCI Image Format, media types</a>, where a layer is a tar+gzip.</li>
+      </ol>
+
+      <nav class="chapter-nav" aria-label="Chapter navigation">
+        <a href="math-rsa.html">← Chapter 01 · RSA</a>
+        <span class="muted">Chapter 03 · not yet written</span>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "url": "https://buildingbackend.vercel.app/math-zip.html",
+    "headline": "How zip works",
+    "description": "Huffman coding, LZ77 and DEFLATE worked out by hand with small numbers, then a real gzip file read bit by bit.",
+    "isPartOf": { "@type": "CollectionPage", "name": "Math Behind Tech", "url": "https://buildingbackend.vercel.app/math.html" },
+    "author": { "@type": "Person", "name": "@ritikshub", "url": "https://x.com/ritikshub" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        }
+      });
+    })();
+  </script>
+  <script src="data.js?v=20260813m"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>
