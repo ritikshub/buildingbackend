@@ -1,0 +1,7 @@
+# /etc/systemd/system/tick.service  (a oneshot started by tick.timer)
+# Note the %%: a single % is a systemd specifier (%T is /tmp), so it is doubled in a unit file.
+[Unit]
+Description=tick job
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "echo tick at $(date +%%T)"

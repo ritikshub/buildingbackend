@@ -1,0 +1,9 @@
+# /etc/systemd/system/tick.timer  (runs tick.service every 2 s; a cron job with a journal)
+[Unit]
+Description=run tick every 2 s
+[Timer]
+OnActiveSec=0
+OnUnitActiveSec=2s
+AccuracySec=100ms
+[Install]
+WantedBy=timers.target
