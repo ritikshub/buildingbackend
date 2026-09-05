@@ -158,7 +158,7 @@ still to come. Click any phase to expand its lesson list.
 
 | # | Lesson | Type | Lang |
 |:---:|--------|:----:|------|
-| 01 | What an Operating System Does: Kernel, User Space & the System Call | Build | Python |
+| 01 | [What an Operating System Does: Kernel, User Space & the System Call](phases/01-linux-and-the-command-line/01-what-an-operating-system-does/) | Build | Python |
 | 02 | A Map of the Linux Kernel: Scheduler, Memory, VFS, Network Stack & Drivers | Learn | Python |
 | 03 | The Shell: Terminal, Prompt, PATH & How a Command Actually Runs | Build | Python |
 | 04 | The Filesystem Hierarchy: Where Everything Lives | Build | Python |
