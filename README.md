@@ -160,7 +160,7 @@ still to come. Click any phase to expand its lesson list.
 |:---:|--------|:----:|------|
 | 01 | [What an Operating System Does: Kernel, User Space & the System Call](phases/01-linux-and-the-command-line/01-what-an-operating-system-does/) | Build | Python |
 | 02 | [A Map of the Linux Kernel: Scheduler, Memory, VFS, Network Stack & Drivers](phases/01-linux-and-the-command-line/02-a-map-of-the-linux-kernel/) | Learn | Python |
-| 03 | The Shell: Terminal, Prompt, PATH & How a Command Actually Runs | Build | Python |
+| 03 | [The Shell: Terminal, Prompt, PATH & How a Command Actually Runs](phases/01-linux-and-the-command-line/03-the-shell/) | Build | Python |
 | 04 | The Filesystem Hierarchy: Where Everything Lives | Build | Python |
 | 05 | Working with Files: Create, Read, Copy, Move, Delete, Archive | Build | Python |
 | 06 | Users, Groups, Permissions & sudo | Build | Python |
