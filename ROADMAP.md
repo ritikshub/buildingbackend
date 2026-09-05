@@ -59,7 +59,7 @@ themselves stay in the phases that own them; this phase links forward.
 | 14 | Networking from the Shell: ip, ss, ping, dig, nc & tcpdump | ✅ | ~80 min |
 | 15 | curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies | ✅ | ~80 min |
 | 16 | curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries | ✅ | ~75 min |
-| 17 | SSH: Keys, Agents, Tunnels, scp & rsync | ⬚ | ~80 min |
+| 17 | SSH: Keys, Agents, Tunnels, scp & rsync | ✅ | ~80 min |
 | 18 | Capstone: From a Blank Linux Box to a Running Backend | ⬚ | ~120 min |
 
 ## Phase 2: Networking and Protocols — ✅ (~16 hours)

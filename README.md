@@ -174,7 +174,7 @@ still to come. Click any phase to expand its lesson list.
 | 14 | [Networking from the Shell: ip, ss, ping, dig, nc & tcpdump](phases/01-linux-and-the-command-line/14-networking-from-the-shell/) | Build | Python |
 | 15 | [curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies](phases/01-linux-and-the-command-line/15-curl-part-1-requests/) | Build | Python |
 | 16 | [curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries](phases/01-linux-and-the-command-line/16-curl-part-2-debugging/) | Build | Python |
-| 17 | SSH: Keys, Agents, Tunnels, scp & rsync | Build | Python |
+| 17 | [SSH: Keys, Agents, Tunnels, scp & rsync](phases/01-linux-and-the-command-line/17-ssh-keys-tunnels-and-rsync/) | Build | Python |
 | 18 | Capstone: From a Blank Linux Box to a Running Backend | Build | Bash, Python |
 
 </details>
