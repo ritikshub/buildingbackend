@@ -1,0 +1,35 @@
+[Unit]
+Description=App API (capstone)
+Documentation=file:///opt/app/README
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=app
+Group=app
+WorkingDirectory=/opt/app
+ExecStart=/usr/bin/python3 /opt/app/server.py
+ExecReload=/bin/kill -HUP $MAINPID
+EnvironmentFile=/etc/app/app.env
+Environment=PYTHONUNBUFFERED=1
+UMask=027
+RuntimeDirectory=app
+StateDirectory=app
+LogsDirectory=app
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=15
+KillMode=mixed
+LimitNOFILE=65536
+MemoryMax=256M
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/app /var/log/app
+
+[Install]
+WantedBy=multi-user.target

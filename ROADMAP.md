@@ -22,7 +22,7 @@ their shape.
 | 10 | Files & the Filesystem | ✅ | ~40 min |
 | 11 | What a Network Is | ✅ | ~45 min |
 
-## Phase 1: Linux and the Command Line — 🚧 (~23 hours)
+## Phase 1: Linux and the Command Line — ✅ (~22.5 hours)
 
 The phase the curriculum was missing: the machine a backend actually runs on.
 Foundations ends with "a process" and "a file" as ideas; this phase makes them
@@ -60,7 +60,7 @@ themselves stay in the phases that own them; this phase links forward.
 | 15 | curl, Part 1: Requests, Headers, Bodies, Auth, Files & Cookies | ✅ | ~80 min |
 | 16 | curl, Part 2: Debugging with -v, --trace, -w Timing, --resolve, TLS & Retries | ✅ | ~75 min |
 | 17 | SSH: Keys, Agents, Tunnels, scp & rsync | ✅ | ~80 min |
-| 18 | Capstone: From a Blank Linux Box to a Running Backend | ⬚ | ~120 min |
+| 18 | Capstone: From a Blank Linux Box to a Running Backend | ✅ | ~120 min |
 
 ## Phase 2: Networking and Protocols — ✅ (~16 hours)
 
