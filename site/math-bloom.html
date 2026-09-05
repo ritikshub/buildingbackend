@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloom filters and HyperLogLog - Math Behind Tech - Building Backend</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
+  <meta name="description" content="Bloom filters and HyperLogLog worked out by hand: a 16-bit filter that never says no wrongly, why 10 bits per item buys a 1% error whatever the item, a count of 20 words from 8 registers, and why Redis counts a billion uniques in 12 KB. Then git, SQLite and Redis doing it for real.">
+  <link rel="canonical" href="https://buildingbackend.vercel.app/math-bloom.html">
+  <meta property="og:title" content="Bloom filters and HyperLogLog · Math Behind Tech">
+  <meta property="og:description" content="Say never seen it with 10 bits per item, and count a billion different things in 12 KB. All by hand.">
+  <meta property="og:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <meta property="og:url" content="https://buildingbackend.vercel.app/math-bloom.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bloom filters and HyperLogLog · Math Behind Tech">
+  <meta name="twitter:description" content="Ten bits per item, twelve kilobytes per billion. Worked out by hand.">
+  <meta name="twitter:image" content="https://buildingbackend.vercel.app/og-image.png?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260813m">
+  <link rel="stylesheet" href="math.css?v=20260905e">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="math.html" aria-current="page">Math</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <article class="math-page">
+      <div class="math-eyebrow"><a href="math.html">Math Behind Tech</a> · Chapter 05</div>
+      <h1>Bloom filters and HyperLogLog: a billion things in 12 KB</h1>
+
+      <p class="lede">A Bloom filter answers "have I seen this before" with about ten bits per item and never says no when the answer is yes. HyperLogLog counts how many different things went past using twelve kilobytes, whether that is a thousand or a billion. Both cheat the same way: keep a fingerprint of the data instead of the data, and know exactly what the cheat costs.</p>
+
+      <div class="legend">
+        <span><i class="sw-theory"></i>Plain text is theory.</span>
+        <span><i class="sw-ex"></i>Boxed examples: problem, working, answer.</span>
+      </div>
+
+      <!-- ── Where you meet it ─────────────────────────────────────────── -->
+      <h2>Where you meet it</h2>
+      <p>Both structures live wherever the real data is too big or too slow to touch on every request.</p>
+
+      <div class="grid2">
+        <div class="tile">
+          <div class="tile-k">Every database that writes to files</div>
+          <p>RocksDB, Cassandra and their relatives keep a Bloom filter per file so a lookup for a missing key skips the disk entirely. Example 3 prices the filter: 125 MB to guard 100 million keys.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every <code>git log -- file</code></div>
+          <p>git stores a Bloom filter of the paths each commit touched, so history for one file skips most commits without opening them. "Use it" reads git's own count of hits, misses and false positives in this repository.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every unique-visitor number</div>
+          <p>Daily active users, distinct IPs, unique search queries. Redis answers <code>PFCOUNT</code> from 12 KB no matter how many you add. Examples 5 and 6 build the estimate from eight registers up to Redis's 16,384.</p>
+        </div>
+        <div class="tile">
+          <div class="tile-k">Every join planner and cache</div>
+          <p>SQLite builds a Bloom filter of one table before probing another with it, and caches ask a filter before paying for a lookup. Example 2 is the formula both of them are sized with.</p>
+        </div>
+      </div>
+
+      <!-- ── The idea ──────────────────────────────────────────────────── -->
+      <h2>The idea in one breath</h2>
+      <p>A <strong>Bloom filter</strong> is a row of <var>m</var> bits, all zero to start, plus <var>k</var> hash functions. To add an item, hash it <var>k</var> ways and set those <var>k</var> bits to one. To ask about an item, hash it the same <var>k</var> ways and look: if any bit is still zero the item was <strong>definitely never added</strong>, because adding it would have set that bit. If all <var>k</var> bits are one it was <strong>probably added</strong>, but other items may have set those bits between them. That "probably" is a <strong>false positive</strong>, and its rate is a number you choose by choosing <var>m</var> and <var>k</var>.</p>
+      <p><strong>HyperLogLog</strong> counts distinct items without remembering any of them. Hash each item to a long random-looking string of bits and look at how many zeros it starts with. Half of all hashes start with a one; a quarter start with exactly one zero; one in a billion starts with thirty zeros. So if the longest run you have seen is thirty, you have probably seen about a billion different things. Duplicates hash to the same bits, so they change nothing, which is the whole point.</p>
+      <p>One longest run is a terrible estimate: a single unlucky hash doubles it. So the hash's first few bits pick one of <var>m</var> <strong>registers</strong>, each register keeps its own longest run, and the <var>m</var> estimates are averaged with a harmonic mean, which refuses to be dragged up by one outlier. The error falls as <var>1.04/√m</var>: with 16,384 registers of 6 bits each, 12 KB, it is 0.81%.</p>
+
+      <!-- ── Tools ─────────────────────────────────────────────────────── -->
+      <h2>The four tools you need</h2>
+      <p>Two are from chapter 03. Two are new and small.</p>
+
+      <div class="tool">
+        <h3>1. A row of bits</h3>
+        <p><var>m</var> bits are numbered 0 to <var>m − 1</var>, eight to a byte. "Set bit 11" means write a one in position 11. "Which bit" comes from a hash taken mod <var>m</var>, exactly as a hash map picks a bucket.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">16 bits</div><div class="eq-work">16 / 8</div><div class="eq-res">2 bytes</div></div>
+          <div class="eq-row"><div class="eq-what">CAT's letters add to 24; which bit of 16?</div><div class="eq-work">24 mod 16</div><div class="eq-res">bit 8</div></div>
+          <div class="eq-row"><div class="eq-what">Redis's HyperLogLog</div><div class="eq-work">16,384 registers × 6 bits / 8</div><div class="eq-res">12,288 bytes</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>2. "None", then flip, with the e shortcut</h3>
+        <p>Chapter 03's tool: the chance that <em>none</em> of several things happen is a product, and "at least one" is one minus that. New shortcut: <var>(1 − 1/m)<sup>n</sup></var> is very close to <var>e<sup>−n/m</sup></var>, where <var>e ≈ 2.718</var>. It turns a long product into one exponent.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">One bit of 16 survives 8 set operations</div><div class="eq-work">(15/16)⁸</div><div class="eq-res">0.597</div></div>
+          <div class="eq-row"><div class="eq-what">The shortcut</div><div class="eq-work">e<sup>−8/16</sup> = e<sup>−0.5</sup></div><div class="eq-res">0.607</div></div>
+          <div class="eq-row"><div class="eq-what">So the bit is set with chance</div><div class="eq-work">1 − 0.607</div><div class="eq-res">0.393</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>3. Leading zeros and powers of two</h3>
+        <p>In a random string of bits, each bit is a coin flip. The chance that the first one appears at position <var>r</var> (after <var>r − 1</var> zeros) is <var>1/2<sup>r</sup></var>. Turned round: seeing a first one at position <var>r</var> is the sort of thing that happens once in <var>2<sup>r</sup></var> tries.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">First bit is a one</div><div class="eq-work">1/2¹</div><div class="eq-res">50%</div></div>
+          <div class="eq-row"><div class="eq-what">Exactly three zeros, then a one</div><div class="eq-work">1/2⁴</div><div class="eq-res">6.25%</div></div>
+          <div class="eq-row"><div class="eq-what">Thirty zeros</div><div class="eq-work">1/2³¹, so expect it once in 2³¹ hashes</div><div class="eq-res">once in 2.1 billion</div></div>
+        </div></div>
+      </div>
+
+      <div class="tool">
+        <h3>4. The harmonic mean</h3>
+        <p>The ordinary mean adds the values and divides. The <strong>harmonic mean</strong> adds their reciprocals: <var>m / (1/x₁ + 1/x₂ + …)</var>. A single huge value barely moves it, which is exactly what you want when one register got lucky.</p>
+        <div class="ex ex-mini"><div class="eq">
+          <div class="eq-row"><div class="eq-what">Ordinary mean of 2 and 8</div><div class="eq-work">(2 + 8) / 2</div><div class="eq-res">5</div></div>
+          <div class="eq-row"><div class="eq-what">Harmonic mean of 2 and 8</div><div class="eq-work">2 / (1/2 + 1/8) = 2 / 0.625</div><div class="eq-res">3.2</div></div>
+          <div class="eq-row"><div class="eq-what">Add an outlier: 2, 8 and 128</div><div class="eq-work">ordinary 46; harmonic 3 / (0.5 + 0.125 + 0.0078)</div><div class="eq-res">4.7</div></div>
+        </div></div>
+      </div>
+
+      <!-- ── Bloom by hand ─────────────────────────────────────────────── -->
+      <h2>A Bloom filter by hand</h2>
+      <p>Sixteen bits, two hash functions, four words. The hashes are deliberately simple so you can redo them: <var>h₁</var> adds up the letter positions (A = 1 to Z = 26) and takes the result mod 16; <var>h₂</var> takes three times that sum, adds the word's length, and takes mod 16.</p>
+
+      <section class="ex" id="ex1">
+        <div class="ex-head"><span class="ex-num">Example 1</span><h3 class="ex-title">Sixteen bits, four words, one false positive</h3></div>
+        <p class="ex-problem">Add CAT, DOG, COW and HEN to an empty 16-bit filter with <var>h₁ = sum mod 16</var> and <var>h₂ = (3 × sum + length) mod 16</var>. Then ask it about PIG, FOX and ACT.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">CAT</div><div class="eq-work">sum 3 + 1 + 20 = 24. h₁ = 24 mod 16 = 8. h₂ = (72 + 3) mod 16 = 75 mod 16</div><div class="eq-res">set bits 8, 11</div></div>
+          <div class="eq-row"><div class="eq-what">DOG</div><div class="eq-work">sum 26. h₁ = 26 mod 16 = 10. h₂ = 81 mod 16</div><div class="eq-res">set bits 10, 1</div></div>
+          <div class="eq-row"><div class="eq-what">COW</div><div class="eq-work">sum 41. h₁ = 41 mod 16 = 9. h₂ = 126 mod 16</div><div class="eq-res">set bits 9, 14</div></div>
+          <div class="eq-row"><div class="eq-what">HEN</div><div class="eq-work">sum 27. h₁ = 27 mod 16 = 11. h₂ = 84 mod 16<small>Bit 11 was already set by CAT. Two words, one bit: this is where false positives come from.</small></div><div class="eq-res">set bits 11, 4</div></div>
+          <div class="eq-row"><div class="eq-what">The filter</div><div class="eq-work">bits 0 to 15: 0100 1000 1111 0010</div><div class="eq-res">7 of 16 set</div></div>
+          <div class="eq-gap">Ask it</div>
+          <div class="eq-row"><div class="eq-what">PIG</div><div class="eq-work">sum 32. h₁ = 0, h₂ = 99 mod 16 = 3. Bits 0 and 3 are both zero</div><div class="eq-res">definitely not</div></div>
+          <div class="eq-row"><div class="eq-what">FOX</div><div class="eq-work">sum 45. h₁ = 13, h₂ = 138 mod 16 = 10. Bit 13 is zero, bit 10 is one</div><div class="eq-res">definitely not</div></div>
+          <div class="eq-row"><div class="eq-what">ACT</div><div class="eq-work">sum 24, the same as CAT. h₁ = 8, h₂ = 11. Both bits are one</div><div class="eq-res">maybe</div></div>
+        </div>
+        <p class="ex-answer">The filter is right about PIG and FOX and wrong about ACT, which was never added: a <b>false positive</b>. One zero bit is enough to say no with certainty, because adding ACT would have set it. Two ones are never enough to say yes, because CAT and HEN may have set them. That asymmetry is the whole contract: no false negatives, ever, and a false-positive rate you can compute.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 300" role="img" aria-labelledby="bloom-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="bloom-fig-title">A 16-column grid. Rows for CAT, DOG, COW and HEN mark which two bits each word sets. A filter row shows the resulting bits 0100100011110010. Below, ACT probes bits 8 and 11, both set, so maybe; PIG probes bits 0 and 3, both clear, so definitely not.</title>
+          <text x="20" y="22" class="fig-label fig-mute">SIXTEEN BITS. EACH WORD SETS TWO.</text>
+          <!-- column indexes -->
+          <text x="80" y="52" text-anchor="middle" class="fig-label fig-mute">0</text><text x="114" y="52" text-anchor="middle" class="fig-label fig-mute">1</text><text x="148" y="52" text-anchor="middle" class="fig-label fig-mute">2</text><text x="182" y="52" text-anchor="middle" class="fig-label fig-mute">3</text><text x="216" y="52" text-anchor="middle" class="fig-label fig-mute">4</text><text x="250" y="52" text-anchor="middle" class="fig-label fig-mute">5</text><text x="284" y="52" text-anchor="middle" class="fig-label fig-mute">6</text><text x="318" y="52" text-anchor="middle" class="fig-label fig-mute">7</text><text x="352" y="52" text-anchor="middle" class="fig-label fig-mute">8</text><text x="386" y="52" text-anchor="middle" class="fig-label fig-mute">9</text><text x="420" y="52" text-anchor="middle" class="fig-label fig-mute">10</text><text x="454" y="52" text-anchor="middle" class="fig-label fig-mute">11</text><text x="488" y="52" text-anchor="middle" class="fig-label fig-mute">12</text><text x="522" y="52" text-anchor="middle" class="fig-label fig-mute">13</text><text x="556" y="52" text-anchor="middle" class="fig-label fig-mute">14</text><text x="590" y="52" text-anchor="middle" class="fig-label fig-mute">15</text>
+          <!-- faint column guides -->
+          <line x1="80" y1="60" x2="80" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="114" y1="60" x2="114" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="148" y1="60" x2="148" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="182" y1="60" x2="182" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="216" y1="60" x2="216" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="250" y1="60" x2="250" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="284" y1="60" x2="284" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="318" y1="60" x2="318" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="352" y1="60" x2="352" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="386" y1="60" x2="386" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="420" y1="60" x2="420" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="454" y1="60" x2="454" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="488" y1="60" x2="488" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="522" y1="60" x2="522" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="556" y1="60" x2="556" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/><line x1="590" y1="60" x2="590" y2="270" stroke="currentColor" stroke-width="0.6" opacity="0.15"/>
+          <!-- CAT: 8, 11 -->
+          <text x="56" y="80" text-anchor="end" class="fig-mono" fill="currentColor">CAT</text>
+          <circle cx="352" cy="76" r="6" fill="currentColor"/><circle cx="454" cy="76" r="6" fill="currentColor"/>
+          <!-- DOG: 10, 1 -->
+          <text x="56" y="108" text-anchor="end" class="fig-mono" fill="currentColor">DOG</text>
+          <circle cx="420" cy="104" r="6" fill="currentColor"/><circle cx="114" cy="104" r="6" fill="currentColor"/>
+          <!-- COW: 9, 14 -->
+          <text x="56" y="136" text-anchor="end" class="fig-mono" fill="currentColor">COW</text>
+          <circle cx="386" cy="132" r="6" fill="currentColor"/><circle cx="556" cy="132" r="6" fill="currentColor"/>
+          <!-- HEN: 11, 4 -->
+          <text x="56" y="164" text-anchor="end" class="fig-mono" fill="currentColor">HEN</text>
+          <circle cx="454" cy="160" r="6" fill="currentColor"/><circle cx="216" cy="160" r="6" fill="currentColor"/>
+          <!-- the filter row -->
+          <text x="56" y="196" text-anchor="end" class="fig-label fig-mute">FILTER</text>
+          <rect x="66" y="180" width="28" height="24" class="fig-box"/><text x="80" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <rect x="100" y="180" width="28" height="24" class="fig-box-ember"/><text x="114" y="197" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <rect x="134" y="180" width="28" height="24" class="fig-box"/><text x="148" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <rect x="168" y="180" width="28" height="24" class="fig-box"/><text x="182" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <rect x="202" y="180" width="28" height="24" class="fig-box-ember"/><text x="216" y="197" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <rect x="236" y="180" width="28" height="24" class="fig-box"/><text x="250" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <rect x="270" y="180" width="28" height="24" class="fig-box"/><text x="284" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <rect x="304" y="180" width="28" height="24" class="fig-box"/><text x="318" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <rect x="338" y="180" width="28" height="24" class="fig-box-ember"/><text x="352" y="197" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <rect x="372" y="180" width="28" height="24" class="fig-box-ember"/><text x="386" y="197" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <rect x="406" y="180" width="28" height="24" class="fig-box-ember"/><text x="420" y="197" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <rect x="440" y="180" width="28" height="24" class="fig-box-ember"/><text x="454" y="197" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <rect x="474" y="180" width="28" height="24" class="fig-box"/><text x="488" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <rect x="508" y="180" width="28" height="24" class="fig-box"/><text x="522" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <rect x="542" y="180" width="28" height="24" class="fig-box-ember"/><text x="556" y="197" text-anchor="middle" class="fig-mono fig-ember">1</text>
+          <rect x="576" y="180" width="28" height="24" class="fig-box"/><text x="590" y="197" text-anchor="middle" class="fig-mono fig-mute">0</text>
+          <!-- queries -->
+          <text x="56" y="236" text-anchor="end" class="fig-mono" fill="currentColor">ACT</text>
+          <circle cx="352" cy="232" r="6" fill="var(--ember)"/><circle cx="454" cy="232" r="6" fill="var(--ember)"/>
+          <text x="628" y="236" class="fig-mono fig-ember">maybe</text>
+          <text x="56" y="266" text-anchor="end" class="fig-mono" fill="currentColor">PIG</text>
+          <circle cx="80" cy="262" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="182" cy="262" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="628" y="266" class="fig-mono" fill="currentColor">no</text>
+          <text x="628" y="284" class="fig-label fig-mute">CERTAIN</text>
+        </svg>
+        <figcaption>Example 1. ACT lands on bits set by CAT, so the filter says maybe. PIG hits two empty bits, so no, and that no is certain.</figcaption>
+      </figure>
+
+      <!-- ── The false positive rate ───────────────────────────────────── -->
+      <h2>How wrong, exactly</h2>
+      <p>After <var>n</var> items and <var>k</var> hashes each, <var>kn</var> bits have been set, some more than once. Tool 2 says a given bit is still zero with chance about <var>e<sup>−kn/m</sup></var>. A stranger is a false positive when all <var>k</var> of its bits happen to be one:</p>
+      <p style="text-align:center"><var>p ≈ (1 − e<sup>−kn/m</sup>)<sup>k</sup></var></p>
+      <p>Two knobs. More bits per item, <var>m/n</var>, always helps. More hashes help until the filter fills up, then hurt; the best <var>k</var> is about <var>0.7 × m/n</var>. This is the formula from Burton Bloom's 1970 paper, and every database that ships a filter sizes it with this line.</p>
+
+      <section class="ex" id="ex2">
+        <div class="ex-head"><span class="ex-num">Example 2</span><h3 class="ex-title">Ten bits per item, whatever the item</h3></div>
+        <p class="ex-problem">First check the formula against Example 1. Then, for a filter that must stay at a 1% false-positive rate, find the bits per item and the number of hashes, and compare with storing the items themselves.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">Example 1: m = 16, n = 4, k = 2</div><div class="eq-work">kn/m = 8/16 = 0.5. p ≈ (1 − e<sup>−0.5</sup>)² = 0.393²</div><div class="eq-res">15.5%</div></div>
+          <div class="eq-row"><div class="eq-what">What we saw</div><div class="eq-work">7 of 16 bits set, and 1 false positive in 3 questions<small>The formula predicted 6.3 set bits (16 × 0.393). Small numbers wobble; the shape is right.</small></div><div class="eq-res">as predicted</div></div>
+          <div class="eq-gap">Sizing for 1%, with the best k for each size</div>
+          <div class="eq-row"><div class="eq-what">4 bits per item</div><div class="eq-work">k = 0.7 × 4 ≈ 3. (1 − e<sup>−3/4</sup>)³ = 0.528³</div><div class="eq-res">14.7%</div></div>
+          <div class="eq-row"><div class="eq-what">8 bits per item</div><div class="eq-work">k = 6. (1 − e<sup>−6/8</sup>)⁶ = 0.528⁶</div><div class="eq-res">2.2%</div></div>
+          <div class="eq-row"><div class="eq-what">10 bits per item</div><div class="eq-work">k = 7. (1 − e<sup>−0.7</sup>)⁷ = 0.503⁷</div><div class="eq-res">0.82%</div></div>
+          <div class="eq-row"><div class="eq-what">16 bits per item</div><div class="eq-work">k = 11. 0.503¹¹</div><div class="eq-res">0.046%</div></div>
+          <div class="eq-row"><div class="eq-what">Exactly 1%</div><div class="eq-work">bits per item = −ln(0.01) / (ln 2)² = 4.605 / 0.480</div><div class="eq-res">9.6 bits</div></div>
+          <div class="eq-gap">Against the real thing</div>
+          <div class="eq-row"><div class="eq-what">A 40-character URL</div><div class="eq-work">40 bytes × 8</div><div class="eq-res">320 bits</div></div>
+          <div class="eq-row"><div class="eq-what">Its place in a 1% filter</div><div class="eq-work">10 bits, whether the URL is 40 characters or 4,000</div><div class="eq-res">32× smaller</div></div>
+        </div>
+        <p class="ex-answer">A 1% filter costs <b>about 10 bits per item</b>, with 7 hashes, and that figure does not depend on what the items are. Notice that at the best <var>k</var> roughly half the bits end up set, 0.503 here: the filter is most efficient when it is half full. Doubling the bits to 20 does not halve the error, it divides it by about a hundred, because the error is an exponential in the bits per item.</p>
+      </section>
+
+      <figure class="figure">
+        <svg viewBox="0 0 720 300" role="img" aria-labelledby="fp-fig-title" xmlns="http://www.w3.org/2000/svg">
+          <title id="fp-fig-title">False-positive rate against bits per item, using the best number of hashes at each size. The curve falls from 39% at 2 bits to 14.7% at 4, 2.2% at 8, 0.82% at 10 and is indistinguishable from zero by 16.</title>
+          <text x="20" y="22" class="fig-label fig-mute">FALSE-POSITIVE RATE AGAINST BITS PER ITEM, BEST K AT EACH SIZE</text>
+          <line x1="60" y1="250" x2="700" y2="250" stroke="currentColor" stroke-width="1"/>
+          <line x1="60" y1="250" x2="60" y2="30" stroke="currentColor" stroke-width="1"/>
+          <text x="380" y="284" text-anchor="middle" class="fig-label fig-mute">BITS PER ITEM IN THE FILTER</text>
+          <text x="60" y="266" text-anchor="middle" class="fig-label fig-mute">2</text>
+          <text x="131" y="266" text-anchor="middle" class="fig-label fig-mute">4</text>
+          <text x="273" y="266" text-anchor="middle" class="fig-label fig-mute">8</text>
+          <text x="344" y="266" text-anchor="middle" class="fig-label fig-ember">10</text>
+          <text x="558" y="266" text-anchor="middle" class="fig-label fig-mute">16</text>
+          <text x="700" y="266" text-anchor="end" class="fig-label fig-mute">20</text>
+          <text x="52" y="254" text-anchor="end" class="fig-label fig-mute">0%</text>
+          <text x="52" y="199" text-anchor="end" class="fig-label fig-mute">10%</text>
+          <text x="52" y="144" text-anchor="end" class="fig-label fig-mute">20%</text>
+          <text x="52" y="89" text-anchor="end" class="fig-label fig-mute">30%</text>
+          <text x="52" y="34" text-anchor="end" class="fig-label fig-mute">40%</text>
+          <polyline fill="none" stroke="var(--ember)" stroke-width="2.2" stroke-linejoin="round"
+            points="60,33.6 71,64.4 81,91.6 92,113.5 103,131.2 113,145.8 124,160.5 135,173.1 145,183.6 156,192.2 167,199.5 177,206.6 188,212.7 199,217.7 209,221.9 220,225.5 231,229.0 241,231.8 252,234.3 263,236.3 273,238.1 284,239.8 295,241.2 305,242.3 316,243.3 327,244.2 337,245.0 348,245.7 359,246.3 369,246.8 380,247.2 391,247.6 401,247.9 412,248.2 423,248.4 433,248.6 444,248.8 455,249.0 465,249.1 476,249.2 487,249.3 497,249.4 508,249.5 519,249.6 529,249.6 540,249.7 551,249.7 561,249.8 572,249.8 583,249.8 593,249.8 604,249.9 615,249.9 625,249.9 636,249.9 647,249.9 657,249.9 668,249.9 679,250.0 689,250.0 700,250.0"/>
+          <line x1="344" y1="250" x2="344" y2="200" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"/>
+          <circle cx="131" cy="169" r="4" fill="var(--ember)"/>
+          <text x="145" y="164" class="fig-mono fig-ember">4 bits: 14.7%</text>
+          <circle cx="273" cy="238" r="4" fill="var(--ember)"/>
+          <text x="262" y="204" text-anchor="end" class="fig-mono fig-ember">8 bits: 2.2%</text>
+          <circle cx="344" cy="245.5" r="5" fill="var(--ember)"/>
+          <text x="356" y="196" class="fig-mono fig-ember">10 bits, 7 hashes: 0.82%</text>
+          <text x="356" y="214" class="fig-label fig-mute">THE DEFAULT IN ROCKSDB AND IN GIT</text>
+          <text x="420" y="110" class="fig-label fig-mute">EVERY EXTRA BIT PER ITEM</text>
+          <text x="420" y="128" class="fig-label fig-mute">CUTS THE ERROR BY ABOUT 40%</text>
+        </svg>
+        <figcaption>The curve of Example 2. Each bit per item multiplies the false-positive rate by about 0.62, so it is an exponential, and 10 bits is where most systems stop.</figcaption>
+      </figure>
+
+      <!-- ── Databases ─────────────────────────────────────────────────── -->
+      <h2>Where the bits pay for themselves</h2>
+      <p>A database that writes sorted files (RocksDB, Cassandra, LevelDB and the storage engines built on them) may hold one key in any of ten or more files. Without a filter, a lookup for a key that does not exist has to open every file. With a 10-bit-per-key filter in memory for each file, it opens almost none.</p>
+
+      <section class="ex" id="ex3">
+        <div class="ex-head"><span class="ex-num">Example 3</span><h3 class="ex-title">A 125 MB guard for 100 million keys</h3></div>
+        <p class="ex-problem">A store holds 100 million 16-byte keys across 10 files. Price a filter at RocksDB's default of 10 bits per key, count the disk reads a missing key costs with and without it, and see what happens when the store doubles without the filter being rebuilt.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">The keys themselves</div><div class="eq-work">10⁸ × 16 bytes</div><div class="eq-res">1.6 GB</div></div>
+          <div class="eq-row"><div class="eq-what">Their filters</div><div class="eq-work">10⁸ × 10 bits / 8</div><div class="eq-res">125 MB</div></div>
+          <div class="eq-row"><div class="eq-what">Missing key, no filters</div><div class="eq-work">one read per file</div><div class="eq-res">10 disk reads</div></div>
+          <div class="eq-row"><div class="eq-what">Missing key, filters at 0.82%</div><div class="eq-work">10 × 0.0082</div><div class="eq-res">0.08 reads</div></div>
+          <div class="eq-row"><div class="eq-what">Present key</div><div class="eq-work">its file's filter says maybe, correctly; the other nine say no</div><div class="eq-res">1 read</div></div>
+          <div class="eq-gap">The filter you forgot to resize</div>
+          <div class="eq-row"><div class="eq-what">Twice the keys, same bits, k = 7</div><div class="eq-work">kn/m = 1.4. (1 − e<sup>−1.4</sup>)⁷ = 0.753⁷</div><div class="eq-res">13.8%</div></div>
+          <div class="eq-row"><div class="eq-what">Three times the keys</div><div class="eq-work">(1 − e<sup>−2.1</sup>)⁷ = 0.878⁷</div><div class="eq-res">40%</div></div>
+        </div>
+        <p class="ex-answer">One eighth of the data's size in memory turns ten disk reads into <b>0.08</b>, so a missing key costs one read every twelve lookups instead of ten every time. The same arithmetic runs in reverse when a filter outlives its sizing: at twice the design load the error is 17 times worse, at three times it is <b>40%</b>, which is why RocksDB builds a fresh filter for every file it writes rather than one for the whole store.</p>
+      </section>
+
+      <!-- ── Leading zeros ─────────────────────────────────────────────── -->
+      <h2>Counting by the longest run of zeros</h2>
+      <p>Now the other question: not "have I seen this" but "how many different ones have I seen". Hash every item and keep only one number, the longest run of leading zeros you have met. Tool 3 says a run of <var>r − 1</var> zeros before the first one shows up once in <var>2<sup>r</sup></var> hashes, so the longest run you have seen is a rough log of how many distinct items went past. Duplicates produce the same hash and cannot change the maximum.</p>
+
+      <section class="ex" id="ex4">
+        <div class="ex-head"><span class="ex-num">Example 4</span><h3 class="ex-title">One number, and why it is not enough</h3></div>
+        <p class="ex-problem">What longest run should you expect from 8 distinct items, from a thousand, from a million and from a billion? Then say how badly a single lucky hash misleads you.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">8 items</div><div class="eq-work">first one at position 3 happens once in 2³ = 8 hashes</div><div class="eq-res">position ≈ 3</div></div>
+          <div class="eq-row"><div class="eq-what">1,024 items</div><div class="eq-work">log₂ 1,024</div><div class="eq-res">10</div></div>
+          <div class="eq-row"><div class="eq-what">A million</div><div class="eq-work">log₂ 10⁶</div><div class="eq-res">19.9</div></div>
+          <div class="eq-row"><div class="eq-what">A billion</div><div class="eq-work">log₂ 10⁹</div><div class="eq-res">29.9</div></div>
+          <div class="eq-gap">The catch</div>
+          <div class="eq-row"><div class="eq-what">Eight items, one hash happens to start 0000 1</div><div class="eq-work">position 5, so the estimate is 2⁵</div><div class="eq-res">32, not 8</div></div>
+          <div class="eq-row"><div class="eq-what">How likely, among 8 hashes</div><div class="eq-work">1 − (1 − 1/32)⁸ ≈ 1 − e<sup>−0.25</sup> (tool 2)</div><div class="eq-res">22%</div></div>
+        </div>
+        <p class="ex-answer">A billion distinct things compress to the number <b>30</b>, which is the miracle. But one register is wrong by a factor of two or more about a quarter of the time, and it can only ever answer with a power of two. The fix is the same as every noisy measurement: take many and average, and average in a way that one outlier cannot hijack.</p>
+      </section>
+
+      <!-- ── HLL by hand ───────────────────────────────────────────────── -->
+      <h2>HyperLogLog by hand</h2>
+      <p>Split the hash. The first <var>b</var> bits choose one of <var>m = 2<sup>b</sup></var> registers, and the rest of the bits supply the run of zeros. Each register keeps the largest position it has seen. Then combine them with the harmonic mean from tool 4, scaled by <var>m</var> and by a constant <var>α<sub>m</sub></var> that Flajolet and his co-authors computed to cancel the mean's built-in bias:</p>
+      <p style="text-align:center"><var>E = α<sub>m</sub> × m² / (2<sup>−R₁</sup> + 2<sup>−R₂</sup> + … + 2<sup>−R<sub>m</sub></sup>)</var></p>
+      <p>One correction: when the estimate is small compared with <var>m</var> (below 2.5<var>m</var>), some registers are still empty and counting those is more accurate: <var>E = m × ln(m / empty)</var>.</p>
+
+      <section class="ex" id="ex5">
+        <div class="ex-head"><span class="ex-num">Example 5</span><h3 class="ex-title">Twenty animals, eight registers</h3></div>
+        <p class="ex-problem">Take the SHA-256 of twenty animal names (cat, dog, cow, hen, pig, fox, owl, bee, ant, ape, yak, rat, bat, emu, elk, eel, gnu, koi, ram, sow). Use the first 3 bits as the register number (8 registers) and the position of the first one bit after those as the observation. Estimate the count.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">cat</div><div class="eq-work">sha256 starts 77af… = 0111 0111 1010 …: register 011 = 3, then 1011… first one at position 1</div><div class="eq-res">R₃ ≥ 1</div></div>
+          <div class="eq-row"><div class="eq-what">dog</div><div class="eq-work">cd63… = 1100 1101 …: register 110 = 6, then 0110… first one at position 2</div><div class="eq-res">R₆ ≥ 2</div></div>
+          <div class="eq-row"><div class="eq-what">bee</div><div class="eq-work">62cb… = 0110 0010 …: register 3, then 0001… first one at position 4</div><div class="eq-res">R₃ ≥ 4</div></div>
+          <div class="eq-row"><div class="eq-what">yak</div><div class="eq-work">e378… = 1110 0011 …: register 7, then 0001… position 4</div><div class="eq-res">R₇ ≥ 4</div></div>
+          <div class="eq-row"><div class="eq-what">koi</div><div class="eq-work">c2fd… = 1100 0010 …: register 6, then 0001… position 4</div><div class="eq-res">R₆ ≥ 4</div></div>
+          <div class="eq-row"><div class="eq-what">The other fifteen</div><div class="eq-work">same procedure; the code in "Run it" prints every row<small>Nothing ever lands in register 2, so it stays at 0.</small></div><div class="eq-res">see below</div></div>
+          <div class="eq-row"><div class="eq-what">Registers 0 to 7 after all twenty</div><div class="eq-work">1, 2, 0, 4, 1, 3, 4, 4</div><div class="eq-res">one still empty</div></div>
+          <div class="eq-gap">Combine</div>
+          <div class="eq-row"><div class="eq-what">Sum of 2<sup>−R</sup> (tool 4)</div><div class="eq-work">½ + ¼ + 1 + 1/16 + ½ + ⅛ + 1/16 + 1/16</div><div class="eq-res">2.5625</div></div>
+          <div class="eq-row"><div class="eq-what">Raw estimate</div><div class="eq-work">α₈ × 8² / 2.5625 = 0.6256 × 64 / 2.5625</div><div class="eq-res">15.6</div></div>
+          <div class="eq-row"><div class="eq-what">Small-range correction, since 15.6 &lt; 2.5 × 8</div><div class="eq-work">m ln(m / empty) = 8 × ln(8 / 1) = 8 × 2.079</div><div class="eq-res">16.6</div></div>
+          <div class="eq-row"><div class="eq-what">Truth</div><div class="eq-work">twenty distinct words</div><div class="eq-res">20, so −17%</div></div>
+        </div>
+        <p class="ex-answer">Eight registers of three bits each, <b>3 bytes</b>, estimated 16.6 for a true 20. The error we should expect from 8 registers is <var>1.04/√8 = 37%</var>, so −17% is a normal day. Feed the same twenty words in again and nothing moves: every register already holds the maximum those hashes can produce. That is why counting duplicates is free.</p>
+      </section>
+
+      <!-- ── Error and Redis ───────────────────────────────────────────── -->
+      <h2>Buying accuracy with registers</h2>
+      <p>The standard error of the estimate is <var>1.04/√m</var>: four times the registers halves the error. Each register only needs to hold a position, and positions are small: with 64-bit hashes and 14 bits spent on choosing a register, the longest possible run fits in 6 bits. So the whole structure is <var>m × 6</var> bits, whatever you count with it.</p>
+
+      <section class="ex" id="ex6">
+        <div class="ex-head"><span class="ex-num">Example 6</span><h3 class="ex-title">Why Redis picked 16,384</h3></div>
+        <p class="ex-problem">Work out the error for 8, 64, 1,024 and 16,384 registers, the memory each needs at 6 bits per register, and how that compares with remembering a billion 8-byte user IDs exactly.</p>
+        <div class="eq">
+          <div class="eq-row"><div class="eq-what">8 registers (Example 5)</div><div class="eq-work">1.04 / √8</div><div class="eq-res">37%</div></div>
+          <div class="eq-row"><div class="eq-what">64 registers</div><div class="eq-work">1.04 / 8</div><div class="eq-res">13%</div></div>
+          <div class="eq-row"><div class="eq-what">1,024 registers</div><div class="eq-work">1.04 / 32</div><div class="eq-res">3.25%</div></div>
+          <div class="eq-row"><div class="eq-what">16,384 registers</div><div class="eq-work">1.04 / 128</div><div class="eq-res">0.81%</div></div>
+          <div class="eq-row"><div class="eq-what">Memory for 16,384</div><div class="eq-work">16,384 × 6 bits / 8 (tool 1)</div><div class="eq-res">12,288 bytes</div></div>
+          <div class="eq-row"><div class="eq-what">Largest run a register must hold</div><div class="eq-work">64 − 14 = 50 bits remain after picking a register; 6 bits count to 63</div><div class="eq-res">fits</div></div>
+          <div class="eq-gap">Against the real thing</div>
+          <div class="eq-row"><div class="eq-what">A billion user IDs, 8 bytes each, exact</div><div class="eq-work">10⁹ × 8</div><div class="eq-res">8 GB</div></div>
+          <div class="eq-row"><div class="eq-what">The same count, ±0.81%</div><div class="eq-work">8 × 10⁹ / 12,288</div><div class="eq-res">650,000× smaller</div></div>
+          <div class="eq-row"><div class="eq-what">Monday's and Tuesday's visitors, combined</div><div class="eq-work">take the larger of each pair of registers<small>The union of two HyperLogLogs is exact: it is the structure you would have built from both streams at once.</small></div><div class="eq-res">no extra error</div></div>
+        </div>
+        <p class="ex-answer">Redis's <code>PFCOUNT</code> is 16,384 registers, <b>12 KB</b>, <b>0.81%</b> error, and counts up to a number with 18 zeros. The original 2007 paper managed 2% from 1.5 KB. "Use it" adds 100,000 users to a real Redis and reads back 99,471, which is 0.53% low, then adds the same 100,000 again and reads back 99,471.</p>
+      </section>
+
+      <!-- ── Run it ────────────────────────────────────────────────────── -->
+      <h2>Run it</h2>
+      <h3>Build it: both structures, then the formulas they should match</h3>
+      <p>Standard library only. The filter is a <code>bytearray</code>; the counter is a list of 1,024 small integers. Both use SHA-256 as the source of random-looking bits.</p>
+
+      <pre class="code" data-lang="python"><code># A Bloom filter and a HyperLogLog, each in a dozen lines, checked against
+# their formulas. Companion to math-bloom.html. Python 3 stdlib only.
+import hashlib, math, random
+
+def hashes(item, k, m):
+    """k bit positions in 0..m-1, carved out of one SHA-256."""
+    h = hashlib.sha256(item.encode()).digest()
+    return [int.from_bytes(h[4*i:4*i+4], "big") % m for i in range(k)]
+
+def bloom_test(n, bits_per_item, k, trials=100_000):
+    m = n * bits_per_item
+    bits = bytearray(m)
+    for i in range(n):
+        for p in hashes(f"user:{i}", k, m): bits[p] = 1
+    false = sum(all(bits[p] for p in hashes(f"stranger:{j}", k, m)) for j in range(trials))
+    formula = (1 - math.exp(-k * n / m)) ** k
+    return 100 * false / trials, 100 * formula
+
+print("Bloom filter: 100,000 items in the filter, 100,000 strangers queried")
+print("bits/item  k   measured  formula   (false positives, %)")
+for bpi, k in ((8, 6), (10, 7), (16, 11)):
+    meas, form = bloom_test(100_000, bpi, k)
+    print(f"{bpi:8d}  {k:2d}   {meas:6.3f}%   {form:6.3f}%")
+
+def hll_count(items, p=10):
+    """HyperLogLog with m = 2^p registers: bucket by the top p bits of the
+    hash, keep the longest run of leading zeros seen in the rest."""
+    m = 1 &lt;&lt; p
+    regs = [0] * m
+    for item in items:
+        x = int.from_bytes(hashlib.sha256(item.encode()).digest()[:8], "big")   # 64 bits
+        bucket, rest = x &gt;&gt; (64 - p), x &amp; ((1 &lt;&lt; (64 - p)) - 1)
+        rho = (64 - p) - rest.bit_length() + 1             # position of the first 1 bit
+        regs[bucket] = max(regs[bucket], rho)
+    alpha = 0.7213 / (1 + 1.079 / m)
+    est = alpha * m * m / sum(2.0 ** -r for r in regs)
+    zeros = regs.count(0)
+    if est &lt; 2.5 * m and zeros:                            # small-range correction
+        est = m * math.log(m / zeros)
+    return est
+
+print("\nHyperLogLog with 1,024 registers (1,024 x 6 bits = 768 bytes), error should be about 1.04/sqrt(1024) = 3.25%")
+for n in (1_000, 100_000, 1_000_000):
+    items = (f"user:{i}" for i in range(n))
+    est = hll_count(items)
+    print(f"true {n:&gt;9,}   estimate {est:&gt;12,.0f}   off by {100 * (est - n) / n:+.2f}%")</code></pre>
+
+      <pre class="code" data-lang="console"><code>$ python3 sketch_sim.py
+Bloom filter: 100,000 items in the filter, 100,000 strangers queried
+bits/item  k   measured  formula   (false positives, %)
+       8   6    2.197%    2.158%
+      10   7    0.838%    0.819%
+      16  11    0.061%    0.046%
+
+HyperLogLog with 1,024 registers (1,024 x 6 bits = 768 bytes), error should be about 1.04/sqrt(1024) = 3.25%
+true     1,000   estimate          991   off by -0.89%
+true   100,000   estimate      102,616   off by +2.62%
+true 1,000,000   estimate      970,104   off by -2.99%</code></pre>
+
+      <p>The measured false-positive rates sit on the formula from Example 2, and the three counts land inside the 3.25% that Example 6 promised for 1,024 registers. The 768-byte counter did not grow between a thousand items and a million.</p>
+
+      <h3>Use it: Redis, git and SQLite doing it for real</h3>
+      <p>Three things on an ordinary laptop use these structures every day. First, Redis in a container: a hundred thousand users, then the same hundred thousand again, then an exact set for comparison.</p>
+
+      <pre class="code" data-lang="bash"><code>docker run -d --rm --name hll-demo redis:7-alpine
+python3 -c "for i in range(1, 100001): print('PFADD visitors user:%d' % i)" | docker exec -i hll-demo redis-cli --pipe | tail -1
+docker exec hll-demo redis-cli PFCOUNT visitors
+python3 -c "for i in range(1, 100001): print('PFADD visitors user:%d' % i)" | docker exec -i hll-demo redis-cli --pipe | tail -1
+docker exec hll-demo redis-cli PFCOUNT visitors              # the same 100,000 again: no change
+docker exec hll-demo redis-cli STRLEN visitors               # bytes: 12,288 registers + 16 header
+python3 -c "for i in range(1, 100001): print('SADD exact user:%d' % i)" | docker exec -i hll-demo redis-cli --pipe | tail -1
+docker exec hll-demo redis-cli SCARD exact
+docker exec hll-demo redis-cli MEMORY USAGE exact            # the exact set, in bytes</code></pre>
+      <pre class="code" data-lang="console"><code>errors: 0, replies: 100000
+99471
+errors: 0, replies: 100000
+99471
+12304
+errors: 0, replies: 100000
+100000
+5572968</code></pre>
+
+      <p>99,471 for 100,000 is 0.53% low, inside the 0.81%. The exact set needed 5.5 MB for the same answer, 450 times more, and it grows with every new user while the 12 KB never will.</p>
+      <p>Second, git. <code>git commit-graph write --changed-paths</code> stores a Bloom filter of the paths each commit touched, 10 bits per path and 7 hashes, and <code>git log -- file</code> asks the filters before opening any commit's tree. git will even tell you its score.</p>
+
+      <pre class="code" data-lang="bash"><code>git commit-graph write --reachable --changed-paths
+GIT_TRACE2_EVENT=/tmp/trace.json git log --oneline -- site/math.css
+grep -o '"category":"bloom"[^}]*}' /tmp/trace.json</code></pre>
+      <pre class="code" data-lang="console"><code>6e398d8 feat(math): hub with hooks, live widgets and chapter teasers
+5cce8e9 feat(math): add Math Behind Tech and chapter 01, RSA by hand
+"category":"bloom","key":"statistics","value":{"filter_not_present":0,"maybe":5,"definitely_not":37,"false_positive":3}</code></pre>
+
+      <p>Forty-two commits, two of which touched the file. The filters said <b>definitely not</b> for 37 and git never opened them. Five said maybe: the two real ones, and three false positives that git only discovered by doing the diff. One of those three is a commit that changed 1,171 files; git gives any commit with more than 512 changed paths a filter of all ones, which is a filter that always says maybe, because a filter sized for it would not be worth storing.</p>
+      <p>Third, SQLite, since version 3.38. Join a large table to a small one and the planner builds a Bloom filter of the small side first, so most probes into it are answered from memory without touching the index.</p>
+
+      <pre class="code" data-lang="sql"><code>CREATE TABLE orders(id INTEGER PRIMARY KEY, customer_id INTEGER, amount INTEGER);
+CREATE TABLE customers(id INTEGER PRIMARY KEY, country TEXT);
+WITH RECURSIVE s(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM s WHERE x&lt;200000) INSERT INTO orders SELECT x, (x*7919)%50000+1, x%100 FROM s;
+WITH RECURSIVE s(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM s WHERE x&lt;50000) INSERT INTO customers SELECT x, CASE x%40 WHEN 0 THEN 'IN' ELSE 'XX' END FROM s;
+ANALYZE;
+EXPLAIN QUERY PLAN SELECT count(*) FROM orders o JOIN customers c ON c.id = o.customer_id WHERE c.country = 'IN';</code></pre>
+      <pre class="code" data-lang="console"><code>QUERY PLAN
+|--SCAN o
+|--BLOOM FILTER ON c (id=?)
+`--SEARCH c USING INTEGER PRIMARY KEY (rowid=?)</code></pre>
+
+      <!-- ── Toy vs production ─────────────────────────────────────────── -->
+      <h2>Toy vs production</h2>
+      <p>The structures on this page are the real ones. Production changes the hash, the sizing, and what happens at the edges.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>This page</th><th>Real systems</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>hash functions</td><td>letter sums; SHA-256 sliced up</td><td>Fast non-cryptographic hashes: MurmurHash3, xxHash. Seven hashes are rarely computed seven times: two hashes <var>a</var> and <var>b</var> give <var>a + i·b</var> for <var>i = 1…k</var>, the double-hashing trick git uses with two murmur3 seeds.</td></tr>
+            <tr><td>sizing a filter</td><td>16 bits, fixed</td><td>Sized from the expected item count and a target rate: RocksDB's <code>bits_per_key</code>, Cassandra's <code>bloom_filter_fp_chance</code> (0.01 by default). One filter per immutable file, rebuilt when the file is, so Example 3's overfilled filter never happens.</td></tr>
+            <tr><td>deleting</td><td>impossible</td><td>Still impossible: clearing CAT's bits would also delete HEN. Counting Bloom filters keep a small counter per position instead of a bit; cuckoo filters store fingerprints and can delete. Or rebuild the filter, which is what file-based stores do anyway.</td></tr>
+            <tr><td>registers</td><td>8, in a list</td><td>16,384 six-bit registers packed into 12 KB. Redis keeps a sparse encoding while the count is small and switches to the dense one later, so an empty counter does not cost 12 KB.</td></tr>
+            <tr><td>the estimate</td><td>α<sub>m</sub>, one small-range correction</td><td>64-bit hashes and an empirical bias correction for medium counts, from Google's 2013 "HyperLogLog in practice", which is what most implementations follow. The 1.04/√m error stays.</td></tr>
+            <tr><td>combining</td><td>OR the bits; max the registers</td><td>Exactly that, at scale: <code>PFMERGE</code> unions counters from many servers or many days without error. Intersections are not available directly; inclusion-exclusion on the unions gives one, with the errors adding up.</td></tr>
+            <tr><td>what you get back</td><td>"maybe" or "no"; "about 17"</td><td>Never the items. If you need to list who visited, you need the set. The sketch is for the question you ask a million times a second, and the set is for the report you run once.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── Check yourself ────────────────────────────────────────────── -->
+      <h2>Check yourself</h2>
+      <p>Work each one before opening the answer.</p>
+
+      <details class="check">
+        <summary>You have 1 MB for a filter guarding one million items. What false-positive rate can you get, and how many hashes should you use?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Bits per item</div><div class="eq-work">8 × 10⁶ / 10⁶</div><div class="eq-res">8</div></div>
+            <div class="eq-row"><div class="eq-what">Best k</div><div class="eq-work">0.7 × 8 = 5.5, so 5 or 6</div><div class="eq-res">k = 6</div></div>
+            <div class="eq-row"><div class="eq-what">Rate</div><div class="eq-work">(1 − e<sup>−6/8</sup>)⁶ = 0.528⁶</div><div class="eq-res">2.2%</div></div>
+          </div></div>
+          <p>With a single hash instead, the rate would be <var>1 − e<sup>−1/8</sup> = 11.8%</var>. The extra hashes are what buy the factor of five.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>A filter was built for one million keys at 10 bits per key and 7 hashes. The table has grown to two million. What is its false-positive rate now?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Effective bits per item</div><div class="eq-work">10 / 2</div><div class="eq-res">5</div></div>
+            <div class="eq-row"><div class="eq-what">Rate with k still 7</div><div class="eq-work">(1 − e<sup>−7/5</sup>)⁷ = 0.753⁷</div><div class="eq-res">13.8%</div></div>
+          </div></div>
+          <p>Seventeen times worse than the 0.82% it was built for. A filter is a promise about a size; when the size changes, rebuild it.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Your HyperLogLog has 1,024 registers. What is its error, and what would halving that error cost?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Now</div><div class="eq-work">1.04 / √1,024 = 1.04 / 32</div><div class="eq-res">3.25%</div></div>
+            <div class="eq-row"><div class="eq-what">Half the error</div><div class="eq-work">needs √m twice as big, so m four times as big</div><div class="eq-res">4,096 registers</div></div>
+            <div class="eq-row"><div class="eq-what">Memory</div><div class="eq-work">4,096 × 6 / 8, up from 768 bytes</div><div class="eq-res">3,072 bytes</div></div>
+          </div></div>
+          <p>Accuracy is bought with the square of the registers. Redis's 16,384 is sixteen times the registers of 1,024 for four times the accuracy.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Monday's counter says 5 visitors and Tuesday's says 3. Merged, they say 6. How many people came both days, and how much should you trust that?</summary>
+        <div class="answer">
+          <div class="ex ex-mini"><div class="eq">
+            <div class="eq-row"><div class="eq-what">Inclusion-exclusion</div><div class="eq-work">|Mon ∩ Tue| = |Mon| + |Tue| − |Mon ∪ Tue| = 5 + 3 − 6</div><div class="eq-res">2</div></div>
+          </div></div>
+          <p>Right here, because these are the exact small counts from "Use it". At real sizes each of the three counts carries its own 0.81%, and the intersection inherits all three errors while being a small number itself. A 1% error on two million-sized sets can be bigger than a 20,000-strong intersection.</p>
+        </div>
+      </details>
+
+      <details class="check">
+        <summary>Can you remove CAT from the filter in Example 1 by clearing bits 8 and 11?</summary>
+        <div class="answer">
+          <p>No. Bit 11 is also HEN's, so HEN would start getting "definitely not" and the filter would have told a lie, the one thing it promises never to do. Bloom filters only grow. To support deletion you keep a small counter in each position instead of a bit and decrement it, at four to eight times the memory, or you rebuild the filter from the data.</p>
+        </div>
+      </details>
+
+      <!-- ── Sources ───────────────────────────────────────────────────── -->
+      <h2>Sources</h2>
+      <ol class="sources">
+        <li>B. H. Bloom, <a href="https://doi.org/10.1145/362686.362692" target="_blank" rel="noopener">"Space/time trade-offs in hash coding with allowable errors"</a>, Communications of the ACM 13(7):422–426, 1970. The structure and the false-positive analysis of Example 2.</li>
+        <li>P. Flajolet, É. Fusy, O. Gandouet and F. Meunier, <a href="https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf" target="_blank" rel="noopener">"HyperLogLog: the analysis of a near-optimal cardinality estimation algorithm"</a>, Conference on Analysis of Algorithms (AofA), DMTCS Proceedings AH, pages 127–146, 2007. The 1.04/√m error, α<sub>m</sub>, the small-range correction, and "2% using 1.5 kilobytes".</li>
+        <li>S. Heule, M. Nunkesser and A. Hall, <a href="https://doi.org/10.1145/2452376.2452456" target="_blank" rel="noopener">"HyperLogLog in practice: algorithmic engineering of a state of the art cardinality estimation algorithm"</a>, EDBT 2013, pages 683–692. 64-bit hashes and bias correction.</li>
+        <li>Redis, <a href="https://redis.io/docs/latest/commands/pfcount/" target="_blank" rel="noopener"><code>PFCOUNT</code></a>: "12k bytes for every HyperLogLog", "a standard error of 0.81%", and the 16,384 six-bit registers of the dense encoding.</li>
+        <li>RocksDB wiki, <a href="https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter" target="_blank" rel="noopener">RocksDB Bloom Filter</a>: "about 10 bits of space per key". Apache Cassandra, <a href="https://cassandra.apache.org/doc/latest/cassandra/managing/operating/bloom_filters.html" target="_blank" rel="noopener">Bloom filters</a>: <code>bloom_filter_fp_chance</code> and its defaults.</li>
+        <li>git, <a href="https://git-scm.com/docs/git-commit-graph" target="_blank" rel="noopener"><code>git commit-graph</code></a> and <a href="https://git-scm.com/docs/gitformat-commit-graph" target="_blank" rel="noopener">the commit-graph format</a>: changed-path Bloom filters, murmur3 double hashing, and the 512-path limit.</li>
+        <li>SQLite, <a href="https://www.sqlite.org/releaselog/3_38_0.html" target="_blank" rel="noopener">release 3.38.0</a>: "Use a Bloom filter to speed up large analytic queries."</li>
+      </ol>
+
+      <nav class="chapter-nav" aria-label="Chapter navigation">
+        <a href="math-queueing.html">← Chapter 04 · Queueing theory</a>
+        <span class="muted">Chapter 06 · not yet written</span>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "url": "https://buildingbackend.vercel.app/math-bloom.html",
+    "headline": "Bloom filters and HyperLogLog: a billion things in 12 KB",
+    "description": "Bloom filters and HyperLogLog worked out by hand: a 16-bit filter, the false-positive formula, ten bits per item, twenty words counted from eight registers, and Redis, git and SQLite using both for real.",
+    "isPartOf": { "@type": "CollectionPage", "name": "Math Behind Tech", "url": "https://buildingbackend.vercel.app/math.html" },
+    "author": { "@type": "Person", "name": "@ritikshub", "url": "https://x.com/ritikshub" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        }
+      });
+    })();
+  </script>
+  <script src="data.js?v=20260813m"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>
