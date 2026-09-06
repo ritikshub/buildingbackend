@@ -1,80 +1,42 @@
-/* ── Palette ──────────────────────────────────────────────────────────────
- * Every colour on the site lives in this file and nowhere else. style.css,
- * math.css and the per-page <style> blocks only ever say var(--something);
- * to recolour the whole site, change the values here. design.html shows
- * these tokens live, so open it after editing to see the result at a glance.
+/* ── Palette: Fuji ──
+ * Sampled from the photograph: the sky is the paper, the mountain's shadow is the ink, and the mountain blue is both the accent and the marks; nothing warm, the whole sheet is the photograph's blues. Dark is the lake at dusk, with the sky as the accent.
  *
- * Two blocks: the light theme on :root (the default, read like a book) and
- * the dark theme on [data-theme="dark"] (the paper photographed at night).
- * The theme toggle only flips that attribute; app.js never touches a colour.
- *
- * Contrast rules the values must keep (WCAG AA):
- *   --ink, --ink-soft      ≥ 4.5:1 on --bg, --bg-surface and --code-bg (body text)
- *   --ember                ≥ 4.5:1 on all three (links, inline code, labels)
- *   --ember-bright         decorative only — dots, bullets, fills, never words
- *   --ink-mute, --warn     ≥ 3:1 (small mono captions, non-essential)
- *
- * Cache-bust: bump ?v= on every page that links this file when it changes.
+ * Every colour on the site lives in this file and nowhere else. Light on
+ * :root, dark on [data-theme="dark"]. Bump ?v= on every page's palette link
+ * after editing, then open /design to see the tokens and contrast live.
  */
 
 :root {
-  /* ── Paper ──────────────────────────────────────────────────────────
-     Sampled off the YC Paper Club poster: #e9e4d6 is its lit newsprint,
-     and --ink is #1e1817, the warm near-black of its display type — not a
-     true black, which is why the page reads soft rather than stark. The
-     surfaces step down in the same warm hue so panels sit in the sheet
-     instead of on it. */
-  --bg: #e9e4d6;
-  --bg-surface: #e3ded0;
-  --bg-surface-hover: #dcd6c6;
-  --ink: #1e1817;
-  --ink-soft: #4a4340;
-  --ink-mute: #7d746c;
-  --rule: #1e1817;
-  --rule-soft: rgba(30, 24, 23, 0.18);
-  --paper-rule: rgba(30, 24, 23, 0.09);
+  --bg: #cfdcec;
+  --bg-surface: #c3d2e5;
+  --bg-surface-hover: #b7c8de;
+  --ink: #16212e;
+  --ink-soft: #2a3f52;
+  --ink-mute: #5c7590;
+  --rule: #16212e;
+  --rule-soft: rgba(34, 78, 122, 0.30);
+  --paper-rule: rgba(34, 78, 122, 0.14);
+  --ember: #224e7a;
+  --ember-bright: #224e7a;
+  --ember-tint: rgba(34, 78, 122, 0.16);
+  --ember-tint-strong: rgba(34, 78, 122, 0.26);
+  --status-complete: #224e7a;
+  --status-in-progress: #2a3f52;
+  --status-planned: #8ea8cb;
+  --warn: #8a3d1a;
+  --code-bg: #bfcfe3;
+  --modal-bg: #cfdcec;
+  --overlay-bg: rgba(22, 33, 46, 0.55);
+  --header-bg: rgba(207, 220, 236, 0.94);
+  --sheet: #dfe8f3;
+  --sheet-rule: rgba(22, 33, 46, 0.16);
+  --frame: rgba(22, 33, 46, 0.55);
 
-  /* The poster carries two oranges, and they map exactly onto the two jobs
-     an accent has to do here.
-
-     --ember-bright is #e1652c, the colour of the printed dots. It measures
-     2.71:1 on this paper, so it is decorative only: bullets, dots, rules,
-     progress fills — marks, never words. That is precisely how the poster
-     uses it.
-
-     --ember is the text-level accent — links, inline code, labels — so it
-     needs 4.5:1. The poster's rust block (#ab481f) is the right hue but
-     lands at 4.49 on this paper and 4.01 on the code panel, just under.
-     Held at that hue and taken two steps down, it clears everywhere:
-     5.04 on --bg, 4.77 on --bg-surface, 4.50 on --code-bg. */
-  --ember: #a33f15;
-  --ember-bright: #e1652c;
-  --ember-tint: rgba(225, 101, 44, 0.12);
-  --ember-tint-strong: rgba(225, 101, 44, 0.22);
-
-  --status-complete: #a33f15;
-  --status-in-progress: #4a4340;
-  --status-planned: #b3ab9b;
-  --warn: #a07208;
-
-  --code-bg: #ded8c8;
-  --modal-bg: #e9e4d6;
-  --overlay-bg: rgba(30, 24, 23, 0.55);
-  --header-bg: rgba(233, 228, 214, 0.94);
-
-  /* Math Behind Tech: the fill inside SVG figures, the hairline between
-     rows of working, and the frame around a boxed example. */
-  --sheet: #f6f2e8;
-  --sheet-rule: rgba(30, 24, 23, 0.14);
-  --frame: rgba(30, 24, 23, 0.5);
-
-  /* Aliases. Older rules use these names; they all resolve to the tokens
-     above, so there is still only one place to change a colour. */
   --text: var(--ink);
   --text-muted: var(--ink-soft);
   --border: var(--rule-soft);
   --accent: var(--ember);
-  --accent-hover: #86330f;
+  --accent-hover: #17395c;
   --secondary: var(--ember);
   --complete: var(--status-complete);
   --planned: var(--status-planned);
@@ -84,41 +46,33 @@
   --dot-color: var(--paper-rule);
 }
 
-/* The paper photographed at night. Same warm hue family, inverted: the ink
-   becomes the ground and the sheet becomes the light. On a dark ground the
-   accent has room it does not have on paper, so the dot orange steps up to
-   carry text too — 5.9:1 here, against 2.71 in the light theme. */
 [data-theme="dark"] {
-  --bg: #1a1613;
-  --bg-surface: #241f1a;
-  --bg-surface-hover: #2f2820;
-  --ink: #ece7da;
-  --ink-soft: #b0a89a;
-  --ink-mute: #837a6e;
-  --rule: #ece7da;
-  --rule-soft: rgba(236, 231, 218, 0.18);
-  --paper-rule: rgba(236, 231, 218, 0.08);
+  --bg: #182330;
+  --bg-surface: #21303f;
+  --bg-surface-hover: #2a3b4d;
+  --ink: #e2eaf3;
+  --ink-soft: #aebdd0;
+  --ink-mute: #8194aa;
+  --rule: #e2eaf3;
+  --rule-soft: rgba(226, 234, 243, 0.2);
+  --paper-rule: rgba(226, 234, 243, 0.09);
+  --ember: #9dc0ea;
+  --ember-bright: #6f9bd1;
+  --ember-tint: rgba(111, 155, 209, 0.16);
+  --ember-tint-strong: rgba(111, 155, 209, 0.26);
+  --status-complete: #9dc0ea;
+  --status-in-progress: #aebdd0;
+  --status-planned: #3a5068;
+  --warn: #e89a6e;
+  --code-bg: #21303f;
+  --modal-bg: #1d2938;
+  --overlay-bg: rgba(24, 35, 48, 0.8);
+  --header-bg: rgba(24, 35, 48, 0.94);
+  --sheet: #263748;
+  --sheet-rule: rgba(226, 234, 243, 0.2);
+  --frame: rgba(226, 234, 243, 0.5);
 
-  --ember: #f0854b;
-  --ember-bright: #e1652c;
-  --ember-tint: rgba(225, 101, 44, 0.14);
-  --ember-tint-strong: rgba(225, 101, 44, 0.24);
-
-  --status-complete: #f0854b;
-  --status-in-progress: #b0a89a;
-  --status-planned: #4c453b;
-  --warn: #dfae3c;
-
-  --code-bg: #241f1a;
-  --modal-bg: #201b16;
-  --overlay-bg: rgba(26, 22, 19, 0.78);
-  --header-bg: rgba(26, 22, 19, 0.94);
-
-  --sheet: #2a241e;
-  --sheet-rule: rgba(236, 231, 218, 0.16);
-  --frame: rgba(236, 231, 218, 0.42);
-
-  --accent-hover: #f7a273;
+  --accent-hover: #c4dcf5;
   --shadow-color: var(--ink);
   --shadow-hard: 3px 3px 0 var(--ink);
   --shadow-hard-lg: 5px 5px 0 var(--ink);
