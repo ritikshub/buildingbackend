@@ -19,7 +19,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260813m">
+  <link rel="stylesheet" href="palette.css?v=20260906a">
+  <link rel="stylesheet" href="style.css?v=20260906a">
   <style>
     /* ===================================================
        Learning Path · Page Styles
@@ -151,19 +152,19 @@
     .node-group.selected .node-rect {
       stroke: var(--accent);
       stroke-width: 3;
-      filter: drop-shadow(0 0 12px rgba(255, 107, 107, 0.4));
+      filter: drop-shadow(0 0 12px var(--ember-tint-strong));
     }
 
     .node-group.ancestor .node-rect {
       stroke: var(--accent);
       stroke-width: 2.5;
-      filter: drop-shadow(0 0 6px rgba(255, 107, 107, 0.25));
+      filter: drop-shadow(0 0 6px var(--ember-tint));
     }
 
     .node-group.descendant .node-rect {
       stroke: var(--complete);
       stroke-width: 2.5;
-      filter: drop-shadow(0 0 6px rgba(90, 184, 143, 0.25));
+      filter: drop-shadow(0 0 6px var(--ember-tint));
     }
 
     .node-group.dimmed .node-rect,
@@ -173,7 +174,9 @@
       opacity: 0.25;
     }
 
-    .node-status-bar { transition: opacity 0.25s; }
+    .node-status-bar { transition: opacity 0.25s; fill: var(--status-planned); }
+    .node-status-bar--complete    { fill: var(--status-complete); }
+    .node-status-bar--in-progress { fill: var(--status-in-progress); }
 
     .node-id {
       font-family: 'JetBrains Mono', monospace;
@@ -268,9 +271,9 @@
       border-radius: 0;
     }
 
-    .detail-status.complete    { background: rgba(90, 184, 143, 0.15); color: var(--complete); border: 1px solid var(--complete); }
-    .detail-status.in-progress { background: rgba(255, 107, 107, 0.15); color: var(--accent);   border: 1px solid var(--accent); }
-    .detail-status.planned     { background: rgba(128, 112, 96, 0.15);  color: var(--planned);  border: 1px solid var(--planned); }
+    .detail-status.complete    { background: var(--ember-tint);  color: var(--complete); border: 1px solid var(--complete); }
+    .detail-status.in-progress { background: var(--ember-tint);  color: var(--accent);   border: 1px solid var(--accent); }
+    .detail-status.planned     { background: var(--paper-rule); color: var(--planned);  border: 1px solid var(--planned); }
 
     .detail-desc {
       color: var(--text-muted);
@@ -373,14 +376,14 @@
 
     .detail-link-read {
       background: var(--accent);
-      color: #fff;
+      color: var(--bg);
       border-color: var(--accent);
       font-weight: 700;
     }
 
     .detail-link-read:hover {
       background: var(--accent-hover);
-      color: #fff;
+      color: var(--bg);
       border-color: var(--accent-hover);
     }
 
@@ -708,12 +711,6 @@
       return (x - s) + ',' + (y - s * 1.6) + ' ' + x + ',' + y + ' ' + (x + s) + ',' + (y - s * 1.6);
     }
 
-    function statusColor(status) {
-      if (status === 'complete')    return '#5ab88f';
-      if (status === 'in-progress') return '#ff6b6b';
-      return '#807060';
-    }
-
     function lessonStats(phase) {
       var done = 0;
       var lessons = Array.isArray(phase.lessons) ? phase.lessons : [];
@@ -787,9 +784,8 @@
 
         /* Status colour bar */
         g.appendChild(svgEl('rect', {
-          class: 'node-status-bar',
-          x: 8, y: 0, width: NODE_W - 16, height: 3, rx: 1.5,
-          fill: statusColor(phase.status)
+          class: 'node-status-bar node-status-bar--' + phase.status,
+          x: 8, y: 0, width: NODE_W - 16, height: 3, rx: 1.5
         }));
 
         /* Label content */

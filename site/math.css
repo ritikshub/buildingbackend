@@ -12,16 +12,8 @@
  * Cache-bust: bump ?v= on every page that loads this file when it changes.
  */
 
-:root {
-  --sheet: #f6f2e8;                          /* fill for boxes inside SVG figures */
-  --sheet-rule: rgba(30, 24, 23, 0.14);      /* hairline between rows of working */
-  --frame: rgba(30, 24, 23, 0.5);            /* the box around an example */
-}
-[data-theme="dark"] {
-  --sheet: #2a241e;
-  --sheet-rule: rgba(236, 231, 218, 0.16);
-  --frame: rgba(236, 231, 218, 0.42);
-}
+/* --sheet, --sheet-rule and --frame are defined in palette.css with the rest
+   of the colour tokens. */
 
 .math-page {
   max-width: 760px;

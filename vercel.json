@@ -19,6 +19,10 @@
     {
       "source": "/math",
       "destination": "/math.html"
+    },
+    {
+      "source": "/design",
+      "destination": "/design.html"
     }
   ],
   "redirects": [
@@ -196,7 +200,7 @@
       ]
     },
     {
-      "source": "/(path|roadmap|about|math)",
+      "source": "/(path|roadmap|about|math|design)",
       "headers": [
         {
           "key": "Cache-Control",

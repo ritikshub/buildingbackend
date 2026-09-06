@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design sheet - Building Backend</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23e9e4d6'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%23e1652c' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%23e1652c'>BE</text></svg>">
+  <meta name="description" content="The colours, type and marks the site is set in, read live from palette.css.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="palette.css?v=20260906a">
+  <link rel="stylesheet" href="style.css?v=20260906a">
+  <link rel="stylesheet" href="math.css?v=20260906a">
+  <style>
+    /* This page names no colour of its own. Everything is var(--…) from
+       palette.css, which is the point: edit that file, reload this page. */
+    .design { max-width: 760px; margin: 0 auto; padding: 100px 0 80px; }
+    .design-eyebrow {
+      font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--ember); margin-bottom: 14px;
+    }
+    .design h1 { font-family: var(--font-display); font-size: 2.6rem; line-height: 1.1; margin-bottom: 18px; }
+    .design .lede { font-size: 1.15rem; line-height: 1.55; color: var(--ink-soft); margin-bottom: 44px; }
+    .design h2 {
+      font-family: var(--font-display); font-size: 1.5rem; margin: 52px 0 6px;
+      padding-top: 18px; border-top: 1px solid var(--rule);
+    }
+    .design h2 + p { color: var(--ink-soft); margin-bottom: 18px; }
+    .design p { line-height: 1.6; }
+    .design code { font-family: var(--font-mono); font-size: 0.85em; color: var(--ember); }
+
+    /* Token tables */
+    .tok { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 0.9rem; }
+    .tok th {
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 500; color: var(--ink-mute); text-align: left; padding: 6px 10px 6px 0;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+    .tok td { padding: 8px 10px 8px 0; border-bottom: 1px solid var(--paper-rule); vertical-align: middle; }
+    .tok tr:last-child td { border-bottom: 0; }
+    .tok .group td {
+      padding-top: 22px; border-bottom: 1px solid var(--rule-soft);
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute);
+    }
+    .sw {
+      display: inline-block; width: 30px; height: 30px; vertical-align: middle;
+      border: 1px solid var(--rule-soft);
+    }
+    .sw-cell { width: 54px; }
+    .tok .name { font-family: var(--font-mono); font-size: 0.8rem; white-space: nowrap; }
+    .tok .val { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-mute); white-space: nowrap; }
+    .tok .job { color: var(--ink-soft); font-size: 0.88rem; }
+
+    /* Contrast tables */
+    .con { border-collapse: collapse; margin: 6px 0 10px; font-family: var(--font-mono); font-size: 0.78rem; }
+    .con th { font-weight: 500; color: var(--ink-mute); text-align: right; padding: 6px 14px 6px 0; border-bottom: 1px solid var(--rule-soft); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .con th:first-child, .con td:first-child { text-align: left; }
+    .con td { text-align: right; padding: 7px 14px 7px 0; border-bottom: 1px solid var(--paper-rule); font-variant-numeric: tabular-nums; }
+    .con td.low { color: var(--warn); }
+    .con td.low::after { content: " low"; }
+    .con-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .con-wrap h3 { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; color: var(--ink-soft); margin: 8px 0 2px; }
+    .con-note { font-size: 0.85rem; color: var(--ink-mute); margin-top: 8px; }
+
+    /* Type specimens */
+    .type-row { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--paper-rule); align-items: baseline; }
+    .type-row:last-child { border-bottom: 0; }
+    .type-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-mute); }
+    .type-label b { display: block; color: var(--ink); font-weight: 500; }
+    .spec-display { font-family: var(--font-display); font-size: 2.2rem; line-height: 1.1; }
+    .spec-body { font-family: var(--font-body); font-size: 1.05rem; line-height: 1.6; }
+    .spec-mono { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.04em; }
+
+    /* Marks and components, shown as they appear elsewhere */
+    .marks { display: flex; gap: 28px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; margin: 10px 0 8px; }
+    .marks span { display: inline-flex; align-items: center; gap: 8px; }
+    .mk { width: 9px; height: 9px; display: inline-block; }
+    .mk-complete { background: var(--status-complete); }
+    .mk-progress { background: linear-gradient(135deg, var(--status-in-progress) 50%, transparent 50%); border: 1px solid var(--status-in-progress); box-sizing: border-box; }
+    .mk-planned { border: 1px solid var(--status-planned); box-sizing: border-box; }
+    .design pre { background: var(--code-bg); padding: 14px 18px; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.55; overflow-x: auto; margin: 12px 0; }
+    .design pre code { color: var(--ink); }
+    .design .rule-demo { border-top: 1px solid var(--rule); margin: 18px 0; }
+    .design .ex { margin: 16px 0; }
+    .steps { list-style: decimal outside; padding-left: 1.4em; line-height: 1.7; }
+    .steps li { margin-bottom: 4px; }
+    .swap, .swap * { transition: none !important; }
+
+    @media (max-width: 640px) {
+      .con-wrap { grid-template-columns: 1fr; }
+      .type-row { grid-template-columns: 1fr; gap: 6px; }
+      .tok .job { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon" aria-hidden="true"></span> Building Backend
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#contents">Contents</a>
+        <a href="prereqs.html">Roadmap</a>
+        <a href="math.html">Math</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon" id="themeIcon" aria-hidden="true"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <article class="design">
+      <div class="design-eyebrow">Design</div>
+      <h1>Design sheet</h1>
+      <p class="lede">Every colour on the site is a token in <code>palette.css</code>, and every page reads from that one file. This page shows the tokens live: edit the file, reload, and what you see here is what every other page now looks like.</p>
+
+      <h2>Colour</h2>
+      <p>Both themes, read from the stylesheet as it is right now. The value column is what the file says; the swatch is what the browser resolved it to.</p>
+      <table class="tok" id="tokens">
+        <thead><tr><th class="sw-cell">Light</th><th class="sw-cell">Dark</th><th>Token</th><th>Job</th></tr></thead>
+        <tbody>
+          <tr class="group"><td colspan="4">Paper</td></tr>
+          <tr data-token="--bg"><td></td><td></td><td></td><td class="job">The page.</td></tr>
+          <tr data-token="--bg-surface"><td></td><td></td><td></td><td class="job">Panels that sit in the sheet: cards, table heads, the palette.</td></tr>
+          <tr data-token="--bg-surface-hover"><td></td><td></td><td></td><td class="job">The same panel under the pointer.</td></tr>
+          <tr data-token="--code-bg"><td></td><td></td><td></td><td class="job">Code blocks.</td></tr>
+          <tr data-token="--modal-bg"><td></td><td></td><td></td><td class="job">Dialogs.</td></tr>
+          <tr data-token="--header-bg"><td></td><td></td><td></td><td class="job">The sticky header, slightly see-through.</td></tr>
+          <tr data-token="--overlay-bg"><td></td><td></td><td></td><td class="job">The scrim behind a dialog.</td></tr>
+
+          <tr class="group"><td colspan="4">Ink</td></tr>
+          <tr data-token="--ink"><td></td><td></td><td></td><td class="job">Body text and headings. Not true black.</td></tr>
+          <tr data-token="--ink-soft"><td></td><td></td><td></td><td class="job">Secondary prose, ledes, captions that still need reading.</td></tr>
+          <tr data-token="--ink-mute"><td></td><td></td><td></td><td class="job">Small mono labels and counts. Needs only 3:1.</td></tr>
+          <tr data-token="--rule"><td></td><td></td><td></td><td class="job">The heavy rule under a section.</td></tr>
+          <tr data-token="--rule-soft"><td></td><td></td><td></td><td class="job">Hairlines between rows and around frames.</td></tr>
+          <tr data-token="--paper-rule"><td></td><td></td><td></td><td class="job">The faintest line, and the dot grid.</td></tr>
+
+          <tr class="group"><td colspan="4">Ember</td></tr>
+          <tr data-token="--ember"><td></td><td></td><td></td><td class="job">The text accent: links, inline code, section labels. Must clear 4.5:1.</td></tr>
+          <tr data-token="--ember-bright"><td></td><td></td><td></td><td class="job">The printed-dot orange. Marks only, never words.</td></tr>
+          <tr data-token="--ember-tint"><td></td><td></td><td></td><td class="job">A wash of ember: row hover, badge backgrounds.</td></tr>
+          <tr data-token="--ember-tint-strong"><td></td><td></td><td></td><td class="job">The same wash, stronger.</td></tr>
+          <tr data-token="--accent-hover"><td></td><td></td><td></td><td class="job">A link under the pointer.</td></tr>
+
+          <tr class="group"><td colspan="4">Status</td></tr>
+          <tr data-token="--status-complete"><td></td><td></td><td></td><td class="job">A finished lesson or phase.</td></tr>
+          <tr data-token="--status-in-progress"><td></td><td></td><td></td><td class="job">Being written.</td></tr>
+          <tr data-token="--status-planned"><td></td><td></td><td></td><td class="job">Not started.</td></tr>
+          <tr data-token="--warn"><td></td><td></td><td></td><td class="job">A caution in the text.</td></tr>
+
+          <tr class="group"><td colspan="4">Math figures</td></tr>
+          <tr data-token="--sheet"><td></td><td></td><td></td><td class="job">The fill inside an SVG figure.</td></tr>
+          <tr data-token="--sheet-rule"><td></td><td></td><td></td><td class="job">The hairline between rows of working.</td></tr>
+          <tr data-token="--frame"><td></td><td></td><td></td><td class="job">The box around a worked example.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Contrast</h2>
+      <p>Computed from the resolved colours above. Text needs 4.5:1 on whatever it sits on; small mono captions need 3:1. A cell reads <em>low</em> when it does not clear its line.</p>
+      <div class="con-wrap">
+        <div><h3>Light</h3><table class="con" id="con-light"></table></div>
+        <div><h3>Dark</h3><table class="con" id="con-dark"></table></div>
+      </div>
+      <p class="con-note">--ember-bright is listed for information only. It is decorative, so its ratio does not have to clear anything.</p>
+
+      <h2>Type</h2>
+      <p>Three faces, each with one job.</p>
+      <div class="type-row"><div class="type-label"><b>--font-display</b>Playfair Display</div><div class="spec-display">Building Backend</div></div>
+      <div class="type-row"><div class="type-label"><b>--font-body</b>Source Serif 4</div><div class="spec-body">When the sea is too rough to sail, the smart ones don’t wait. They mend their nets, sharpen their tools, and prepare for the moment the storm breaks.</div></div>
+      <div class="type-row"><div class="type-label"><b>--font-mono</b>JetBrains Mono</div><div class="spec-mono">CURRICULUM · 14 PHASES · 182 LESSONS</div></div>
+
+      <h2>In use</h2>
+      <p>The same tokens doing their jobs, so a change to the file can be judged on real marks and not only on swatches.</p>
+      <div class="marks">
+        <span><i class="mk mk-complete"></i> Complete</span>
+        <span><i class="mk mk-progress"></i> In progress</span>
+        <span><i class="mk mk-planned"></i> Planned</span>
+      </div>
+      <p>Body text with <a href="palette.css">a link</a>, some <code>inline code</code>, and a <strong>bold</strong> phrase, on the paper.</p>
+<pre><code>def contrast(fg, bg):
+    hi, lo = max(fg, bg), min(fg, bg)
+    return (hi + 0.05) / (lo + 0.05)</code></pre>
+      <div class="rule-demo"></div>
+      <div class="ex ex-mini"><div class="eq">
+        <div class="eq-row"><div class="eq-what">Ember on the paper</div><div class="eq-work">(0.776 + 0.05) / (0.114 + 0.05)</div><div class="eq-res">5.04 : 1</div></div>
+        <div class="eq-row"><div class="eq-what">Ember on the code panel</div><div class="eq-work">(0.688 + 0.05) / (0.114 + 0.05)</div><div class="eq-res">4.50 : 1</div></div>
+      </div></div>
+
+      <h2>Changing a colour</h2>
+      <ol class="steps">
+        <li>Edit the value in <code>site/palette.css</code>. Light theme on <code>:root</code>, dark on <code>[data-theme="dark"]</code>.</li>
+        <li>Bump the <code>?v=</code> on the <code>palette.css</code> link in every page so browsers fetch the new file.</li>
+        <li>Reload this page. Check the swatches, then the contrast tables, then the marks. Nothing else needs touching.</li>
+      </ol>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 · open source · free forever</p>
+      <div class="footer-links">
+        <a href="https://github.com/ritikshub/buildingbackend" target="_blank" rel="noopener">GitHub</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/ritikshub/buildingbackend/issues/new/choose" target="_blank" rel="noopener">Report</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = localStorage.getItem('theme');
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('themeToggle');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+          });
+        }
+      });
+    })();
+  </script>
+  <script>
+    /* Read every token in both themes straight from the stylesheet. The
+       root is flipped to the other theme for a moment, inside one task, so
+       nothing paints in between; .swap turns transitions off meanwhile. */
+    (function () {
+      var root = document.documentElement;
+      var probe = document.createElement('div');
+      probe.style.position = 'absolute'; probe.style.left = '-9999px';
+      document.body.appendChild(probe);
+
+      function readTheme(theme, tokens) {
+        var was = root.getAttribute('data-theme');
+        root.classList.add('swap');
+        root.setAttribute('data-theme', theme);
+        var cs = getComputedStyle(root), out = {};
+        tokens.forEach(function (t) {
+          probe.style.backgroundColor = '';
+          probe.style.backgroundColor = 'var(' + t + ')';
+          out[t] = { raw: cs.getPropertyValue(t).trim(), resolved: getComputedStyle(probe).backgroundColor };
+        });
+        root.setAttribute('data-theme', was);
+        void root.offsetWidth;
+        root.classList.remove('swap');
+        return out;
+      }
+
+      function lum(rgb) {
+        var m = rgb.match(/[\d.]+/g); if (!m) return 0;
+        var c = m.slice(0, 3).map(function (v) { v = v / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+      }
+      function ratio(a, b) { var x = lum(a), y = lum(b), hi = Math.max(x, y), lo = Math.min(x, y); return (hi + 0.05) / (lo + 0.05); }
+
+      var rows = Array.prototype.slice.call(document.querySelectorAll('#tokens tr[data-token]'));
+      var tokens = rows.map(function (r) { return r.getAttribute('data-token'); });
+      var light = readTheme('light', tokens), dark = readTheme('dark', tokens);
+
+      rows.forEach(function (r) {
+        var t = r.getAttribute('data-token'), cells = r.children;
+        cells[0].innerHTML = '<span class="sw" style="background:' + light[t].resolved + '"></span>';
+        cells[1].innerHTML = '<span class="sw" style="background:' + dark[t].resolved + '"></span>';
+        cells[2].innerHTML = '<div class="name">' + t + '</div><div class="val">' + light[t].raw + ' · ' + dark[t].raw + '</div>';
+      });
+
+      var fgs = [['--ink', 4.5], ['--ink-soft', 4.5], ['--ember', 4.5], ['--ink-mute', 3], ['--warn', 3], ['--ember-bright', 0]];
+      var bgs = ['--bg', '--bg-surface', '--code-bg'];
+      function table(id, vals) {
+        var el = document.getElementById(id), h = '<tr><th>on</th>';
+        bgs.forEach(function (b) { h += '<th>' + b.replace('--', '') + '</th>'; });
+        h += '</tr>';
+        fgs.forEach(function (f) {
+          h += '<tr><td>' + f[0] + '</td>';
+          bgs.forEach(function (b) {
+            var r = ratio(vals[f[0]].resolved, vals[b].resolved);
+            h += '<td class="' + (f[1] && r < f[1] ? 'low' : '') + '">' + r.toFixed(2) + '</td>';
+          });
+          h += '</tr>';
+        });
+        el.innerHTML = h;
+      }
+      table('con-light', light); table('con-dark', dark);
+    })();
+  </script>
+  <script src="data.js?v=20260813m"></script>
+  <script src="progress.js?v=20260813d"></script>
+  <script src="header.js?v=20260813d" defer></script>
+  <script src="cmdpalette.js?v=20260813d" defer></script>
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>

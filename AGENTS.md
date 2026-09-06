@@ -40,6 +40,9 @@ site/
   build.js                    # parses README + ROADMAP -> data.js
   data.js                     # GENERATED; do not edit or commit by hand
   lesson.html                 # fetches each lesson's docs/en.md at runtime
+  palette.css                 # EVERY colour token, light + dark; the only file that names a colour
+  style.css, math.css         # layout and type; colours only ever as var(--…)
+  design.html                 # renders the tokens live, with contrast checks (/design)
 Dockerfile, docker-compose.yml, requirements.txt, Makefile   # the experiment sandbox
 ```
 
@@ -53,7 +56,8 @@ Dockerfile, docker-compose.yml, requirements.txt, Makefile   # the experiment sa
 4. **Every fenced code block needs a language tag** — one of `text`, `json`, `python`, `typescript`, `javascript`, `go`, `rust`, `bash`, `console`, `sql`, `http`, `lua`, `yaml`, `dockerfile`, `hcl`, `rego`, `graphql`, `markdown`, `mermaid`, `svg`. The renderer highlights Python, Go, JS/TS and Rust; anything else renders correctly but unhighlighted, with its language label. Prefer an accurate tag over a generic `text` one.
 5. **Original implementations only.** Don't cite external tutorials or curriculum repos in docs, code, or commits. When you state a fact, cite the canonical source — an **RFC, an official spec, or a paper** — not a secondary summary.
 6. **Stdlib-first, dependency allowlist** (see below). The *Build It* half uses only the standard library; the *Use It* half may use the one production tool the lesson is teaching.
-7. **Never commit generated files.** `site/data.js`, `site/sitemap.xml`, `site/llms.txt`, `site/build-meta.js` are rebuilt by `node site/build.js`. `.venv/`, `__pycache__/`, and the Docker `pgdata` volume are never tracked.
+7. **Colours live in `site/palette.css` and nowhere else.** No hex, `rgb()` or named colour in any other CSS, `<style>` block or JS — reference a token with `var(--…)` (add a token there if none fits). After editing the palette, bump the `?v=` on the `palette.css` link in every page and check `/design` for contrast.
+8. **Never commit generated files.** `site/data.js`, `site/sitemap.xml`, `site/llms.txt`, `site/build-meta.js` are rebuilt by `node site/build.js`. `.venv/`, `__pycache__/`, and the Docker `pgdata` volume are never tracked.
 
 ---
 
