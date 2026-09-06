@@ -1,9 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Building Backend: BB over Fuji. Colours are the palette's sky (--bg),
-       ink (--ink), mountain blue (--ember) and snow (dark --ink); an SVG
-       favicon cannot read palette.css, so keep these in step by hand. -->
-  <rect width="32" height="32" fill="#cfdcec"/>
-  <text x="16" y="12.8" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5" font-weight="700" fill="#16212e">BB</text>
-  <path d="M0 32 L9 20 L16 14 L23 20 L32 32 Z" fill="#224e7a"/>
-  <path d="M11.8 17.6 L16 14 L20.2 17.6 L19 18.8 L17.6 17.7 L16 19.2 L14.4 17.7 L13 18.8 Z" fill="#e2eaf3"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Building Backend. Fuji, no letters: the concave slopes that flare at the
+       base, the crater notch at the summit, and the yuki-gata snow tongues are
+       what tell it apart from a generic triangle. Two faces, one light source.
+       Colours are the palette's ink ground with the mountain in its blues; an
+       SVG favicon cannot read palette.css, so keep them in step by hand. -->
+  <defs>
+    <clipPath id="peak">
+      <path d="M-2 32 C 3 27 8.5 15 12.6 5.2 L 14.3 3.4 L 16 4.6 L 17.7 3.6 L 19.4 5.2 C 23.5 15 29 27 34 32 Z"/>
+    </clipPath>
+  </defs>
+  <rect width="32" height="32" fill="#16212e"/>
+  <path d="M-2 32 C 3 27 8.5 15 12.6 5.2 L 14.3 3.4 L 16 4.6 L 17.7 3.6 L 19.4 5.2 C 23.5 15 29 27 34 32 Z" fill="#7aa6da"/>
+  <g clip-path="url(#peak)">
+    <path d="M16 4.2 L19.4 5.2 C 23.5 15 29 27 34 32 L16 32 Z" fill="#1d4470"/>
+    <path d="M-2 0 H34 V10.6 L30 11.2 L27.6 15.8 L25.2 11.4 L21.2 12.4 L18.4 17.8 L15.6 12.4 L11.6 12.0 L9.2 16.4 L6.8 11.4 L2.6 11.0 L-2 10.6 Z" fill="#eef4fb"/>
+  </g>
 </svg>
