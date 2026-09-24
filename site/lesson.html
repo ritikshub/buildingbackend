@@ -819,6 +819,8 @@
       padding: 20px;
     }
 
+    /* On-this-page tree: mono entries hung off a corner glyph, the section in
+       view set in bold ink, and a dithered bar tracking how far down you are. */
     .toc-sidebar {
       position: fixed;
       top: 64px;
@@ -826,20 +828,16 @@
       bottom: 0;
       width: 240px;
       background: transparent;
-      overflow-y: auto;
       z-index: 40;
-      padding: 56px 24px 80px;
+      padding: 56px 24px 48px;
       display: none;
-      scrollbar-width: thin;
-      scrollbar-color: var(--rule-soft) transparent;
+      flex-direction: column;
     }
 
     .toc-sidebar[aria-hidden="true"] { display: none; }
 
-    .toc-sidebar::-webkit-scrollbar { width: 3px; }
-    .toc-sidebar::-webkit-scrollbar-thumb { background: var(--rule-soft); }
-
     .toc-header {
+      flex: none;
       font-family: var(--font-mono);
       font-size: 0.7rem;
       font-weight: 500;
@@ -849,58 +847,127 @@
       margin-bottom: 18px;
     }
 
+    .toc-scroll {
+      position: relative;
+      flex: 0 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      margin-left: -4px;
+      padding-left: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--rule-soft) transparent;
+    }
+
+    .toc-scroll::-webkit-scrollbar { width: 3px; }
+    .toc-scroll::-webkit-scrollbar-thumb { background: var(--rule-soft); }
+
     .toc-nav {
       list-style: none;
       padding: 0;
       margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      position: relative;
-      border-left: 1px solid var(--rule-soft);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      line-height: 1.5;
+      hyphens: manual;
     }
-
-    .toc-item { line-height: 1.4; }
 
     .toc-link {
-      font-family: var(--font-body);
-      font-size: 0.84rem;
+      display: flex;
+      gap: 1ch;
+      padding: 3px 0;
       color: var(--ink-soft);
       text-decoration: none;
-      display: block;
-      border-left: 2px solid transparent;
-      padding: 5px 16px;
-      margin-left: -1px;
-      transition: color 0.15s, border-color 0.15s, background 0.15s;
-      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    .toc-link::before {
+      content: "\2514";
+      flex: none;
+      color: var(--ink-mute);
+      transition: color 0.15s;
+    }
+
+    .toc-h3 .toc-link { padding-left: 2ch; }
+
+    .toc-text {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .toc-h3 .toc-link {
-      padding-left: 28px;
-      font-size: 0.78rem;
-    }
-
-    .toc-link:hover {
+    .toc-link:hover,
+    .toc-link:hover::before,
+    .toc-link.active,
+    .toc-link.active::before {
       color: var(--ink);
-      background: var(--ember-tint);
     }
+
+    .toc-link.active { font-weight: 700; }
 
     .toc-link:focus-visible {
       outline: 2px solid var(--ember);
       outline-offset: 2px;
     }
 
-    .toc-link.active {
-      color: var(--ember);
-      border-left-color: var(--ember);
-      font-weight: 500;
+    .toc-foot {
+      flex: none;
+      margin-top: 32px;
+      font-family: var(--font-mono);
+    }
+
+    .toc-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Dots on a 2px grid: one in four lit for the track, three in four for the fill. */
+    .toc-bar {
+      position: relative;
+      flex: 1 1 auto;
+      height: 14px;
+      background: conic-gradient(at 1px 1px, transparent 75%, var(--ink-mute) 0) 0 0 / 2px 2px;
+    }
+
+    .toc-bar-fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      background: conic-gradient(at 1px 1px, var(--bg) 25%, var(--ink) 0) 0 0 / 2px 2px;
+      transition: width 0.12s linear;
+    }
+
+    .toc-pct {
+      flex: none;
+      min-width: 4ch;
+      font-size: 0.76rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink-soft);
+    }
+
+    .toc-hint {
+      margin-top: 14px;
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    @media (hover: none) {
+      .toc-hint { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toc-bar-fill { transition: none; }
     }
 
     @media (min-width: 1280px) {
       .lesson-main { padding-right: 240px; }
-      .toc-sidebar { display: block; }
+      .toc-sidebar { display: flex; }
     }
 
     @media (max-width: 1279px) {
@@ -1203,15 +1270,34 @@
         });
       }
 
+      function readingProgress() {
+        var scrollTop = window.scrollY || document.documentElement.scrollTop;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        return Math.min(100, Math.max(0, pct));
+      }
+
       function initScrollProgress() {
         var bar = document.getElementById('scrollProgress');
         if (!bar) return;
         window.addEventListener('scroll', function () {
-          var scrollTop = window.scrollY || document.documentElement.scrollTop;
-          var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-          var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+          var pct = readingProgress();
           bar.style.width = pct + '%';
+          updateTocProgress(pct);
         }, { passive: true });
+        window.addEventListener('resize', function () {
+          updateTocProgress(readingProgress());
+        });
+      }
+
+      function updateTocProgress(pct) {
+        var fill = document.getElementById('tocBarFill');
+        var label = document.getElementById('tocPct');
+        if (!fill || !label) return;
+        var n = Math.round(pct);
+        fill.style.width = pct + '%';
+        label.textContent = (n < 10 ? '0' : '') + n + '%';
+        fill.parentNode.parentNode.setAttribute('aria-valuenow', String(n));
       }
 
       function fetchLesson(path) {
@@ -1391,7 +1477,7 @@
         }
 
         var html = '<div class="toc-header">On this page</div>';
-        html += '<nav aria-label="On this page"><ul class="toc-nav">';
+        html += '<nav class="toc-scroll" aria-label="On this page"><ul class="toc-nav">';
         for (var i = 0; i < headings.length; i++) {
           var heading = headings[i];
           var level = heading.tagName.toLowerCase();
@@ -1400,11 +1486,19 @@
           var fullText = (heading.textContent || '').trim();
           var text = fullText.replace(/^[^\p{L}\p{N}]+/u, '').trim();
           if (!text) continue;
-          html += '<li class="toc-item toc-' + level + '"><a href="#' + id + '" class="toc-link" data-toc-id="' + id + '" title="' + escapeHtml(fullText) + '">' + escapeHtml(text) + '</a></li>';
+          html += '<li class="toc-item toc-' + level + '"><a href="#' + id + '" class="toc-link" data-toc-id="' + id + '" title="' + escapeHtml(fullText) + '"><span class="toc-text">' + escapeHtml(text) + '</span></a></li>';
         }
         html += '</ul></nav>';
+        html += '<div class="toc-foot">' +
+          '<div class="toc-progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">' +
+          '<div class="toc-bar"><div class="toc-bar-fill" id="tocBarFill"></div></div>' +
+          '<span class="toc-pct" id="tocPct" aria-hidden="true">00%</span>' +
+          '</div>' +
+          '<div class="toc-hint" aria-hidden="true">Press &uarr; / &darr; to scroll</div>' +
+          '</div>';
         sidebar.innerHTML = html;
         sidebar.removeAttribute('aria-hidden');
+        updateTocProgress(readingProgress());
 
         sidebar.querySelectorAll('.toc-link').forEach(function (a) {
           a.addEventListener('click', function (e) {
@@ -1440,10 +1534,6 @@
         var headerOffsetStr = getComputedStyle(document.documentElement).getPropertyValue('--header-offset').trim();
         var headerOffset = parseInt(headerOffsetStr, 10) || 92;
 
-        if (sidebar._tocObserver && sidebar._tocObserver.disconnect) {
-          sidebar._tocObserver.disconnect();
-          sidebar._tocObserver = null;
-        }
         if (sidebar._tocScrollHandler) {
           window.removeEventListener('scroll', sidebar._tocScrollHandler);
           sidebar._tocScrollHandler = null;
@@ -1465,75 +1555,54 @@
           });
 
           var activeLink = sidebar.querySelector('.toc-link.active');
-          if (activeLink) {
+          var scroller = sidebar.querySelector('.toc-scroll');
+          if (activeLink && scroller) {
             var linkTop = activeLink.offsetTop;
-            var sidebarHeight = sidebar.clientHeight;
-            var sidebarScroll = sidebar.scrollTop;
-            if (linkTop < sidebarScroll + 50 || linkTop > sidebarScroll + sidebarHeight - 100) {
-              sidebar.scrollTo({ top: Math.max(0, linkTop - sidebarHeight / 3), behavior: 'smooth' });
+            var scrollerHeight = scroller.clientHeight;
+            var scrollerTop = scroller.scrollTop;
+            if (linkTop < scrollerTop + 50 || linkTop > scrollerTop + scrollerHeight - 100) {
+              scroller.scrollTo({ top: Math.max(0, linkTop - scrollerHeight / 3), behavior: 'smooth' });
             }
           }
         }
 
-        function fallbackByScroll() {
+        // The active section is the last heading above the reading line, worked
+        // out from the scroll position every frame so a jump (End, Page Down,
+        // a scrollbar drag) never leaves a stale highlight. At the very bottom
+        // the last heading wins, since short final sections never reach the line.
+        function activeByScroll() {
           var y = (window.scrollY || document.documentElement.scrollTop || 0) + headerOffset + 18;
+          var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
           var active = '';
           for (var i = 0; i < headings.length; i++) {
             var h = headings[i];
             if (!h || !h.id) continue;
             var top = h.getBoundingClientRect().top + window.scrollY;
-            if (top <= y) active = h.id;
+            if (top <= y || atBottom) active = h.id;
             else break;
           }
           if (!active && headings[0] && headings[0].id) active = headings[0].id;
           if (active) setActive(active);
         }
 
-        if (typeof IntersectionObserver !== 'undefined') {
-          var marginOffset = headerOffset - 4;
-          var obs = new IntersectionObserver(function (entries) {
-            var best = null;
-            for (var i = 0; i < entries.length; i++) {
-              var e = entries[i];
-              if (!e.isIntersecting) continue;
-              if (!best) best = e;
-              else if (e.boundingClientRect.top < best.boundingClientRect.top) best = e;
-            }
-            if (best && best.target && best.target.id) setActive(best.target.id);
-          }, {
-            root: null,
-            threshold: [0.01, 0.1],
-            rootMargin: '-' + marginOffset + 'px 0px -70% 0px'
-          });
-
-          Array.from(headings).forEach(function (h) {
-            if (h && h.id) obs.observe(h);
-          });
-          sidebar._tocObserver = obs;
-
-          var initial = (location.hash && location.hash.charAt(0) === '#') ? location.hash.slice(1) : '';
-          if (initial && document.getElementById(initial)) setActive(initial);
-          else if (headings[0] && headings[0].id) setActive(headings[0].id);
-
-          return;
-        }
-
         sidebar._tocScrollHandler = function () {
           if (window._tocTicking) return;
           window._tocTicking = true;
           window.requestAnimationFrame(function () {
-            fallbackByScroll();
+            activeByScroll();
             window._tocTicking = false;
           });
         };
         window.addEventListener('scroll', sidebar._tocScrollHandler, { passive: true });
 
         sidebar._tocResizeHandler = function () {
-          fallbackByScroll();
+          activeByScroll();
         };
         window.addEventListener('resize', sidebar._tocResizeHandler);
 
-        fallbackByScroll();
+        var initial = (location.hash && location.hash.charAt(0) === '#') ? location.hash.slice(1) : '';
+        if (initial && document.getElementById(initial)) setActive(initial);
+        else activeByScroll();
       }
 
       function extractTitle(md) {
