@@ -519,7 +519,6 @@ function writeSitemap(phases) {
   const today = new Date().toISOString().slice(0, 10);
   const urls = [
     { loc: '/', priority: '1.0', freq: 'weekly' },
-    { loc: '/prereqs.html', priority: '0.7', freq: 'monthly' },
   ];
   urls.push({ loc: '/math.html', priority: '0.6', freq: 'monthly' });
   for (const chapter of mathChapters()) {
@@ -568,7 +567,6 @@ function writeLlms(phases, artifactCount) {
     out += `\n`;
   }
   out += `## Optional\n`;
-  out += `- [Roadmap](${SITE_ORIGIN}/prereqs.html): prerequisite ordering across phases\n`;
   out += `- [Math Behind Tech](${SITE_ORIGIN}/math.html): the mathematics under everyday systems, worked out by hand with small numbers\n`;
   fs.writeFileSync(path.join(__dirname, 'llms.txt'), out, 'utf8');
   console.log(`   wrote llms.txt`);
@@ -627,7 +625,6 @@ function syncReadme(lessons) {
 // same thing.
 const NAV_LINKS = [
   { key: 'contents', href: 'index.html#contents', label: 'Contents' },
-  { key: 'roadmap',  href: 'prereqs.html',        label: 'Roadmap'  },
   { key: 'math',     href: 'math.html',           label: 'Math'     },
   { key: 'about',    href: 'about.html',          label: 'About'    },
 ];
@@ -638,10 +635,10 @@ const NAV_LINKS = [
 // so adding a chapter never needs an entry here.
 const PAGE_ACTIVE = {
   'index.html': 'contents',
-  'prereqs.html': 'roadmap',
   'math.html': 'math',
   'about.html': 'about',
   'lesson.html': null,
+  'design.html': null,
 };
 
 // Every chapter under the Math shelf, in filename order. Shared by the
@@ -698,7 +695,7 @@ function syncHeaders() {
 }
 
 function syncCounts(lessons, phaseCount, outputs) {
-  const targets = ['index.html', 'lesson.html', 'prereqs.html', 'about.html', 'cmdpalette.js'];
+  const targets = ['index.html', 'lesson.html', 'about.html', 'cmdpalette.js'];
   for (const f of targets) {
     const p = path.join(__dirname, f);
     if (!fs.existsSync(p)) continue;
