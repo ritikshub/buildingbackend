@@ -70,36 +70,48 @@
        top of this border. */
     /* ── The photograph ────────────────────────────────────────────────
        Mount Fuji from Lake Kawaguchiko in first snow (Pratiksha Singh, on
-       Unsplash). It is pinned behind the whole hub and every section sits
-       on paper that is a tenth see-through, so the bridge and the lake
-       drift past as the page scrolls. The masthead's sheet is thinner so
-       the mountain shows through the title. The palette in palette.css was
-       sampled from this picture: the sky is the paper, the mountain's
-       shadow is the ink, the mountain blue is the accent.
-       Phones get a 1000px copy and a normal scrolling background, since
-       fixed backgrounds do not work on iOS. Lesson pages do none of this;
-       reading needs a plain sheet. */
-    body {
-      background-image: url("fuji.jpg");
-      background-size: cover;
-      background-position: center 40%;
-      background-attachment: fixed;
+       Unsplash). Set the way a terminal sets a wallpaper: the photo is the
+       whole window, pinned, with one even wash of the paper colour over
+       it, and everything sits straight on top with no sheets or cards
+       between. In dark mode the wash is the night paper, so it reads as
+       the mountain at dusk behind a dimmed screen. The header thins to
+       the same frosted glass. The palette in palette.css was sampled from
+       this picture, so the wash never fights it.
+       The layer is fixed and screen-sized rather than a body background
+       with background-attachment: fixed, which iOS ignores. 100lvh keeps
+       it from jumping when the mobile toolbar hides. Phones get a 1000px
+       copy. Lesson pages do none of this; reading needs a plain sheet. */
+    :root {
+      --fuji: url("fuji.jpg");
+      --wash: color-mix(in srgb, var(--bg) 74%, transparent);
+    }
+    [data-theme="dark"] {
+      --wash: color-mix(in srgb, var(--bg) 70%, transparent);
     }
     @media (max-width: 640px) {
-      body {
-        background-image: url("fuji-1000.jpg");
-        background-attachment: scroll;
+      :root {
+        --fuji: url("fuji-1000.jpg");
       }
     }
-    main > .container,
-    .site-footer {
-      background: color-mix(in srgb, var(--bg) 90%, transparent);
+    body {
+      background-image: none;
     }
-    main > .container + .container {
-      margin-top: 24px;
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100lvh;
+      z-index: -1;
+      background:
+        linear-gradient(var(--wash), var(--wash)),
+        var(--fuji) center 40% / cover no-repeat;
+      pointer-events: none;
     }
-    main > .manual-masthead {
-      background: color-mix(in srgb, var(--bg) 72%, transparent);
+    .site-header {
+      background: color-mix(in srgb, var(--bg) 55%, transparent);
     }
 
     .manual-masthead {
